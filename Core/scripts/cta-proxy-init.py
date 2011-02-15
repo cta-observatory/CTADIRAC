@@ -125,7 +125,7 @@ finalChain = proxyInfo[ 'chain' ]
 vomsMapping = CS.getVOMSAttributeForGroup( proxyInfo[ 'group' ] )
 if vomsMapping:
   voms = VOMS()
-  retVal = voms.setVOMSAttributes( finalChain, vomsMapping )
+  retVal = voms.setVOMSAttributes( finalChain, vomsMapping, 'vo.cta.in2p3.fr' )
   if not retVal[ 'OK' ]:
     #print "Cannot add voms attribute %s to proxy %s: %s" % ( attr, proxyInfo[ 'path' ], retVal[ 'Message' ] )
     print "Warning : Cannot add voms attribute %s to proxy" % ( vomsMapping )
