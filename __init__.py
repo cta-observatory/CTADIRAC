@@ -1,8 +1,8 @@
-# $HeadURL: https://dirac-grid.googlecode.com/svn/BelleDIRAC/trunk/BelleDIRAC/__init__.py $
+# $HeadURL$
 from pkgutil import extend_path
 __path__ = extend_path( __path__, __name__ )
 
-__RCSID__ = "$Id: __init__.py 46 2010-03-18 14:52:51Z adriancasajus@gmail.com $"
+__RCSID__ = "$Id$"
 
 # Define Version
 
