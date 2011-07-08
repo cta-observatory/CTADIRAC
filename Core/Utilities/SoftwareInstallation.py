@@ -211,7 +211,7 @@ def getSoftwareEnviron( package, environ = None ):
   else:
     return DIRAC.S_ERROR( 'environ argument must be a dictionary' )
 
-  gLogger.notice()
+  #gLogger.notice()
 
   for area in [sharedArea(), localArea()]:
     if area:
