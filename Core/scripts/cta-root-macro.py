@@ -14,8 +14,14 @@ def main():
 
   rm = RootMacro()
   rm.setSoftwarePackage()
-  rm.rootMacro = args[0]
-  rm.rootArguments = args[1:]
+  # There is a bug in the Job.py class that produce a duplicated is the first argument
+  if args[1].find( args[0] ) == 1:
+    rm.rootMacro = args[1]
+    rm.rootArguments = args[2:]
+  else:
+    rm.rootMacro = args[0]
+    rm.rootArguments = args[1:]
+
   res = rm.execute()
 
   if not res['OK']:
