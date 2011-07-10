@@ -1,5 +1,5 @@
 ########################################################################
-# $Id: SoftwareInstallation.py 38751 2011-04-27 17:21:33Z rgracian $
+# $Id$
 # File :   SoftwareInstallation.py
 # Author : Ricardo Graciani
 ########################################################################
@@ -16,7 +16,7 @@
   the access the installed SW
 
 """
-__RCSID__ = "$Id: CombinedSoftwareInstallation.py 38751 2011-04-27 17:21:33Z rgracian $"
+__RCSID__ = "$Id"
 
 from types import StringTypes, DictType
 import os
