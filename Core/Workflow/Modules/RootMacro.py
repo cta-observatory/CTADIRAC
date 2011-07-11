@@ -59,10 +59,14 @@ class RootMacro:
 
     rootEnviron = ret['Value']
 
-    if not os.path.isfile( self.rootMacro ):
+    fileName = self.rootMacro
+    if fileName[-1] == '+':
+      # If the macro has to be compiled there is an extra "+" at the end of its name
+      fileName = fileName[:-1]
+    if not os.path.isfile( fileName ):
       error = 'Root macro file does not exist:'
-      self.log.error( error, self.rootMacro )
-      return DIRAC.S_ERROR( ' '.join( [ error, str( self.rootMacro ) ] ) )
+      self.log.error( error, fileName )
+      return DIRAC.S_ERROR( ' '.join( [ error, fileName ] ) )
 
     cmdTuple = ['root', '-b', '-q']
     cmdTuple += ['%s( %s )' % ( self.rootMacro, ', '.join( self.rootArguments ).replace( "'", '"' ) ) ]
