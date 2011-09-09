@@ -21,7 +21,7 @@ class RootJob( Job ) :
     Job.__init__( self )
 
     self.workflow = Workflow()
-    self.executable = '$DIRAC/scripts/cta-root-macro.py'
+    self.executable = '$DIRAC/scripts/cta-root-macro'
     self.setName( os.path.basename( script ) )
     self.setInputSandbox( [ script ] )
     self.setCPUTime( cpuTime )
