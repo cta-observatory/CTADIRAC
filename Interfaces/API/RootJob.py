@@ -23,6 +23,7 @@ class RootJob( Job ) :
     self.workflow = Workflow()
     self.executable = '$DIRACROOT/scripts/cta-root-macro'
     self.setName( os.path.basename( script ) )
+    self.script = os.path.basename( script )
     self.setInputSandbox( [ script ] )
     self.setCPUTime( cpuTime )
 
