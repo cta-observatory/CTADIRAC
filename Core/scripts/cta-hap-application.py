@@ -16,11 +16,9 @@ def main():
   ha.setSoftwarePackage('HAP/v0.1/HAP')
   # There is a bug in the Job.py class that produce a duplicated is the first argument
   if args[1].find( args[0] ) == 0:
-#    rm.rootMacro = args[1]
-    ha.rootArguments = args[1:]
+    ha.hapArguments = args[1:]
   else:
-#    rm.rootMacro = args[0]
-    ha.rootArguments = args[0:]
+    ha.hapArguments = args[0:]
 
   res = ha.execute()
 
