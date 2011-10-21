@@ -5,7 +5,7 @@ def main():
 
   from DIRAC.Core.Base import Script
   Script.parseCommandLine()
-  from HapApplication import HapApplication
+  from CTADIRAC.Core.Workflow.Modules.HapApplication import HapApplication
 
   DIRAC.gLogger.notice( 'Executing a Hap Application' )
 
