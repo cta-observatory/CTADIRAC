@@ -53,15 +53,6 @@ class HapApplication:
 
     hapEnviron = ret['Value']
 
-#    fileName = self.hapMacro
-#    if fileName[-1] == '+':
-      # If the macro has to be compiled there is an extra "+" at the end of its name
-#      fileName = fileName[:-1]
-#    if not os.path.isfile( fileName ):
-#      error = 'Root macro file does not exist:'
-#      self.log.error( error, fileName )
-#      return DIRAC.S_ERROR( ' '.join( [ error, fileName ] ) )
-
     cmdTuple = ['eventio_cta']
     cmdTuple.extend(self.hapArguments)
  #   cmdTuple += ['%s( %s )' % ( self.rootMacro, ', '.join( self.hapArguments ).replace( "'", '"' ) ) ]
