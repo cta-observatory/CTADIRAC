@@ -1,5 +1,5 @@
 ########################################################################
-# $Id$
+# $Id: SoftwareInstallation.py 348 2011-07-10 18:23:09Z ricardo.graciani $
 # File :   SoftwareInstallation.py
 # Author : Ricardo Graciani
 ########################################################################
@@ -21,6 +21,7 @@ __RCSID__ = "$Id"
 from types import StringTypes, DictType
 import os
 import tarfile
+from DIRAC.Core.Utilities import systemCall
 
 SW_SHARED_DIR = 'VO_VO_CTA_IN2P3_FR_SW_DIR'
 SW_DIR = 'software'
@@ -117,12 +118,24 @@ def installSoftwarePackage( package, area ):
   """
     Install the requested version of package under the given area
   """
+
+
   gLogger.notice( 'Installing software package:', ' at '.join( [package, area] ) )
-  tarLFN = os.path.join( LFN_ROOT, SW_DIR, package ) + 'tar.gz'
+
+  tarLFN = os.path.join( LFN_ROOT, SW_DIR, package ) + '.tar.gz'
+  print tarLFN
   result = ReplicaManager().getFile( tarLFN )
+  print result
   if not result['OK']:
     gLogger.error( 'Failed to download tarfile:', tarLFN )
-    return result
+    area = localArea()
+    gLogger.notice( 'Installing software package:', ' at '.join( [package, area] ) )
+    tarLFN = os.path.join( LFN_ROOT, SW_DIR, package ) + '.tar.gz.crypt'
+    crypt = True
+    result = ReplicaManager().getFile( tarLFN )
+    if not result['OK']:
+      gLogger.error( 'Failed to download tarfile:', tarLFN )
+      return result
   if tarLFN not in result['Value']['Successful']:
     gLogger.error( 'Failed to download tarfile:', tarLFN )
     if tarLFN in result['Value']['Failed']:
@@ -130,11 +143,28 @@ def installSoftwarePackage( package, area ):
     return DIRAC.S_ERROR()
 
   tarFileName = result['Value']['Successful'][tarLFN]
+#  print 'tarFileName1 is ' + tarFileName
   tarMode = "r|*"
 
   try:
     packageTuple = package.split( '/' )
-    installDir = os.path.join( area, packageTuple[0], packageTuple[1] )
+    print packageTuple
+    installDir = os.path.join( area, packageTuple[0], packageTuple[1])  
+
+    if(crypt==True):
+      cryptedFileName = os.path.join( packageTuple[2] ) + '.tar.gz.crypt'
+      tarFileName = os.path.join( area, packageTuple[2] ) + '.tar.gz'
+      cur_dir = os.getcwd()
+      PassPhraseFile = cur_dir + '/passphrase'
+   
+      cmd = ['openssl','des3','-d','-in',cryptedFileName,
+             '-out',tarFileName,'-pass','file:'+PassPhraseFile]
+      DIRAC.gLogger.notice( 'decrypting:', ' '.join( cmd ) )
+      ret = systemCall(0, cmd)
+      status, stdout, stderr = ret['Value']
+      DIRAC.gLogger.notice( 'decrypting reports status:', status )  
+      DIRAC.gLogger.notice( stdout )
+      DIRAC.gLogger.notice( stderr )
 
     tar = tarfile.open( name = tarFileName, mode = tarMode )
     for tarInfo in tar:
@@ -194,6 +224,35 @@ export PATH=${ROOTSYS}/bin:${PATH}
 export LD_LIBRARY_PATH=${ROOTSYS}/lib:${LD_LIBRARY_PATH}
 """ % area )
       return DIRAC.S_OK()
+    if package == 'HAP/v0.1/HAP':
+
+      fileName = os.path.join( area, 'HAP', 'v0.1', 'HapEnv.sh' )
+      if os.environ.has_key( SW_SHARED_DIR ):
+        area = os.path.join( os.environ[SW_SHARED_DIR], SW_DIR )
+
+      fd = open( fileName, 'w' )
+      fd.write( """
+export WORKING_DIR=%s/HESS/v0.1
+export MYSQLPATH=${WORKING_DIR}/local
+export MYSQL_LIBPATH=${WORKING_DIR}/local/lib/mysql
+export MYSQL_PREFIX=${WORKING_DIR}/local
+export PYTHONPATH=${WORKING_DIR}/local/lib/python2.6/site-packages
+# unalias python
+# alias python='python2.6'
+export ROOTSYS=${WORKING_DIR}/root
+export HESSUSER=%s
+export HESSROOT=${HESSUSER}/HAP/v0.1
+export HESSVERSION=cta0311
+export PARIS_MODULES=1
+export PARIS_MODULES_MVA=0
+export HAVE_FITS_MODULE=1
+export CTA=1
+export CTA_ULTRA=1
+export NOPARIS=0
+export PATH=${WORKING_DIR}/local/bin:${ROOTSYS}/bin:${HESSUSER}/bin:${HESSROOT}/bin:${PATH}
+export LD_LIBRARY_PATH=${WORKING_DIR}/local/lib:${ROOTSYS}/lib:${HESSUSER}/lib:${HESSROOT}/lib:${HESSUSER}/lib/mysql:${LD_LIBRARY_PATH}
+""" % (area, localArea()))
+      return DIRAC.S_OK()
   except Exception:
     gLogger.exception( 'Failed to install Environment file', package )
     return DIRAC.S_ERROR()
@@ -213,7 +272,7 @@ def getSoftwareEnviron( package, environ = None ):
 
   gLogger.notice( 'Getting environment for', package )
 
-  for area in [sharedArea(), localArea()]:
+  for area in [sharedArea(), localArea()]: 
     if area:
       if not checkSoftwarePackage( package, area )['OK']:
         continue
