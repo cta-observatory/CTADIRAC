@@ -12,7 +12,7 @@ class HapApplication:
   """
     The Class containing the HapApplication Module code
     It requires the following Input Parameters to be defined:
-     softwarePackage: Name of the CTA software package providing root.
+     softwarePackage: Name of the CTA software package providing hap.
      hapArguments: List of Arguments to be passed to the application (default: [] )
   """
 
@@ -54,9 +54,8 @@ class HapApplication:
     hapEnviron = ret['Value']
 
     cmdTuple = ['eventio_cta']
-    cmdTuple.extend(self.hapArguments)
- #   cmdTuple += ['%s( %s )' % ( self.rootMacro, ', '.join( self.hapArguments ).replace( "'", '"' ) ) ]
-
+    cmdTuple.extend(self.hapArguments)  
+ 
     self.log.info( 'Executing command tuple:', cmdTuple )
 
     ret = systemCall( 0, cmdTuple, env = hapEnviron )
@@ -94,4 +93,3 @@ class HapApplication:
       return DIRAC.S_OK()
     except Exception:
       return DIRAC.S_ERROR( 'Can not set softwarePackage' )
-
