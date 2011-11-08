@@ -23,7 +23,7 @@ class HapJob( Job ) :
     Job.__init__( self )
 
     self.workflow = Workflow()
-    self.executable = '$DIRACROOT/CTADIRAC/Core/scripts/cta-hap-application.py'
+    self.executable = '$DIRACROOT/scripts/cta-hap-application'
     self.setName( os.path.basename( script ) )
     self.setCPUTime( cpuTime )
 
@@ -32,7 +32,7 @@ class HapJob( Job ) :
     self.setConfigArgs( argumentStr )
 
     
-    self.__addSoftwarePackage( softwarePackage )
+#    self.__addSoftwarePackage( softwarePackage )
 
 
   def __addSoftwarePackage( self, package ):
