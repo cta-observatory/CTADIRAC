@@ -12,6 +12,8 @@ def main():
 #  Script.parseCommandLine()
 
   from CTADIRAC.Core.Workflow.Modules.HapApplication import HapApplication
+  from CTADIRAC.Core.Utilities.SoftwareInstallation import checkSoftwarePackage
+  from CTADIRAC.Core.Utilities.SoftwareInstallation import installSoftwarePackage
   from CTADIRAC.Core.Utilities.SoftwareInstallation import localArea
   import os
    
@@ -21,7 +23,13 @@ def main():
   DIRAC.gLogger.notice( 'Arguments:', args )
 
   ha = HapApplication()
-  ha.setSoftwarePackage('HAP/v0.1/HAP') 
+  package =  'HAP/v0.1/HAP'
+  if checkSoftwarePackage( package, localArea() )['OK']:
+    DIRAC.gLogger.notice( 'Package found in Local Area:', package )
+  else:
+    installSoftwarePackage( package, localArea() )
+
+  ha.setSoftwarePackage(package) 
 
 
 
