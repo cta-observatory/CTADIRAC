@@ -1,26 +1,22 @@
 #!/usr/bin/env python
 import DIRAC
+import os
 
 def main():
 
   from DIRAC.Core.Base import Script
-  Script.registerSwitch( "infile", "infile", "Input file" )
-  Script.registerSwitch( "outfile", "outfile", "Output file" )
-  Script.registerSwitch( "tellist", "tellist", "Configuration file" )
+  Script.registerSwitch( "I:", "infile=", "Input file", setInfile )
+  Script.registerSwitch( "O:", "outfile=", "Output file", setOutfile )
+  Script.registerSwitch( "T:", "tellist=", "Configuration file", setConfigfile )
 
   Script.parseCommandLine( ignoreErrors = True )
-#  Script.parseCommandLine()
+   
+  DIRAC.gLogger.notice( 'Executing a Hap Application' )
 
   from CTADIRAC.Core.Workflow.Modules.HapApplication import HapApplication
   from CTADIRAC.Core.Utilities.SoftwareInstallation import checkSoftwarePackage
   from CTADIRAC.Core.Utilities.SoftwareInstallation import installSoftwarePackage
   from CTADIRAC.Core.Utilities.SoftwareInstallation import localArea
-  import os
-   
-  DIRAC.gLogger.notice( 'Executing a Hap Application' )
-
-  args = Script.getPositionalArgs()
-  DIRAC.gLogger.notice( 'Arguments:', args )
 
   ha = HapApplication()
   package =  'HAP/v0.1/HAP'
@@ -31,24 +27,7 @@ def main():
 
   ha.setSoftwarePackage(package) 
 
-
-
-#  ha.setSoftwarePackage() 
-  # There is a bug in the Job.py class that produce a duplicated is the first argument
-
-  if args[0] == 'jobDescription.xml' or args[0] == 'eventio_cta':
-    args=args[1:]
-
-
-  args[2] = os.path.join( localArea(),
-                       'HAP/v0.1/config/%s' % args[2])
-
-  args[0] = '-file ' + args[0]
-  args[1] = '-o ' + args[1]
-  args[2] = '-tellist ' + args[2] 
-
-
-  ha.hapArguments = args
+  ha.hapArguments = ['-file', infile, '-o', outfile, '-tellist', configfile ]
 
   res = ha.execute()
 
@@ -56,6 +35,28 @@ def main():
     DIRAC.exit( -1 )
 
   DIRAC.exit()
+
+def setInfile( optionValue ):
+  global infile
+  infile = optionValue
+  return DIRAC.S_OK()
+
+
+def setOutfile( optionValue ):
+  global outfile
+  outfile = optionValue
+  return DIRAC.S_OK()
+
+def setConfigfile( optionValue ):
+  from CTADIRAC.Core.Utilities.SoftwareInstallation import localArea
+  global configfile
+  configfile = os.path.join( localArea(),
+                       'HAP/v0.1/config/%s' % optionValue)
+
+  print 'configfile ' + configfile
+  return DIRAC.S_OK()
+
+
 
 if __name__ == '__main__':
 
