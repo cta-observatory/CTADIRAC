@@ -1,5 +1,5 @@
 ########################################################################
-# $Id: SoftwareInstallation.py 348 2011-07-10 18:23:09Z ricardo.graciani $
+# $Id: SoftwareInstallation.py 375 2011-10-28 14:37:40Z arrabito@in2p3.fr $
 # File :   SoftwareInstallation.py
 # Author : Ricardo Graciani
 ########################################################################
@@ -118,67 +118,54 @@ def installSoftwarePackage( package, area ):
   """
     Install the requested version of package under the given area
   """
-
-
-  gLogger.notice( 'Installing software package:', ' at '.join( [package, area] ) )
-
+  gLogger.notice( 'Installing software package:', ' at '.join( [package, area] ) ) 
   tarLFN = os.path.join( LFN_ROOT, SW_DIR, package ) + '.tar.gz'
-  print tarLFN
-  result = ReplicaManager().getFile( tarLFN )
-  print result
+  tarLFNcrypt = tarLFN + '.crypt'
+  tarLFNs = [tarLFN,tarLFNcrypt]
+  gLogger.notice( 'Trying to download a tarfile in the list:', tarLFNs )
+  result = ReplicaManager().getFile( tarLFNs )
+  
   if not result['OK']:
-    gLogger.error( 'Failed to download tarfile:', tarLFN )
-    area = localArea()
-    gLogger.notice( 'Installing software package:', ' at '.join( [package, area] ) )
-    tarLFN = os.path.join( LFN_ROOT, SW_DIR, package ) + '.tar.gz.crypt'
-    crypt = True
-    result = ReplicaManager().getFile( tarLFN )
-    if not result['OK']:
-      gLogger.error( 'Failed to download tarfile:', tarLFN )
-      return result
-  if tarLFN not in result['Value']['Successful']:
-    gLogger.error( 'Failed to download tarfile:', tarLFN )
-    if tarLFN in result['Value']['Failed']:
-      return DIRAC.S_ERROR( result['Value']['Failed'][tarLFN] )
-    return DIRAC.S_ERROR()
+    gLogger.error( 'Failed to download tarfile:', tarLFNs )
+    return result
 
-  tarFileName = result['Value']['Successful'][tarLFN]
-#  print 'tarFileName1 is ' + tarFileName
-  tarMode = "r|*"
+  gLogger.notice( 'Check which tarfile is downloaded')
 
-  try:
-    packageTuple = package.split( '/' )
-    print packageTuple
-    installDir = os.path.join( area, packageTuple[0], packageTuple[1])  
+  for tar in tarLFNs:
+    if tar in result['Value']['Successful']:
+      gLogger.notice( 'Downloaded tarfile:', tar )
+      packageTuple = package.split( '/' )
 
-    if(crypt==True):
-      cryptedFileName = os.path.join( packageTuple[2] ) + '.tar.gz.crypt'
-      tarFileName = os.path.join( area, packageTuple[2] ) + '.tar.gz'
-      cur_dir = os.getcwd()
-      PassPhraseFile = cur_dir + '/passphrase'
-   
-      cmd = ['openssl','des3','-d','-in',cryptedFileName,
+      if tarLFNcrypt in result['Value']['Successful']:
+      ##### decrypt #########################
+        cryptedFileName = os.path.join( packageTuple[2] ) + '.tar.gz.crypt'
+        tarFileName = os.path.join( area, packageTuple[2] ) + '.tar.gz'
+        cur_dir = os.getcwd()
+        PassPhraseFile = cur_dir + '/passphrase'
+        cmd = ['openssl','des3','-d','-in',cryptedFileName,
              '-out',tarFileName,'-pass','file:'+PassPhraseFile]
-      DIRAC.gLogger.notice( 'decrypting:', ' '.join( cmd ) )
-      ret = systemCall(0, cmd)
-      status, stdout, stderr = ret['Value']
-      DIRAC.gLogger.notice( 'decrypting reports status:', status )  
-      DIRAC.gLogger.notice( stdout )
-      DIRAC.gLogger.notice( stderr )
+        DIRAC.gLogger.notice( 'decrypting:', ' '.join( cmd ) )
+        ret = systemCall(0, cmd)
+        status, stdout, stderr = ret['Value']
+        DIRAC.gLogger.notice( 'decrypting reports status:', status )  
+      try: 
+      ########## extract #######################
+        tarMode = "r|*"
+        installDir = os.path.join( area, packageTuple[0], packageTuple[1])  
+        tar = tarfile.open( name = tarFileName, mode = tarMode )
+        for tarInfo in tar:
+          tar.extract( tarInfo, installDir )
+        tar.close()
+        os.unlink( tarFileName )
+        gLogger.notice( 'Software package installed successfully:', package )
+        return installSoftwareEnviron( package, area )
 
-    tar = tarfile.open( name = tarFileName, mode = tarMode )
-    for tarInfo in tar:
-      tar.extract( tarInfo, installDir )
-
-    tar.close()
-    os.unlink( tarFileName )
-    gLogger.notice( 'Software package installed successfully:', package )
-    return installSoftwareEnviron( package, area )
-
-  except Exception:
-    error = 'Failed to extract tarfile'
-    gLogger.exception( '%s:' % error, tarFileName )
-    return DIRAC.S_ERROR( error )
+      except Exception:
+        error = 'Failed to extract tarfile'
+        gLogger.exception( '%s:' % error, tarFileName )
+        return DIRAC.S_ERROR( error )
+    else:
+      gLogger.notice( 'Failed to download tarfile:', tar )
 
 def _getEnvFileName( package, area ):
   """
