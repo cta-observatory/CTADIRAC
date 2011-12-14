@@ -35,12 +35,15 @@ class HapApplication:
 
     return DIRAC.S_OK()
 
+  def sendOutput(self,stdid,line):
+    DIRAC.gLogger.notice(line)
+
   def execute( self ):
     """
       The method called by the Workflow framework
     """
     from DIRAC.Core.Utilities.Subprocess import systemCall
-    from CTADIRAC.Core.Utilities.SoftwareInstallation import getSoftwareEnviron
+    from SoftwareInstallation import getSoftwareEnviron
     ret = self.__checkInputs()
     if not ret['OK']:
       return ret
@@ -58,7 +61,7 @@ class HapApplication:
  
     self.log.info( 'Executing command tuple:', cmdTuple )
 
-    ret = systemCall( 0, cmdTuple, env = hapEnviron )
+    ret = systemCall( 0, cmdTuple, self.sendOutput, env = hapEnviron )
 
     if not ret['OK']:
       self.log.error( 'Failed to execute hap:', ret['Message'] )
