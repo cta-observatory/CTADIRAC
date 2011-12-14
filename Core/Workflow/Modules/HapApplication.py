@@ -43,7 +43,7 @@ class HapApplication:
       The method called by the Workflow framework
     """
     from DIRAC.Core.Utilities.Subprocess import systemCall
-    from SoftwareInstallation import getSoftwareEnviron
+    from CTADIRAC.Core.Utilities.SoftwareInstallation import getSoftwareEnviron
     ret = self.__checkInputs()
     if not ret['OK']:
       return ret
