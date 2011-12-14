@@ -30,13 +30,10 @@ def HapExample( destination = None ) :
     j.setDestination( destination )
 
   j.setInputSandbox( [ 'passphrase' ] )
-
   j.setName('HAPexample')
-
   j.setInputData([infileLFN])
-
   j.setOutputData(fileout)
-
+  j.setPlatform( "gLite-HighMem" )
 
   Script.gLogger.info( j._toJDL() )
 
