@@ -135,11 +135,11 @@ def installSoftwarePackage( package, area ):
     if tar in result['Value']['Successful']:
       gLogger.notice( 'Downloaded tarfile:', tar )
       packageTuple = package.split( '/' )
+      tarFileName = packageTuple[2] + '.tar.gz'
 
       if tarLFNcrypt in result['Value']['Successful']:
       ##### decrypt #########################
         cryptedFileName = os.path.join( packageTuple[2] ) + '.tar.gz.crypt'
-        tarFileName = os.path.join( area, packageTuple[2] ) + '.tar.gz'
         cur_dir = os.getcwd()
         PassPhraseFile = cur_dir + '/passphrase'
         cmd = ['openssl','des3','-d','-in',cryptedFileName,
