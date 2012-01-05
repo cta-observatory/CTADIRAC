@@ -42,17 +42,29 @@ def main():
   from CTADIRAC.Core.Utilities.SoftwareInstallation import checkSoftwarePackage
   from CTADIRAC.Core.Utilities.SoftwareInstallation import installSoftwarePackage
   from CTADIRAC.Core.Utilities.SoftwareInstallation import localArea
-
+  from CTADIRAC.Core.Utilities.SoftwareInstallation import sharedArea
 
   ha = HapApplication()
 
-  package =  'HAP/v0.1/HAP'
-  if checkSoftwarePackage( package, localArea() )['OK']:
-    DIRAC.gLogger.notice( 'Package found in Local Area:', package )
-  else:
-    installSoftwarePackage( package, localArea() )
 
-  ha.setSoftwarePackage(package)
+  packs = ['HAP/v0.1/HAP','HESS/v0.1/lib','HESS/v0.1/root']
+
+  for package in packs:
+    DIRAC.gLogger.notice( 'Checking:', package )
+    if sharedArea:
+      if checkSoftwarePackage( package, sharedArea() )['OK']:
+        DIRAC.gLogger.notice( 'Package found in Shared Area:', package )
+        continue
+    if localArea:
+      if checkSoftwarePackage( package, localArea() )['OK']:
+        DIRAC.gLogger.notice( 'Package found in Local Area:', package )
+        continue
+      if installSoftwarePackage( package, localArea() )['OK']:
+        continue
+    DIRAC.gLogger.error( 'Check Failed for software package:', package )
+    return DIRAC.S_ERROR( '%s not available' % package )
+
+  ha.setSoftwarePackage('HAP/v0.1/HAP')
 
   ha.hapArguments = ['-file', infile, '-o', outfile, '-tellist', configfile ]
 
