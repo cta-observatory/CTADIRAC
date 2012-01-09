@@ -47,7 +47,7 @@ def main():
   ha = HapApplication()
 
 
-  packs = ['HAP/v0.1/HAP','HESS/v0.1/lib','HESS/v0.1/root']
+  packs = ['HESS/v0.1/lib','HESS/v0.1/root','HAP/v0.1/HAP']
 
   for package in packs:
     DIRAC.gLogger.notice( 'Checking:', package )
