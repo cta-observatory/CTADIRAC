@@ -1,5 +1,5 @@
-########################################################################
-# $Id: SoftwareInstallation.py 375 2011-10-28 14:37:40Z arrabito@in2p3.fr $
+#######################################################################
+# $Id: SoftwareInstallation.py 384 2011-12-14 12:18:28Z arrabito@in2p3.fr $
 # File :   SoftwareInstallation.py
 # Author : Ricardo Graciani
 ########################################################################
@@ -135,7 +135,7 @@ def installSoftwarePackage( package, area ):
     if tar in result['Value']['Successful']:
       gLogger.notice( 'Downloaded tarfile:', tar )
       packageTuple = package.split( '/' )
-      tarFileName = packageTuple[2] + '.tar.gz'
+      tarFileName =  packageTuple[2] + '.tar.gz'       
 
       if tarLFNcrypt in result['Value']['Successful']:
       ##### decrypt #########################
@@ -148,7 +148,7 @@ def installSoftwarePackage( package, area ):
         ret = systemCall(0, cmd)
         status, stdout, stderr = ret['Value']
         DIRAC.gLogger.notice( 'decrypting reports status:', status )  
-      try: 
+      try:
       ########## extract #######################
         tarMode = "r|*"
         installDir = os.path.join( area, packageTuple[0], packageTuple[1])  
@@ -213,9 +213,21 @@ export LD_LIBRARY_PATH=${ROOTSYS}/lib:${LD_LIBRARY_PATH}
       return DIRAC.S_OK()
     if package == 'HAP/v0.1/HAP':
 
-      fileName = os.path.join( area, 'HAP', 'v0.1', 'HapEnv.sh' )
-      if os.environ.has_key( SW_SHARED_DIR ):
-        area = os.path.join( os.environ[SW_SHARED_DIR], SW_DIR )
+      if checkSoftwarePackage( 'HESS/v0.1/lib', sharedArea() )['OK']:
+        gLogger.notice( 'Using LibEnv in Shared Area')
+        libarea = sharedArea()
+      else:
+        gLogger.notice( 'Using LibEnv in Local Area')  
+        libarea = localArea()
+      if checkSoftwarePackage( 'HESS/v0.1/root', sharedArea() )['OK']:
+        gLogger.notice( 'Using RootEnv in Shared Area')
+        rootarea = sharedArea()
+      else:
+        gLogger.notice( 'Using RootEnv in Local Area')
+        rootarea = localArea()
+
+#      if os.environ.has_key( SW_SHARED_DIR ):
+#        area = os.path.join( os.environ[SW_SHARED_DIR], SW_DIR )
 
       fd = open( fileName, 'w' )
       fd.write( """
@@ -226,7 +238,7 @@ export MYSQL_PREFIX=${WORKING_DIR}/local
 export PYTHONPATH=${WORKING_DIR}/local/lib/python2.6/site-packages
 # unalias python
 # alias python='python2.6'
-export ROOTSYS=${WORKING_DIR}/root
+export ROOTSYS=%s/HESS/v0.1/root
 export HESSUSER=%s
 export HESSROOT=${HESSUSER}/HAP/v0.1
 export HESSVERSION=cta0311
@@ -238,7 +250,7 @@ export CTA_ULTRA=1
 export NOPARIS=0
 export PATH=${WORKING_DIR}/local/bin:${ROOTSYS}/bin:${HESSUSER}/bin:${HESSROOT}/bin:${PATH}
 export LD_LIBRARY_PATH=${WORKING_DIR}/local/lib:${ROOTSYS}/lib:${HESSUSER}/lib:${HESSROOT}/lib:${HESSUSER}/lib/mysql:${LD_LIBRARY_PATH}
-""" % (area, localArea()))
+""" % (libarea, rootarea, localArea()))
       return DIRAC.S_OK()
   except Exception:
     gLogger.exception( 'Failed to install Environment file', package )
@@ -312,6 +324,7 @@ def sharedArea():
     # if defined, check that it really exists
     if not os.path.isdir( area ):
       gLogger.error( 'Missing Shared Area Directory:', area )
+      print 'Missing Shared Area Directory:'
       area = ''
 
   return area
