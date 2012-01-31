@@ -181,7 +181,10 @@ def installSoftwareEnviron( package, area ):
   """
     Install Environment file for the given package
   """
+  packageTuple = package.split( '/' )
+  version = packageTuple[1]
   fileName = _getEnvFileName( package, area )
+  
   try:
     if package == 'HESS/v0.1/lib':
       fd = open( fileName, 'w' )
@@ -211,7 +214,8 @@ export PATH=${ROOTSYS}/bin:${PATH}
 export LD_LIBRARY_PATH=${ROOTSYS}/lib:${LD_LIBRARY_PATH}
 """ % area )
       return DIRAC.S_OK()
-    if package == 'HAP/v0.1/HAP':
+
+    if packageTuple[0] == 'HAP':
 
       if checkSoftwarePackage( 'HESS/v0.1/lib', sharedArea() )['OK']:
         gLogger.notice( 'Using LibEnv in Shared Area')
@@ -240,7 +244,7 @@ export PYTHONPATH=${WORKING_DIR}/local/lib/python2.6/site-packages
 # alias python='python2.6'
 export ROOTSYS=%s/HESS/v0.1/root
 export HESSUSER=%s
-export HESSROOT=${HESSUSER}/HAP/v0.1
+export HESSROOT=${HESSUSER}/HAP/%s
 export HESSVERSION=cta0311
 export PARIS_MODULES=1
 export PARIS_MODULES_MVA=0
@@ -250,7 +254,7 @@ export CTA_ULTRA=1
 export NOPARIS=0
 export PATH=${WORKING_DIR}/local/bin:${ROOTSYS}/bin:${HESSUSER}/bin:${HESSROOT}/bin:${PATH}
 export LD_LIBRARY_PATH=${WORKING_DIR}/local/lib:${ROOTSYS}/lib:${HESSUSER}/lib:${HESSROOT}/lib:${HESSUSER}/lib/mysql:${LD_LIBRARY_PATH}
-""" % (libarea, rootarea, localArea()))
+""" % (libarea, rootarea, localArea(), version))
       return DIRAC.S_OK()
   except Exception:
     gLogger.exception( 'Failed to install Environment file', package )
