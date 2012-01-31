@@ -17,8 +17,7 @@ import os
 class HapJob( Job ) :
 
 
-  def __init__( self, script,  parameters = None, softwarePackage = 'HAP/v0.1/HAP',
-                cpuTime = 3600 ):
+  def __init__( self, script,  parameters = None, cpuTime = 3600 ):
 
     Job.__init__( self )
 
@@ -26,26 +25,19 @@ class HapJob( Job ) :
     self.executable = '$DIRACROOT/scripts/cta-hap-application'
     self.setName( os.path.basename( script ) )
     self.setCPUTime( cpuTime )
-
+    global argumentStr
     argumentStr = "%s" % ( ' '.join( parameters ) )
-
     self.setConfigArgs( argumentStr )
 
-    
-#    self.__addSoftwarePackage( softwarePackage )
+
+  def setVersion(self, version):
+    versionStr = ' ' + '-V' + ' ' + version
+    global argumentStr
+    argumentStr= argumentStr + versionStr
+    self.setConfigArgs( argumentStr )
 
 
-  def __addSoftwarePackage( self, package ):
 
-    swPackages = 'SoftwarePackages'
-    description = 'List of Software Packages to be installed'
-    if not self.workflow.findParameter( swPackages ):
-      self._addParameter( self.workflow, swPackages, 'JDL', package, description )
-    else:
-      apps = self.workflow.findParameter( swPackages ).getValue()
-      if not package in string.split( apps, ';' ):
-        apps += ';' + package
-      self._addParameter( self.workflow, swPackages, 'JDL', apps, description )
 
 
 
