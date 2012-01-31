@@ -23,8 +23,10 @@ def HapExample( destination = None ) :
   infile = os.path.basename(infileLFN)
 
   fileout = infile.replace('simhess.gz',os.path.splitext(os.path.basename(config))[0] + '.root')
-
+   
   j = HapJob('eventio_cta',['-I',infile,'-O', fileout,'-T',config])   
+
+  j.setVersion('v0.3')
 
   if destination:
     j.setDestination( destination )
