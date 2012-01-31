@@ -35,6 +35,13 @@ class HapJob( Job ) :
     global argumentStr
     argumentStr= argumentStr + versionStr
     self.setConfigArgs( argumentStr )
+    
+  def setConfig(self, config):
+    configStr = ' ' + '-T' + ' ' + config
+    global argumentStr
+    argumentStr= argumentStr + configStr
+    self.setConfigArgs( argumentStr )
+
 
 
 
