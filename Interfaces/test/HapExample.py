@@ -17,16 +17,13 @@ def HapExample( destination = None ) :
   from DIRAC.Interfaces.API.Dirac import Dirac
 
   infileLFN = 'LFN:/vo.cta.in2p3.fr/Simu2/v_Leeds/Data/sim_hessarray/cta-ultra3/0.0deg/Data/proton_20deg_90deg_run89580___cta-ultra3_desert.simhess.gz'
-
-  config = 'array-E.lis'
-
   infile = os.path.basename(infileLFN)
-
   fileout = infile.replace('simhess.gz',os.path.splitext(os.path.basename(config))[0] + '.root')
    
-  j = HapJob('eventio_cta',['-I',infile,'-O', fileout,'-T',config])   
+  j = HapJob('eventio_cta',['-I',infile,'-O', fileout])   
 
   j.setVersion('v0.3')
+  j.setConfig('array-E.lis')
 
   if destination:
     j.setDestination( destination )
