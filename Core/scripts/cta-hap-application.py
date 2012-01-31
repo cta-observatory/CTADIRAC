@@ -13,7 +13,7 @@ def setOutfile( optionValue ):
   return DIRAC.S_OK()
   
 def setConfigfile( optionValue ):
-  from SoftwareInstallation import localArea
+  from CTADIRAC.Core.Utilities.SoftwareInstallation import localArea
   global configfile
   configfile = os.path.join( localArea(),
                          'HAP/%s/config/%s' % (version, optionValue))
