@@ -7,7 +7,6 @@ def setInfile( optionValue ):
   infile = optionValue
   return DIRAC.S_OK()
 
-
 def setOutfile( optionValue ):
   global outfile
   outfile = optionValue
@@ -19,7 +18,11 @@ def setConfigfile( optionValue ):
   configfile = os.path.join( localArea(),
                        'HAP/v0.1/config/%s' % optionValue)
   return DIRAC.S_OK()
-
+  
+def setVersion( optionValue ):
+  global version
+  version = optionValue
+  return DIRAC.S_OK()
 
 def main():
 
@@ -28,6 +31,7 @@ def main():
   Script.registerSwitch( "I:", "infile=", "Input file", setInfile )
   Script.registerSwitch( "O:", "outfile=", "Output file", setOutfile )
   Script.registerSwitch( "T:", "tellist=", "Configuration file", setConfigfile )
+  Script.registerSwitch( "V:", "version=", "HAP Version", setVersion )
 
   Script.parseCommandLine( ignoreErrors = True )
 
@@ -46,8 +50,9 @@ def main():
 
   ha = HapApplication()
 
+  HapPack = 'HAP/' + version + '/HAP'
 
-  packs = ['HESS/v0.1/lib','HESS/v0.1/root','HAP/v0.1/HAP']
+  packs = ['HESS/v0.1/lib','HESS/v0.1/root',HapPack]
 
   for package in packs:
     DIRAC.gLogger.notice( 'Checking:', package )
@@ -64,7 +69,7 @@ def main():
     DIRAC.gLogger.error( 'Check Failed for software package:', package )
     return DIRAC.S_ERROR( '%s not available' % package )
 
-  ha.setSoftwarePackage('HAP/v0.1/HAP')
+  ha.setSoftwarePackage(HapPack)
 
   ha.hapArguments = ['-file', infile, '-o', outfile, '-tellist', configfile ]
 
