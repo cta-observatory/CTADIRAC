@@ -11,12 +11,12 @@ def setOutfile( optionValue ):
   global outfile
   outfile = optionValue
   return DIRAC.S_OK()
-
+  
 def setConfigfile( optionValue ):
-  from CTADIRAC.Core.Utilities.SoftwareInstallation import localArea
+  from SoftwareInstallation import localArea
   global configfile
   configfile = os.path.join( localArea(),
-                       'HAP/v0.1/config/%s' % optionValue)
+                         'HAP/%s/config/%s' % (version, optionValue))
   return DIRAC.S_OK()
   
 def setVersion( optionValue ):
@@ -35,7 +35,7 @@ def main():
 
   Script.parseCommandLine( ignoreErrors = True )
 
-  if infile == None or outfile == None or configfile == None:
+  if infile == None or outfile == None or configfile == None or version == None:
     Script.showHelp()
     DIRAC.exit( -1 )
 
