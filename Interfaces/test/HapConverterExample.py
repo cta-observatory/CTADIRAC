@@ -22,7 +22,7 @@ def HapConverterExample( destination = None ) :
   infile = os.path.basename(infileLFN)
   fileout = infile.replace('simhess.gz',os.path.splitext(os.path.basename(config))[0] + '.root')
    
-  j = HapJob('eventio_cta',['-I',infile,'-O', fileout])   
+  j = HapConverterJob('eventio_cta',['-I',infile,'-O', fileout])   
 
   j.setVersion(HapVersion)
   j.setConfig(config)
