@@ -25,7 +25,7 @@ def HapDSTExample( destination = None ) :
   fileout = '/tmp/dst_CTA_0000' + str(RunNum) + '.root'
   toCompile = False 
    
-  j = RootJob( 'make_CTA_DST.C', [RunNum,FileName,ArrayConfig,Nevent], toCompile )
+  j = HapDSTJob( 'make_CTA_DST.C', [RunNum,FileName,ArrayConfig,Nevent], toCompile )
 
   if destination:
     j.setDestination( destination )
