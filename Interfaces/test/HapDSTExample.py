@@ -23,7 +23,7 @@ def HapDSTExample( destination = None ) :
   ArrayConfig = 'array-E.lis'
   Nevent=100000
   fileout = '/tmp/dst_CTA_0000' + str(RunNum) + '.root'
-  toCompile = False 
+  toCompile = True 
    
   j = HapDSTJob( 'make_CTA_DST.C', [RunNum,FileName,ArrayConfig,Nevent], toCompile )
 
