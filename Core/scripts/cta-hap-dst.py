@@ -45,8 +45,8 @@ def main():
     hd.rootMacro = args[1]
     hd.rootArguments = args[2:]
   else:
-    hd.rootMacro = args[0]
-    hd.rootArguments = args[1:]
+    hd.rootMacro = args[1]
+    hd.rootArguments = args[2:]
 
 
   res = hd.execute()
