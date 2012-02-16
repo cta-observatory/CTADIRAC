@@ -73,13 +73,15 @@ class HapDST:
       error = 'make_CTA_DST.C file does not exist:'
       self.log.error( error, fileName )
       return DIRAC.S_ERROR( ' '.join( [ error, fileName ] ) )
-
+     
+    fileName = hessroot + '/hapscripts/dst/' + self.rootMacro   
+      
     cmdTuple = ['root', '-b', '-q']
 
     configpath = hessroot + '/config/array' 
     self.rootArguments[2] = self.rootArguments[2].replace( "array", configpath ) 
 
-    cmdTuple += ['%s( %s )' % ( self.rootMacro, ', '.join( self.rootArguments ).replace( "'", '"' ) ) ]
+    cmdTuple += ['%s( %s )' % ( fileName, ', '.join( self.rootArguments ).replace( "'", '"' ) ) ]
 
     self.log.notice( 'Executing command tuple:', cmdTuple )
 
