@@ -20,7 +20,6 @@ class HapDSTJob( Job ) :
     self.workflow = Workflow()
     self.executable = '$DIRACROOT/scripts/cta-hap-dst'
     self.setName( os.path.basename( script ) )
-    self.script = os.path.basename( script )
     self.setCPUTime( cpuTime )
 
 
