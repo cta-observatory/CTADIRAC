@@ -47,7 +47,7 @@ if __name__ == '__main__':
 
   args = Script.getPositionalArgs()
 
-  ret = RootExample( args )
+  ret = HapDSTExample( args )
   if ret['OK']:
     Script.gLogger.notice( 'Submitted Job:', ret['Value'] )
   else:
