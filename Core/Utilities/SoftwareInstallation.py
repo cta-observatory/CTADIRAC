@@ -230,9 +230,6 @@ export LD_LIBRARY_PATH=${ROOTSYS}/lib:${LD_LIBRARY_PATH}
         gLogger.notice( 'Using RootEnv in Local Area')
         rootarea = localArea()
 
-#      if os.environ.has_key( SW_SHARED_DIR ):
-#        area = os.path.join( os.environ[SW_SHARED_DIR], SW_DIR )
-
       fd = open( fileName, 'w' )
       fd.write( """
 export WORKING_DIR=%s/HESS/v0.1
@@ -243,8 +240,8 @@ export PYTHONPATH=${WORKING_DIR}/local/lib/python2.6/site-packages
 # unalias python
 # alias python='python2.6'
 export ROOTSYS=%s/HESS/v0.1/root
-export HESSUSER=%s
-export HESSROOT=${HESSUSER}/HAP/%s
+export HESSUSER=%s/HAP/%s
+export HESSROOT=${HESSUSER}
 export HESSVERSION=cta0311
 export PARIS_MODULES=1
 export PARIS_MODULES_MVA=0
