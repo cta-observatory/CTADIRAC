@@ -40,14 +40,8 @@ def main():
   args = Script.getPositionalArgs()
   DIRAC.gLogger.notice( 'Arguments:', args )
 
-  # There is a bug in the Job.py class that produce a duplicated is the first argument
-  if args[1].find( args[0] ) == 0:
-    hd.rootMacro = args[1]
-    hd.rootArguments = args[2:]
-  else:
-    hd.rootMacro = args[1]
-    hd.rootArguments = args[2:]
-
+  hd.rootMacro = args[1]
+  hd.rootArguments = args[2:]
 
   res = hd.execute()
 
