@@ -78,8 +78,8 @@ class HapDST:
       
     cmdTuple = ['root', '-b', '-q']
 
-    configpath = hessroot + '/config/array' 
-    self.rootArguments[2] = self.rootArguments[2].replace( "array", configpath ) 
+#    configpath = hessroot + '/config/array' 
+#    self.rootArguments[2] = self.rootArguments[2].replace( "array", configpath ) 
 
     cmdTuple += ['%s( %s )' % ( fileName, ', '.join( self.rootArguments ).replace( "'", '"' ) ) ]
 
