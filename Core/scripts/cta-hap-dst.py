@@ -38,10 +38,10 @@ def main():
 
   
   args = Script.getPositionalArgs()
-      
-  args[4] = os.path.join( localArea(),
-                         'HAP/v0.3/config/%s' % args[4])
-    
+                            
+  configpath = localArea() + 'HAP/v0.3/config/array'
+  args[4] = args[4].replace( "array", configpath )
+                  
   DIRAC.gLogger.notice( 'Arguments:', args )
 
   hd.rootMacro = args[1]
