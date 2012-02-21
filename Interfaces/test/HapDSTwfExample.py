@@ -23,7 +23,7 @@ def HapDSTwfExample( destination = None ) :
   fileout = infile.replace('simhess.gz',os.path.splitext(os.path.basename(config))[0] + '.root')
   Nevents = '100000' ####### Nevents for the make_CTA_DST.C macro
    
-  j = HapConverterJob('eventio_cta',['-I',infile,'-O', fileout,'-N',Nevents])   
+  j = HapDSTwfJob('eventio_cta',['-I',infile,'-O', fileout,'-N',Nevents])   
 
   j.setVersion(HapVersion)
   j.setConfig(config)
