@@ -16,7 +16,7 @@ def HapDSTExample( destination = None ) :
   from CTADIRAC.Interfaces.API.HapDSTJob import HapDSTJob
   from DIRAC.Interfaces.API.Dirac import Dirac
 
-  infileLFN = 'LFN:/vo.cta.in2p3.fr/HAPtest/rawdata/proton_20deg_90deg_run89580___cta-ultra3_desert.array-E.root'
+  infileLFN = 'LFN:/vo.cta.in2p3.fr/HAPtest/rawdata/electron_20deg_90deg_run1002___cta-prod1_desert.raw.root'
 
   RunNum = 89580
   FileName = os.path.basename(infileLFN)
