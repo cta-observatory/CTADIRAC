@@ -39,8 +39,8 @@ def main():
   
   args = Script.getPositionalArgs()
                             
-  configpath = localArea() + 'HAP/v0.3/config/array'
-  args[4] = args[4].replace( "array", configpath )
+ # configpath = localArea() + 'HAP/v0.3/config/array'
+ # args[4] = args[4].replace( "array", configpath )
                   
   DIRAC.gLogger.notice( 'Arguments:', args )
 
