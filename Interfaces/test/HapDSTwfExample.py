@@ -31,7 +31,7 @@ def HapDSTwfExample( destination = None ) :
   if destination:
     j.setDestination( destination )
 
-  j.setInputSandbox( [ 'passphrase','cta-hap-wf','/home/arrabito/sw/pro/CTADIRAC'] )
+  j.setInputSandbox( [ 'passphrase' ] )
   j.setName('HapDSTwf')
   j.setInputData([infileLFN])
   j.setOutputData(fileout)
