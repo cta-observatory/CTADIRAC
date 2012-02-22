@@ -18,7 +18,7 @@ def HapDSTExample( destination = None ) :
 
   infileLFN = 'LFN:/vo.cta.in2p3.fr/HAPtest/rawdata/electron_20deg_90deg_run1002___cta-prod1_desert.raw.root'
 
-  RunNum = 89580
+  RunNum = 1002
   FileName = os.path.basename(infileLFN)
   ArrayConfig = 'array-E.lis'
   Nevent=100000
