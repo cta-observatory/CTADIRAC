@@ -96,9 +96,11 @@ class HapDST:
       self.log.error( 'make_CTA_DST.C execution reports Error:', status )
       self.log.error( stdout )
       self.log.error( stderr )
-      return DIRAC.S_ERROR( 'Failed root Execution' )
-
-
+      return DIRAC.S_ERROR( 'Failed root Execution' ) 
+      
+    fileout = 'dst_CTA_%08d' % int(self.rootArguments[0]) + '.root'
+    mv_cmd = 'mv ' + fileout + ' .'
+    os.system(mv_cmd)
     return DIRAC.S_OK()
 
   def setSoftwarePackage( self, softwarePackage = None ):
