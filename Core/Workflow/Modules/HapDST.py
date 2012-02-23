@@ -98,7 +98,7 @@ class HapDST:
       self.log.error( stderr )
       return DIRAC.S_ERROR( 'Failed root Execution' ) 
       
-    fileout = 'dst_CTA_%08d' % int(self.rootArguments[0]) + '.root'
+    fileout = '/tmp/dst_CTA_%08d' % int(self.rootArguments[0]) + '.root'
     mv_cmd = 'mv ' + fileout + ' .'
     os.system(mv_cmd)
     return DIRAC.S_OK()
