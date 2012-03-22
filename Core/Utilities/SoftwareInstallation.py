@@ -186,6 +186,16 @@ def installSoftwareEnviron( package, area ):
   fileName = _getEnvFileName( package, area )
   
   try:
+    if packageTuple[0] == 'ctools':
+      fd = open( fileName, 'w' )
+      fd.write( """
+export GAMMALIB=%s/ctools/%s/ctools
+source $GAMMALIB/bin/gammalib-init.sh
+export CTOOLS=%s/ctools/%s/ctools
+source $CTOOLS/bin/ctools-init.sh 
+""" % (area,version,area,version) )
+      fd.close()
+      return DIRAC.S_OK()               
     if package == 'HESS/v0.1/lib':
       fd = open( fileName, 'w' )
       fd.write( """
