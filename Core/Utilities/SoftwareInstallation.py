@@ -186,6 +186,25 @@ def installSoftwareEnviron( package, area ):
   fileName = _getEnvFileName( package, area )
   
   try:
+    if package == 'PyFACT/v0.1/PyFACT':
+      fd = open( fileName, 'w' )
+      fd.write( """                                                                                                                                            
+export EPDFREE=%s/epd_free/v0.1/epd_free                                                                                                                       
+export PATH=${EPDFREE}/bin:${PATH}                                                                                                                             
+export LD_LIBRARY_PATH=${EPDFREE}/lib:${LD_LIBRARY_PATH}                                                                                                       
+export PYFACTROOT=%s/PyFACT/v0.1/PyFACT                                                                                                                        
+""" % (area,area) )
+      fd.close()
+      return DIRAC.S_OK()      
+    if package == 'epd_free/v0.1/epd_free':
+      fd = open( fileName, 'w' )
+      fd.write( """                                                                                                                                            
+export EPDFREE=%s/epd_free/v0.1/epd_free                                                                                                                       
+export PATH=${EPDFREE}/bin:${PATH}                                                                                                                             
+export LD_LIBRARY_PATH=${EPDFREE}/lib:${LD_LIBRARY_PATH}                                                                                                       
+""" % (area) )
+      fd.close()
+      return DIRAC.S_OK()
     if packageTuple[0] == 'ctools':
       fd = open( fileName, 'w' )
       fd.write( """
