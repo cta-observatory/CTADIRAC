@@ -1,6 +1,5 @@
-
 """ The HapConverter class provides a simple way for CTA users to
-  execute a Hap Converter Application.
+  execute a Corsika/Simtel Application.
 """
 __RCSID__ = "$Id$"
 
@@ -38,7 +37,6 @@ class CorsikaSimtelApp:
 
   def sendOutput(self,stdid,line):
     logfilename = self.csExe + '.log'
-    #logfilename = 'corsika.log'
     f = open( logfilename,'a')
     f.write(line)
     f.write('\n')
@@ -75,14 +73,6 @@ class CorsikaSimtelApp:
       return DIRAC.S_ERROR( 'Can not execute corsika_simtelarray' )
 
     status, stdout, stderr = ret['Value']
-#    if status:
-#      self.log.error( 'corsika_simtelarray execution reports Error:', status )
-#      self.log.error( stdout )
-#      self.log.error( stderr )
-#      return DIRAC.S_ERROR( 'Failed corsika_simtelarray Execution' )
-
-#    self.log.info( 'corsika_simtelarray stdout:' )
-#    self.log.info( stdout )
 
     return DIRAC.S_OK()
 
