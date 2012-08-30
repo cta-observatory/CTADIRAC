@@ -18,7 +18,7 @@ class CorsikaSimtelJob( Job ) :
     Job.__init__( self )
 
     self.workflow = Workflow()
-    self.executable = '$DIRACROOT/scripts/cta-corsikasimtel.py'
+    self.executable = '$DIRACROOT/scripts/cta-corsikasimtel'
     self.setCPUTime( cpuTime )
     global argumentStr
 
