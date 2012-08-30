@@ -1,5 +1,5 @@
 #######################################################################
-# $Id: SoftwareInstallation.py 384 2011-12-14 12:18:28Z arrabito@in2p3.fr $
+# $Id: SoftwareInstallation.py 416 2012-02-16 11:57:26Z arrabito@in2p3.fr $
 # File :   SoftwareInstallation.py
 # Author : Ricardo Graciani
 ########################################################################
@@ -151,7 +151,10 @@ def installSoftwarePackage( package, area ):
       try:
       ########## extract #######################
         tarMode = "r|*"
-        installDir = os.path.join( area, packageTuple[0], packageTuple[1])  
+        if area == workingArea():
+          installDir = os.path.join( area ) 
+        else:
+          installDir = os.path.join( area, packageTuple[0], packageTuple[1]) 
         tar = tarfile.open( name = tarFileName, mode = tarMode )
         for tarInfo in tar:
           tar.extract( tarInfo, installDir )
@@ -172,10 +175,26 @@ def _getEnvFileName( package, area ):
     Produce Name of Environment File
   """
   packageTuple = package.split( '/' )
+
+  if area == workingArea():
+    return os.path.join( area,
+                        '%sEnv.sh' % packageTuple[2].capitalize() )
+  else:
+    return os.path.join( area,
+                         packageTuple[0],
+                         packageTuple[1],
+                        '%sEnv.sh' % packageTuple[2].capitalize() )
+
+
+def _getSoftwareDir( package, area ):
+  """
+    Produce Name of the Software Dir
+  """
+  packageTuple = package.split( '/' )
   return os.path.join( area,
                        packageTuple[0],
-                       packageTuple[1],
-                       '%sEnv.sh' % packageTuple[2].capitalize() )
+                       packageTuple[1])
+
 
 def installSoftwareEnviron( package, area ):
   """
@@ -186,6 +205,42 @@ def installSoftwareEnviron( package, area ):
   fileName = _getEnvFileName( package, area )
   
   try:
+
+    if packageTuple[0] == 'corsika_simhessarray':
+      fd = open( fileName, 'w' )
+      fd.write( """
+unset HESSROOT
+export HESSROOT
+unset LD_LIBRARY_PATH
+export LD_LIBRARY_PATH
+
+./prepare_for_examples
+
+if [ ! -x corsika-run/corsika ]; then
+   echo "No CORSIKA program found."
+   exit 1
+fi
+
+if [ ! -x sim_telarray/bin/sim_telarray ]; then
+   echo "No sim_telarray program found."
+   exit 1
+fi
+
+ln -s ./sim_telarray/cfg/common/atmprof1.dat
+
+export CORSIKA_PATH="$(cd corsika-run && pwd -P)"
+export SIM_TELARRAY_PATH="$(cd sim_telarray && pwd -P)"
+export MCDATA_PATH="$(pwd -P)/Data"
+export CORSIKA_DATA="${MCDATA_PATH}/corsika"
+export SIM_TELARRAY_DATA="${MCDATA_PATH}/sim_telarray"
+export CTA_PATH="$(pwd -P)"
+export LD_LIBRARY_PATH="${CTA_PATH}/hessioxxx/lib"
+export HESSIO_BIN="${PWD}/hessioxxx/bin"
+
+export PATH="${PATH}:${HESSIO_BIN}:${SIM_TELARRAY_PATH}:${CORSIKA_PATH}"
+""")
+      fd.close()
+      return DIRAC.S_OK()
     if package == 'PyFACT/v0.1/PyFACT':
       fd = open( fileName, 'w' )
       fd.write( """                                                                                                                                            
@@ -215,10 +270,11 @@ source $CTOOLS/bin/ctools-init.sh
 """ % (area,version,area,version) )
       fd.close()
       return DIRAC.S_OK()               
-    if package == 'HESS/v0.1/lib':
+
+    if package == 'HESS/v0.2/lib':
       fd = open( fileName, 'w' )
       fd.write( """
-export WORKING_DIR=%s/HESS/v0.1
+export WORKING_DIR=%s/HESS/v0.2
 
 export MYSQLPATH=${WORKING_DIR}/local
 export MYSQL_LIBPATH=${WORKING_DIR}/local/lib/mysql
@@ -233,11 +289,11 @@ export LD_LIBRARY_PATH=${WORKING_DIR}/local/lib:${LD_LIBRARY_PATH}
 """ % area )
       fd.close()
       return DIRAC.S_OK()
-    if package == 'HESS/v0.1/root':
-      fileName = os.path.join( area, 'HESS', 'v0.1', 'RootEnv.sh' )
+    if package == 'HESS/v0.3/root':
+      fileName = os.path.join( area, 'HESS', 'v0.3', 'RootEnv.sh' )
       fd = open( fileName, 'w' )
       fd.write( """
-export ROOTSYS=%s/HESS/v0.1/root
+export ROOTSYS=%s/HESS/v0.3/root
 
 export PATH=${ROOTSYS}/bin:${PATH}
 export LD_LIBRARY_PATH=${ROOTSYS}/lib:${LD_LIBRARY_PATH}
@@ -246,13 +302,13 @@ export LD_LIBRARY_PATH=${ROOTSYS}/lib:${LD_LIBRARY_PATH}
 
     if packageTuple[0] == 'HAP':
 
-      if checkSoftwarePackage( 'HESS/v0.1/lib', sharedArea() )['OK']:
+      if checkSoftwarePackage( 'HESS/v0.2/lib', sharedArea() )['OK']:
         gLogger.notice( 'Using LibEnv in Shared Area')
         libarea = sharedArea()
       else:
         gLogger.notice( 'Using LibEnv in Local Area')  
         libarea = localArea()
-      if checkSoftwarePackage( 'HESS/v0.1/root', sharedArea() )['OK']:
+      if checkSoftwarePackage( 'HESS/v0.3/root', sharedArea() )['OK']:
         gLogger.notice( 'Using RootEnv in Shared Area')
         rootarea = sharedArea()
       else:
@@ -261,25 +317,32 @@ export LD_LIBRARY_PATH=${ROOTSYS}/lib:${LD_LIBRARY_PATH}
 
       fd = open( fileName, 'w' )
       fd.write( """
-export WORKING_DIR=%s/HESS/v0.1
+export WORKING_DIR=%s/HESS/v0.2
 export MYSQLPATH=${WORKING_DIR}/local
-export MYSQL_LIBPATH=${WORKING_DIR}/local/lib/mysql
-export MYSQL_PREFIX=${WORKING_DIR}/local
 export PYTHONPATH=${WORKING_DIR}/local/lib/python2.6/site-packages
 # unalias python
 # alias python='python2.6'
-export ROOTSYS=%s/HESS/v0.1/root
+export ROOTSYS=%s/HESS/v0.3/root
 export HESSUSER=%s/HAP/%s
 export HESSROOT=${HESSUSER}
-export HESSVERSION=cta0311
+export HESSCONFIG=${PWD}/IRF
+#export HESSCONFIG=${HESSUSER}/IRF/
+#export HESSVERSION=cta0312
 export PARIS_MODULES=1
 export PARIS_MODULES_MVA=0
-export HAVE_FITS_MODULE=1
+export HAVE_FITS_MODULE=0
 export CTA=1
 export CTA_ULTRA=1
 export NOPARIS=0
-export PATH=${WORKING_DIR}/local/bin:${ROOTSYS}/bin:${HESSUSER}/bin:${HESSROOT}/bin:${PATH}
-export LD_LIBRARY_PATH=${WORKING_DIR}/local/lib:${ROOTSYS}/lib:${HESSUSER}/lib:${HESSROOT}/lib:${HESSUSER}/lib/mysql:${LD_LIBRARY_PATH}
+export MYSQL_LIBPATH=${HESSROOT}/lib
+
+export LD_LIBRARY_PATH=/usr/lib64:${LD_LIBRARY_PATH}
+export GCCPATH=/usr 
+export CXX_KIND=/usr/bin/g++
+
+export PATH=${GCCPATH}/bin:${ROOTSYS}/bin:${HESSUSER}/bin:${HESSROOT}/bin:${WORKING_DIR}/local/bin:${PATH}
+export LD_LIBRARY_PATH=${WORKING_DIR}/local/lib:${GCCPATH}/lib:${ROOTSYS}/lib:${HESSUSER}/lib:${HESSROOT}/lib:${HESSROOT}/lib/mysql:${LD_LIBRARY_PATH}
+
 """ % (libarea, rootarea, localArea(), version))
       return DIRAC.S_OK()
   except Exception:
@@ -301,7 +364,7 @@ def getSoftwareEnviron( package, environ = None ):
 
   gLogger.notice( 'Getting environment for', package )
 
-  for area in [sharedArea(), localArea()]: 
+  for area in [workingArea(), sharedArea(), localArea()]: 
     if area:
       if not checkSoftwarePackage( package, area )['OK']:
         continue
@@ -324,10 +387,15 @@ def checkSoftwarePackage( package, area ):
     Check if the requested version of package is installed under the given area
   """
   fileName = _getEnvFileName( package, area )
-  gLogger.notice( 'Looking for Environment file', fileName )
+  softwareDir = _getSoftwareDir( package, area )
   try:
+    gLogger.notice( 'Looking for Environment file', fileName )
     if os.path.exists( fileName ):
       return DIRAC.S_OK()
+    else:
+      gLogger.notice( 'Looking for Software dir', softwareDir )
+      if os.path.isdir( softwareDir ):
+        return DIRAC.S_OK()
   except Exception:
     pass
 
@@ -416,5 +484,12 @@ def localArea():
       except Exception:
         gLogger.error( 'Cannot create:', area )
         area = ''
+  return area
+
+def workingArea():
+  """
+   return working directory
+  """
+  area = os.environ['PWD']
   return area
 
