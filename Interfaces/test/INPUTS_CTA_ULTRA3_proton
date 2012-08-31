@@ -335,8 +335,8 @@ CWAVLG  250.  700.                     Cherenkov wavelength band
 *
 DEBUG   F  6  F  1000000               debug flag and logical unit for output
 DIRECT  /dev/null                      /dev/null means no normal CORSIKA data written
-TELFIL |${SIM_TELARRAY_PATH}/run_sim_cta-ultra3:100:100:1     Telescope photon bunch output (eventio format)
-* TELFIL cta-ultra3-test.corsika.gz
+* TELFIL |${SIM_TELARRAY_PATH}/run_sim_cta-ultra3:100:100:1     Telescope photon bunch output (eventio format)
+TELFIL cta-ultra3-test.corsika.gz
 *
 * [ IACT tuning parameters ]
 *
