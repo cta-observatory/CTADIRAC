@@ -52,9 +52,6 @@ def CorsikaSimtelExample( args = None ) :
 
   j.setCPUTime(100000)
 
-  if destination:
-    j.setDestination( destination )
-
   Script.gLogger.info( j._toJDL() )
   Dirac().submit( j )
 
