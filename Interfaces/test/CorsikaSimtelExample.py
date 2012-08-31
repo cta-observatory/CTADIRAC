@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 """
-  Submit an Example Hap Converter Job
+  Submit a Corsika Example Job
 """
 from DIRAC.Core.Base import Script
 Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      'Usage:',
-                                     '  %s [option|cfgfile] ... [Site] ...' % Script.scriptName,
+                                     '  %s [option|cfgfile] ... [NJobs] ...' % Script.scriptName,
                                      'Arguments:',
-                                     '  Site:     Requested Site' ] ) )
+                                     '  NJobs:     Number of Jobs' ] ) )
 Script.parseCommandLine()
 
-def CorsikaSimtelExample( destination = None ) :
+def CorsikaSimtelExample( args = None ) :
   from CTADIRAC.Interfaces.API.CorsikaSimtelJob import CorsikaSimtelJob
   from DIRAC.Interfaces.API.Dirac import Dirac
 
@@ -21,7 +21,12 @@ def CorsikaSimtelExample( destination = None ) :
   j.setExecutable(executable) 
 
   ilist = []
-  for i in range(1,10):
+  if not args:
+    Script.showHelp()
+
+  NJobs = int(args[0])
+
+  for i in range(1,NJobs+1):
     run_number = '%06d' % i
     ilist.append(run_number)
 
