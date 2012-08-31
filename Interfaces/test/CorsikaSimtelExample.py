@@ -35,12 +35,15 @@ def CorsikaSimtelExample( destination = None ) :
 
   j.setOutputSandbox( [outlog])
 
-  sim_out = 'Data/sim_telarray/cta-ultra3/0.0deg/Data/*.simtel.gz'
-  log_out = 'Data/sim_telarray/cta-ultra3/0.0deg/Log/*.log.gz'
-  hist_out = 'Data/sim_telarray/cta-ultra3/0.0deg/Histograms/*.hdata.gz'
   corsikatar_out = 'corsika_run%s.tar.gz'
 
-  j.setOutputData([sim_out,log_out,hist_out,corsikatar_out])
+  j.setOutputData(['run%s/cta-ultra3-test.corsika.gz',corsikatar_out])
+
+# To retrieve Output Data from simtel_array 
+#  sim_out = 'Data/sim_telarray/cta-ultra3/0.0deg/Data/*.simtel.gz'
+#  log_out = 'Data/sim_telarray/cta-ultra3/0.0deg/Log/*.log.gz'
+#  hist_out = 'Data/sim_telarray/cta-ultra3/0.0deg/Histograms/*.hdata.gz'
+#  j.setOutputData([sim_out,log_out,hist_out,corsikatar_out])
 
   j.setCPUTime(100000)
 
