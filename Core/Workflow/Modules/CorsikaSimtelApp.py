@@ -74,6 +74,11 @@ class CorsikaSimtelApp:
 
     status, stdout, stderr = ret['Value']
 
+    self.log.notice( 'corsika status is:', status )
+    self.log.notice( 'corsika stdout is:', stdout )
+    self.log.notice( 'corsika stderr is:', stderr )
+
+
     return DIRAC.S_OK()
 
   def setSoftwarePackage( self, softwarePackage = None ):
