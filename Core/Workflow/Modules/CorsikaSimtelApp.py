@@ -72,12 +72,9 @@ class CorsikaSimtelApp:
       self.log.error( 'Failed to execute corsika_simtelarray:', ret['Message'] )
       return DIRAC.S_ERROR( 'Can not execute corsika_simtelarray' )
 
-    status, stdout, stderr = ret['Value']
+    status = ret['Value']
 
     self.log.notice( 'corsika status is:', status )
-    self.log.notice( 'corsika stdout is:', stdout )
-    self.log.notice( 'corsika stderr is:', stderr )
-
 
     return DIRAC.S_OK()
 
