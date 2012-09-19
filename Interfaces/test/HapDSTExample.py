@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-  Submit an Example HapDST Job
+  Submit an Example HapJob
 """
 from DIRAC.Core.Base import Script
 Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
@@ -16,39 +16,48 @@ def HapDSTExample( destination = None ) :
   from CTADIRAC.Interfaces.API.HapDSTJob import HapDSTJob
   from DIRAC.Interfaces.API.Dirac import Dirac
 
-  infileLFN = 'LFN:/vo.cta.in2p3.fr/HAPtest/rawdata/electron_20deg_90deg_run1002___cta-prod1_desert.raw.root'
+### general options ###############
+  HapVersion = 'v0.16'
 
-  RunNum = 1002
-  FileName = os.path.basename(infileLFN)
-  ArrayConfig = 'array-E.lis'
-  Nevent=100000
-  fileout = '/tmp/dst_CTA_0000' + str(RunNum) + '.root'
-  toCompile = True 
-   
-  j = HapDSTJob( 'make_CTA_DST.C', [RunNum,FileName,ArrayConfig,Nevent], toCompile )
+  infileLFNList = [
+  'LFN:/vo.cta.in2p3.fr/user/a/arrabito/HAP/mini-prod3/Rawdata/gamma/raw_gamma_run283000.root',
+  'LFN:/vo.cta.in2p3.fr/user/a/arrabito/HAP/mini-prod3/Rawdata/gamma/raw_gamma_run283001.root']
 
-  if destination:
-    j.setDestination( destination )
+  for infileLFN in infileLFNList:
+    infile = os.path.basename(infileLFN)
+    RunNum = infile.split( 'run' )[1].split('.root')[0]
+    tellist = 'array-E.lis'
 
-  j.setInputSandbox( [ 'passphrase' ] )
+    general_opts = ['-V', HapVersion]
+    make_CTA_DST_opts =  ['-R',RunNum ,'-I',infile,'-T',tellist]
 
-  j.setInputData([infileLFN])
-  j.setOutputData(fileout)
-  j.setCPUTime(200000)
-  j.setPlatform( "gLite-HighMem" )
+    opts =  general_opts + make_CTA_DST_opts
 
-  Script.gLogger.info( j._toJDL() )
+    j = HapDSTJob(opts)
 
-  return Dirac().submit( j )
+    if destination:
+      j.setDestination( destination )
 
+    j.setInputSandbox( [ 'passphrase','check_dst0.csh','check_dst2.csh'] )
+    j.setOutputSandbox( ['make_CTA_DST.log','CheckDST.log'])
+    jobName = 'DSTrun_' + RunNum
+    j.setName(jobName)
+    j.setInputData([infileLFN])
+
+    j.setOutputData(['dst*.root'])
+
+    j.setCPUTime(100000)
+    Script.gLogger.info( j._toJDL() )
+    Dirac().submit( j )
 
 
 if __name__ == '__main__':
 
   args = Script.getPositionalArgs()
 
-  ret = HapDSTExample( args )
-  if ret['OK']:
-    Script.gLogger.notice( 'Submitted Job:', ret['Value'] )
-  else:
-    Script.gLogger.error( ret['Message'] )
+  try:
+    HapDSTExample( args )
+  except Exception:
+    Script.gLogger.exception()
+
+
