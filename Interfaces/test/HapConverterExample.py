@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-  Submit an Example Hap Converter Job
+  Submit an Example HapJob
 """
 from DIRAC.Core.Base import Script
 Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
@@ -16,38 +16,51 @@ def HapConverterExample( destination = None ) :
   from CTADIRAC.Interfaces.API.HapConverterJob import HapConverterJob
   from DIRAC.Interfaces.API.Dirac import Dirac
 
-  HapVersion = 'v0.3'
-  config = 'array-E.lis'
-  infileLFN = 'LFN:/vo.cta.in2p3.fr/Simu2/v_Leeds/Data/sim_hessarray/cta-ultra3/0.0deg/Data/proton_20deg_90deg_run89580___cta-ultra3_desert.simhess.gz'
-  infile = os.path.basename(infileLFN)
-  fileout = infile.replace('simhess.gz',os.path.splitext(os.path.basename(config))[0] + '.root')
-   
-  j = HapConverterJob('eventio_cta',['-I',infile,'-O', fileout])   
+### general options ###############
+  HapVersion = 'v0.16'
 
-  j.setVersion(HapVersion)
-  j.setConfig(config)
+  infileLFNList = ['LFN:/vo.cta.in2p3.fr/Simulation/sim_telarray/Prod1S_PS/2000/gamma/20/90/spectrum_-2.0/0.003_300/pointlike/cta-prod1/0.0deg/Data/run283xxx/gamma_20deg_90deg_run283000___cta-prod1_desert.simhess.gz',
+  'LFN:/vo.cta.in2p3.fr/Simulation/sim_telarray/Prod1S_PS/2000/gamma/20/90/spectrum_-2.0/0.003_300/pointlike/cta-prod1/0.0deg/Data/run283xxx/gamma_20deg_90deg_run283001___cta-prod1_desert.simhess.gz']
 
-  if destination:
-    j.setDestination( destination )
+  for infileLFN in infileLFNList:
+    infile = os.path.basename(infileLFN)
+#### build the output file name for rawdata #############################
+    PartType = infile.split( '_' )[0]
+    RunNum = infile.split( 'run' )[1].split('___cta-prod1_desert.simhess.gz')[0]
 
-  j.setInputSandbox( [ 'passphrase' ] )
-  j.setName('HapConverterExample')
-  j.setInputData([infileLFN])
-  j.setOutputData(fileout)
-  j.setPlatform( "gLite-HighMem" )
+    raw_fileout = 'raw_' + PartType + '_run' + RunNum + '.root'
+    tellist = 'array-E.lis'
 
-  Script.gLogger.info( j._toJDL() )
+    general_opts = ['-V', HapVersion]
+    eventio_cta_opts = ['--infile',infile,'--outfile',raw_fileout,'--tellist',tellist,'--pixelslices','true']
 
-  return Dirac().submit( j )
+    opts =  general_opts + eventio_cta_opts
+
+    j = HapConverterJob(opts)
+
+    if destination:
+      j.setDestination( destination )
+
+    j.setInputSandbox( [ 'passphrase','check_raw.csh'] )
+    j.setOutputSandbox( ['eventio_cta.log','Open_Raw.log'])
+    jobName = 'eventio_' + RunNum
+    j.setName(jobName)
+    j.setInputData([infileLFN])
+
+    j.setOutputData([raw_fileout])
+
+    j.setCPUTime(100000)
+    Script.gLogger.info( j._toJDL() )
+    Dirac().submit( j )
+
 
 if __name__ == '__main__':
 
   args = Script.getPositionalArgs()
 
-  ret = HapConverterExample( args )
+  try:
+    HapConverterExample( args )
+  except Exception:
+    Script.gLogger.exception()
 
-  if ret['OK']:
-    Script.gLogger.notice( 'Submitted Job:', ret['Value'] )
-  else:
-    Script.gLogger.error( ret['Message'] )
 
