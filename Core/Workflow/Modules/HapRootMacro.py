@@ -1,4 +1,4 @@
-""" The HapDST class provides a simple way for CTA users to
+""" The HapRootMacro class provides a simple way for CTA users to
   execute a HAP Root Macro.
 """
 __RCSID__ = "$Id$"
@@ -10,7 +10,7 @@ INPUTPARAMETERS = [ 'softwarePackage','rootMacro']
 
 class HapRootMacro:
   """
-    The Class containing the HapDST Module code
+    The Class containing the HapRootMacr Module code
     It requires the following Input Parameters to be defined:
      softwarePackage: Name of the CTA software package providing root.
      rootMacro: Name of the Macro to be executed.
