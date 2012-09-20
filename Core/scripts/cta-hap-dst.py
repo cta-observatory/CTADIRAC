@@ -118,7 +118,8 @@ def main():
 
 ################################################
     DIRAC.gLogger.notice('Executing DST Check step0')
-
+    
+    os.system('chmod u+x check_dst0.csh')
     cmdTuple = ['./check_dst0.csh']
     ret = systemCall( 0, cmdTuple, sendOutput)
        
@@ -154,6 +155,7 @@ def main():
 
 #################################################
     DIRAC.gLogger.notice('Executing DST Check step2')
+    os.system('chmod u+x check_dst2.csh')
     cmdTuple = ['./check_dst2.csh']
     ret = systemCall( 0, cmdTuple, sendOutput )
        
