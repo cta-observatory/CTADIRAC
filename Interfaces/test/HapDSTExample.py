@@ -43,8 +43,10 @@ def HapDSTExample( destination = None ) :
     jobName = 'DSTrun_' + RunNum
     j.setName(jobName)
     j.setInputData([infileLFN])
-
-    j.setOutputData(['dst*.root'])
+    
+    j.setOutputData(['dst*.root'],outputSE='CC-IN2P3-Disk',outputPath='HAP/DST/gamma/')
+    ### or simply use
+    # j.setOutputData(['dst*.root'])
 
     j.setCPUTime(100000)
     Script.gLogger.info( j._toJDL() )
