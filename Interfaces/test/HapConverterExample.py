@@ -19,7 +19,8 @@ def HapConverterExample( destination = None ) :
 ### general options ###############
   HapVersion = 'v0.16'
 
-  infileLFNList = ['LFN:/vo.cta.in2p3.fr/Simulation/sim_telarray/Prod1S_PS/2000/gamma/20/90/spectrum_-2.0/0.003_300/pointlike/cta-prod1/0.0deg/Data/run283xxx/gamma_20deg_90deg_run283000___cta-prod1_desert.simhess.gz',
+  infileLFNList = [
+  'LFN:/vo.cta.in2p3.fr/Simulation/sim_telarray/Prod1S_PS/2000/gamma/20/90/spectrum_-2.0/0.003_300/pointlike/cta-prod1/0.0deg/Data/run283xxx/gamma_20deg_90deg_run283000___cta-prod1_desert.simhess.gz',
   'LFN:/vo.cta.in2p3.fr/Simulation/sim_telarray/Prod1S_PS/2000/gamma/20/90/spectrum_-2.0/0.003_300/pointlike/cta-prod1/0.0deg/Data/run283xxx/gamma_20deg_90deg_run283001___cta-prod1_desert.simhess.gz']
 
   for infileLFN in infileLFNList:
@@ -47,7 +48,9 @@ def HapConverterExample( destination = None ) :
     j.setName(jobName)
     j.setInputData([infileLFN])
 
-    j.setOutputData([raw_fileout])
+    j.setOutputData([raw_fileout], outputSE='CC-IN2P3-Disk',outputPath='HAP/Rawdata/gamma/') 
+    ## or simply use
+    # j.setOutputData([raw_fileout])
 
     j.setCPUTime(100000)
     Script.gLogger.info( j._toJDL() )
