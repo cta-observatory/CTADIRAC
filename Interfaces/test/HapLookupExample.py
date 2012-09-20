@@ -17,7 +17,7 @@ def HapLookupExample( destination = None ) :
   from DIRAC.Interfaces.API.Dirac import Dirac
 
   HapVersion = 'v0.16'
-####### DoCtaIrf option values for Table prod #######################
+####### DoCtaIrf option values #######################
   AnalysisType = 'ScaleParam'  
   EnergyMethod = 'NoEnergy'
   CutsConfig = 'mva_40pe_Wm_E_MST_PSFA_cta0909'
@@ -26,7 +26,7 @@ def HapLookupExample( destination = None ) :
   Offset = '0'
   Array = 'array-E.lis'
   ParticleType = 'gamma'
- #### for Energy prod ##################
+#### for Energy prod ##################
 #  AnalysisType = 'Energy'
 #  EnergyMethod = 'Oak'
 
