@@ -10,7 +10,7 @@ from DIRAC.Core.Workflow.Workflow                   import Workflow
 from CTADIRAC.Core.Utilities import SoftwareInstallation
 import os
 
-class HapApplicationJob( Job ) :
+class HapLookupJob( Job ) :
 
 
   def __init__( self, parameters = None, cpuTime = 3600 ):
