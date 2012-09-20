@@ -49,7 +49,7 @@ def HapLookupExample( destination = None ) :
 
   opts = general_opts + DoCtaIrf_opts
 
-  j = HapApplicationJob(opts)
+  j = HapLookupJob(opts)
 
   if destination:
     j.setDestination( destination )
