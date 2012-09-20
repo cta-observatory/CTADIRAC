@@ -148,7 +148,8 @@ def main():
 
 ################################################                                                                                                               
     DIRAC.gLogger.notice('Executing Raw Check step1')
-
+    
+    os.system('chmod u+x check_raw.csh')
     cmdTuple = ['./check_raw.csh']
     ret = systemCall( 0, cmdTuple, sendOutput)
 
