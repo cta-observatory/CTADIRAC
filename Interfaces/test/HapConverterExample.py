@@ -47,10 +47,7 @@ def HapConverterExample( destination = None ) :
     jobName = 'eventio_' + RunNum
     j.setName(jobName)
     j.setInputData([infileLFN])
-
-    j.setOutputData([raw_fileout], outputSE='CC-IN2P3-Disk',outputPath='HAP/Rawdata/gamma/') 
-    ## or simply use
-    # j.setOutputData([raw_fileout])
+    j.setOutputData([raw_fileout])
 
     j.setCPUTime(100000)
     Script.gLogger.info( j._toJDL() )
