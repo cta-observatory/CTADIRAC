@@ -68,9 +68,7 @@ def HapLookupExample( destination = None ) :
   elif (AnalysisType=='Energy'):
     outfile = 'EnergyCalib_' + RunList + '.root'
     
-  j.setOutputData([outfile], outputSE='CC-IN2P3-Disk',outputPath='HAP/Lookup_Tables/') 
-  ## or simply use
-  ## j.setOutputData([outfile]) 
+  j.setOutputData([outfile]) 
 
   j.setCPUTime(100000) 
   Script.gLogger.info( j._toJDL() )
