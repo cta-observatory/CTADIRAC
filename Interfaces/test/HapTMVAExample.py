@@ -58,7 +58,6 @@ def HapTMVAExample( destination = None ) :
     j.setName(AnalysisType)
 
     j.setInputData(infileLFN)
-    j.setInputDataPolicy('Protocol')
 
 #### build outdir #############################################
     RunNum = infileLFN.split( 'dst_CTA_' )[1].split('.root')[0] 
