@@ -56,6 +56,11 @@ def main():
   Script.registerSwitch( "V:", "version=", "HAP version", setVersion )
 
   Script.parseCommandLine( ignoreErrors = True ) 
+ 
+  args = Script.getPositionalArgs()
+
+  if len( args ) < 1:
+    Script.showHelp()
   
   if outfile == None or infile == None or tellist == None or version == None:
     Script.showHelp()
