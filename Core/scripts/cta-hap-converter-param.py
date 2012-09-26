@@ -72,7 +72,7 @@ def main():
 #  Script.registerSwitch( "N:", "num=", "Num", setNum)
 ##  Script.registerSwitch( "L:", "limitmc=", "Limitmc", setLimitmc)
 #  Script.registerSwitch( "S:", "telidoffset=", "Telidoffset", setTelidoffset)
-  Script.registerSwitch( "P:", "pixelslices=", "setPixelslices",setPixelslices)
+  Script.registerSwitch( "P:", "pixelslices=", "setPixelslices (true/false)",setPixelslices)
 ### other options ###############################################
   Script.registerSwitch( "V:", "version=", "HAP version", setVersion )
 
