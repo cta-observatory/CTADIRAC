@@ -51,7 +51,7 @@ def main():
   Script.registerSwitch( "T:", "tellist=", "Tellist", setTellist )
   Script.registerSwitch( "F:", "Nfirst_mcevt=", "Nfirst_mcevt", setNfirst_mcevt)
   Script.registerSwitch( "L:", "Nlast_mcevt=", "Nlast_mcevt", setNlast_mcevt)
-  Script.registerSwitch( "P:", "pixelslices=", "setPixelslices",setPixelslices)
+  Script.registerSwitch( "P:", "pixelslices=", "setPixelslices (true/false)",setPixelslices)
 ### other options ###############################################
   Script.registerSwitch( "V:", "version=", "HAP version", setVersion )
 
