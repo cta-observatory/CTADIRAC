@@ -76,13 +76,6 @@ def main():
 ### other options ###############################################
   Script.registerSwitch( "V:", "version=", "HAP version", setVersion )
 
-
-  from DIRAC.WorkloadManagementSystem.Client.JobReport import JobReport
-
-  jobID = os.environ['JOBID']
-  jobID = int( jobID )
-  jobReport = JobReport( jobID )
-
   Script.parseCommandLine( ignoreErrors = True ) 
   
   if outfile == None or tellist == None or version == None:
@@ -97,6 +90,11 @@ def main():
   from CTADIRAC.Core.Utilities.SoftwareInstallation import localArea
   from CTADIRAC.Core.Utilities.SoftwareInstallation import sharedArea
   from DIRAC.Core.Utilities.Subprocess import systemCall
+  from DIRAC.WorkloadManagementSystem.Client.JobReport import JobReport
+
+  jobID = os.environ['JOBID']
+  jobID = int( jobID )
+  jobReport = JobReport( jobID )
 
   HapPack = 'HAP/' + version + '/HAP'
 
