@@ -10,8 +10,6 @@ Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      '  Site:     Requested Site' ] ) )
 Script.parseCommandLine()
 
-import os
-
 def HapConverterParamExample( destination = None ) :
   from CTADIRAC.Interfaces.API.HapConverterParamJob import HapConverterParamJob
   from DIRAC.Interfaces.API.Dirac import Dirac
