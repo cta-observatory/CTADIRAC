@@ -57,7 +57,7 @@ def main():
   from DIRAC.Core.Base import Script
 
 #### eventio_cta options ##########################################
-  Script.registerSwitch( "p:", "run_number=", "Run Number", setRunNumber 
+  Script.registerSwitch( "p:", "run_number=", "Run Number", setRunNumber ) 
   Script.registerSwitch( "O:", "outfile=", "Output file", setOutfile )
   Script.registerSwitch( "T:", "tellist=", "Tellist", setTellist )
   Script.registerSwitch( "F:", "Nfirst_mcevt=", "Nfirst_mcevt", setNfirst_mcevt)
