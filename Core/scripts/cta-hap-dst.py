@@ -42,15 +42,13 @@ def main():
   Script.registerSwitch( "N:", "nevent=", "Nevent", setNevent )
 ### other options ###############################################
   Script.registerSwitch( "V:", "version=", "HAP version", setVersion )
-
-
-  from DIRAC.WorkloadManagementSystem.Client.JobReport import JobReport
-
-  jobID = os.environ['JOBID']
-  jobID = int( jobID )
-  jobReport = JobReport( jobID )
-
+   
   Script.parseCommandLine( ignoreErrors = True ) 
+  
+  args = Script.getPositionalArgs()
+
+  if len( args ) < 1:
+    Script.showHelp()
   
   if infile == None or tellist == None or version == None:
     Script.showHelp()
@@ -62,8 +60,13 @@ def main():
   from CTADIRAC.Core.Utilities.SoftwareInstallation import installSoftwarePackage
   from CTADIRAC.Core.Utilities.SoftwareInstallation import localArea
   from CTADIRAC.Core.Utilities.SoftwareInstallation import sharedArea
-  from DIRAC.Core.Utilities.Subprocess import systemCall
-
+  from DIRAC.Core.Utilities.Subprocess import systemCall  
+  from DIRAC.WorkloadManagementSystem.Client.JobReport import JobReport
+  
+  jobID = os.environ['JOBID']
+  jobID = int( jobID )
+  jobReport = JobReport( jobID )
+  
   HapPack = 'HAP/' + version + '/HAP'
 
   packs = ['HESS/v0.2/lib','HESS/v0.3/root',HapPack] 
