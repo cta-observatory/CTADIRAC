@@ -65,14 +65,11 @@ def main():
 ## other options
   Script.registerSwitch( "V:", "version=", "HAP version", setVersion )
 
-
-  from DIRAC.WorkloadManagementSystem.Client.JobReport import JobReport
-
-  jobID = os.environ['JOBID']
-  jobID = int( jobID )
-  jobReport = JobReport( jobID )
-
   Script.parseCommandLine( ignoreErrors = True )
+  
+  args = Script.getPositionalArgs()
+  if len( args ) < 1:
+    Script.showHelp()
 
   from CTADIRAC.Core.Workflow.Modules.HapApplication import HapApplication
   from CTADIRAC.Core.Utilities.SoftwareInstallation import checkSoftwarePackage
@@ -80,6 +77,11 @@ def main():
   from CTADIRAC.Core.Utilities.SoftwareInstallation import localArea
   from CTADIRAC.Core.Utilities.SoftwareInstallation import sharedArea
   from DIRAC.Core.Utilities.Subprocess import systemCall
+  from DIRAC.WorkloadManagementSystem.Client.JobReport import JobReport
+  
+  jobID = os.environ['JOBID']
+  jobID = int( jobID )
+  jobReport = JobReport( jobID )
 
   ha = HapApplication()
 
