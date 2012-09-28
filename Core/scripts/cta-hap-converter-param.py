@@ -51,7 +51,6 @@ def main():
   from DIRAC.Core.Base import Script
 
 #### eventio_cta options ##########################################
-  Script.registerSwitch( "p:", "run_number=", "Run Number", setRunNumber ) 
   Script.registerSwitch( "T:", "tellist=", "Tellist", setTellist )
   Script.registerSwitch( "F:", "Nfirst_mcevt=", "Nfirst_mcevt", setNfirst_mcevt)
   Script.registerSwitch( "L:", "Nlast_mcevt=", "Nlast_mcevt", setNlast_mcevt)
@@ -60,6 +59,7 @@ def main():
 ##  Script.registerSwitch( "L:", "limitmc=", "Limitmc", setLimitmc)
 #  Script.registerSwitch( "S:", "telidoffset=", "Telidoffset", setTelidoffset)
   Script.registerSwitch( "P:", "pixelslices=", "setPixelslices (true/false)",setPixelslices)
+  Script.registerSwitch( "p:", "run_number=", "Run Number (set automatically)", setRunNumber ) 
 ### other options ###############################################
   Script.registerSwitch( "V:", "version=", "HAP version", setVersion )
 
