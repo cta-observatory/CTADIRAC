@@ -29,13 +29,13 @@ def HapDSTwfParamExample( destination = None ) :
 
   opts =  general_opts + eventio_cta_opts
 
-  j = HapConverterParamJob(opts)
+  j = HapDSTwfParamJob(opts)
 
   j.setParametricInputData(infileLFNList)  
   j.setInputSandbox( [ 'passphrase', 'check_raw.csh','check_dst0.csh','check_dst2.csh'] )
   j.setOutputSandbox( ['eventio_cta.log','Open_Raw.log','make_CTA_DST.log','CheckDST.log'])
   j.setOutputData(['raw_*.root','dst*.root'])
-  j.setName('Raw_DST')
+  j.setName('DSTwf')
   
   if destination:
     j.setDestination( destination )
