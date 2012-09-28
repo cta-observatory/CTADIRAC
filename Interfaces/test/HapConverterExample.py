@@ -28,11 +28,11 @@ def HapConverterExample( destination = None ) :
 #### build the output file name for rawdata #############################
     PartType = infile.split( '_' )[0]
     RunNum = infile.split( 'run' )[1].split('___cta-prod1_desert.simhess.gz')[0]
-
     raw_fileout = 'raw_' + PartType + '_run' + RunNum + '.root'
     tellist = 'array-E.lis'
 
     general_opts = ['-V', HapVersion]
+### eventio_cta options ###############
     eventio_cta_opts = ['--infile',infile,'--outfile',raw_fileout,'--tellist',tellist,'--pixelslices','true']
 
     opts =  general_opts + eventio_cta_opts
