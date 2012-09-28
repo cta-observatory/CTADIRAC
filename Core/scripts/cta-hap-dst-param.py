@@ -40,9 +40,9 @@ def main():
   from DIRAC.Core.Base import Script
 
 ### make_CTA_DST options ###############################################
-  Script.registerSwitch( "p:", "run_number=", "Run Number", setRunNumber )
   Script.registerSwitch( "T:", "tellist=", "Tellist", setTellist )
   Script.registerSwitch( "N:", "nevent=", "Nevent", setNevent )
+  Script.registerSwitch( "p:", "run_number=", "Run Number (set automatically)", setRunNumber )
 ### other options ###############################################
   Script.registerSwitch( "V:", "version=", "HAP version", setVersion )
 
