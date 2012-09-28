@@ -21,11 +21,10 @@ def HapConverterParamExample( destination = None ) :
   'LFN:/vo.cta.in2p3.fr/Simulation/sim_telarray/Prod1S_PS/2000/gamma/20/90/spectrum_-2.0/0.003_300/pointlike/cta-prod1/0.0deg/Data/run283xxx/gamma_20deg_90deg_run283000___cta-prod1_desert.simhess.gz',
   'LFN:/vo.cta.in2p3.fr/Simulation/sim_telarray/Prod1S_PS/2000/gamma/20/90/spectrum_-2.0/0.003_300/pointlike/cta-prod1/0.0deg/Data/run283xxx/gamma_20deg_90deg_run283001___cta-prod1_desert.simhess.gz']
 
-  fileout_prefix = 'raw_' 
   tellist = 'array-E.lis'
 
   general_opts = ['-V', HapVersion]
-  eventio_cta_opts = ['--outfile',fileout_prefix,'--tellist',tellist,'--pixelslices','true']
+  eventio_cta_opts = ['--tellist',tellist,'--pixelslices','true']
 
   opts =  general_opts + eventio_cta_opts
 
