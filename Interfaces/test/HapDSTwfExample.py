@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-  Submit an Example Hap Converter Job
+  Submit an Example HapJob
 """
 from DIRAC.Core.Base import Script
 Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
@@ -16,40 +16,50 @@ def HapDSTwfExample( destination = None ) :
   from CTADIRAC.Interfaces.API.HapDSTwfJob import HapDSTwfJob
   from DIRAC.Interfaces.API.Dirac import Dirac
 
-  HapVersion = 'v0.3'
-  config = 'array-E.lis'
-  infileLFN = 'LFN:/vo.cta.in2p3.fr/Simu2/v_Leeds/Data/sim_hessarray/cta-ultra3/0.0deg/Data/proton_20deg_90deg_run89580___cta-ultra3_desert.simhess.gz'
-  infile = os.path.basename(infileLFN)
-  fileout = infile.replace('simhess.gz',os.path.splitext(os.path.basename(config))[0] + '.root')
-  Nevents = '100000' ####### Nevents for the make_CTA_DST.C macro
-   
-  j = HapDSTwfJob('eventio_cta',['-I',infile,'-O', fileout,'-N',Nevents])   
+### general options ###############
+  HapVersion = 'v0.16'
+  
+  infileLFNList = [
+  'LFN:/vo.cta.in2p3.fr/Simulation/sim_telarray/Prod1S_PS/2000/gamma/20/90/spectrum_-2.0/0.003_300/pointlike/cta-prod1/0.0deg/Data/run283xxx/gamma_20deg_90deg_run283000___cta-prod1_desert.simhess.gz',
+  'LFN:/vo.cta.in2p3.fr/Simulation/sim_telarray/Prod1S_PS/2000/gamma/20/90/spectrum_-2.0/0.003_300/pointlike/cta-prod1/0.0deg/Data/run283xxx/gamma_20deg_90deg_run283001___cta-prod1_desert.simhess.gz']
 
-  j.setVersion(HapVersion)
-  j.setConfig(config)
+  for infileLFN in infileLFNList:
+    infile = os.path.basename(infileLFN)
+#### build the output file name for rawdata #############################
+    PartType = infile.split( '_' )[0]
+    RunNum = infile.split( 'run' )[1].split('___cta-prod1_desert.simhess.gz')[0]
+    raw_fileout = 'raw_' + PartType + '_run' + RunNum + '.root'
+    tellist = 'array-E.lis'
 
-  if destination:
-    j.setDestination( destination )
+    general_opts = ['-V', HapVersion]
+    eventio_cta_opts = ['-O',raw_fileout, '-I',infile,'-T',tellist,'-P','true']
+    make_CTA_DST_opts =  ['-R',RunNum]
 
-  j.setInputSandbox( [ 'passphrase' ] )
-  j.setName('HapDSTwf')
-  j.setInputData([infileLFN])
-  j.setOutputData(fileout)
-### add dst output #####################
-  j.setPlatform( "gLite-HighMem" )
+    opts =  general_opts + eventio_cta_opts + make_CTA_DST_opts
 
-  Script.gLogger.info( j._toJDL() )
+    j = HapDSTwfJob(opts)
 
-  return Dirac().submit( j )
+    if destination:
+      j.setDestination( destination )
+
+    j.setInputSandbox( [ 'passphrase', 'check_raw.csh','check_dst0.csh','check_dst2.csh'] )
+    j.setOutputSandbox( ['eventio_cta.log','Open_Raw.log','make_CTA_DST.log','CheckDST.log'])
+    jobName = 'run_' + RunNum
+    j.setName(jobName)
+    j.setInputData([infileLFN])
+    j.setOutputData([raw_fileout,'dst*.root']) 
+    j.setCPUTime(100000)
+    Script.gLogger.info( j._toJDL() )
+    Dirac().submit( j )
 
 if __name__ == '__main__':
 
   args = Script.getPositionalArgs()
 
-  ret = HapDSTwfExample( args )
+  try:
+    HapDSTwfExample( args )
+  except Exception:
+    Script.gLogger.exception()
 
-  if ret['OK']:
-    Script.gLogger.notice( 'Submitted Job:', ret['Value'] )
-  else:
-    Script.gLogger.error( ret['Message'] )
+
 
