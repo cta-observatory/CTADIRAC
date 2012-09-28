@@ -18,11 +18,6 @@ def setRunNumber( optionValue ):
 
   return DIRAC.S_OK()
 
-def setOutfile( optionValue ):
-  global outfile
-  outfile = optionValue
-  return DIRAC.S_OK()
-
 def setTellist( optionValue ):
   global tellist
   tellist = optionValue
@@ -51,14 +46,12 @@ def setVersion( optionValue ):
 def sendOutput(stdid,line):
   DIRAC.gLogger.notice(line)
 
-
 def main():
 
   from DIRAC.Core.Base import Script
 
 #### eventio_cta options ##########################################
   Script.registerSwitch( "p:", "run_number=", "Run Number", setRunNumber ) 
-  Script.registerSwitch( "O:", "outfile=", "Output file", setOutfile )
   Script.registerSwitch( "T:", "tellist=", "Tellist", setTellist )
   Script.registerSwitch( "F:", "Nfirst_mcevt=", "Nfirst_mcevt", setNfirst_mcevt)
   Script.registerSwitch( "L:", "Nlast_mcevt=", "Nlast_mcevt", setNlast_mcevt)
@@ -77,7 +70,7 @@ def main():
   if len( args ) < 1:
     Script.showHelp()
   
-  if outfile == None or tellist == None or version == None:
+  if tellist == None or version == None:
     Script.showHelp()
     jobReport.setApplicationStatus('Options badly specified')
     DIRAC.exit( -1 ) 
@@ -121,7 +114,7 @@ def main():
   ha.setSoftwarePackage(HapPack)
   ha.hapExecutable = 'eventio_cta'
 
-  fileout = outfile + part_type + '_run' + run_number + '.root'
+  fileout = 'raw_' + part_type + '_run' + run_number + '.root'
   infile = build_infile()
   ha.hapArguments = ['-file', infile, '-o', fileout, '-tellist', telconf]
 
