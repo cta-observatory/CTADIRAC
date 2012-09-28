@@ -2,63 +2,96 @@
 import DIRAC
 import os
 
-def setInfile( optionValue ):
-  global infile
-  infile = optionValue
-  return DIRAC.S_OK()
-
 def setOutfile( optionValue ):
   global outfile
   outfile = optionValue
   return DIRAC.S_OK()
   
-def setConfigfile( optionValue ):
-  from CTADIRAC.Core.Utilities.SoftwareInstallation import localArea
-  global configfile
-  configfile = os.path.join( localArea(),
-                         'HAP/%s/config/%s' % (version, optionValue))
-  return DIRAC.S_OK()
-  
-def setNevents( optionValue ):
-  global nevents
-  nevents = optionValue
+def setInfile( optionValue ):
+  global infile
+  infile = optionValue
   return DIRAC.S_OK()
 
+def setTellist( optionValue ):
+  global tellist
+  tellist = optionValue
+  return DIRAC.S_OK()
+
+def setPixelslices( optionValue ):
+  global pixelslices
+  pixelslices = optionValue
+  return DIRAC.S_OK()
+
+def setNfirst_mcevt( optionValue ):
+  global Nfirst_mcevt
+  Nfirst_mcevt = optionValue
+  return DIRAC.S_OK()
+
+def setNlast_mcevt( optionValue ):
+  global Nlast_mcevt
+  Nlast_mcevt = optionValue
+  return DIRAC.S_OK()
 
 def setVersion( optionValue ):
   global version
   version = optionValue
   return DIRAC.S_OK()
 
+def setRunNumber( optionValue ):
+  global RunNum
+  RunNum = optionValue
+  return DIRAC.S_OK()
+
+def sendOutput(stdid,line):
+  DIRAC.gLogger.notice(line)
 
 def main():
 
   from DIRAC.Core.Base import Script
 
+#### eventio_cta options ##########################################
   Script.registerSwitch( "I:", "infile=", "Input file", setInfile )
   Script.registerSwitch( "O:", "outfile=", "Output file", setOutfile )
-  Script.registerSwitch( "T:", "tellist=", "Configuration file", setConfigfile )
-  Script.registerSwitch( "V:", "version=", "HAP Version", setVersion )
-  Script.registerSwitch( "N:", "nevents=", "Number of events", setNevents )
+  Script.registerSwitch( "T:", "tellist=", "Tellist", setTellist )
+  Script.registerSwitch( "F:", "Nfirst_mcevt=", "Nfirst_mcevt", setNfirst_mcevt)
+  Script.registerSwitch( "L:", "Nlast_mcevt=", "Nlast_mcevt", setNlast_mcevt)
+## add other eventio_cta options ################################
+#  Script.registerSwitch( "N:", "num=", "Num", setNum)
+##  Script.registerSwitch( "L:", "limitmc=", "Limitmc", setLimitmc)
+#  Script.registerSwitch( "S:", "telidoffset=", "Telidoffset", setTelidoffset)
+  Script.registerSwitch( "P:", "pixelslices=", "setPixelslices",setPixelslices)
+### make_CTA_DST options ###############################################
+  Script.registerSwitch( "R:", "run_number=", "Run Number", setRunNumber )
+### other options ###############################################
+  Script.registerSwitch( "V:", "version=", "HAP version", setVersion )
 
-  Script.parseCommandLine( ignoreErrors = True )
+  Script.parseCommandLine( ignoreErrors = True ) 
 
-  if infile == None or outfile == None or configfile == None or version == None:
+  args = Script.getPositionalArgs()
+  if len( args ) < 1:
     Script.showHelp()
-    DIRAC.exit( -1 )
 
-  from CTADIRAC.Core.Workflow.Modules.HapConverter import HapConverter
-  from CTADIRAC.Core.Workflow.Modules.HapDST import HapDST
+  if infile == None or outfile == None or tellist == None or RunNum == None or version == None:
+    Script.showHelp()
+    jobReport.setApplicationStatus('Options badly specified')
+    DIRAC.exit( -1 ) 
+   
+  from CTADIRAC.Core.Workflow.Modules.HapApplication import HapApplication
+  from CTADIRAC.Core.Workflow.Modules.HapRootMacro import HapRootMacro
   from CTADIRAC.Core.Utilities.SoftwareInstallation import checkSoftwarePackage
   from CTADIRAC.Core.Utilities.SoftwareInstallation import installSoftwarePackage
   from CTADIRAC.Core.Utilities.SoftwareInstallation import localArea
   from CTADIRAC.Core.Utilities.SoftwareInstallation import sharedArea
+  from DIRAC.Core.Utilities.Subprocess import systemCall
+  from DIRAC.WorkloadManagementSystem.Client.JobReport import JobReport
 
-  hc = HapConverter()
+  jobID = os.environ['JOBID']
+  jobID = int( jobID )
+  jobReport = JobReport( jobID )
 
   HapPack = 'HAP/' + version + '/HAP'
 
-  packs = ['HESS/v0.1/lib','HESS/v0.1/root',HapPack]
+  packs = ['HESS/v0.2/lib','HESS/v0.3/root',HapPack] 
 
   for package in packs:
     DIRAC.gLogger.notice( 'Checking:', package )
@@ -73,44 +106,164 @@ def main():
       if installSoftwarePackage( package, localArea() )['OK']:
         continue
     DIRAC.gLogger.error( 'Check Failed for software package:', package )
-    return DIRAC.S_ERROR( '%s not available' % package )
+    DIRAC.gLogger.error( 'Software package not available')
+    DIRAC.exit( -1 ) 
 
-  hc.setSoftwarePackage(HapPack)
+  telconf = os.path.join( localArea(),'HAP/%s/config/%s' % (version,tellist)) 
 
-  hc.hapArguments = ['-file', infile, '-o', outfile, '-tellist', configfile ]
+  ha = HapApplication()
+  ha.setSoftwarePackage(HapPack)
+  ha.hapExecutable = 'eventio_cta'
+  ha.hapArguments = ['-file', infile, '-o', outfile, '-tellist', telconf]
+
+  try:
+    ha.hapArguments.extend(['-Nfirst_mcevt', Nfirst_mcevt, '-Nlast_mcevt', Nlast_mcevt])
+  except NameError:
+    DIRAC.gLogger.info( 'Nfirst_mcevt/Nlast_mcevt options are not used' )
+
+  try:
+    if(pixelslices == 'true'):
+      ha.hapArguments.extend(['-pixelslices'])
+  except NameError:
+      DIRAC.gLogger.info( 'pixelslices option is not used' )
 
   DIRAC.gLogger.notice( 'Executing Hap Converter Application' )
-
-  res = hc.execute()
+  res = ha.execute()
 
   if not res['OK']:
+    DIRAC.gLogger.error( 'Failed to execute eventio_cta Application')
+    jobReport.setApplicationStatus('eventio_cta: Failed')
     DIRAC.exit( -1 )
-
-  hd = HapDST()
-
-  hd.setSoftwarePackage(HapPack)
+  
+  if not os.path.isfile(outfile):
+    error = 'raw file was not created:'
+    DIRAC.gLogger.error( error, outfile )
+    jobReport.setApplicationStatus('eventio_cta: RawData not created')
+    DIRAC.exit( -1 )
+  else:
+###################### Check RAW DATA #######################
+    hr = HapRootMacro()
+    hr.setSoftwarePackage(HapPack)
  
-  outfilestr = '"' + outfile + '"'
-  config = os.path.basename(configfile)
-  configstr = '"' + config + '"'
-  RunNum = infile.split( 'run' )[1].split('___cta')[0]
+    DIRAC.gLogger.notice('Executing RAW check step0')
+    hr.rootMacro = 'Open_Raw.C+'
+    outfilestr = '"' + outfile + '"'
+    args = [outfilestr]
+    DIRAC.gLogger.notice( 'Open_Raw macro Arguments:', args )
+    hr.rootArguments = args
+    DIRAC.gLogger.notice( 'Executing Hap Open_Raw macro')
+    res = hr.execute()
 
-  args = [RunNum, outfilestr, configstr, nevents]
+    if not res['OK']:
+      DIRAC.gLogger.error( 'Open_Raw: Failed' )
+      DIRAC.exit( -1 )
 
-  DIRAC.gLogger.notice( 'DST Arguments:', args )
+################################################                                                                                                               
+    DIRAC.gLogger.notice('Executing Raw Check step1')
 
-  hd.rootMacro = 'make_CTA_DST.C+'
-  hd.rootArguments = args
+    cmdTuple = ['./check_raw.csh']
+    ret = systemCall( 0, cmdTuple, sendOutput)
 
-  DIRAC.gLogger.notice( 'Executing Hap DST Application' )
+    if not ret['OK']:
+      DIRAC.gLogger.error( 'Failed to execute RAW Check step1')
+      jobReport.setApplicationStatus('Check_raw: Failed')
+      DIRAC.exit( -1 )
 
-  res = hd.execute()
+    status, stdout, stderr = ret['Value']
+    if status==1:
+      jobReport.setApplicationStatus('RAW Check step1: Big problem during RAW production')
+      DIRAC.gLogger.error( 'Check_raw: Big problem during RAW production' )
+      DIRAC.exit( -1 )
 
-  if not res['OK']:
-    DIRAC.exit( -1 )
+######### Run make_CTA_DST.C #######################################
+
+    outfilestr = '"' + outfile + '"'
+    telconfstr = '"' + telconf + '"'
+    args = [str(int(RunNum)), outfilestr, telconfstr] 
+    DIRAC.gLogger.notice( 'make_CTA_DST macro Arguments:', args )
+    hr.rootMacro = 'make_CTA_DST.C+'
+    hr.rootArguments = args
+    DIRAC.gLogger.notice( 'Executing Hap make_CTA_DST macro' )
+    res = hr.execute()
+
+    if not res['OK']:
+      DIRAC.gLogger.error( 'Failed to execute make_CTA_DST macro')
+      jobReport.setApplicationStatus('Failure during make_CTA_DST')
+      DIRAC.exit( -1 )
+
+############ check existance of output file ####
+    filedst = 'dst_CTA_%08d' % int(RunNum) + '.root'
+
+    if not os.path.isfile(filedst):
+      DIRAC.gLogger.notice('dst file not found:', filedst ) 
+      DIRAC.gLogger.notice( 'check if dst file exists with different Run number')
+      filedstlist = glob.glob('dst_CTA_*.root')
+      if len(filedstlist) == 1: 
+    	filedst = filedstlist[0]
+        DIRAC.gLogger.notice('found dst file:', filedst)
+      else:
+        error = 'make_CTA_DST.C: %d DST file created' % len(filedstlist)
+        DIRAC.gLogger.error(error)
+        jobReport.setApplicationStatus(error)
+	DIRAC.exit( -1 )
+      
+################################################
+      DIRAC.gLogger.notice('Executing DST Check step0')
+
+      cmdTuple = ['./check_dst0.csh']
+      ret = systemCall( 0, cmdTuple, sendOutput)
+       
+      if not ret['OK']:
+        DIRAC.gLogger.error( 'Failed to execute DST Check step0')
+        jobReport.setApplicationStatus('Check_dst0: Failed')
+        DIRAC.exit( -1 )
+
+      status, stdout, stderr = ret['Value']
+      if status==1:
+        jobReport.setApplicationStatus('Check_dst0: Big problem during the DST production')
+	DIRAC.gLogger.error( 'DST Check step0 reports: Big problem during the DST production' )
+	DIRAC.exit( -1 )
+      if status==2:
+        jobReport.setApplicationStatus('Check_dst0: No triggered events')
+	DIRAC.gLogger.notice( 'DST Check step0 reports: No triggered events' )
+	DIRAC.exit( )
+
+############# run CheckDST.C #################
+      DIRAC.gLogger.notice('Executing DST check step1')
+      hr.rootMacro = 'CheckDST.C+'
+      fileoutstr = '"' + filedst + '"'
+      args = [fileoutstr] 
+      DIRAC.gLogger.notice( 'CheckDST macro Arguments:', args )
+      hr.rootArguments = args
+      DIRAC.gLogger.notice( 'Executing Hap CheckDST macro')
+      res = hr.execute()
+
+      if not res['OK']:
+        DIRAC.gLogger.error( 'Failure during DST Check step1' )
+        jobReport.setApplicationStatus('Check_dst1: Failed')
+        DIRAC.exit( -1 )
+
+#################################################
+      DIRAC.gLogger.notice('Executing DST Check step2')
+      cmdTuple = ['./check_dst2.csh']
+      ret = systemCall( 0, cmdTuple, sendOutput )
+       
+      if not ret['OK']:
+        DIRAC.gLogger.error( 'Failed to execute DST Check step2')
+        jobReport.setApplicationStatus('Check_dst2: Failed')
+        DIRAC.exit( -1 )
+
+      status, stdout, stderr = ret['Value']
+      if status==1:
+        jobReport.setApplicationStatus('DST Check step2: Big problem during the DST production')
+	DIRAC.gLogger.error( 'DST Check step2 reports: Big problem during the DST production' )
+	DIRAC.exit( -1 )
+      if status==2:
+        jobReport.setApplicationStatus('DST Check step2: No triggered events')
+	DIRAC.gLogger.notice( 'DST Check step2 reports: No triggered events' )
+        DIRAC.exit( )
 
   DIRAC.exit()
-
 
 
 if __name__ == '__main__':
