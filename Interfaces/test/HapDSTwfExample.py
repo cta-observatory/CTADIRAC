@@ -32,6 +32,7 @@ def HapDSTwfExample( destination = None ) :
     tellist = 'array-E.lis'
 
     general_opts = ['-V', HapVersion]
+#### eventio_cta and make_CTA_DST.C options ####    
     eventio_cta_opts = ['-O',raw_fileout, '-I',infile,'-T',tellist,'-P','true']
     make_CTA_DST_opts =  ['-R',RunNum]
 
