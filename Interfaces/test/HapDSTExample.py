@@ -29,6 +29,7 @@ def HapDSTExample( destination = None ) :
     tellist = 'array-E.lis'
 
     general_opts = ['-V', HapVersion]
+### make_CTA_DST.C options ###############
     make_CTA_DST_opts =  ['-R',RunNum ,'-I',infile,'-T',tellist]
 
     opts =  general_opts + make_CTA_DST_opts
