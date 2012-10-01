@@ -131,46 +131,42 @@ def main():
     DIRAC.gLogger.error( error, outfile )
     jobReport.setApplicationStatus('eventio_cta: RawData not created')
     DIRAC.exit( -1 )
-  else:
-###################### Check RAW DATA #######################
-    hr = HapRootMacro()
-    hr.setSoftwarePackage(HapPack)
- 
-    DIRAC.gLogger.notice('Executing RAW check step0')
-    hr.rootMacro = 'Open_Raw.C+'
-    outfilestr = '"' + outfile + '"'
-    args = [outfilestr]
-    DIRAC.gLogger.notice( 'Open_Raw macro Arguments:', args )
-    hr.rootArguments = args
-    DIRAC.gLogger.notice( 'Executing Hap Open_Raw macro')
-    res = hr.execute()
 
-    if not res['OK']:
-      DIRAC.gLogger.error( 'Open_Raw: Failed' )
-      DIRAC.exit( -1 )
+###################### Check RAW DATA #######################
+  hr = HapRootMacro()
+  hr.setSoftwarePackage(HapPack)
+ 
+  DIRAC.gLogger.notice('Executing RAW check step0')
+  hr.rootMacro = 'Open_Raw.C+'
+  outfilestr = '"' + outfile + '"'
+  args = [outfilestr]
+  DIRAC.gLogger.notice( 'Open_Raw macro Arguments:', args )
+  hr.rootArguments = args
+  DIRAC.gLogger.notice( 'Executing Hap Open_Raw macro')
+  res = hr.execute()
+
+  if not res['OK']:
+    DIRAC.gLogger.error( 'Open_Raw: Failed' )
+    DIRAC.exit( -1 )
 
 ################################################                                                                                                               
-    DIRAC.gLogger.notice('Executing Raw Check step1')
-    
-    os.system('chmod u+x check_raw.csh')
-    cmdTuple = ['./check_raw.csh']
-    ret = systemCall( 0, cmdTuple, sendOutput)
+  DIRAC.gLogger.notice('Executing Raw Check step1')
+  os.system('chmod u+x check_raw.csh')
+  cmdTuple = ['./check_raw.csh']
+  ret = systemCall( 0, cmdTuple, sendOutput)
 
-    if not ret['OK']:
-      DIRAC.gLogger.error( 'Failed to execute RAW Check step1')
-      jobReport.setApplicationStatus('Check_raw: Failed')
-      DIRAC.exit( -1 )
+  if not ret['OK']:
+    DIRAC.gLogger.error( 'Failed to execute RAW Check step1')
+    jobReport.setApplicationStatus('Check_raw: Failed')
+    DIRAC.exit( -1 )
 
-    status, stdout, stderr = ret['Value']
-    if status==1:
-      jobReport.setApplicationStatus('RAW Check step1: Big problem during RAW production')
-      DIRAC.gLogger.error( 'Check_raw: Big problem during RAW production' )
-      DIRAC.exit( -1 )
-
-    DIRAC.exit()
+  status, stdout, stderr = ret['Value']
+  if status==1:
+    jobReport.setApplicationStatus('RAW Check step1: Big problem during RAW production')
+    DIRAC.gLogger.error( 'Check_raw: Big problem during RAW production' )
+    DIRAC.exit( -1 )
 
   DIRAC.exit()
-
 
 if __name__ == '__main__':
 
