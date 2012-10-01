@@ -140,134 +140,128 @@ def main():
     DIRAC.gLogger.error( error, outfile )
     jobReport.setApplicationStatus('eventio_cta: RawData not created')
     DIRAC.exit( -1 )
-  else:
-###################### Check RAW DATA #######################
-    hr = HapRootMacro()
-    hr.setSoftwarePackage(HapPack)
- 
-    DIRAC.gLogger.notice('Executing RAW check step0')
-    hr.rootMacro = 'Open_Raw.C+'
-    outfilestr = '"' + outfile + '"'
-    args = [outfilestr]
-    DIRAC.gLogger.notice( 'Open_Raw macro Arguments:', args )
-    hr.rootArguments = args
-    DIRAC.gLogger.notice( 'Executing Hap Open_Raw macro')
-    res = hr.execute()
 
-    if not res['OK']:
-      DIRAC.gLogger.error( 'Open_Raw: Failed' )
-      DIRAC.exit( -1 )
+###################### Check RAW DATA #######################
+  hr = HapRootMacro()
+  hr.setSoftwarePackage(HapPack)
+ 
+  DIRAC.gLogger.notice('Executing RAW check step0')
+  hr.rootMacro = 'Open_Raw.C+'
+  outfilestr = '"' + outfile + '"'
+  args = [outfilestr]
+  DIRAC.gLogger.notice( 'Open_Raw macro Arguments:', args )
+  hr.rootArguments = args
+  DIRAC.gLogger.notice( 'Executing Hap Open_Raw macro')
+  res = hr.execute()
+
+  if not res['OK']:
+    DIRAC.gLogger.error( 'Open_Raw: Failed' )
+    DIRAC.exit( -1 )
 
 ################################################                                                                                                               
-    DIRAC.gLogger.notice('Executing Raw Check step1')
+  DIRAC.gLogger.notice('Executing Raw Check step1')
+  os.system('chmod u+x check_raw.csh') 
+  cmdTuple = ['./check_raw.csh']
+  ret = systemCall( 0, cmdTuple, sendOutput)
 
-    cmdTuple = ['./check_raw.csh']
-    ret = systemCall( 0, cmdTuple, sendOutput)
+  if not ret['OK']:
+    DIRAC.gLogger.error( 'Failed to execute RAW Check step1')
+    jobReport.setApplicationStatus('Check_raw: Failed')
+    DIRAC.exit( -1 )
 
-    if not ret['OK']:
-      DIRAC.gLogger.error( 'Failed to execute RAW Check step1')
-      jobReport.setApplicationStatus('Check_raw: Failed')
-      DIRAC.exit( -1 )
-
-    status, stdout, stderr = ret['Value']
-    if status==1:
-      jobReport.setApplicationStatus('RAW Check step1: Big problem during RAW production')
-      DIRAC.gLogger.error( 'Check_raw: Big problem during RAW production' )
-      DIRAC.exit( -1 )
+  status, stdout, stderr = ret['Value']
+  if status==1:
+    jobReport.setApplicationStatus('RAW Check step1: Big problem during RAW production')
+    DIRAC.gLogger.error( 'Check_raw: Big problem during RAW production' )
+    DIRAC.exit( -1 )
 
 ######### Run make_CTA_DST.C #######################################
 
-    outfilestr = '"' + outfile + '"'
-    telconfstr = '"' + telconf + '"'
-    args = [str(int(RunNum)), outfilestr, telconfstr] 
-    DIRAC.gLogger.notice( 'make_CTA_DST macro Arguments:', args )
-    hr.rootMacro = 'make_CTA_DST.C+'
-    hr.rootArguments = args
-    DIRAC.gLogger.notice( 'Executing Hap make_CTA_DST macro' )
-    res = hr.execute()
+  outfilestr = '"' + outfile + '"'
+  telconfstr = '"' + telconf + '"'
+  args = [str(int(RunNum)), outfilestr, telconfstr] 
+  DIRAC.gLogger.notice( 'make_CTA_DST macro Arguments:', args )
+  hr.rootMacro = 'make_CTA_DST.C+'
+  hr.rootArguments = args
+  DIRAC.gLogger.notice( 'Executing Hap make_CTA_DST macro' )
+  res = hr.execute()
 
-    if not res['OK']:
-      DIRAC.gLogger.error( 'Failed to execute make_CTA_DST macro')
-      jobReport.setApplicationStatus('Failure during make_CTA_DST')
-      DIRAC.exit( -1 )
+  if not res['OK']:
+    DIRAC.gLogger.error( 'Failed to execute make_CTA_DST macro')
+    jobReport.setApplicationStatus('Failure during make_CTA_DST')
+    DIRAC.exit( -1 )
 
 ############ check existance of output file ####
-    filedst = 'dst_CTA_%08d' % int(RunNum) + '.root'
+  filedst = 'dst_CTA_%08d' % int(RunNum) + '.root'
 
-    if not os.path.isfile(filedst):
-      DIRAC.gLogger.notice('dst file not found:', filedst ) 
-      DIRAC.gLogger.notice( 'check if dst file exists with different Run number')
-      filedstlist = glob.glob('dst_CTA_*.root')
-      if len(filedstlist) == 1: 
-    	filedst = filedstlist[0]
-        DIRAC.gLogger.notice('found dst file:', filedst)
-      else:
-        error = 'make_CTA_DST.C: %d DST file created' % len(filedstlist)
-        DIRAC.gLogger.error(error)
-        jobReport.setApplicationStatus(error)
-	DIRAC.exit( -1 )
+  if not os.path.isfile(filedst):
+    DIRAC.gLogger.notice('dst file not found:', filedst ) 
+    error = 'make_CTA_DST.C: DST file not found'
+    DIRAC.gLogger.error(error)
+    jobReport.setApplicationStatus(error)
+	  DIRAC.exit( -1 )
       
 ################################################
-      DIRAC.gLogger.notice('Executing DST Check step0')
+  DIRAC.gLogger.notice('Executing DST Check step0')
 
-      cmdTuple = ['./check_dst0.csh']
-      ret = systemCall( 0, cmdTuple, sendOutput)
+  cmdTuple = ['./check_dst0.csh']
+  ret = systemCall( 0, cmdTuple, sendOutput)
        
-      if not ret['OK']:
-        DIRAC.gLogger.error( 'Failed to execute DST Check step0')
-        jobReport.setApplicationStatus('Check_dst0: Failed')
-        DIRAC.exit( -1 )
+  if not ret['OK']:
+    DIRAC.gLogger.error( 'Failed to execute DST Check step0')
+    jobReport.setApplicationStatus('Check_dst0: Failed')
+    DIRAC.exit( -1 )
 
-      status, stdout, stderr = ret['Value']
-      if status==1:
-        jobReport.setApplicationStatus('Check_dst0: Big problem during the DST production')
-	DIRAC.gLogger.error( 'DST Check step0 reports: Big problem during the DST production' )
-	DIRAC.exit( -1 )
-      if status==2:
-        jobReport.setApplicationStatus('Check_dst0: No triggered events')
-	DIRAC.gLogger.notice( 'DST Check step0 reports: No triggered events' )
-	DIRAC.exit( )
+  status, stdout, stderr = ret['Value']
+  if status==1:
+    jobReport.setApplicationStatus('Check_dst0: Big problem during the DST production')
+	  DIRAC.gLogger.error( 'DST Check step0 reports: Big problem during the DST production' )
+	   DIRAC.exit( -1 )
+  if status==2:
+    jobReport.setApplicationStatus('Check_dst0: No triggered events')
+	   DIRAC.gLogger.notice( 'DST Check step0 reports: No triggered events' )
+	   DIRAC.exit( )
 
 ############# run CheckDST.C #################
-      DIRAC.gLogger.notice('Executing DST check step1')
-      hr.rootMacro = 'CheckDST.C+'
-      fileoutstr = '"' + filedst + '"'
-      args = [fileoutstr] 
-      DIRAC.gLogger.notice( 'CheckDST macro Arguments:', args )
-      hr.rootArguments = args
-      DIRAC.gLogger.notice( 'Executing Hap CheckDST macro')
-      res = hr.execute()
+  DIRAC.gLogger.notice('Executing DST check step1')
+  hr.rootMacro = 'CheckDST.C+'
+  fileoutstr = '"' + filedst + '"'
+  args = [fileoutstr] 
+  DIRAC.gLogger.notice( 'CheckDST macro Arguments:', args )
+  hr.rootArguments = args
+  DIRAC.gLogger.notice( 'Executing Hap CheckDST macro')
+  res = hr.execute()
 
-      if not res['OK']:
-        DIRAC.gLogger.error( 'Failure during DST Check step1' )
-        jobReport.setApplicationStatus('Check_dst1: Failed')
-        DIRAC.exit( -1 )
+  if not res['OK']:
+    DIRAC.gLogger.error( 'Failure during DST Check step1' )
+    jobReport.setApplicationStatus('Check_dst1: Failed')
+    DIRAC.exit( -1 )
 
 #################################################
-      DIRAC.gLogger.notice('Executing DST Check step2')
-      cmdTuple = ['./check_dst2.csh']
-      ret = systemCall( 0, cmdTuple, sendOutput )
+  DIRAC.gLogger.notice('Executing DST Check step2')
+  os.system('chmod u+x check_dst2.csh')
+  cmdTuple = ['./check_dst2.csh']
+  ret = systemCall( 0, cmdTuple, sendOutput )
        
-      if not ret['OK']:
-        DIRAC.gLogger.error( 'Failed to execute DST Check step2')
-        jobReport.setApplicationStatus('Check_dst2: Failed')
-        DIRAC.exit( -1 )
+  if not ret['OK']:
+    DIRAC.gLogger.error( 'Failed to execute DST Check step2')
+    jobReport.setApplicationStatus('Check_dst2: Failed')
+    DIRAC.exit( -1 )
 
-      status, stdout, stderr = ret['Value']
-      if status==1:
-        jobReport.setApplicationStatus('DST Check step2: Big problem during the DST production')
-	DIRAC.gLogger.error( 'DST Check step2 reports: Big problem during the DST production' )
-	DIRAC.exit( -1 )
-      if status==2:
-        jobReport.setApplicationStatus('DST Check step2: No triggered events')
-	DIRAC.gLogger.notice( 'DST Check step2 reports: No triggered events' )
-        DIRAC.exit( )
+   status, stdout, stderr = ret['Value']
+   if status==1:
+     jobReport.setApplicationStatus('DST Check step2: Big problem during the DST production')
+	   DIRAC.gLogger.error( 'DST Check step2 reports: Big problem during the DST production' )
+	   DIRAC.exit( -1 )
+   if status==2:
+     jobReport.setApplicationStatus('DST Check step2: No triggered events')
+	   DIRAC.gLogger.notice( 'DST Check step2 reports: No triggered events' )
+     DIRAC.exit( )
 
   DIRAC.exit()
 
 
 if __name__ == '__main__':
-
   try:
     main()
   except Exception:
