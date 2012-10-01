@@ -199,7 +199,7 @@ def main():
     error = 'make_CTA_DST.C: DST file not found'
     DIRAC.gLogger.error(error)
     jobReport.setApplicationStatus(error)
-	  DIRAC.exit( -1 )
+	  DIRAC.exit(-1)
       
 ################################################
   DIRAC.gLogger.notice('Executing DST Check step0')
@@ -216,11 +216,11 @@ def main():
   if status==1:
     jobReport.setApplicationStatus('Check_dst0: Big problem during the DST production')
 	  DIRAC.gLogger.error( 'DST Check step0 reports: Big problem during the DST production' )
-	   DIRAC.exit( -1 )
+	  DIRAC.exit( -1 )
   if status==2:
     jobReport.setApplicationStatus('Check_dst0: No triggered events')
-	   DIRAC.gLogger.notice( 'DST Check step0 reports: No triggered events' )
-	   DIRAC.exit( )
+	  DIRAC.gLogger.notice( 'DST Check step0 reports: No triggered events' )
+	  DIRAC.exit()
 
 ############# run CheckDST.C #################
   DIRAC.gLogger.notice('Executing DST check step1')
