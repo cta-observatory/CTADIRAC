@@ -256,7 +256,7 @@ def main():
     DIRAC.exit( -1 )     
   if status==2:
     jobReport.setApplicationStatus('DST Check step2: No triggered events')
-     DIRAC.gLogger.notice( 'DST Check step2 reports: No triggered events' )
+    DIRAC.gLogger.notice( 'DST Check step2 reports: No triggered events' )
     DIRAC.exit( )
 
   DIRAC.exit()
