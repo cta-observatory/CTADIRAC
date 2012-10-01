@@ -248,15 +248,15 @@ def main():
     jobReport.setApplicationStatus('Check_dst2: Failed')
     DIRAC.exit( -1 )
 
-   status, stdout, stderr = ret['Value']
-   if status==1:
-     jobReport.setApplicationStatus('DST Check step2: Big problem during the DST production')
-	   DIRAC.gLogger.error( 'DST Check step2 reports: Big problem during the DST production' )
-	   DIRAC.exit( -1 )
-   if status==2:
-     jobReport.setApplicationStatus('DST Check step2: No triggered events')
-	   DIRAC.gLogger.notice( 'DST Check step2 reports: No triggered events' )
-     DIRAC.exit( )
+  status, stdout, stderr = ret['Value']
+  if status==1:
+    jobReport.setApplicationStatus('DST Check step2: Big problem during the DST production')
+	  DIRAC.gLogger.error( 'DST Check step2 reports: Big problem during the DST production' )
+	  DIRAC.exit( -1 )
+  if status==2:
+    jobReport.setApplicationStatus('DST Check step2: No triggered events')
+	  DIRAC.gLogger.notice( 'DST Check step2 reports: No triggered events' )
+    DIRAC.exit( )
 
   DIRAC.exit()
 
