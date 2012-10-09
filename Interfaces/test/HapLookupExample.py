@@ -16,7 +16,7 @@ def HapLookupExample( destination = None ) :
   from CTADIRAC.Interfaces.API.HapLookupJob import HapLookupJob
   from DIRAC.Interfaces.API.Dirac import Dirac
 
-  HapVersion = 'v0.16'
+  HapVersion = 'v0.18'
 ####### DoCtaIrf option values #######################
   AnalysisType = 'ScaleParam'  
   EnergyMethod = 'NoEnergy'
