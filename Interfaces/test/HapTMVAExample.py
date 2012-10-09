@@ -15,7 +15,7 @@ def HapTMVAExample( destination = None ) :
   from CTADIRAC.Interfaces.API.HapTMVAJob import HapTMVAJob
   from DIRAC.Interfaces.API.Dirac import Dirac
 
-  HapVersion = 'v0.16'
+  HapVersion = 'v0.18'
 ####### DoCtaIrf option values #######################
   AnalysisType = 'MVA'
   EnergyMethod = 'Oak' 
