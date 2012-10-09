@@ -105,7 +105,7 @@ def main():
     DIRAC.gLogger.info( 'nevent arg not used' )
  
   DIRAC.gLogger.notice( 'make_CTA_DST macro Arguments:', args )
-  hr.rootMacro = 'make_CTA_DST.C+'
+  hr.rootMacro = '/hapscripts/dst/make_CTA_DST.C+'
   hr.rootArguments = args
   DIRAC.gLogger.notice( 'Executing Hap make_CTA_DST macro' )
   res = hr.execute()
@@ -151,7 +151,7 @@ def main():
 
 ############# run the CheckDST macro #################
   DIRAC.gLogger.notice('Executing DST check step1')
-  hr.rootMacro = 'CheckDST.C+'
+  hr.rootMacro = '/hapscripts/dst/CheckDST.C+'
   fileoutstr = '"' + fileout + '"'
   args = [fileoutstr]
   DIRAC.gLogger.notice( 'CheckDST macro Arguments:', args )
