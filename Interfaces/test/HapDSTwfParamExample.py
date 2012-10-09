@@ -15,7 +15,7 @@ def HapDSTwfParamExample( destination = None ) :
   from DIRAC.Interfaces.API.Dirac import Dirac
 
 ### general options ###############
-  HapVersion = 'v0.16'
+  HapVersion = 'v0.18'
 
   infileLFNList = [
   'LFN:/vo.cta.in2p3.fr/Simulation/sim_telarray/Prod1S_PS/2000/gamma/20/90/spectrum_-2.0/0.003_300/pointlike/cta-prod1/0.0deg/Data/run283xxx/gamma_20deg_90deg_run283000___cta-prod1_desert.simhess.gz',
