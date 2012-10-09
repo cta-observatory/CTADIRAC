@@ -37,7 +37,7 @@ class HapRootMacro:
     return DIRAC.S_OK()
 
   def sendOutput(self,stdid,line):
-    logfilename = self.rootMacro[:-2] + 'log'
+    logfilename = os.path.basename(self.rootMacro[:-2])+'log'
     f = open( logfilename,'a')
     f.write(line)
     f.write('\n')
@@ -69,7 +69,7 @@ class HapRootMacro:
     cp_cmd = 'cp ' + rootlogon_file + ' .'
     os.system(cp_cmd)
   
-    fileName = hessroot + '/hapscripts/dst/' + self.rootMacro 
+    fileName = hessroot + self.rootMacro 
 
     if fileName[-1] == '+':
       # If the macro has to be compiled there is an extra "+" at the end of its name
@@ -80,7 +80,7 @@ class HapRootMacro:
       self.log.error( error, fileName )
       return DIRAC.S_ERROR( ' '.join( [ error, fileName ] ) )
      
-    fileName = hessroot + '/hapscripts/dst/' + self.rootMacro   
+    fileName = hessroot + self.rootMacro   
       
     cmdTuple = ['root', '-b', '-q']
     
