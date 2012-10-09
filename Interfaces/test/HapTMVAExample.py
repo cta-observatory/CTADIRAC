@@ -53,7 +53,7 @@ def HapTMVAExample( destination = None ) :
       j.setDestination( destination )
 
     j.setInputSandbox( [ 'LFN:/vo.cta.in2p3.fr/user/a/arrabito/HAP/mini-prod3/conf/v0.2/AnalysisConfig.tar.gz','passphrase'] )
-    j.setOutputSandbox( ['DoCtaIrf.log'])
+    j.setOutputSandbox( ['DoCtaIrf.log','Open_TT.log'])
 
     j.setName(AnalysisType)
 
