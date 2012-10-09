@@ -17,7 +17,7 @@ def HapDSTExample( destination = None ) :
   from DIRAC.Interfaces.API.Dirac import Dirac
 
 ### general options ###############
-  HapVersion = 'v0.16'
+  HapVersion = 'v0.18'
 
   infileLFNList = [
   'LFN:/vo.cta.in2p3.fr/user/a/arrabito/HAP/mini-prod3/Rawdata/gamma/raw_gamma_run283000.root',
