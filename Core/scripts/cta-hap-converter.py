@@ -137,7 +137,7 @@ def main():
   hr.setSoftwarePackage(HapPack)
  
   DIRAC.gLogger.notice('Executing RAW check step0')
-  hr.rootMacro = 'Open_Raw.C+'
+  hr.rootMacro = '/hapscripts/dst/Open_Raw.C+'
   outfilestr = '"' + outfile + '"'
   args = [outfilestr]
   DIRAC.gLogger.notice( 'Open_Raw macro Arguments:', args )
