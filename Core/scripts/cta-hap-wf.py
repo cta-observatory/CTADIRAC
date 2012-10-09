@@ -146,7 +146,7 @@ def main():
   hr.setSoftwarePackage(HapPack)
  
   DIRAC.gLogger.notice('Executing RAW check step0')
-  hr.rootMacro = 'Open_Raw.C+'
+  hr.rootMacro = '/hapscripts/dst/Open_Raw.C+'
   outfilestr = '"' + outfile + '"'
   args = [outfilestr]
   DIRAC.gLogger.notice( 'Open_Raw macro Arguments:', args )
@@ -181,7 +181,7 @@ def main():
   telconfstr = '"' + telconf + '"'
   args = [str(int(RunNum)), outfilestr, telconfstr] 
   DIRAC.gLogger.notice( 'make_CTA_DST macro Arguments:', args )
-  hr.rootMacro = 'make_CTA_DST.C+'
+  hr.rootMacro = '/hapscripts/dst/make_CTA_DST.C+'
   hr.rootArguments = args
   DIRAC.gLogger.notice( 'Executing Hap make_CTA_DST macro' )
   res = hr.execute()
@@ -225,7 +225,7 @@ def main():
 
 ############# run CheckDST.C #################
   DIRAC.gLogger.notice('Executing DST check step1')
-  hr.rootMacro = 'CheckDST.C+'
+  hr.rootMacro = '/hapscripts/dst/CheckDST.C+'
   fileoutstr = '"' + filedst + '"'
   args = [fileoutstr] 
   DIRAC.gLogger.notice( 'CheckDST macro Arguments:', args )
