@@ -12,7 +12,7 @@ Script.parseCommandLine()
 
 
 def HapTMVAExample( destination = None ) :
-  from CTADIRAC.Interfaces.API.HapLookupJob import HapLookupJob
+  from CTADIRAC.Interfaces.API.HapTMVAJob import HapTMVAJob
   from DIRAC.Interfaces.API.Dirac import Dirac
 
   HapVersion = 'v0.16'
@@ -47,7 +47,7 @@ def HapTMVAExample( destination = None ) :
 
     opts = general_opts + DoCtaIrf_opts
 
-    j = HapLookupJob(opts)
+    j = HapTMVAJob(opts)
 
     if destination:
       j.setDestination( destination )
