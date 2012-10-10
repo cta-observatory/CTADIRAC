@@ -79,6 +79,7 @@ def main():
   from CTADIRAC.Core.Workflow.Modules.HapRootMacro import HapRootMacro
   from CTADIRAC.Core.Utilities.SoftwareInstallation import checkSoftwarePackage
   from CTADIRAC.Core.Utilities.SoftwareInstallation import installSoftwarePackage
+  from CTADIRAC.Core.Utilities.SoftwareInstallation import getSoftwareEnviron
   from CTADIRAC.Core.Utilities.SoftwareInstallation import localArea
   from CTADIRAC.Core.Utilities.SoftwareInstallation import sharedArea
   from DIRAC.Core.Utilities.Subprocess import systemCall
@@ -160,11 +161,19 @@ def main():
     DIRAC.gLogger.error( 'Open_Raw: Failed' )
     DIRAC.exit( -1 )
 
-################################################                                                                                                               
+#################Check stdout of 'Open_Raw.C macro ###############################                                                                                                              
   DIRAC.gLogger.notice('Executing Raw Check step1')
     
-  os.system('chmod u+x check_raw.csh')
-  cmdTuple = ['./check_raw.csh']
+  ret = getSoftwareEnviron(HapPack)
+  if not ret['OK']:
+    error = ret['Message']
+    DIRAC.gLogger.error( error, HapPack)
+    DIRAC.exit( -1 )
+
+  hapEnviron = ret['Value']
+  hessroot =  hapEnviron['HESSROOT']
+  check_script = hessroot + '/hapscripts/dst/check_raw.csh'
+  cmdTuple = [check_script]
   ret = systemCall( 0, cmdTuple, sendOutput)
 
   if not ret['OK']:
@@ -215,11 +224,11 @@ def main():
   cmd = 'mv ' + filedst + ' ' + fileout
   os.system(cmd)
 
-################################################
+#####################Check stdout ###########################
   DIRAC.gLogger.notice('Executing DST Check step0')
     
-  os.system('chmod u+x check_dst0.csh')
-  cmdTuple = ['./check_dst0.csh']
+  check_script = hessroot + '/hapscripts/dst/check_dst0.csh'
+  cmdTuple = [check_script]
   ret = systemCall( 0, cmdTuple, sendOutput)
        
   if not ret['OK']:
@@ -252,10 +261,10 @@ def main():
     jobReport.setApplicationStatus('Check_dst1: Failed')
     DIRAC.exit( -1 )
 
-#################################################
+#######################Check stdout of CheckDST.C macro ##########################
   DIRAC.gLogger.notice('Executing DST Check step2')
-  os.system('chmod u+x check_dst2.csh')
-  cmdTuple = ['./check_dst2.csh']
+  check_script = hessroot + '/hapscripts/dst/check_dst2.csh'
+  cmdTuple = [check_script]
   ret = systemCall( 0, cmdTuple, sendOutput )
        
   if not ret['OK']:
