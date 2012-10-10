@@ -31,7 +31,7 @@ def HapConverterParamExample( destination = None ) :
   j = HapConverterParamJob(opts)
 
   j.setParametricInputData(infileLFNList)  
-  j.setInputSandbox( [ 'passphrase','check_raw.csh'] )  
+  j.setInputSandbox( [ 'passphrase'] )  
   j.setOutputSandbox( ['eventio_cta.log','Open_Raw.log'])
   j.setOutputData(['raw_*.root'])
   j.setName('eventio')
