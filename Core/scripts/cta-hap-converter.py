@@ -71,6 +71,7 @@ def main():
   from CTADIRAC.Core.Workflow.Modules.HapRootMacro import HapRootMacro
   from CTADIRAC.Core.Utilities.SoftwareInstallation import checkSoftwarePackage
   from CTADIRAC.Core.Utilities.SoftwareInstallation import installSoftwarePackage
+  from CTADIRAC.Core.Utilities.SoftwareInstallation import getSoftwareEnviron
   from CTADIRAC.Core.Utilities.SoftwareInstallation import localArea
   from CTADIRAC.Core.Utilities.SoftwareInstallation import sharedArea
   from DIRAC.Core.Utilities.Subprocess import systemCall
