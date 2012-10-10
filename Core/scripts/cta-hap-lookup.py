@@ -121,17 +121,17 @@ def main():
     DIRAC.exit( -1 )
 
 ####### check outputdata and update the Analisys Configuration tar #################
-  if (analysistype=='ScaleParam'):
-    outfile = 'ScaleInfo_' + RunList + '.root'
-    cmd = 'cp ' + outfile + ' IRF/' + cutsconfig + '/ScaleInfo.root'  
-    os.system(cmd)
-  elif (analysistype=='Energy'):
-    outfile = 'EnergyCalib_' + RunList + '.root'
-    cmd = 'cp ' + outfile + ' IRF/' + cutsconfig + '/EnergyCalib.root'  
-    os.system(cmd)
+#  if (analysistype=='ScaleParam'):
+#    outfile = 'ScaleInfo_' + RunList + '.root'
+#    cmd = 'cp ' + outfile + ' IRF/' + cutsconfig + '/ScaleInfo.root'  
+#    os.system(cmd)
+#  elif (analysistype=='Energy'):
+#    outfile = 'EnergyCalib_' + RunList + '.root'
+#    cmd = 'cp ' + outfile + ' IRF/' + cutsconfig + '/EnergyCalib.root'  
+#    os.system(cmd)
      
-  cmd = 'tar zcfh AnalysisConfig2.tar.gz IRF/'
-  os.system(cmd)
+#  cmd = 'tar zcfh AnalysisConfig2.tar.gz IRF/'
+#  os.system(cmd)
 ##############################################################################    
     
   DIRAC.exit()
