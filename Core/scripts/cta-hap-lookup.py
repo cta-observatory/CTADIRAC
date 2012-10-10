@@ -125,7 +125,7 @@ def main():
     outfile = 'ScaleInfo_' + RunList + '.root'
     cmd = 'cp ' + outfile + ' IRF/' + cutsconfig + '/ScaleInfo.root'  
     os.system(cmd)
-  elif (analysistype='Energy'):
+  elif (analysistype=='Energy'):
     outfile = 'EnergyCalib_' + RunList + '.root'
     cmd = 'cp ' + outfile + ' IRF/' + cutsconfig + '/EnergyCalib.root'  
     os.system(cmd)
