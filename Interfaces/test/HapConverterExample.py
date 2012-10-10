@@ -42,7 +42,7 @@ def HapConverterExample( destination = None ) :
     if destination:
       j.setDestination( destination )
 
-    j.setInputSandbox( [ 'passphrase','check_raw.csh'] )
+    j.setInputSandbox( [ 'passphrase'] )
     j.setOutputSandbox( ['eventio_cta.log','Open_Raw.log'])
     jobName = 'eventio_' + RunNum
     j.setName(jobName)
