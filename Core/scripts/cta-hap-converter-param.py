@@ -174,6 +174,7 @@ def main():
   hessroot =  hapEnviron['HESSROOT']
   check_script = hessroot + '/hapscripts/dst/check_raw.csh'
   cmdTuple = [check_script]
+  ret = systemCall( 0, cmdTuple, sendOutput)
 
   if not ret['OK']:
     DIRAC.gLogger.error( 'Failed to execute RAW Check step1')
