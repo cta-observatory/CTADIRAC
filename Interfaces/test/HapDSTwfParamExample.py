@@ -32,7 +32,7 @@ def HapDSTwfParamExample( destination = None ) :
   j = HapDSTwfParamJob(opts)
 
   j.setParametricInputData(infileLFNList)  
-  j.setInputSandbox( [ 'passphrase', 'check_raw.csh','check_dst0.csh','check_dst2.csh'] )
+  j.setInputSandbox( [ 'passphrase'] )
   j.setOutputSandbox( ['eventio_cta.log','Open_Raw.log','make_CTA_DST.log','CheckDST.log'])
   j.setOutputData(['raw_*.root','dst*.root'])
   j.setName('DSTwf')
