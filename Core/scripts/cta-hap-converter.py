@@ -148,11 +148,20 @@ def main():
   if not res['OK']:
     DIRAC.gLogger.error( 'Open_Raw: Failed' )
     DIRAC.exit( -1 )
-
-################################################                                                                                                               
+    
+#########################Quality Check for raw Output File: step1####################                                                                                                                  
   DIRAC.gLogger.notice('Executing Raw Check step1')
-  os.system('chmod u+x check_raw.csh')
-  cmdTuple = ['./check_raw.csh']
+  
+  ret = getSoftwareEnviron(HapPack)
+  if not ret['OK']:
+    error = ret['Message']
+    DIRAC.gLogger.error( error, HapPack)
+    DIRAC.exit( -1 )
+
+  hapEnviron = ret['Value']
+  hessroot =  hapEnviron['HESSROOT']
+  check_script = hessroot + '/hapscripts/dst/check_raw.csh'
+  cmdTuple = [check_script]
   ret = systemCall( 0, cmdTuple, sendOutput)
 
   if not ret['OK']:
