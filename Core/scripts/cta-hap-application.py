@@ -45,6 +45,7 @@ def main():
   from CTADIRAC.Core.Workflow.Modules.HapApplication import HapApplication
   from CTADIRAC.Core.Utilities.SoftwareInstallation import checkSoftwarePackage
   from CTADIRAC.Core.Utilities.SoftwareInstallation import installSoftwarePackage
+  from CTADIRAC.Core.Utilities.SoftwareInstallation import getSoftwareEnviron
   from CTADIRAC.Core.Utilities.SoftwareInstallation import localArea
   from CTADIRAC.Core.Utilities.SoftwareInstallation import sharedArea
 
