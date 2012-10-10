@@ -39,7 +39,7 @@ def HapDSTExample( destination = None ) :
     if destination:
       j.setDestination( destination )
 
-    j.setInputSandbox( [ 'passphrase','check_dst0.csh','check_dst2.csh'] )
+    j.setInputSandbox( [ 'passphrase'] )
     j.setOutputSandbox( ['make_CTA_DST.log','CheckDST.log'])
     jobName = 'DSTrun_' + RunNum
     j.setName(jobName)
