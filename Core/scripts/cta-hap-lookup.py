@@ -122,7 +122,21 @@ def main():
     DIRAC.gLogger.error( 'Failed to execute Hap Application')
     jobReport.setApplicationStatus('Hap Application: Failed')
     DIRAC.exit( -1 )
-  
+
+####### check outputdata and update the Analisys Configuration tar #################
+  if (analysistype=='ScaleParam'):
+    outfile = 'ScaleInfo_' + RunList + '.root'
+    cmd = 'cp ' + outfile + ' IRF/' + cutsconfig + '/ScaleInfo.root'  
+    os.sys(cmd)
+  elif (analysistype='Energy'):
+    outfile = 'EnergyCalib_' + RunList + '.root'
+    cmd = 'cp ' + outfile + ' IRF/' + cutsconfig + '/EnergyCalib.root'  
+    os.sys(cmd)
+     
+  cmd = 'tar zcfh AnalysisConfig2.tar.gz IRF/'
+  os.sys(cmd)
+##############################################################################    
+    
   DIRAC.exit()
 
 def build_infile(runlist):
