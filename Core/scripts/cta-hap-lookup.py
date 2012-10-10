@@ -47,12 +47,9 @@ def setOffset( optionValue ):
   offset = optionValue
   return DIRAC.S_OK()
 
-
 def main():
 
   from DIRAC.Core.Base import Script
-
-
 ### DoCtaIrf options ##########################################################
   Script.registerSwitch( "A:", "analysis=", "Analysis Type", setAnalysisType )
   Script.registerSwitch( "C:", "cuts=", "Cuts Config", setCutsConfig )
@@ -127,14 +124,14 @@ def main():
   if (analysistype=='ScaleParam'):
     outfile = 'ScaleInfo_' + RunList + '.root'
     cmd = 'cp ' + outfile + ' IRF/' + cutsconfig + '/ScaleInfo.root'  
-    os.sys(cmd)
+    os.system(cmd)
   elif (analysistype='Energy'):
     outfile = 'EnergyCalib_' + RunList + '.root'
     cmd = 'cp ' + outfile + ' IRF/' + cutsconfig + '/EnergyCalib.root'  
-    os.sys(cmd)
+    os.system(cmd)
      
   cmd = 'tar zcfh AnalysisConfig2.tar.gz IRF/'
-  os.sys(cmd)
+  os.system(cmd)
 ##############################################################################    
     
   DIRAC.exit()
