@@ -3,16 +3,9 @@
   Submit an Example HapJob
 """
 from DIRAC.Core.Base import Script
-Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
-                                     'Usage:',
-                                     '  %s [option|cfgfile] ... [Site] ...' % Script.scriptName,
-                                     'Arguments:',
-                                     '  Site:     Requested Site' ] ) )
-Script.parseCommandLine()
-
 import os
 
-def HapConverterExample( destination = None ) :
+def HapConverterExample() :
   from CTADIRAC.Interfaces.API.HapConverterJob import HapConverterJob
   from DIRAC.Interfaces.API.Dirac import Dirac
 
@@ -39,9 +32,6 @@ def HapConverterExample( destination = None ) :
 
     j = HapConverterJob(opts)
 
-    if destination:
-      j.setDestination( destination )
-
     j.setInputSandbox( [ 'passphrase'] )
     j.setOutputSandbox( ['eventio_cta.log','Open_Raw.log'])
     jobName = 'eventio_' + RunNum
@@ -53,13 +43,10 @@ def HapConverterExample( destination = None ) :
     Script.gLogger.info( j._toJDL() )
     Dirac().submit( j )
 
-
 if __name__ == '__main__':
 
-  args = Script.getPositionalArgs()
-
   try:
-    HapConverterExample( args )
+    HapConverterExample()
   except Exception:
     Script.gLogger.exception()
 
