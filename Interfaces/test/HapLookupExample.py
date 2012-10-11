@@ -54,7 +54,7 @@ def HapLookupExample( destination = None ) :
   if destination:
     j.setDestination( destination )
 
-  j.setInputSandbox( [ 'LFN:/vo.cta.in2p3.fr/user/a/arrabito/HAP/mini-prod3/conf/v0.1/AnalysisConfig.tar.gz','passphrase'] )
+  j.setInputSandbox( [ 'LFN:/vo.cta.in2p3.fr/user/a/arrabito/HAP/mini-prod3/conf/v0.2/AnalysisConfig.tar.gz','passphrase'] )
 
   j.setOutputSandbox( ['DoCtaIrf.log'])
 
