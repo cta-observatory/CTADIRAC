@@ -61,7 +61,7 @@ def HapTMVAExample( destination = None ) :
 
 #### build outdir #############################################
     RunNum = infileLFN.split( 'dst_CTA_' )[1].split('.root')[0] 
-    outdir = 'HAP/TMVA/' + RunNum 
+    outdir = 'HAP/TMVA/' + ParticleType + '/' + RunNum 
 
     outfile = 'MVAFile_' + RunList  + '.root'
 
