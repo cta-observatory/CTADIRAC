@@ -3,14 +3,7 @@
   Submit an Example Hap Job
 """
 from DIRAC.Core.Base import Script
-Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
-                                     'Usage:',
-                                     '  %s [option|cfgfile] ... [Site] ...' % Script.scriptName,
-                                     'Arguments:',
-                                     '  Site:     Requested Site' ] ) )
 Script.parseCommandLine()
-
-import os
 
 def HapLookupExample( destination = None ) :
   from CTADIRAC.Interfaces.API.HapLookupJob import HapLookupJob
@@ -20,7 +13,7 @@ def HapLookupExample( destination = None ) :
 ####### DoCtaIrf option values #######################
   AnalysisType = 'ScaleParam'  
   EnergyMethod = 'NoEnergy'
-  CutsConfig = 'mva_40pe_Wm_E_MST_PSFA_cta0909'
+  CutsConfig = 'ConfigTest_40pe_PSFA_arrayE'
   RunList = 'dstrun'
   Zenith = '20'
   Offset = '0'
@@ -51,10 +44,7 @@ def HapLookupExample( destination = None ) :
 
   j = HapLookupJob(opts)
 
-  if destination:
-    j.setDestination( destination )
-
-  j.setInputSandbox( [ 'LFN:/vo.cta.in2p3.fr/user/a/arrabito/HAP/mini-prod3/conf/v0.2/AnalysisConfig.tar.gz','passphrase'] )
+  j.setInputSandbox( [ 'LFN:/vo.cta.in2p3.fr/user/a/arrabito/HAP/mini-prod4/conf/v0.3/AnalysisConfig.tar.gz','passphrase'] )
 
   j.setOutputSandbox( ['DoCtaIrf.log'])
 
