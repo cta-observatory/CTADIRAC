@@ -108,7 +108,7 @@ def main():
     DIRAC.exit( -1 )  
 
 
-  cs = CorsikaSimtelApp()
+  cs = CorsikaApp()
 
   cs.setSoftwarePackage(CorsikaSimtelPack)
 
