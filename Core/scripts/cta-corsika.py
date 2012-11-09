@@ -56,14 +56,17 @@ def main():
   Script.registerSwitch( "E:", "executable=", "Executable", setExecutable )
   Script.registerSwitch( "V:", "version=", "Version", setVersion )
   Script.registerSwitch( "M:", "mode=", "Mode", setMode )
-
-  from DIRAC.WorkloadManagementSystem.Client.JobReport import JobReport
-
-  jobID = os.environ['JOBID']
-  jobID = int( jobID )
-  jobReport = JobReport( jobID )
-
+  
   Script.parseCommandLine( ignoreErrors = True )
+  args = Script.getPositionalArgs()
+
+  if len( args ) < 1:
+    Script.showHelp()
+  
+  if version == None or executable == None or run_number == None or run == None or template == None:
+    Script.showHelp()
+    jobReport.setApplicationStatus('Options badly specified')
+    DIRAC.exit( -1 
 
   from CTADIRAC.Core.Workflow.Modules.CorsikaApp import CorsikaApp
   from CTADIRAC.Core.Utilities.SoftwareInstallation import checkSoftwarePackage
@@ -72,8 +75,12 @@ def main():
   from CTADIRAC.Core.Utilities.SoftwareInstallation import localArea
   from CTADIRAC.Core.Utilities.SoftwareInstallation import sharedArea
   from CTADIRAC.Core.Utilities.SoftwareInstallation import workingArea
-
   from DIRAC.Core.Utilities.Subprocess import systemCall
+  from DIRAC.WorkloadManagementSystem.Client.JobReport import JobReport
+
+  jobID = os.environ['JOBID']
+  jobID = int( jobID )
+  jobReport = JobReport( jobID )
 
   CorsikaSimtelPack = 'corsika_simhessarray/' + version + '/corsika_simhessarray'
 
