@@ -66,7 +66,7 @@ def main():
   if version == None or executable == None or run_number == None or run == None or template == None:
     Script.showHelp()
     jobReport.setApplicationStatus('Options badly specified')
-    DIRAC.exit( -1 
+    DIRAC.exit( -1 )
 
   from CTADIRAC.Core.Workflow.Modules.CorsikaApp import CorsikaApp
   from CTADIRAC.Core.Utilities.SoftwareInstallation import checkSoftwarePackage
