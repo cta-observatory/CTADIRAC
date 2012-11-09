@@ -47,13 +47,16 @@ def setConfig( optionValue ):
   simconfig = optionValue
   return DIRAC.S_OK()
 
-def sendOutput(stdid,line):
-  logfilename = 'corsika_simtel.log'
+def sendSimtelOutput(stdid,line):
+  logfilename = 'simtel.log'
   f = open( logfilename,'a')
   f.write(line)
   f.write('\n')
   f.close()
-
+  
+def sendOutput(stdid,line):
+  DIRAC.gLogger.notice(line)
+  
 def main():
 
   from DIRAC.Core.Base import Script
@@ -79,7 +82,7 @@ def main():
     jobReport.setApplicationStatus('Options badly specified')
     DIRAC.exit( -1 )
 
-  from CTADIRAC.Core.Workflow.Modules.CorsikaSimtelApp import CorsikaSimtelApp
+  from CTADIRAC.Core.Workflow.Modules.CorsikaApp import CorsikaApp
   from CTADIRAC.Core.Utilities.SoftwareInstallation import checkSoftwarePackage
   from CTADIRAC.Core.Utilities.SoftwareInstallation import installSoftwarePackage
   from CTADIRAC.Core.Utilities.SoftwareInstallation import installSoftwareEnviron
@@ -130,7 +133,7 @@ def main():
     cmd = 'cp -r ' + simconfig + '/*' + ' sim_telarray'
     os.system(cmd)
 
-  cs = CorsikaSimtelApp()
+  cs = CorsikaApp()
   cs.setSoftwarePackage(CorsikaSimtelPack)
 
 ###### execute corsika ###############
@@ -171,7 +174,7 @@ def main():
 
   os.system('chmod u+x run_sim.sh')
   cmdTuple = ['./run_sim.sh']
-  ret = systemCall( 0, cmdTuple, sendOutput)
+  ret = systemCall( 0, cmdTuple, sendSimtelOutput)
 
   if not ret['OK']:
     DIRAC.gLogger.error( 'Failed to execute run_sim.sh')
