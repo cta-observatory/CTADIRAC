@@ -36,12 +36,11 @@ class CorsikaSimtelApp:
     return DIRAC.S_OK()
 
   def sendOutput(self,stdid,line):
-    logfilename = self.csExe + '.log'
+    logfilename = 'corsika_simtel.log'
     f = open( logfilename,'a')
     f.write(line)
     f.write('\n')
     f.close()
-    DIRAC.gLogger.notice(line)
 
   def execute( self ):
     """
