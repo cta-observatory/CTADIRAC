@@ -41,7 +41,7 @@ def CorsikaSimtelExample( args = None ) :
 
   outlog = executable + '.log'
 
-  j.setOutputSandbox( [outlog])
+  j.setOutputSandbox( [outlog,'simtel.log'])
 
 #  Retrieve your Output Data  
   corsika_out = 'corsika_run%s.corsika.gz'
