@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-  Submit a Corsika Example Job
+  Submit a CorsikaSimtel Example Job
 """
 from DIRAC.Core.Base import Script
 Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
@@ -32,23 +32,24 @@ def CorsikaSimtelExample( args = None ) :
 
   j.setGenericParametricInput(ilist)
   j.setName('run%s')
-  j.setInputSandbox( [ 'INPUTS_CTA_ULTRA3_proton'] )
+
+### Your sim_tel directory with your own configurations ######
+  myconfigdir = 'mysim_telarray'
+  j.setInputSandbox( [ 'INPUTS_CTA_ULTRA3_proton',myconfigdir] )
   
-  j.setParameters(['--run','corsika','--template','INPUTS_CTA_ULTRA3_proton'])
+  j.setParameters(['--run','corsika','--template','INPUTS_CTA_ULTRA3_proton','--simtel_exe','run_sim_cta-ultra3','--simconfig',myconfigdir])
 
   outlog = executable + '.log'
 
   j.setOutputSandbox( [outlog])
 
+#  Retrieve your Output Data  
+  corsika_out = 'corsika_run%s.corsika.gz'
   corsikatar_out = 'corsika_run%s.tar.gz'
-
-  j.setOutputData(['run%s/cta-ultra3-test.corsika.gz',corsikatar_out])
-
-# To retrieve Output Data from simtel_array 
-#  sim_out = 'Data/sim_telarray/cta-ultra3/0.0deg/Data/*.simtel.gz'
-#  log_out = 'Data/sim_telarray/cta-ultra3/0.0deg/Log/*.log.gz'
-#  hist_out = 'Data/sim_telarray/cta-ultra3/0.0deg/Histograms/*.hdata.gz'
-#  j.setOutputData([sim_out,log_out,hist_out,corsikatar_out])
+  sim_out = 'Data/sim_telarray/cta-ultra3/0.0deg/Data/*.simtel.gz'
+  log_out = 'Data/sim_telarray/cta-ultra3/0.0deg/Log/*.log.gz'
+  hist_out = 'Data/sim_telarray/cta-ultra3/0.0deg/Histograms/*.hdata.gz'
+  j.setOutputData([corsika_out,corsikatar_out,sim_out,log_out,hist_out])
 
   j.setCPUTime(100000)
 
