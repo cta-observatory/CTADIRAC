@@ -6,7 +6,7 @@ from DIRAC.Core.Base import Script
 Script.parseCommandLine()
 
 def HapPerfExample() :
-  from CTADIRAC.Interfaces.API.HapTMVAJob import HapTMVAJob
+  from CTADIRAC.Interfaces.API.HapPerfJob import HapPerfJob
   from DIRAC.Interfaces.API.Dirac import Dirac
 
   HapVersion = 'v0.18'
@@ -41,7 +41,7 @@ def HapPerfExample() :
 
     opts = general_opts + DoCtaIrf_opts
 
-    j = HapTMVAJob(opts)
+    j = HapPerfJob(opts)
 
     j.setInputSandbox( ['LFN:/vo.cta.in2p3.fr/user/a/arrabito/HAP/mini-prod4/conf/v0.4/AnalysisConfig.tar.gz','passphrase'] )
     j.setOutputSandbox( ['DoCtaIrf.log'])
