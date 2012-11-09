@@ -32,11 +32,6 @@ def setVersion( optionValue ):
   version = optionValue
   return DIRAC.S_OK()
 
-def setMode( optionValue ):
-  global mode
-  mode = optionValue
-  return DIRAC.S_OK()
-
 def setSimExe( optionValue ):
   global simexe
   simexe = optionValue
@@ -65,7 +60,6 @@ def main():
   Script.registerSwitch( "R:", "run=", "Run", setRun )
   Script.registerSwitch( "P:", "config_path=", "Config Path", setConfigPath )
   Script.registerSwitch( "T:", "template=", "Corsika Template", setTemplate )
-  Script.registerSwitch( "M:", "mode=", "Mode", setMode )
   Script.registerSwitch( "S:", "simexe=", "Simtel Exe", setSimExe )
   Script.registerSwitch( "C:", "simconfig=", "Simtel Config", setConfig )
   Script.registerSwitch( "E:", "executable=", "Executable", setExecutable )
