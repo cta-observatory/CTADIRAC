@@ -69,7 +69,6 @@ def main():
   Script.registerSwitch( "D:", "dcta=", "dcta")
   Script.registerSwitch( "I:", "icta=", "icta")
   Script.registerSwitch( "C:", "c_cta=", "c_cta")
-  Script.registerSwitch( "h:", "help=", "help")
   
   Script.parseCommandLine( ignoreErrors = False )
 
