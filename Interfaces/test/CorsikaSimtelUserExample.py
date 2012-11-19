@@ -36,7 +36,7 @@ def CorsikaSimtelUserExample( args = None ) :
 ### Your sim_tel directory with your own configurations ######
   myconfigdir = 'mysim_telarray'
 
-  j.setInputSandbox( [ 'INPUTS_CTA_ULTRA3_proton'] )
+  j.setInputSandbox( [ 'INPUTS_CTA_ULTRA3_proton',myconfigdir] )
   
   j.setParameters(['--run','corsika','--template','INPUTS_CTA_ULTRA3_proton','--simconfig',myconfigdir,'--simexe','sim_telarray','--help'])
 
