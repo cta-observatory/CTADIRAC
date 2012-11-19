@@ -13,11 +13,11 @@ Script.parseCommandLine()
 import os
 
 def CorsikaSimtelProdExample( destination = None ) :
-  from CTADIRAC.Interfaces.API.CorsikaSimtelJob import CorsikaSimtelJob
+  from CTADIRAC.Interfaces.API.CorsikaSimtelProdJob import CorsikaSimtelProdJob
   from DIRAC.Interfaces.API.Dirac import Dirac
 
   
-  j = CorsikaSimtelJob()
+  j = CorsikaSimtelProdJob()
   j.setVersion('clean_23012012')
 
   executable = 'corsika_autoinputs'
