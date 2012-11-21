@@ -140,23 +140,22 @@ def main():
     jobReport.setApplicationStatus('Corsika Application: Failed')
     DIRAC.exit( -1 )
 
-### create corsika tar ####################
-  rundir = 'run' + run_number
-  corsika_tar = 'corsika_run' + run_number + '.tar.gz'
- 
-  cmdTuple = ['/bin/tar','zcfh',corsika_tar,rundir]
-  ret = systemCall( 0, cmdTuple, sendOutput)
-  if not ret['OK']:
-    DIRAC.gLogger.error( 'Failed to execute tar')
-    DIRAC.exit( -1 )
-
 ###### rename corsika file #################################
+  rundir = 'run' + run_number
   corsikaKEYWORDS = ['TELFIL']
   dictCorsikaKW = fileToKWDict(template,corsikaKEYWORDS)
   corsikafilename = rundir + '/' + dictCorsikaKW['TELFIL'][0]
   destcorsikafilename = 'corsika_run' + run_number + '.corsika.gz'
   cmd = 'mv ' + corsikafilename + ' ' + destcorsikafilename
   os.system(cmd)
+  
+  ### create corsika tar ####################
+  corsika_tar = 'corsika_run' + run_number + '.tar.gz'
+  cmdTuple = ['/bin/tar','zcfh',corsika_tar,rundir]
+  ret = systemCall( 0, cmdTuple, sendOutput)
+  if not ret['OK']:
+    DIRAC.gLogger.error( 'Failed to execute tar')
+    DIRAC.exit( -1 )
 
 ###### execute sim_telarray ###############
   ret = getSoftwareEnviron( CorsikaSimtelPack )
