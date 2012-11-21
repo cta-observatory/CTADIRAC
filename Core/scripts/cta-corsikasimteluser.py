@@ -171,6 +171,17 @@ def main():
   inputfile = 'input_file='+destcorsikafilename
   inputfileopt = ['-C',inputfile]
   cmdTuple.extend(inputfileopt)
+  # add output file argument for sim_telarray 
+  destsimtelfilename = 'simtel_run' + run_number + '.simtel.gz'
+  outputfile = 'output_file='+destsimtelfilename
+  outputfileopt = ['-C',outputfile]
+  cmdTuple.extend(outputfileopt)
+  # add histo argument for sim_telarray 
+  desthistofilename = 'simtel_run' + run_number + '.hdata.gz'
+  histofile = 'histogram_file='+desthistofilename
+  histofileopt = ['-C',histofile]
+  cmdTuple.extend(histofileopt)
+
   # add other arguments for sim_telarray specified by user ######
   cmdTuple.extend(args[13:])
   ## remove 'parametric arguments' #############
