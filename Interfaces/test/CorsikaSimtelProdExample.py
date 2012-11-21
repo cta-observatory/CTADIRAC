@@ -23,8 +23,6 @@ def CorsikaSimtelProdExample( destination = None ) :
   executable = 'corsika_autoinputs'
   j.setExecutable(executable) 
 
- 
-
   ilist = []
   for i in range(1,5):
     run_number = '%06d' % i
@@ -39,7 +37,7 @@ def CorsikaSimtelProdExample( destination = None ) :
   if destination:
     j.setDestination( destination )
 
-  j.setInputSandbox( [ 'INPUTS_CTA_ULTRA3_proton', 'cta-corsikasimtelprod.py','fileCatalog.cfg','prodConfigFile'] )
+  j.setInputSandbox( [ 'INPUTS_CTA_ULTRA3_proton','fileCatalog.cfg','prodConfigFile'] )
   outlog = executable + '.log'
   j.setOutputSandbox( [outlog])
 
