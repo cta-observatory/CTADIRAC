@@ -154,7 +154,7 @@ def main():
  # cmdTuple = ['/bin/tar','zcfh',corsika_tar,rundir]
   filetar1 = rundir + '/'+'input'
   filetar2 = rundir + '/'+ 'DAT' + run_number + '.dbase'
-  filetar3 = rundir + '/'+ str(int(run_number)) + '.log'
+  filetar3 = rundir + '/run' + str(int(run_number)) + '.log'
   cmdTuple = ['/bin/tar','zcf',corsika_tar, filetar1,filetar2,filetar3]
   DIRAC.gLogger.notice( 'Executing command tuple:', cmdTuple )
   ret = systemCall( 0, cmdTuple, sendOutput)
