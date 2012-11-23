@@ -16,7 +16,7 @@ def main():
 
   from DIRAC.Core.Base import Script
 
-  Script.registerSwitch( "p:", "run_number=", "Run Number" )
+  Script.registerSwitch( "p:", "run_number=", "Do not use: Run Number automatically set" )
   Script.registerSwitch( "R:", "run=", "Run" )
 #  Script.registerSwitch( "P:", "config_path=", "Config Path" )
   Script.registerSwitch( "T:", "template=", "Corsika Template" )
