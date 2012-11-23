@@ -149,9 +149,13 @@ def main():
   cmd = 'mv ' + corsikafilename + ' ' + destcorsikafilename
   os.system(cmd)
   
-### create corsika tar ####################
+  ### create corsika tar ####################
   corsika_tar = 'corsika_run' + run_number + '.tar.gz'
-  cmdTuple = ['/bin/tar','zcfh',corsika_tar,rundir]
+  filetar1 = rundir + '/'+'input'
+  filetar2 = rundir + '/'+ 'DAT' + run_number + '.dbase'
+  filetar3 = rundir + '/run' + str(int(run_number)) + '.log'
+  cmdTuple = ['/bin/tar','zcf',corsika_tar, filetar1,filetar2,filetar3]
+  DIRAC.gLogger.notice( 'Executing command tuple:', cmdTuple )
   ret = systemCall( 0, cmdTuple, sendOutput)
   if not ret['OK']:
     DIRAC.gLogger.error( 'Failed to execute tar')
