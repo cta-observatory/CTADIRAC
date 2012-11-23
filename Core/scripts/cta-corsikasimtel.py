@@ -21,9 +21,9 @@ def main():
 #  Script.registerSwitch( "P:", "config_path=", "Config Path" )
   Script.registerSwitch( "T:", "template=", "Corsika Template" )
   Script.registerSwitch( "S:", "simexe=", "Simtel Exe")
-  Script.registerSwitch( "C:", "simconfig=", "Simtel Config (Optional)")
   Script.registerSwitch( "E:", "executable=", "Executable")
   Script.registerSwitch( "V:", "version=", "Version")
+  Script.registerSwitch( "C:", "simconfig=", "Simtel Config (Optional)")
 
   Script.parseCommandLine( ignoreErrors = True )
   args = Script.getPositionalArgs()
