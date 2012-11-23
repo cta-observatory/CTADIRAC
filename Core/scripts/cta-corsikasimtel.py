@@ -2,46 +2,6 @@
 import DIRAC
 import os
 
-def setRunNumber( optionValue ):
-  global run_number
-  run_number = optionValue.split('ParametricParameters=')[1]
-  return DIRAC.S_OK()
-  
-def setRun( optionValue ):
-  global run
-  run = optionValue
-  return DIRAC.S_OK()
-
-def setConfigPath( optionValue ):
-  global config_path
-  config_path = optionValue
-  return DIRAC.S_OK()
-
-def setTemplate( optionValue ):
-  global template
-  template = optionValue
-  return DIRAC.S_OK()
-
-def setExecutable( optionValue ):
-  global executable
-  executable = optionValue
-  return DIRAC.S_OK()
-
-def setVersion( optionValue ):
-  global version
-  version = optionValue
-  return DIRAC.S_OK()
-
-def setSimExe( optionValue ):
-  global simexe
-  simexe = optionValue
-  return DIRAC.S_OK()
-
-def setConfig( optionValue ):
-  global simconfig
-  simconfig = optionValue
-  return DIRAC.S_OK()
-
 def sendSimtelOutput(stdid,line):
   logfilename = 'simtel.log'
   f = open( logfilename,'a')
@@ -56,24 +16,50 @@ def main():
 
   from DIRAC.Core.Base import Script
 
-  Script.registerSwitch( "p:", "run_number=", "Run Number", setRunNumber )
-  Script.registerSwitch( "R:", "run=", "Run", setRun )
-  Script.registerSwitch( "P:", "config_path=", "Config Path", setConfigPath )
-  Script.registerSwitch( "T:", "template=", "Corsika Template", setTemplate )
-  Script.registerSwitch( "S:", "simexe=", "Simtel Exe", setSimExe )
-  Script.registerSwitch( "C:", "simconfig=", "Simtel Config", setConfig )
-  Script.registerSwitch( "E:", "executable=", "Executable", setExecutable )
-  Script.registerSwitch( "V:", "version=", "Version", setVersion )
+  Script.registerSwitch( "p:", "run_number=", "Run Number" )
+  Script.registerSwitch( "R:", "run=", "Run" )
+#  Script.registerSwitch( "P:", "config_path=", "Config Path" )
+  Script.registerSwitch( "T:", "template=", "Corsika Template" )
+  Script.registerSwitch( "S:", "simexe=", "Simtel Exe")
+  Script.registerSwitch( "C:", "simconfig=", "Simtel Config")
+  Script.registerSwitch( "E:", "executable=", "Executable")
+  Script.registerSwitch( "V:", "version=", "Version")
 
   Script.parseCommandLine( ignoreErrors = True )
   args = Script.getPositionalArgs()
 
   if len( args ) < 1:
     Script.showHelp()
+    
+  ## default values ##############
+  run_number == None
+  run = None
+  template = None
+  simexe = None
+  simconfig = None
+  executable = None
+  version = None
+  
+  ### set switche values ###
+  for switch in Script.getUnprocessedSwitches():
+    if switch[0] == "run_number":
+      run_number = switch[1].split('ParametricParameters=')[1]
+    if switch[0] == "run":
+      run = switch[1]
+    elif switch[0] == "template":
+      template = switch[1]
+    elif switch[0] == "simexe":
+      simexe = switch[1]
+    elif switch[0] == "simconfig":
+      simconfig = switch[1]
+    elif switch[0] == "executable":
+      executable = switch[1]
+    elif switch[0] == "version":
+      version = switch[1]
   
   if version == None or executable == None or run_number == None or run == None or template == None or simexe == None:
     Script.showHelp()
-    jobReport.setApplicationStatus('Options badly specified')
+    jobReport.setApplicationStatus('Missing options')
     DIRAC.exit( -1 )
 
   from CTADIRAC.Core.Workflow.Modules.CorsikaApp import CorsikaApp
@@ -123,9 +109,10 @@ def main():
     DIRAC.exit( -1 )  
 
 ### update the content of sim_telarray directory with personal config ##############
-  if(os.path.isdir(simconfig) == True):
-    cmd = 'cp -r ' + simconfig + '/*' + ' sim_telarray'
-    os.system(cmd)
+  if simconfig is not None:
+    if(os.path.isdir(simconfig) == True):
+      cmd = 'cp -r ' + simconfig + '/*' + ' sim_telarray'
+      os.system(cmd)
 
   cs = CorsikaApp()
   cs.setSoftwarePackage(CorsikaSimtelPack)
