@@ -39,9 +39,7 @@ def CorsikaSimtelExample( args = None ) :
   
   j.setParameters(['--run','corsika','--template','INPUTS_CTA_ULTRA3_proton','--simexe','run_sim_cta-ultra3','--simconfig',myconfigdir])
 
-  outlog = executable + '.log'
-
-  j.setOutputSandbox( [outlog,'simtel.log'])
+  j.setOutputSandbox( ['corsika_autoinputs.log','simtel.log'])
 
 #  Retrieve your Output Data  
   corsika_out = 'corsika_run%s.corsika.gz'
