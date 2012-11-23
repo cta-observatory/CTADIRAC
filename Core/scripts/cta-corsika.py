@@ -129,20 +129,43 @@ def main():
     DIRAC.gLogger.error( 'Failed to execute corsika Application')
     jobReport.setApplicationStatus('Corsika Application: Failed')
     DIRAC.exit( -1 )
-
-  rundir = 'run' + run_number
     
-  corsika_tar = 'corsika_run' + run_number + '.tar.gz'
+###### rename corsika file #################################
+  rundir = 'run' + run_number
+  corsikaKEYWORDS = ['TELFIL']
+  dictCorsikaKW = fileToKWDict(template,corsikaKEYWORDS)
+  corsikafilename = rundir + '/' + dictCorsikaKW['TELFIL'][0]
+  destcorsikafilename = 'corsika_run' + run_number + '.corsika.gz'
+  cmd = 'mv ' + corsikafilename + ' ' + destcorsikafilename
+  os.system(cmd)
  
-  cmdTuple = ['/bin/tar','zcfh',corsika_tar,rundir]
+  ### create corsika tar ####################
+  corsika_tar = 'corsika_run' + run_number + '.tar.gz'
+  filetar1 = rundir + '/'+'input'
+  filetar2 = rundir + '/'+ 'DAT' + run_number + '.dbase'
+  filetar3 = rundir + '/run' + str(int(run_number)) + '.log'
+  cmdTuple = ['/bin/tar','zcf',corsika_tar, filetar1,filetar2,filetar3]
+  DIRAC.gLogger.notice( 'Executing command tuple:', cmdTuple )
   ret = systemCall( 0, cmdTuple, sendOutput)
   if not ret['OK']:
     DIRAC.gLogger.error( 'Failed to execute tar')
     DIRAC.exit( -1 )
-
-
+    
   DIRAC.exit()
-
+  
+#### parse corsika template ##############
+def fileToKWDict (fileName, keywordsList):    
+  DIRAC.gLogger.notice('parsing: ', fileName)
+  dict={}
+  configFile = open(fileName, "r").readlines()
+  for line in configFile:
+    for word in line.split():
+      if word in keywordsList:
+        lineSplit = line.split()
+        lenLineSplit = len(lineSplit)
+        value = lineSplit[1:lenLineSplit]
+        dict[word] = value
+  return dict  
 
 if __name__ == '__main__':
 
