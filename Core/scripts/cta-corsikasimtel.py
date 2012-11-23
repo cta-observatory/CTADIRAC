@@ -17,7 +17,7 @@ def main():
   from DIRAC.Core.Base import Script
 
   Script.registerSwitch( "p:", "run_number=", "Do not use: Run Number automatically set" )
-  Script.registerSwitch( "R:", "run=", "Run" )
+#  Script.registerSwitch( "R:", "run=", "Run" )
 #  Script.registerSwitch( "P:", "config_path=", "Config Path" )
   Script.registerSwitch( "T:", "template=", "Corsika Template" )
   Script.registerSwitch( "S:", "simexe=", "Simtel Exe")
@@ -33,7 +33,6 @@ def main():
     
   ## default values ##############
   run_number == None
-  run = None
   template = None
   simexe = None
   simconfig = None
@@ -44,8 +43,6 @@ def main():
   for switch in Script.getUnprocessedSwitches():
     if switch[0] == "run_number":
       run_number = switch[1].split('ParametricParameters=')[1]
-    if switch[0] == "run":
-      run = switch[1]
     elif switch[0] == "template":
       template = switch[1]
     elif switch[0] == "simexe":
@@ -57,7 +54,7 @@ def main():
     elif switch[0] == "version":
       version = switch[1]
   
-  if version == None or executable == None or run_number == None or run == None or template == None or simexe == None:
+  if version == None or executable == None or run_number == None or template == None or simexe == None:
     Script.showHelp()
     jobReport.setApplicationStatus('Missing options')
     DIRAC.exit( -1 )
@@ -119,7 +116,7 @@ def main():
 
 ###### execute corsika ###############
   cs.csExe = executable
-  cs.csArguments = ['--run-number',run_number,'--run',run,template] 
+  cs.csArguments = ['--run-number',run_number,'--run','corsika',template] 
   res = cs.execute()
 
   if not res['OK']:
