@@ -36,13 +36,12 @@ def CorsikaExample( args = None ) :
   
   j.setParameters(['--run','corsika','--template','INPUTS_CTA_ULTRA3_proton'])
 
-  outlog = executable + '.log'
-
-  j.setOutputSandbox( [outlog])
-
+  j.setOutputSandbox( ['corsika_autoinputs.log'])
+  
+  #  Retrieve your Output Data  
+  corsika_out = 'corsika_run%s.corsika.gz'
   corsikatar_out = 'corsika_run%s.tar.gz'
-
-  j.setOutputData(['run%s/cta-ultra3-test.corsika.gz',corsikatar_out])
+  j.setOutputData([corsika_out,corsikatar_out])
 
   j.setCPUTime(100000)
 
