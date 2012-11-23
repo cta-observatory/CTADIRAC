@@ -151,7 +151,6 @@ def main():
   
   ### create corsika tar ####################
   corsika_tar = 'corsika_run' + run_number + '.tar.gz'
- # cmdTuple = ['/bin/tar','zcfh',corsika_tar,rundir]
   filetar1 = rundir + '/'+'input'
   filetar2 = rundir + '/'+ 'DAT' + run_number + '.dbase'
   filetar3 = rundir + '/run' + str(int(run_number)) + '.log'
