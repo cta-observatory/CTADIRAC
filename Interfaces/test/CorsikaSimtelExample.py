@@ -37,7 +37,7 @@ def CorsikaSimtelExample( args = None ) :
   myconfigdir = 'mysim_telarray'
   j.setInputSandbox( [ 'INPUTS_CTA_ULTRA3_proton',myconfigdir] )
   
-  j.setParameters(['--run','corsika','--template','INPUTS_CTA_ULTRA3_proton','--simexe','run_sim_cta-ultra3','--simconfig',myconfigdir])
+  j.setParameters(['--template','INPUTS_CTA_ULTRA3_proton','--simexe','run_sim_cta-ultra3','--simconfig',myconfigdir])
 
   j.setOutputSandbox( ['corsika_autoinputs.log','simtel.log'])
 
