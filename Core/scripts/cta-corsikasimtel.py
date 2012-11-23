@@ -16,14 +16,15 @@ def main():
 
   from DIRAC.Core.Base import Script
 
-  Script.registerSwitch( "p:", "run_number=", "Do not use: Run Number automatically set" )
 #  Script.registerSwitch( "R:", "run=", "Run" )
 #  Script.registerSwitch( "P:", "config_path=", "Config Path" )
   Script.registerSwitch( "T:", "template=", "Corsika Template" )
   Script.registerSwitch( "S:", "simexe=", "Simtel Exe")
+  Script.registerSwitch( "p:", "run_number=", "Do not use: Run Number automatically set" )
+  Script.registerSwitch( "C:", "simconfig=", "Simtel Config (Optional)")
   Script.registerSwitch( "E:", "executable=", "Executable")
   Script.registerSwitch( "V:", "version=", "Version")
-  Script.registerSwitch( "C:", "simconfig=", "Simtel Config (Optional)")
+
 
   Script.parseCommandLine( ignoreErrors = True )
   args = Script.getPositionalArgs()
