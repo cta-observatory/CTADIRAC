@@ -33,7 +33,7 @@ def main():
     Script.showHelp()
     
   ## default values ##############
-  run_number == None
+  run_number = None
   template = None
   simexe = None
   simconfig = None
