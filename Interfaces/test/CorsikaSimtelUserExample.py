@@ -47,11 +47,9 @@ def CorsikaSimtelUserExample( args = None ) :
   corsikatar_out = 'corsika_run%s.tar.gz'
   j.setOutputData([corsika_out,corsikatar_out])
 
- # sim_out = 'Data/sim_telarray/cta-ultra3/0.0deg/Data/*.simtel.gz'
- # log_out = 'Data/sim_telarray/cta-ultra3/0.0deg/Log/*.log.gz'
- # hist_out = 'Data/sim_telarray/cta-ultra3/0.0deg/Histograms/*.hdata.gz'
- # j.setOutputData([corsika_out,corsikatar_out,sim_out,log_out,hist_out])
-
+ # sim_out = 'simtel_run%s.simtel.gz'
+ # hist_out = 'simtel_run%s.hdata.gz'
+ # j.setOutputData([corsika_out,corsikatar_out,sim_out,hist_out])
 
   j.setCPUTime(100000)
 
