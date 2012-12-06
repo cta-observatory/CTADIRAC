@@ -22,16 +22,12 @@ def main():
   Script.registerSwitch( "S:", "simexe=", "Simtel Exe")
   Script.registerSwitch( "p:", "run_number=", "Do not use: Run Number automatically set" )
   Script.registerSwitch( "C:", "simconfig=", "Simtel Config (Optional)")
-  Script.registerSwitch( "E:", "executable=", "Executable")
-  Script.registerSwitch( "V:", "version=", "Version")
+  Script.registerSwitch( "E:", "executable=", "Executable (Use SetExecutable)")
+  Script.registerSwitch( "V:", "version=", "Version (Use setVersion)")
 
 
   Script.parseCommandLine( ignoreErrors = True )
-  args = Script.getPositionalArgs()
 
-  if len( args ) < 1:
-    Script.showHelp()
-    
   ## default values ##############
   run_number = None
   template = None
@@ -40,19 +36,19 @@ def main():
   executable = None
   version = None
   
-  ### set switche values ###
+  ### set switch values ###
   for switch in Script.getUnprocessedSwitches():
     if switch[0] == "run_number":
       run_number = switch[1].split('ParametricParameters=')[1]
-    elif switch[0] == "template":
+    elif switch[0] == "template" or switch[0] == "T":
       template = switch[1]
-    elif switch[0] == "simexe":
+    elif switch[0] == "simexe" or switch[0] == "S":
       simexe = switch[1]
-    elif switch[0] == "simconfig":
+    elif switch[0] == "simconfig" or switch[0] == "C":
       simconfig = switch[1]
-    elif switch[0] == "executable":
+    elif switch[0] == "executable" or switch[0] == "E":
       executable = switch[1]
-    elif switch[0] == "version":
+    elif switch[0] == "version" or switch[0] == "V":
       version = switch[1]
   
   if version == None or executable == None or run_number == None or template == None or simexe == None:
