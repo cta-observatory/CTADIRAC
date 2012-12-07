@@ -38,7 +38,7 @@ def main():
   
   ### set switch values ###
   for switch in Script.getUnprocessedSwitches():
-    if switch[0] == "run_number":
+    if switch[0] == "run_number" or switch[0] == "p":
       run_number = switch[1].split('ParametricParameters=')[1]
     elif switch[0] == "template" or switch[0] == "T":
       template = switch[1]
