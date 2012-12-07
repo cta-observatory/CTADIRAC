@@ -32,11 +32,10 @@ def CorsikaSimtelExample( args = None ) :
 
   j.setGenericParametricInput(ilist)
   j.setName('run%s')
-
-### Your sim_tel directory with your own configurations ######
-  j.setInputSandbox( [ 'INPUTS_CTA_ULTRA3_proton'] )
   
   j.setParameters(['--template','INPUTS_CTA_ULTRA3_proton','--simexe','run_sim_cta-ultra3'])
+  
+  j.setInputSandbox( [ 'INPUTS_CTA_ULTRA3_proton'] )
 
   j.setOutputSandbox( ['corsika_autoinputs.log','simtel.log'])
 
