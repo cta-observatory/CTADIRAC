@@ -19,9 +19,9 @@ def main():
 #  Script.registerSwitch( "R:", "run=", "Run" )
 #  Script.registerSwitch( "P:", "config_path=", "Config Path" )
   Script.registerSwitch( "T:", "template=", "Corsika Template" )
-  Script.registerSwitch( "S:", "simexe=", "Simtel Exe")
-  Script.registerSwitch( "p:", "run_number=", "Do not use: Run Number automatically set" )
+  Script.registerSwitch( "S:", "simexe=", "Simtel Executable")
   Script.registerSwitch( "C:", "simconfig=", "Simtel Config (Optional)")
+  Script.registerSwitch( "p:", "run_number=", "Do not use: Run Number automatically set" )
   Script.registerSwitch( "E:", "executable=", "Executable (Use SetExecutable)")
   Script.registerSwitch( "V:", "version=", "Version (Use setVersion)")
 
