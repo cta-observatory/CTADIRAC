@@ -20,7 +20,6 @@ def main():
 #  Script.registerSwitch( "P:", "config_path=", "Config Path" )
   Script.registerSwitch( "T:", "template=", "Corsika Template" )
   Script.registerSwitch( "S:", "simexe=", "Simtel Executable")
-  Script.registerSwitch( "C:", "simconfig=", "Simtel Config (Optional)")
   Script.registerSwitch( "p:", "run_number=", "Do not use: Run Number automatically set" )
   Script.registerSwitch( "E:", "executable=", "Executable (Use SetExecutable)")
   Script.registerSwitch( "V:", "version=", "Version (Use setVersion)")
@@ -32,7 +31,6 @@ def main():
   run_number = None
   template = None
   simexe = None
-  simconfig = None
   executable = None
   version = None
   
@@ -44,8 +42,6 @@ def main():
       template = switch[1]
     elif switch[0] == "simexe" or switch[0] == "S":
       simexe = switch[1]
-    elif switch[0] == "simconfig" or switch[0] == "C":
-      simconfig = switch[1]
     elif switch[0] == "executable" or switch[0] == "E":
       executable = switch[1]
     elif switch[0] == "version" or switch[0] == "V":
@@ -82,7 +78,7 @@ def main():
         installSoftwareEnviron( package, workingArea() )
         packageTuple =  package.split('/')
         corsika_subdir = sharedArea() + '/' + packageTuple[0] + '/' + version 
-        cmd = 'cp -r ' + corsika_subdir + '/* .'        
+        cmd = 'cp -u -r ' + corsika_subdir + '/* .'        
         os.system(cmd)
         continue
     if workingArea:
@@ -101,12 +97,6 @@ def main():
     DIRAC.gLogger.error( 'Check Failed for software package:', package )
     DIRAC.gLogger.error( 'Software package not available')
     DIRAC.exit( -1 )  
-
-### update the content of sim_telarray directory with personal config ##############
-  if simconfig is not None:
-    if(os.path.isdir(simconfig) == True):
-      cmd = 'cp -r ' + simconfig + '/*' + ' sim_telarray'
-      os.system(cmd)
 
   cs = CorsikaApp()
   cs.setSoftwarePackage(CorsikaSimtelPack)
