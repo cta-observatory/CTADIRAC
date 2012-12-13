@@ -21,7 +21,7 @@ def main():
   Script.registerSwitch( "S:", "simexe=", "Simtel Executable")
   Script.registerSwitch( "p:", "run_number=", "Do not use: Run Number automatically set" )
   Script.registerSwitch( "E:", "executable=", "Executable (Use SetExecutable)")
-  Script.registerSwitch( "V:", "version=", "Version (Use setVersion)")  
+  Script.registerSwitch( "", "version=", "Version (Use setVersion)")  
   Script.registerSwitch( "D:", "dcta=", "dcta")
   Script.registerSwitch( "I:", "icta=", "icta")
   Script.registerSwitch( "C:", "c_cta=", "c_cta")
@@ -45,7 +45,7 @@ def main():
       simexe = switch[1]
     elif switch[0] == "executable" or switch[0] == "E":
       executable = switch[1]
-    elif switch[0] == "version" or switch[0] == "V":
+    elif switch[0] == "version":
       version = switch[1]
       
   if version == None or executable == None or run_number == None or template == None or simexe == None:
