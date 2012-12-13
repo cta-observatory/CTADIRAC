@@ -49,9 +49,9 @@ def main():
       version = switch[1]
       
   if version == None or executable == None or run_number == None or template == None or simexe == None:
-  Script.showHelp()
-  jobReport.setApplicationStatus('Missing options')
-  DIRAC.exit( -1 )   
+    Script.showHelp()
+    jobReport.setApplicationStatus('Missing options')
+    DIRAC.exit( -1 )   
 
   import sys
   args = sys.argv[1:]
