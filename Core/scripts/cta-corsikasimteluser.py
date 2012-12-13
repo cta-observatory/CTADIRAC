@@ -3,47 +3,6 @@ import DIRAC
 import os
 import gzip
 
-def setRunNumber( optionValue ):
-  global run_number
-  run_number = optionValue.split('ParametricParameters=')[1]
-  return DIRAC.S_OK()
-  
-def setRun( optionValue ):
-  global run
-  run = optionValue
-  return DIRAC.S_OK()
-
-#def setConfigPath( optionValue ):
-#  global config_path
-#  config_path = optionValue
-#  return DIRAC.S_OK()
-
-def setTemplate( optionValue ):
-  global template
-  template = optionValue
-  return DIRAC.S_OK()
-
-def setExecutable( optionValue ):
-  global executable
-  executable = optionValue
-  return DIRAC.S_OK()
-
-def setVersion( optionValue ):
-  global version
-  version = optionValue
-  return DIRAC.S_OK()
-
-def setSimExe( optionValue ):
-  global simexe
-  simexe = optionValue
-  return DIRAC.S_OK()
-
-def setConfig( optionValue ):
-  global simconfig
-  simconfig = optionValue
-  return DIRAC.S_OK()
-
-
 def sendSimtelOutput(stdid,line):
   logfilename = 'simtel.log.gz'
   f = gzip.open( logfilename,'ab')
@@ -57,20 +16,42 @@ def sendOutput(stdid,line):
 def main():
 
   from DIRAC.Core.Base import Script
-
-  Script.registerSwitch( "p:", "run_number=", "Run Number", setRunNumber )
-  Script.registerSwitch( "R:", "run=", "Run", setRun )
- # Script.registerSwitch( "P:", "config_path=", "Config Path", setConfigPath )
-  Script.registerSwitch( "T:", "template=", "Corsika Template", setTemplate )
-  Script.registerSwitch( "X:", "simexe=", "Simtel Exe", setSimExe )
-  Script.registerSwitch( "S:", "simconfig=", "Simtel Config", setConfig )
-  Script.registerSwitch( "E:", "executable=", "Executable", setExecutable )
-  Script.registerSwitch( "V:", "version=", "Version", setVersion )
+ 
+  Script.registerSwitch( "T:", "template=", "Corsika Template" )
+  Script.registerSwitch( "S:", "simexe=", "Simtel Executable")
+  Script.registerSwitch( "p:", "run_number=", "Do not use: Run Number automatically set" )
+  Script.registerSwitch( "E:", "executable=", "Executable (Use SetExecutable)")
+  Script.registerSwitch( "V:", "version=", "Version (Use setVersion)")  
   Script.registerSwitch( "D:", "dcta=", "dcta")
   Script.registerSwitch( "I:", "icta=", "icta")
   Script.registerSwitch( "C:", "c_cta=", "c_cta")
   
   Script.parseCommandLine( ignoreErrors = False )
+  
+  ## default values ##############
+  run_number = None
+  template = None
+  simexe = None
+  executable = None
+  version = None
+  
+  ### set switch values ###
+  for switch in Script.getUnprocessedSwitches():
+    if switch[0] == "run_number" or switch[0] == "p":
+      run_number = switch[1].split('ParametricParameters=')[1]
+    elif switch[0] == "template" or switch[0] == "T":
+      template = switch[1]
+    elif switch[0] == "simexe" or switch[0] == "S":
+      simexe = switch[1]
+    elif switch[0] == "executable" or switch[0] == "E":
+      executable = switch[1]
+    elif switch[0] == "version" or switch[0] == "V":
+      version = switch[1]
+      
+  if version == None or executable == None or run_number == None or template == None or simexe == None:
+  Script.showHelp()
+  jobReport.setApplicationStatus('Missing options')
+  DIRAC.exit( -1 )   
 
   import sys
   args = sys.argv[1:]
@@ -102,7 +83,7 @@ def main():
         installSoftwareEnviron( package, workingArea() )
         packageTuple =  package.split('/')
         corsika_subdir = sharedArea() + '/' + packageTuple[0] + '/' + version 
-        cmd = 'cp -r ' + corsika_subdir + '/* .'        
+        cmd = 'cp -u -r ' + corsika_subdir + '/* .'        
         os.system(cmd)
         continue
     if workingArea:
@@ -122,17 +103,11 @@ def main():
     DIRAC.gLogger.error( 'Software package not available')
     DIRAC.exit( -1 )  
 
-### update the content of sim_telarray directory with personal config ##############
-  if(os.path.isdir(simconfig) == True):
-    cmd = 'cp -r ' + simconfig + '/*' + ' sim_telarray'
-    os.system(cmd)
-
+###### execute corsika ###############
   cs = CorsikaApp()
   cs.setSoftwarePackage(CorsikaSimtelPack)
-
-###### execute corsika ###############
   cs.csExe = executable
-  cs.csArguments = ['--run-number',run_number,'--run',run,template] 
+  cs.csArguments = ['--run-number',run_number,'--run','corsika',template] 
   res = cs.execute()
 
   if not res['OK']:
@@ -186,7 +161,7 @@ def main():
   cmdTuple.extend(histofileopt)
 
   # add other arguments for sim_telarray specified by user ######
-  cmdTuple.extend(args[13:])
+  cmdTuple.extend(args[11:])
   ## remove 'parametric arguments' #############
   cmdTuple = cmdTuple[:-2]
 
