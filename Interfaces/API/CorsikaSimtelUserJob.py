@@ -23,7 +23,7 @@ class CorsikaSimtelUserJob( Job ) :
     global argumentStr
 
   def setVersion(self, version):
-    versionStr = '--version' + ' ' + version
+    versionStr = '-v' + ' ' + version
     global argumentStr
     argumentStr= versionStr
     self.setConfigArgs( argumentStr )
