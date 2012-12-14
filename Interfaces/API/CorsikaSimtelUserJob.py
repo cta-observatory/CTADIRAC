@@ -42,8 +42,8 @@ class CorsikaSimtelUserJob( Job ) :
   def setSimtelParameters(self, parameters = None):
     simtelparfile = 'simtel.par'
     f = open( simtelparfile,'w')
-    argumentStr = argumentStr + ' ' + "%s" % ( ' '.join( parameters ) )
-    f.write(argumentStr)
+    simtelargStr = "%s" % ( ' '.join( parameters ) )
+    f.write(simtelargStr)
     f.close()
     self.setInputSandbox( [ simtelparfile ] )
 
