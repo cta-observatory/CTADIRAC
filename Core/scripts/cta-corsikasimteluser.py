@@ -18,7 +18,7 @@ def main():
   from DIRAC.Core.Base import Script
  
   Script.registerSwitch( "T:", "template=", "Corsika Template" )
-  Script.registerSwitch( "S:", "simexe=", "Simtel Executable")
+#  Script.registerSwitch( "S:", "simexe=", "Simtel Executable")
   Script.registerSwitch( "p:", "run_number=", "Do not use: Run Number automatically set" )
   Script.registerSwitch( "E:", "executable=", "Executable (Use SetExecutable)")
   Script.registerSwitch( "v:", "version=", "Version (Use setVersion)")  
@@ -31,7 +31,7 @@ def main():
   ## default values ##############
   run_number = None
   template = None
-  simexe = None
+#  simexe = None
   executable = None
   version = None
   
@@ -41,20 +41,20 @@ def main():
       run_number = switch[1].split('ParametricParameters=')[1]
     elif switch[0] == "template" or switch[0] == "T":
       template = switch[1]
-    elif switch[0] == "simexe" or switch[0] == "S":
-      simexe = switch[1]
+ #   elif switch[0] == "simexe" or switch[0] == "S":
+  #    simexe = switch[1]
     elif switch[0] == "executable" or switch[0] == "E":
       executable = switch[1]
     elif switch[0] == "version" or switch[0] == "v":
       version = switch[1]
       
-  if version == None or executable == None or run_number == None or template == None or simexe == None:
+  if version == None or executable == None or run_number == None or template == None:
     Script.showHelp()
     jobReport.setApplicationStatus('Missing options')
     DIRAC.exit( -1 )   
 
-  import sys
-  args = sys.argv[1:]
+  #import sys
+  #args = sys.argv[1:]
 
   from CTADIRAC.Core.Workflow.Modules.CorsikaApp import CorsikaApp
   from CTADIRAC.Core.Utilities.SoftwareInstallation import checkSoftwarePackage
@@ -144,7 +144,7 @@ def main():
     DIRAC.exit( -1 )
 
   corsikaEnviron = ret['Value']
-  cmdTuple = [simexe]
+  cmdTuple = ['sim_telarray']
   # add input file argument for sim_telarray  ###################
   inputfile = 'input_file='+destcorsikafilename
   inputfileopt = ['-C',inputfile]
@@ -160,10 +160,17 @@ def main():
   histofileopt = ['-C',histofile]
   cmdTuple.extend(histofileopt)
 
-  # add other arguments for sim_telarray specified by user ######
-  cmdTuple.extend(args[11:])
   ## remove 'parametric arguments' #############
   cmdTuple = cmdTuple[:-2]
+  
+  # add other arguments for sim_telarray specified by user ######
+  simtelparfile = open('simtel.par', 'r').readlines()
+  
+  for line in simtelparfile:
+    for word in line.split():
+      cmdTuple.append(word)
+      
+#  cmdTuple.extend(args[11:])
 
   DIRAC.gLogger.notice( 'Executing command tuple:', cmdTuple )
   ret = systemCall( 0, cmdTuple, sendSimtelOutput,env = corsikaEnviron )
