@@ -37,7 +37,7 @@ def CorsikaSimtelUserExample( args = None ) :
   
   j.setCorsikaParameters(['--template','INPUTS_CTA_ULTRA3_proton'])
   
-  j.setSimtelParameters(['-V'])
+  j.setSimtelParameters(['--help'])
 
   j.setOutputSandbox( ['corsika_autoinputs.log','simtel.log.gz'])
 
