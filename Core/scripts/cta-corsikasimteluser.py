@@ -161,7 +161,7 @@ def main():
   cmdTuple.extend(histofileopt)
 
   ## remove 'parametric arguments' #############
-  cmdTuple = cmdTuple[:-2]
+  #cmdTuple = cmdTuple[:-2]
   
   # add other arguments for sim_telarray specified by user ######
   simtelparfile = open('simtel.par', 'r').readlines()
