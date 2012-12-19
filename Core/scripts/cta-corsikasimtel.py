@@ -52,7 +52,7 @@ def main():
       mode = switch[1]
       
   
-  if version == None or executable == None or run_number == None or template == None or simexe == None:
+  if version == None or executable == None or run_number == None or template == None:
     Script.showHelp()
     jobReport.setApplicationStatus('Missing options')
     DIRAC.exit( -1 )
