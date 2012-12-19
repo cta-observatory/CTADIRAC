@@ -124,7 +124,7 @@ def main():
   destcorsikafilename = 'corsika_run' + run_number + '.corsika.gz'
   cmd = 'mv ' + corsikafilename + ' ' + destcorsikafilename
   os.system(cmd)
-  DIRAC.gLogger.notice( 'Executing command tuple:', cmdTuple )
+  DIRAC.gLogger.notice( 'Corsika File Size:' )
   cmdTuple = ['/bin/ls','-l',destcorsikafilename]
   ret = systemCall( 0, cmdTuple, sendOutput)
   if not ret['OK']:
