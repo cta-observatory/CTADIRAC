@@ -207,8 +207,8 @@ def installSoftwareEnviron( package, area ):
   try:
   
       if (packageTuple[0] == 'corsika_simhessarray' and version == 'test_18122012'):
-      fd = open( fileName, 'w' )
-      fd.write( """
+        fd = open( fileName, 'w' )
+        fd.write( """
 unset HESSROOT
 export HESSROOT
 unset LD_LIBRARY_PATH
