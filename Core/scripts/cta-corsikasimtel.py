@@ -34,7 +34,7 @@ def main():
   simexe = None
   executable = None
   version = None
-  mode = corsika_simtelarray
+  mode = 'corsika_simtelarray'
   
   ### set switch values ###
   for switch in Script.getUnprocessedSwitches():
