@@ -23,6 +23,7 @@ def main():
   Script.registerSwitch( "p:", "run_number=", "Do not use: Run Number automatically set" )
   Script.registerSwitch( "E:", "executable=", "Executable (Use SetExecutable)")
   Script.registerSwitch( "V:", "version=", "Version (Use setVersion)")
+  Script.registerSwitch( "M:", "mode=", "Mode (corsika_standalone/corsika_simtelarray)")
 
 
   Script.parseCommandLine( ignoreErrors = True )
@@ -33,6 +34,7 @@ def main():
   simexe = None
   executable = None
   version = None
+  mode = corsika_simtelarray
   
   ### set switch values ###
   for switch in Script.getUnprocessedSwitches():
@@ -46,6 +48,9 @@ def main():
       executable = switch[1]
     elif switch[0] == "version" or switch[0] == "V":
       version = switch[1]
+    elif switch[0] == "mode" or switch[0] == "M":
+      mode = switch[1]
+      
   
   if version == None or executable == None or run_number == None or template == None or simexe == None:
     Script.showHelp()
@@ -131,6 +136,9 @@ def main():
   if not ret['OK']:
     DIRAC.gLogger.error( 'Failed to execute tar')
     DIRAC.exit( -1 )
+    
+  if (mode == 'corsika_standalone'):
+    DIRAC.exit()
 
 ###### execute sim_telarray ###############
   fd = open('run_sim.sh', 'w' )
