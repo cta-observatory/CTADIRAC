@@ -124,6 +124,12 @@ def main():
   destcorsikafilename = 'corsika_run' + run_number + '.corsika.gz'
   cmd = 'mv ' + corsikafilename + ' ' + destcorsikafilename
   os.system(cmd)
+  DIRAC.gLogger.notice( 'Executing command tuple:', cmdTuple )
+  cmdTuple = ['/bin/ls','-l',destcorsikafilename]
+  ret = systemCall( 0, cmdTuple, sendOutput)
+  if not ret['OK']:
+    DIRAC.gLogger.error( 'Failed to execute ls for corsika file')
+    DIRAC.exit( -1 )
   
   ### create corsika tar ####################
   corsika_tar = 'corsika_run' + run_number + '.tar.gz'
