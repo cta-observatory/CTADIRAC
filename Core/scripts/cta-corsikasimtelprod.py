@@ -60,8 +60,11 @@ def main():
   Script.registerSwitch( "V:", "version=", "Version", setVersion )
   Script.registerSwitch( "M:", "mode=", "Mode", setMode )
   Script.registerSwitch( "D:", "storage_element=", "Storage Element", setStorageElement )
-  
- # from CTADIRAC.Core.Workflow.Modules.CorsikaSimtelApp import CorsikaSimtelApp
+
+  from DIRAC.Resources.Catalog.FileCatalogClient import FileCatalogClient
+  from DIRAC.Resources.Catalog.FileCatalog import FileCatalog
+  Script.parseCommandLine()
+  global fcc  
   from CTADIRAC.Core.Workflow.Modules.CorsikaApp import CorsikaApp
   from CTADIRAC.Core.Utilities.SoftwareInstallation import checkSoftwarePackage
   from CTADIRAC.Core.Utilities.SoftwareInstallation import installSoftwarePackage
@@ -71,22 +74,6 @@ def main():
   from CTADIRAC.Core.Utilities.SoftwareInstallation import workingArea
   from DIRAC.Core.Utilities.Subprocess import systemCall
   from DIRAC.WorkloadManagementSystem.Client.JobReport import JobReport
-  from DIRAC.Resources.Catalog.FileCatalogClient import FileCatalogClient
-  from DIRAC.Resources.Catalog.FileCatalog import FileCatalog
-
-  Script.parseCommandLine()
-  
- ###########
-  ## Checking MD coherence
-  fc = FileCatalog('LcgFileCatalog')
-  res = fc._getCatalogConfigDetails('DIRACFileCatalog')
-  print 'DFC CatalogConfigDetails:',res
-  res = fc._getCatalogConfigDetails('LcgFileCatalog')
-  print 'LCG CatalogConfigDetails:',res
-  
-  global fcc
-  fcc = FileCatalogClient()
-  ############################
   
   jobID = os.environ['JOBID']
   jobID = int( jobID )
@@ -126,7 +113,17 @@ def main():
     DIRAC.gLogger.error( 'Check Failed for software package:', package )
     DIRAC.gLogger.error( 'Software package not available')
     DIRAC.exit( -1 )  
+
+ ###########
+  ## Checking MD coherence
+  fc = FileCatalog('LcgFileCatalog')
+  res = fc._getCatalogConfigDetails('DIRACFileCatalog')
+  print 'DFC CatalogConfigDetails:',res
+  res = fc._getCatalogConfigDetails('LcgFileCatalog')
+  print 'LCG CatalogConfigDetails:',res
   
+  fcc = FileCatalogClient()
+  ############################
   #############
   # CLAUDIA: simtelConfigFile should be built from ???
   simtelConfigFilesPath = 'sim_telarray/multi' 
