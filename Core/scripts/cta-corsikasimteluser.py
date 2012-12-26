@@ -108,9 +108,9 @@ def main():
   cs.setSoftwarePackage(CorsikaSimtelPack)
   cs.csExe = executable
   cs.csArguments = ['--run-number',run_number,'--run','corsika',template] 
-  res = cs.execute()
-
-  if not res['OK']:
+  corsikaReturnCode = cs.execute()
+  
+  if corsikaReturnCode != 0:
     DIRAC.gLogger.error( 'Failed to execute corsika Application')
     jobReport.setApplicationStatus('Corsika Application: Failed')
     DIRAC.exit( -1 )
