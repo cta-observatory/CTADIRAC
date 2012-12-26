@@ -74,8 +74,9 @@ class CorsikaApp:
     status, stdout, stderr = ret['Value']
 
     self.log.notice( 'corsika status is:', status )
-
-    return DIRAC.S_OK()
+    
+    if status==0:
+      return DIRAC.S_OK()
 
   def setSoftwarePackage( self, softwarePackage = None ):
     """
