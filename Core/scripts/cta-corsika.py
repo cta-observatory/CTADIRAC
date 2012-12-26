@@ -123,9 +123,9 @@ def main():
 
   cs.csArguments = ['--run-number',run_number,'--run',run,template]
 
-  res = cs.execute()
-
-  if not res['OK']:
+  corsikaReturnCode = cs.execute()
+  
+  if corsikaReturnCode != 0:
     DIRAC.gLogger.error( 'Failed to execute corsika Application')
     jobReport.setApplicationStatus('Corsika Application: Failed')
     DIRAC.exit( -1 )
