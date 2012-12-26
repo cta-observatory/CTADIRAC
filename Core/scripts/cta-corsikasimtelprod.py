@@ -415,12 +415,14 @@ def fileToKWDict (fileName, keywordsList):
   dict={}
   configFile = open(fileName, "r").readlines()
   for line in configFile:
-    for word in line.split():
-      if word in keywordsList:
-        lineSplit = line.split()
-        lenLineSplit = len(lineSplit)
-        value = lineSplit[1:lenLineSplit]
-        dict[word] = value
+    if (len(line.split())>0):
+      for word in line.split():
+        if line.split()[0] is not '*' and word in keywordsList:
+          print 'This line is not commented and is in the key list:', line
+          lineSplit = line.split()
+          lenLineSplit = len(lineSplit)
+          value = lineSplit[1:lenLineSplit]
+          dict[word] = value
   return dict
 
 
