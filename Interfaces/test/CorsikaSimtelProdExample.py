@@ -13,7 +13,7 @@ Script.parseCommandLine()
 
 import os
 
-def CorsikaSimtelExample( args = None ) :
+def CorsikaSimtelProdExample( args = None ) :
   
   from CTADIRAC.Interfaces.API.CorsikaSimtelProdJob import CorsikaSimtelProdJob
   from DIRAC.Interfaces.API.Dirac import Dirac
