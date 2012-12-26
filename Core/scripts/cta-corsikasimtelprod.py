@@ -76,6 +76,18 @@ def main():
 
   Script.parseCommandLine()
   
+ ###########
+  ## Checking MD coherence
+  fc = FileCatalog('LcgFileCatalog')
+  res = fc._getCatalogConfigDetails('DIRACFileCatalog')
+  print 'DFC CatalogConfigDetails:',res
+  res = fc._getCatalogConfigDetails('LcgFileCatalog')
+  print 'LCG CatalogConfigDetails:',res
+  
+  global fcc
+  fcc = FileCatalogClient()
+  ############################
+  
   jobID = os.environ['JOBID']
   jobID = int( jobID )
   jobReport = JobReport( jobID )
@@ -114,17 +126,6 @@ def main():
     DIRAC.gLogger.error( 'Check Failed for software package:', package )
     DIRAC.gLogger.error( 'Software package not available')
     DIRAC.exit( -1 )  
-    
-  ###########
-  ## Checking MD coherence
-  fc = FileCatalog('LcgFileCatalog')
-  res = fc._getCatalogConfigDetails('DIRACFileCatalog')
-  print 'DFC CatalogConfigDetails:',res
-  res = fc._getCatalogConfigDetails('LcgFileCatalog')
-  print 'LCG CatalogConfigDetails:',res
-  
-  global fcc
-  fcc = FileCatalogClient()
   
   #############
   # CLAUDIA: simtelConfigFile should be built from ???
