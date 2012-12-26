@@ -1,4 +1,4 @@
-prodName Prodtest4
-corsikaProdVersion corsika-6990_ultra5_2000
-simtelProdVersion clean_23012012_ultra5_2000
+prodName Prodtest261212
+simtelExeName cta-ultra5
+pathroot /vo.cta.in2p3.fr/user/a/arrabito/DFC-test/MC/
 
