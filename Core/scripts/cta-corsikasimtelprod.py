@@ -347,9 +347,6 @@ def createGlobalsFromConfigFiles(prodConfigFileName, corsikaConfigFileName, simt
   corsikaKEYWORDS = ['THETAP', 'PHIP', 'PRMPAR', 'ESLOPE' , 'ERANGE', 'VIEWCONE','NSHOW','TELFIL']
   dictCorsikaKW = fileToKWDict(corsikaConfigFileName,corsikaKEYWORDS)
 
-  print 'dictCorsikaKW is:'
-  print dictCorsikaKW
-
   simtelKEYWORDS = ['env offset']
 
   # Formatting MD values retrieved in configFiles
@@ -418,7 +415,6 @@ def fileToKWDict (fileName, keywordsList):
     if (len(line.split())>0):
       for word in line.split():
         if line.split()[0] is not '*' and word in keywordsList:
-          print 'This line is not commented and is in the key list:', line
           lineSplit = line.split()
           lenLineSplit = len(lineSplit)
           value = lineSplit[1:lenLineSplit]
