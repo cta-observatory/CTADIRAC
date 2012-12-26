@@ -92,7 +92,10 @@ def main():
         continue
       if installSoftwarePackage( package, workingArea() )['OK']:
       ############## compile #############################
-        cmdTuple = ['./build_all','ultra','qgs2']
+        if version == 'prod-2_21122012':
+          cmdTuple = ['./build_all','prod2','qgs2']
+        else:  
+          cmdTuple = ['./build_all','ultra','qgs2']
         ret = systemCall( 0, cmdTuple, sendOutput)
         if not ret['OK']:
           DIRAC.gLogger.error( 'Failed to execute build')
