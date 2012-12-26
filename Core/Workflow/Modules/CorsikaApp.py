@@ -75,9 +75,8 @@ class CorsikaApp:
 
     self.log.notice( 'corsika status is:', status )
     
-    if status==0:
-      return DIRAC.S_OK()
-
+    return status
+    
   def setSoftwarePackage( self, softwarePackage = None ):
     """
       Define the software package or try to get it from the job.info file
