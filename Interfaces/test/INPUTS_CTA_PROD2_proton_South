@@ -12,8 +12,8 @@
 *
 RUNNR   1                              // Number of run, to be auto-numbered by job submission
 EVTNR   1                              // Number of first shower event (usually 1)
-* NSHOW   250000                          // number of showers to generate
-NSHOW   100                             // for test only
+* NSHOW   10                          // number of showers to generate
+NSHOW   25000                             // for test only
 *
 * [ Random number generator: 4 sequences used in IACT mode ]
 *
@@ -366,7 +366,7 @@ TELFIL cta-prod2-test.corsika.gz       // If telescope simulation not done direc
 *
 * [ IACT tuning parameters ]
 *
-IACT SPLIT_AUTO 15M                    // Split data with more than 15 million bunches
+IACT SPLIT_AUTO 8M                    // Split data with more than 15 million bunches
 IACT IO_BUFFER 800MB                   // At 32 bytes per bunch this could be up to 500 MB
 IACT MAX_BUNCHES 1000000               // Let photon bunch thinning set in earlier.
 *
