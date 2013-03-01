@@ -343,7 +343,7 @@ zcat %s | $SIM_TELARRAY_PATH/run_sim_%s""" % (corsikaFileName, simtelExecName))
   ret = dirac.addFile( simtelOutLogFileLFN, simtelLogFileName, storage_element )
 
   if ret['OK']:
-    if len(ret['Value']['Successful'][simtelOutLogFileLFNl].keys())!=2:
+    if len(ret['Value']['Successful'][simtelOutLogFileLFN].keys())!=2:
       DIRAC.gLogger.error('Error during addFile: put or register missing')
       jobReport.setApplicationStatus('OutputData Upload Error')
       DIRAC.exit( -1 )
@@ -356,7 +356,7 @@ zcat %s | $SIM_TELARRAY_PATH/run_sim_%s""" % (corsikaFileName, simtelExecName))
   ret = dirac.addFile( simtelOutHistFileLFN, simtelHistFileName, storage_element )
 
   if ret['OK']:
-    if len(ret['Value']['Successful'][simtelOutHistFileLFNl].keys())!=2:
+    if len(ret['Value']['Successful'][simtelOutHistFileLFN].keys())!=2:
       DIRAC.gLogger.error('Error during addFile: put or register missing')
       jobReport.setApplicationStatus('OutputData Upload Error')
       DIRAC.exit( -1 )
