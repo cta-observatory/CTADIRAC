@@ -8,7 +8,9 @@ Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      '  %s [option|cfgfile] ... [runMin] ...' % Script.scriptName,
                                      'Arguments:',
                                      '  runMin:     Min runNumber',
-                                     '  runMax:     Max runNumber' ] ) )
+                                     '  runMax:     Max runNumber',
+                                     '  cfgFile:    Corsika config file',
+                                     '  storageElement: Storage Element'] ) )
 Script.parseCommandLine()
 
 import os
@@ -25,15 +27,20 @@ def CorsikaSimtelProdExample( args = None ) :
 
   mode = 'corsika_simtel'
 #  mode = 'corsika_standalone'
-  storage_element = 'CC-IN2P3-Disk'
 
   ilist = []
 
-  if (len(args) != 2):
+  if (len(args) != 3 and len(args) != 4):
     Script.showHelp()
+  
+  if (len(args)==4):
+    storage_element = args[3]
+  else :
+    storage_element = 'LUPM-Disk'
 
   runMin = int(args[0])
   runMax = int(args[1])
+  cfgfile = args[2]
 
   for i in range(runMin,runMax+1):
     run_number = '%06d' % i
@@ -42,9 +49,11 @@ def CorsikaSimtelProdExample( args = None ) :
   j.setGenericParametricInput(ilist)                                                                                         
   j.setName('run%s')
   
+  j.setJobGroup(cfgfile[7:])
+
   j.setInputSandbox( [ 'INPUTS_CTA_PROD2_proton_South','fileCatalog.cfg','prodConfigFile'] )
 
-  j.setParameters(['fileCatalog.cfg','--template','INPUTS_CTA_PROD2_proton_South','--mode',mode,'-D',storage_element])
+  j.setParameters(['fileCatalog.cfg','--template',cfgfile,'--mode',mode,'-D',storage_element])
 
   j.setOutputSandbox( ['corsika_autoinputs.log', 'simtel.log'])
 
