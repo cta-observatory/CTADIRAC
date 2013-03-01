@@ -35,6 +35,9 @@ def CorsikaSimtelProdExample( args = None ) :
   
   if (len(args)==4):
     storage_element = args[3]
+    if storage_element not in ('CC-IN2P3-Tape','CYF-STORM-Disk','DESY-ZN-Disk'):
+      print 'Storage element is not valid'
+      Script.showHelp()
   else :
     storage_element = 'LUPM-Disk'
 
