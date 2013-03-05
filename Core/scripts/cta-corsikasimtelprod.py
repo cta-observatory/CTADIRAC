@@ -207,11 +207,18 @@ def main():
   f.close()
 
   DIRAC.gLogger.notice( 'Put and register corsika File in LFC and DFC:', corsikaOutFileLFN)
-  result = dirac.addFile(corsikaOutFileLFN, corsikaFileName, storage_element)  
-  if not result['OK']:
-    DIRAC.gLogger.error('Error during addFile call:', result['Message'])
+  ret = dirac.addFile(corsikaOutFileLFN, corsikaFileName, storage_element)  
+  
+  if ret['OK']:
+    if len(ret['Value']['Successful'][simtelOutHistFileLFN].keys())!=2:
+      DIRAC.gLogger.error('Error during addFile: put or register missing')
+      jobReport.setApplicationStatus('OutputData Upload Error')
+      DIRAC.exit( -1 )
+  else:
+    DIRAC.gLogger.error('Error during addFile call:', ret['Message'])
+    jobReport.setApplicationStatus('OutputData Upload Error')
     DIRAC.exit( -1 )
-
+    
   # put and register corsikaTarFile:
   corsikaTarFileDir = "%s/%s/Log/%s" % (corsikaDirPath,particle,runNumSeriesDir)
   corsikaTarFileLFN = "%s/%s" % (corsikaTarFileDir,corsikaTarName)
@@ -221,9 +228,16 @@ def main():
     storage_element = 'CC-IN2P3-Disk'
 
   DIRAC.gLogger.notice( 'Put and register corsikaTar File in LFC and DFC:', corsikaTarFileLFN)
-  result = dirac.addFile(corsikaTarFileLFN, corsikaTarName, storage_element)
-  if not result['OK']:
-    DIRAC.gLogger.error('Error during addFile call:', result['Message'])
+  ret = dirac.addFile(corsikaTarFileLFN, corsikaTarName, storage_element)
+  
+  if ret['OK']:
+    if len(ret['Value']['Successful'][simtelOutHistFileLFN].keys())!=2:
+      DIRAC.gLogger.error('Error during addFile: put or register missing')
+      jobReport.setApplicationStatus('OutputData Upload Error')
+      DIRAC.exit( -1 )
+  else:
+    DIRAC.gLogger.error('Error during addFile call:', ret['Message'])
+    jobReport.setApplicationStatus('OutputData Upload Error')
     DIRAC.exit( -1 )
       
   if newCorsikaRunNumberSeriesDir:
