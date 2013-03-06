@@ -210,7 +210,7 @@ def main():
   ret = dirac.addFile(corsikaOutFileLFN, corsikaFileName, storage_element)  
   
   if ret['OK']:
-    if len(ret['Value']['Successful'][simtelOutHistFileLFN].keys())!=2:
+    if len(ret['Value']['Successful'][corsikaOutFileLFN].keys())!=2:
       DIRAC.gLogger.error('Error during addFile: put or register missing')
       jobReport.setApplicationStatus('OutputData Upload Error')
       DIRAC.exit( -1 )
@@ -231,7 +231,7 @@ def main():
   ret = dirac.addFile(corsikaTarFileLFN, corsikaTarName, storage_element)
   
   if ret['OK']:
-    if len(ret['Value']['Successful'][simtelOutHistFileLFN].keys())!=2:
+    if len(ret['Value']['Successful'][corsikaTarFileLFN].keys())!=2:
       DIRAC.gLogger.error('Error during addFile: put or register missing')
       jobReport.setApplicationStatus('OutputData Upload Error')
       DIRAC.exit( -1 )
