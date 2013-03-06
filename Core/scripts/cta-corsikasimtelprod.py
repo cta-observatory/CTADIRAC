@@ -214,9 +214,10 @@ def main():
       DIRAC.gLogger.error('Error during addFile: put or register missing')
       jobReport.setApplicationStatus('OutputData Upload Error')
       ############# restablishing catalogs coherence ##########################
+      DIRAC.gLogger.notice('Try to restablish Catalogs coherence')
       res = fcc.getReplicas(corsikaOutFileLFN)
       if len(res['Value']['Successful'])!=0:
-        print corsikaOutFileLFN + ' found in DFC'
+        DIRAC.gLogger.notice('Found in DFC',corsikaOutFileLFN )
         res = fcc.removeFile(corsikaOutFileLFN)
         print 'removing res', res
       DIRAC.exit( -1 )
@@ -240,6 +241,13 @@ def main():
     if len(ret['Value']['Successful'][corsikaTarFileLFN].keys())!=2:
       DIRAC.gLogger.error('Error during addFile: put or register missing')
       jobReport.setApplicationStatus('OutputData Upload Error')
+      ############# restablishing catalogs coherence ##########################
+      DIRAC.gLogger.notice('Try to restablish Catalogs coherence')
+      res = fcc.getReplicas(corsikaTarFileLFN)
+      if len(res['Value']['Successful'])!=0:
+        DIRAC.gLogger.notice('Found in DFC',corsikaTarFileLFN )
+        res = fcc.removeFile(corsikaTarFileLFN)
+        print 'removing res', res
       DIRAC.exit( -1 )
   else:
     DIRAC.gLogger.error('Error during addFile call:', ret['Message'])
@@ -352,7 +360,14 @@ zcat %s | $SIM_TELARRAY_PATH/run_sim_%s""" % (corsikaFileName, simtelExecName))
   if ret['OK']:
     if len(ret['Value']['Successful'][simtelOutFileLFN].keys())!=2:
       DIRAC.gLogger.error('Error during addFile: put or register missing')
-      jobReport.setApplicationStatus('OutputData Upload Error')
+      jobReport.setApplicationStatus('OutputData Upload Error')      
+      ############# restablishing catalogs coherence ##########################
+      DIRAC.gLogger.notice('Try to restablish Catalogs coherence')
+      res = fcc.getReplicas(simtelOutFileLFN)
+      if len(res['Value']['Successful'])!=0:
+        DIRAC.gLogger.notice('Found in DFC',simtelOutFileLFN )
+        res = fcc.removeFile(simtelOutFileLFN)
+        print 'removing res', res 
       DIRAC.exit( -1 )
   else:
     DIRAC.gLogger.error('Error during addFile call:', ret['Message'])
@@ -366,6 +381,13 @@ zcat %s | $SIM_TELARRAY_PATH/run_sim_%s""" % (corsikaFileName, simtelExecName))
     if len(ret['Value']['Successful'][simtelOutLogFileLFN].keys())!=2:
       DIRAC.gLogger.error('Error during addFile: put or register missing')
       jobReport.setApplicationStatus('OutputData Upload Error')
+      ############# restablishing catalogs coherence ##########################
+      DIRAC.gLogger.notice('Try to restablish Catalogs coherence')
+      res = fcc.getReplicas(simtelOutLogFileLFN)
+      if len(res['Value']['Successful'])!=0:
+        DIRAC.gLogger.notice('Found in DFC',simtelOutLogFileLFN )
+        res = fcc.removeFile(simtelOutLogFileLFN)
+        print 'removing res', res 
       DIRAC.exit( -1 )
   else:
     DIRAC.gLogger.error('Error during addFile call:', ret['Message'])
@@ -379,6 +401,13 @@ zcat %s | $SIM_TELARRAY_PATH/run_sim_%s""" % (corsikaFileName, simtelExecName))
     if len(ret['Value']['Successful'][simtelOutHistFileLFN].keys())!=2:
       DIRAC.gLogger.error('Error during addFile: put or register missing')
       jobReport.setApplicationStatus('OutputData Upload Error')
+      ############# restablishing catalogs coherence ##########################
+      DIRAC.gLogger.notice('Try to restablish Catalogs coherence')
+      res = fcc.getReplicas(simtelOutHistFileLFN)
+      if len(res['Value']['Successful'])!=0:
+        DIRAC.gLogger.notice('Found in DFC',simtelOutHistFileLFN)
+        res = fcc.removeFile(simtelOutHistFileLFN)
+        print 'removing res', res 
       DIRAC.exit( -1 )
   else:
     DIRAC.gLogger.error('Error during addFile call:', ret['Message'])
