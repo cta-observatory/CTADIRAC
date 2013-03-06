@@ -213,6 +213,12 @@ def main():
     if len(ret['Value']['Successful'][corsikaOutFileLFN].keys())!=2:
       DIRAC.gLogger.error('Error during addFile: put or register missing')
       jobReport.setApplicationStatus('OutputData Upload Error')
+      ############# restablishing catalogs coherence ##########################
+      res = fcc.getReplicas(corsikaOutFileLFN)
+      if len(res['Value']['Successful'])!=0:
+        print corsikaOutFileLFN + ' found in DFC'
+        res = fcc.removeFile(corsikaOutFileLFN)
+        print 'removing res', res
       DIRAC.exit( -1 )
   else:
     DIRAC.gLogger.error('Error during addFile call:', ret['Message'])
