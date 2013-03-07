@@ -447,8 +447,8 @@ def CheckCatalogCoherence(fileLFN):
     DIRAC.gLogger.error('Catalogs are not coherent: removing file from LFC',fileLFN)
     res = fcL.removeFile(fileLFN)
     return DIRAC.S_ERROR()
-   elif (ndfc==0 and nlfc==0):
-    return DIRAC.S_ERROR()
+  elif (ndfc==0 and nlfc==0):
+   return DIRAC.S_ERROR()
     
   return DIRAC.S_OK()
      
