@@ -211,6 +211,7 @@ def main():
   ret = dirac.addFile(corsikaOutFileLFN, corsikaFileName, storage_element)  
   
   res = CheckCatalogCoherence(corsikaOutFileLFN)
+  print res
   if res != DIRAC.S_OK:
     DIRAC.gLogger.error('Job failed: Catalog Coherence problem found')
     jobReport.setApplicationStatus('OutputData Upload Error')
