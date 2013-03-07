@@ -64,7 +64,7 @@ def main():
   from DIRAC.Resources.Catalog.FileCatalog import FileCatalog
 
   Script.parseCommandLine()
-  global fcc, storage_element
+  global fcc, fcL, storage_element
   
   from CTADIRAC.Core.Workflow.Modules.CorsikaApp import CorsikaApp
   from CTADIRAC.Core.Utilities.SoftwareInstallation import checkSoftwarePackage
@@ -210,27 +210,7 @@ def main():
   DIRAC.gLogger.notice( 'Put and register corsika File in LFC and DFC:', corsikaOutFileLFN)
   ret = dirac.addFile(corsikaOutFileLFN, corsikaFileName, storage_element)  
   
-####Checking and restablishing catalog coherence #####################  
-  res = fcc.getReplicas(corsikaOutFileLFN)  
-  ndfc = len(res['Value']['Successful'])
-  if ndfc!=0:
-    DIRAC.gLogger.notice('Found in DFC',corsikaOutFileLFN)
-  res = fcL.getReplicas(corsikaOutFileLFN)
-  nlfc = len(res['Value']['Successful'])
-  if nlfc!=0:
-    DIRAC.gLogger.notice('Found in LFC',corsikaOutFileLFN )
-  if ndfc>nlfc:
-    DIRAC.gLogger.error('Catalogs are not coherent: removing file from DFC',corsikaOutFileLFN)
-    res = fcc.removeFile(corsikaOutFileLFN)
-  elif ndfc<nlfc:
-    DIRAC.gLogger.error('Catalogs are not coherent: removing file from LFC',corsikaOutFileLFN)
-    res = fcL.removeFile(corsikaOutFileLFN)
-     
-  if not ret['OK']:
-    DIRAC.gLogger.error('Error during addFile call:', ret['Message'])
-    jobReport.setApplicationStatus('OutputData Upload Error')
-    DIRAC.exit( -1 )
-######################################################################
+  CheckCatalogCoherence(corsikaOutFileLFN)
     
   # put and register corsikaTarFile:
   corsikaTarFileDir = "%s/%s/Log/%s" % (corsikaDirPath,particle,runNumSeriesDir)
@@ -244,20 +224,7 @@ def main():
   ret = dirac.addFile(corsikaTarFileLFN, corsikaTarName, storage_element)
   
 ####Checking and restablishing catalog coherence #####################  
-  res = fcc.getReplicas(corsikaTarFileLFN)  
-  ndfc = len(res['Value']['Successful'])
-  if ndfc!=0:
-    DIRAC.gLogger.notice('Found in DFC',corsikaTarFileLFN)
-  res = fcL.getReplicas(corsikaTarFileLFN)
-  nlfc = len(res['Value']['Successful'])
-  if nlfc!=0:
-    DIRAC.gLogger.notice('Found in LFC',corsikaTarFileLFN)
-  if ndfc>nlfc:
-    DIRAC.gLogger.error('Catalogs are not coherent: removing file from DFC',corsikaTarFileLFN)
-    res = fcc.removeFile(corsikaTarFileLFN)
-  elif ndfc<nlfc:
-    DIRAC.gLogger.error('Catalogs are not coherent: removing file from LFC',corsikaTarFileLFN)
-    res = fcL.removeFile(corsikaTarFileLFN)
+  CheckCatalogCoherence(corsikaTarFileLFN)
      
   if not ret['OK']:
     DIRAC.gLogger.error('Error during addFile call:', ret['Message'])
@@ -368,21 +335,7 @@ zcat %s | $SIM_TELARRAY_PATH/run_sim_%s""" % (corsikaFileName, simtelExecName))
   DIRAC.gLogger.notice( 'Put and register simtel File in LFC and DFC:', simtelOutFileLFN)
   ret = dirac.addFile( simtelOutFileLFN, simtelFileName, storage_element )   
 
-####Checking and restablishing catalog coherence #####################  
-  res = fcc.getReplicas(simtelOutFileLFN)  
-  ndfc = len(res['Value']['Successful'])
-  if ndfc!=0:
-    DIRAC.gLogger.notice('Found in DFC',simtelOutFileLFN)
-  res = fcL.getReplicas(simtelOutFileLFN)
-  nlfc = len(res['Value']['Successful'])
-  if nlfc!=0:
-    DIRAC.gLogger.notice('Found in LFC',simtelOutFileLFN )
-  if ndfc>nlfc:
-    DIRAC.gLogger.error('Catalogs are not coherent: removing file from DFC',simtelOutFileLFN)
-    res = fcc.removeFile(simtelOutFileLFN)
-  elif ndfc<nlfc:
-    DIRAC.gLogger.error('Catalogs are not coherent: removing file from LFC',simtelOutFileLFN)
-    res = fcL.removeFile(simtelOutFileLFN)
+  CheckCatalogCoherence(simtelOutFileLFN)
      
   if not ret['OK']:
     DIRAC.gLogger.error('Error during addFile call:', ret['Message'])
@@ -393,21 +346,7 @@ zcat %s | $SIM_TELARRAY_PATH/run_sim_%s""" % (corsikaFileName, simtelExecName))
   DIRAC.gLogger.notice( 'Put and register simtel Log File in LFC and DFC:', simtelOutLogFileLFN)
   ret = dirac.addFile( simtelOutLogFileLFN, simtelLogFileName, storage_element )
 
-####Checking and restablishing catalog coherence #####################  
-  res = fcc.getReplicas(simtelOutLogFileLFN)  
-  ndfc = len(res['Value']['Successful'])
-  if ndfc!=0:
-    DIRAC.gLogger.notice('Found in DFC',simtelOutLogFileLFN )
-  res = fcL.getReplicas(simtelOutLogFileLFN)
-  nlfc = len(res['Value']['Successful'])
-  if nlfc!=0:
-    DIRAC.gLogger.notice('Found in LFC',simtelOutLogFileLFN )
-  if ndfc>nlfc:
-    DIRAC.gLogger.error('Catalogs are not coherent: removing file from DFC',simtelOutLogFileLFN)
-    res = fcc.removeFile(simtelOutLogFileLFN)
-  elif ndfc<nlfc:
-    DIRAC.gLogger.error('Catalogs are not coherent: removing file from LFC',simtelOutLogFileLFN)
-    res = fcL.removeFile(simtelOutLogFileLFN)
+  CheckCatalogCoherence(simtelOutLogFileLFN)
      
   if not ret['OK']:
     DIRAC.gLogger.error('Error during addFile call:', ret['Message'])
@@ -418,21 +357,7 @@ zcat %s | $SIM_TELARRAY_PATH/run_sim_%s""" % (corsikaFileName, simtelExecName))
   DIRAC.gLogger.notice( 'Put and register simtel Histo File in LFC and DFC:', simtelOutHistFileLFN)
   ret = dirac.addFile( simtelOutHistFileLFN, simtelHistFileName, storage_element )
 
-####Checking and restablishing catalog coherence #####################  
-  res = fcc.getReplicas(simtelOutHistFileLFN)  
-  ndfc = len(res['Value']['Successful'])
-  if ndfc!=0:
-    DIRAC.gLogger.notice('Found in DFC',simtelOutHistFileLFN)
-  res = fcL.getReplicas(simtelOutHistFileLFN)
-  nlfc = len(res['Value']['Successful'])
-  if nlfc!=0:
-    DIRAC.gLogger.notice('Found in LFC',simtelOutHistFileLFN )
-  if ndfc>nlfc:
-    DIRAC.gLogger.error('Catalogs are not coherent: removing file from DFC',simtelOutHistFileLFN)
-    res = fcc.removeFile(simtelOutHistFileLFN)
-  elif ndfc<nlfc:
-    DIRAC.gLogger.error('Catalogs are not coherent: removing file from LFC',simtelOutHistFileLFN)
-    res = fcL.removeFile(simtelOutHistFileLFN)
+  CheckCatalogCoherence(simtelOutHistFileLFN)
      
   if not ret['OK']:
     DIRAC.gLogger.error('Error during addFile call:', ret['Message'])
@@ -481,6 +406,29 @@ zcat %s | $SIM_TELARRAY_PATH/run_sim_%s""" % (corsikaFileName, simtelExecName))
     print 'ResultSetMetadata:',result['Message']
     
   DIRAC.exit()
+
+
+def CheckCatalogCoherence(fileLFN):
+####Checking and restablishing catalog coherence #####################  
+  res = fcc.getReplicas(fileLFN)  
+  ndfc = len(res['Value']['Successful'])
+  if ndfc!=0:
+    DIRAC.gLogger.notice('Found in DFC',fileLFN)
+  res = fcL.getReplicas(fileLFN)
+  nlfc = len(res['Value']['Successful'])
+  if nlfc!=0:
+    DIRAC.gLogger.notice('Found in LFC',fileLFN)
+  if ndfc>nlfc:
+    DIRAC.gLogger.error('Catalogs are not coherent: removing file from DFC',fileLFN)
+    jobReport.setApplicationStatus('OutputData Upload Error')
+    res = fcc.removeFile(fileLFN)
+    DIRAC.exit( -1 )
+  elif ndfc<nlfc:
+    DIRAC.gLogger.error('Catalogs are not coherent: removing file from LFC',fileLFN)
+    res = fcL.removeFile(fileLFN)
+    jobReport.setApplicationStatus('OutputData Upload Error')
+    DIRAC.exit( -1 )
+     
 
 def createGlobalsFromConfigFiles(prodConfigFileName, corsikaConfigFileName, simtelConfigFileName):
 
