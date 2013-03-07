@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 """
-  Submit a Corsika Example Job
+  Submit a Simtel Example Job
 """
 from DIRAC.Core.Base import Script
 Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      'Usage:',
-                                     '  %s [option|cfgfile] ... [runMin] ...' % Script.scriptName,
+                                     '  %s [option|cfgfile] ... [inputfilelist] ...' % Script.scriptName,
                                      'Arguments:',
+                                     '  inputfilelist: Input File List',
                                      '  storageElement: Storage Element'] ) )
 Script.parseCommandLine()
 
@@ -17,9 +18,15 @@ def SimtelProdExample( args = None ) :
   from CTADIRAC.Interfaces.API.SimtelProdJob import SimtelProdJob
   from DIRAC.Interfaces.API.Dirac import Dirac
 
+  if (len(args)<1 or len(args)>2):
+    Script.showHelp()
 
-  LFN_file = 'corsika_lfn.list'
+  if (len(args)==2):
+    storage_element = args[1]
+  else :
+    storage_element = 'LUPM-Disk'
 
+  LFN_file = args[0]
   f = open(LFN_file,'r')
 
   infileLFNList = []
@@ -27,29 +34,24 @@ def SimtelProdExample( args = None ) :
     infileLFN = line.strip()
     infileLFNList.append(infileLFN)
 
-  
   j = SimtelProdJob()
+
   j.setVersion('prod-2_21122012')
 
-  j.setExecutable('cta-ultra5') 
+  j.setExecutable('cta-ultra5')
 
-  if (len(args)==1):
-    storage_element = args[0]
-  else :
-    storage_element = 'LUPM-Disk'
+  j.setParametricInputData(infileLFNList)
 
-  j.setParametricInputData(infileLFNList) 
+  j.setName('repro')
 
-  j.setName('repro%s')
-
-  j.setInputSandbox( [ 'fileCatalog.cfg'] ) 
+  j.setInputSandbox( [ 'fileCatalog.cfg'] )
 
   j.setParameters(['fileCatalog.cfg','-D',storage_element])
   j.setOutputSandbox( ['simtel.log'])
 
   j.setCPUTime(100000)
 
-  Script.gLogger.notice( j._toJDL() )
+  Script.gLogger.info( j._toJDL() )
   Dirac().submit( j )
 
 
