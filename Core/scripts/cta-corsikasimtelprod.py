@@ -212,7 +212,7 @@ def main():
   
   res = CheckCatalogCoherence(corsikaOutFileLFN)
   if res != DIRAC.S_OK:
-    DIRAC.gLogger.error('Catalog Coherence problem')
+    DIRAC.gLogger.error('Job failed: Catalog Coherence problem found')
     jobReport.setApplicationStatus('OutputData Upload Error')
     DIRAC.exit( -1 )
     
@@ -230,7 +230,7 @@ def main():
 ####Checking and restablishing catalog coherence #####################  
   res = CheckCatalogCoherence(corsikaTarFileLFN)
   if res != DIRAC.S_OK:
-    DIRAC.gLogger.error('Catalog Coherence problem')
+    DIRAC.gLogger.error('Job failed: Catalog Coherence problem found')
     jobReport.setApplicationStatus('OutputData Upload Error')
     DIRAC.exit( -1 )
      
@@ -345,7 +345,7 @@ zcat %s | $SIM_TELARRAY_PATH/run_sim_%s""" % (corsikaFileName, simtelExecName))
 
   res = CheckCatalogCoherence(simtelOutFileLFN)
   if res != DIRAC.S_OK:
-    DIRAC.gLogger.error('Catalog Coherence problem')
+    DIRAC.gLogger.error('Job failed: Catalog Coherence problem found')
     jobReport.setApplicationStatus('OutputData Upload Error')
     DIRAC.exit( -1 )
     
@@ -361,7 +361,7 @@ zcat %s | $SIM_TELARRAY_PATH/run_sim_%s""" % (corsikaFileName, simtelExecName))
 
   res = CheckCatalogCoherence(simtelOutLogFileLFN)
   if res != DIRAC.S_OK:
-    DIRAC.gLogger.error('Catalog Coherence problem')
+    DIRAC.gLogger.error('Job failed: Catalog Coherence problem found')
     jobReport.setApplicationStatus('OutputData Upload Error')
     DIRAC.exit( -1 )
      
@@ -376,7 +376,7 @@ zcat %s | $SIM_TELARRAY_PATH/run_sim_%s""" % (corsikaFileName, simtelExecName))
 
   res = CheckCatalogCoherence(simtelOutHistFileLFN)
   if res != DIRAC.S_OK:
-    DIRAC.gLogger.error('Catalog Coherence problem')
+    DIRAC.gLogger.error('Job failed: Catalog Coherence problem found')
     jobReport.setApplicationStatus('OutputData Upload Error')
     DIRAC.exit( -1 )
      
