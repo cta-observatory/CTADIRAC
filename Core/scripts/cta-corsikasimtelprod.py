@@ -210,7 +210,11 @@ def main():
   DIRAC.gLogger.notice( 'Put and register corsika File in LFC and DFC:', corsikaOutFileLFN)
   ret = dirac.addFile(corsikaOutFileLFN, corsikaFileName, storage_element)  
   
-  CheckCatalogCoherence(corsikaOutFileLFN)
+  res = CheckCatalogCoherence(corsikaOutFileLFN)
+  if res != DIRAC.S_OK:
+    DIRAC.gLogger.error('Catalog Coherence problem')
+    jobReport.setApplicationStatus('OutputData Upload Error')
+    DIRAC.exit( -1 )
     
   # put and register corsikaTarFile:
   corsikaTarFileDir = "%s/%s/Log/%s" % (corsikaDirPath,particle,runNumSeriesDir)
@@ -224,7 +228,11 @@ def main():
   ret = dirac.addFile(corsikaTarFileLFN, corsikaTarName, storage_element)
   
 ####Checking and restablishing catalog coherence #####################  
-  CheckCatalogCoherence(corsikaTarFileLFN)
+  res = CheckCatalogCoherence(corsikaTarFileLFN)
+  if res != DIRAC.S_OK:
+    DIRAC.gLogger.error('Catalog Coherence problem')
+    jobReport.setApplicationStatus('OutputData Upload Error')
+    DIRAC.exit( -1 )
      
   if not ret['OK']:
     DIRAC.gLogger.error('Error during addFile call:', ret['Message'])
@@ -335,7 +343,12 @@ zcat %s | $SIM_TELARRAY_PATH/run_sim_%s""" % (corsikaFileName, simtelExecName))
   DIRAC.gLogger.notice( 'Put and register simtel File in LFC and DFC:', simtelOutFileLFN)
   ret = dirac.addFile( simtelOutFileLFN, simtelFileName, storage_element )   
 
-  CheckCatalogCoherence(simtelOutFileLFN)
+  res = CheckCatalogCoherence(simtelOutFileLFN)
+  if res != DIRAC.S_OK:
+    DIRAC.gLogger.error('Catalog Coherence problem')
+    jobReport.setApplicationStatus('OutputData Upload Error')
+    DIRAC.exit( -1 )
+    
      
   if not ret['OK']:
     DIRAC.gLogger.error('Error during addFile call:', ret['Message'])
@@ -346,7 +359,11 @@ zcat %s | $SIM_TELARRAY_PATH/run_sim_%s""" % (corsikaFileName, simtelExecName))
   DIRAC.gLogger.notice( 'Put and register simtel Log File in LFC and DFC:', simtelOutLogFileLFN)
   ret = dirac.addFile( simtelOutLogFileLFN, simtelLogFileName, storage_element )
 
-  CheckCatalogCoherence(simtelOutLogFileLFN)
+  res = CheckCatalogCoherence(simtelOutLogFileLFN)
+  if res != DIRAC.S_OK:
+    DIRAC.gLogger.error('Catalog Coherence problem')
+    jobReport.setApplicationStatus('OutputData Upload Error')
+    DIRAC.exit( -1 )
      
   if not ret['OK']:
     DIRAC.gLogger.error('Error during addFile call:', ret['Message'])
@@ -357,7 +374,11 @@ zcat %s | $SIM_TELARRAY_PATH/run_sim_%s""" % (corsikaFileName, simtelExecName))
   DIRAC.gLogger.notice( 'Put and register simtel Histo File in LFC and DFC:', simtelOutHistFileLFN)
   ret = dirac.addFile( simtelOutHistFileLFN, simtelHistFileName, storage_element )
 
-  CheckCatalogCoherence(simtelOutHistFileLFN)
+  res = CheckCatalogCoherence(simtelOutHistFileLFN)
+  if res != DIRAC.S_OK:
+    DIRAC.gLogger.error('Catalog Coherence problem')
+    jobReport.setApplicationStatus('OutputData Upload Error')
+    DIRAC.exit( -1 )
      
   if not ret['OK']:
     DIRAC.gLogger.error('Error during addFile call:', ret['Message'])
@@ -420,14 +441,16 @@ def CheckCatalogCoherence(fileLFN):
     DIRAC.gLogger.notice('Found in LFC',fileLFN)
   if ndfc>nlfc:
     DIRAC.gLogger.error('Catalogs are not coherent: removing file from DFC',fileLFN)
-    jobReport.setApplicationStatus('OutputData Upload Error')
     res = fcc.removeFile(fileLFN)
-    DIRAC.exit( -1 )
+    return DIRAC.S_ERROR()
   elif ndfc<nlfc:
     DIRAC.gLogger.error('Catalogs are not coherent: removing file from LFC',fileLFN)
     res = fcL.removeFile(fileLFN)
-    jobReport.setApplicationStatus('OutputData Upload Error')
-    DIRAC.exit( -1 )
+    return DIRAC.S_ERROR()
+   elif (ndfc==0 and nlfc==0):
+    return DIRAC.S_ERROR()
+    
+  return DIRAC.S_OK()
      
 
 def createGlobalsFromConfigFiles(prodConfigFileName, corsikaConfigFileName, simtelConfigFileName):
