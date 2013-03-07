@@ -211,11 +211,16 @@ def main():
   ret = dirac.addFile(corsikaOutFileLFN, corsikaFileName, storage_element)  
   
   res = CheckCatalogCoherence(corsikaOutFileLFN)
-  print res
+
   if res != DIRAC.S_OK:
     DIRAC.gLogger.error('Job failed: Catalog Coherence problem found')
     jobReport.setApplicationStatus('OutputData Upload Error')
     DIRAC.exit( -1 )
+    
+  if not ret['OK']:
+    DIRAC.gLogger.error('Error during addFile call:', ret['Message'])
+    jobReport.setApplicationStatus('OutputData Upload Error')
+    DIRAC.exit( -1 )  
     
   # put and register corsikaTarFile:
   corsikaTarFileDir = "%s/%s/Log/%s" % (corsikaDirPath,particle,runNumSeriesDir)
@@ -350,7 +355,6 @@ zcat %s | $SIM_TELARRAY_PATH/run_sim_%s""" % (corsikaFileName, simtelExecName))
     jobReport.setApplicationStatus('OutputData Upload Error')
     DIRAC.exit( -1 )
     
-     
   if not ret['OK']:
     DIRAC.gLogger.error('Error during addFile call:', ret['Message'])
     jobReport.setApplicationStatus('OutputData Upload Error')
