@@ -434,11 +434,11 @@ def CheckCatalogCoherence(fileLFN):
   res = fcc.getReplicas(fileLFN)  
   ndfc = len(res['Value']['Successful'])
   if ndfc!=0:
-    DIRAC.gLogger.notice('Found in DFC',fileLFN)
+    DIRAC.gLogger.notice('Found in DFC:',fileLFN)
   res = fcL.getReplicas(fileLFN)
   nlfc = len(res['Value']['Successful'])
   if nlfc!=0:
-    DIRAC.gLogger.notice('Found in LFC',fileLFN)
+    DIRAC.gLogger.notice('Found in LFC:',fileLFN)
   if ndfc>nlfc:
     DIRAC.gLogger.error('Catalogs are not coherent: removing file from DFC',fileLFN)
     res = fcc.removeFile(fileLFN)
@@ -448,6 +448,7 @@ def CheckCatalogCoherence(fileLFN):
     res = fcL.removeFile(fileLFN)
     return DIRAC.S_ERROR()
   elif (ndfc==0 and nlfc==0):
+   DIRAC.gLogger.error('File not found in DFC and LFC:',fileLFN)
    return DIRAC.S_ERROR()
     
   return DIRAC.S_OK()
