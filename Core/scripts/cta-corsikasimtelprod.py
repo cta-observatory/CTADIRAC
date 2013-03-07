@@ -378,43 +378,24 @@ zcat %s | $SIM_TELARRAY_PATH/run_sim_%s""" % (corsikaFileName, simtelExecName))
   DIRAC.gLogger.notice( 'Put and register simtel Log File in LFC and DFC:', simtelOutLogFileLFN)
   ret = dirac.addFile( simtelOutLogFileLFN, simtelLogFileName, storage_element )
 
-  if ret['OK']:
+#  if ret['OK']:
 ################################################    
-    res = fcc.getReplicas(simtelOutLogFileLFN)  
-    ndfc = len(res['Value']['Successful'])
-    if ndfc!=0:
-      DIRAC.gLogger.notice('Found in DFC',simtelOutLogFileLFN )
-    res = fcL.getReplicas(simtelOutLogFileLFN)
-    nlfc = len(res['Value']['Successful'])
-    if nlfc!=0:
-      DIRAC.gLogger.notice('Found in LFC',simtelOutLogFileLFN )
-    if ndfc>nlfc:
-      DIRAC.gLogger.error('Catalogs are not coherent: removing file from DFC',simtelOutLogFileLFN)
-      res = fcc.removeFile(simtelOutLogFileLFN)
-    elif ndfc<nlfc:
-      DIRAC.gLogger.error('Catalogs are not coherent: removing file from LFC',simtelOutLogFileLFN)
-      res = fcL.removeFile(simtelOutLogFileLFN)
+  res = fcc.getReplicas(simtelOutLogFileLFN)  
+  ndfc = len(res['Value']['Successful'])
+  if ndfc!=0:
+    DIRAC.gLogger.notice('Found in DFC',simtelOutLogFileLFN )
+  res = fcL.getReplicas(simtelOutLogFileLFN)
+  nlfc = len(res['Value']['Successful'])
+  if nlfc!=0:
+    DIRAC.gLogger.notice('Found in LFC',simtelOutLogFileLFN )
+  if ndfc>nlfc:
+    DIRAC.gLogger.error('Catalogs are not coherent: removing file from DFC',simtelOutLogFileLFN)
+    res = fcc.removeFile(simtelOutLogFileLFN)
+  elif ndfc<nlfc:
+    DIRAC.gLogger.error('Catalogs are not coherent: removing file from LFC',simtelOutLogFileLFN)
+    res = fcL.removeFile(simtelOutLogFileLFN)
      
- #####################################################  
-
-#    if len(ret['Value']['Successful'][simtelOutLogFileLFN].keys())!=2:
-#      DIRAC.gLogger.error('Error during addFile: put or register missing')
-#      jobReport.setApplicationStatus('OutputData Upload Error')
-      ############# restablishing catalogs coherence ##########################
-#      DIRAC.gLogger.notice('Try to restablish Catalogs coherence')
-#      res = fcc.getReplicas(simtelOutLogFileLFN)
-#      if len(res['Value']['Successful'])!=0:
-#        DIRAC.gLogger.notice('Found in DFC',simtelOutLogFileLFN )
-#        res = fcc.removeFile(simtelOutLogFileLFN)
-#        print 'removing res', res
-#        fcL = FileCatalog('LcgFileCatalog')
-#        res = fcL.getReplicas(simtelOutLogFileLFN)
-#        if len(res['Value']['Successful'])!=0:
-#          DIRAC.gLogger.notice('Found in LFC',simtelOutLogFileLFN )
-#        else:
-#          DIRAC.gLogger.notice('Not Found in LFC',simtelOutLogFileLFN )
-#      DIRAC.exit( -1 )
-  else:
+  if not ret['OK']:
     DIRAC.gLogger.error('Error during addFile call:', ret['Message'])
     jobReport.setApplicationStatus('OutputData Upload Error')
     DIRAC.exit( -1 )
