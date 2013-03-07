@@ -442,16 +442,16 @@ def CheckCatalogCoherence(fileLFN):
   if ndfc>nlfc:
     DIRAC.gLogger.error('Catalogs are not coherent: removing file from DFC',fileLFN)
     res = fcc.removeFile(fileLFN)
-    return DIRAC.S_ERROR()
+    return DIRAC.S_ERROR
   elif ndfc<nlfc:
     DIRAC.gLogger.error('Catalogs are not coherent: removing file from LFC',fileLFN)
     res = fcL.removeFile(fileLFN)
-    return DIRAC.S_ERROR()
+    return DIRAC.S_ERROR
   elif (ndfc==0 and nlfc==0):
    DIRAC.gLogger.error('File not found in DFC and LFC:',fileLFN)
-   return DIRAC.S_ERROR()
+   return DIRAC.S_ERROR
     
-  return DIRAC.S_OK()
+  return DIRAC.S_OK
      
 
 def createGlobalsFromConfigFiles(prodConfigFileName, corsikaConfigFileName, simtelConfigFileName):
