@@ -124,6 +124,7 @@ def main():
   print 'LCG CatalogConfigDetails:',res
   
   fcc = FileCatalogClient()
+  fcL = FileCatalog('LcgFileCatalog')
   
   from DIRAC.Interfaces.API.Dirac import Dirac
   dirac = Dirac()
@@ -367,7 +368,7 @@ zcat %s | $SIM_TELARRAY_PATH/run_sim_%s""" % (corsikaFileName, simtelExecName))
       if len(res['Value']['Successful'])!=0:
         DIRAC.gLogger.notice('Found in DFC',simtelOutFileLFN )
         res = fcc.removeFile(simtelOutFileLFN)
-        print 'removing res', res 
+        print 'removing res', res
       DIRAC.exit( -1 )
   else:
     DIRAC.gLogger.error('Error during addFile call:', ret['Message'])
@@ -378,37 +379,46 @@ zcat %s | $SIM_TELARRAY_PATH/run_sim_%s""" % (corsikaFileName, simtelExecName))
   ret = dirac.addFile( simtelOutLogFileLFN, simtelLogFileName, storage_element )
 
   if ret['OK']:
-    if len(ret['Value']['Successful'][simtelOutLogFileLFN].keys())!=2:
-      DIRAC.gLogger.error('Error during addFile: put or register missing')
-      jobReport.setApplicationStatus('OutputData Upload Error')
+################################################    
+    res = fcc.getReplicas(simtelOutLogFileLFN)  
+    ndfc = len(res['Value']['Successful'])
+    if ndfc!=0:
+      DIRAC.gLogger.notice('Found in DFC',simtelOutLogFileLFN )
+    res = fcL.getReplicas(simtelOutLogFileLFN)
+    nlfc = len(res['Value']['Successful'])
+    if nlfc!=0:
+      DIRAC.gLogger.notice('Found in LFC',simtelOutLogFileLFN )
+    if ndfc>nlfc:
+      DIRAC.gLogger.error('Catalogs are not coherent: removing file from DFC',simtelOutLogFileLFN)
+      res = fcc.removeFile(simtelOutLogFileLFN)
+    elif ndfc<nlfc:
+      DIRAC.gLogger.error('Catalogs are not coherent: removing file from LFC',simtelOutLogFileLFN)
+      res = fcL.removeFile(simtelOutLogFileLFN)
+     
+ #####################################################  
+
+#    if len(ret['Value']['Successful'][simtelOutLogFileLFN].keys())!=2:
+#      DIRAC.gLogger.error('Error during addFile: put or register missing')
+#      jobReport.setApplicationStatus('OutputData Upload Error')
       ############# restablishing catalogs coherence ##########################
-      DIRAC.gLogger.notice('Try to restablish Catalogs coherence')
-      res = fcc.getReplicas(simtelOutLogFileLFN)
-      if len(res['Value']['Successful'])!=0:
-        DIRAC.gLogger.notice('Found in DFC',simtelOutLogFileLFN )
-        res = fcc.removeFile(simtelOutLogFileLFN)
-        print 'removing res', res 
-        fcL = FileCatalog('LcgFileCatalog')
-        res = fcL.getReplicas(simtelOutLogFileLFN)
-        if len(res['Value']['Successful'])!=0:
-          DIRAC.gLogger.notice('Found in LFC',simtelOutLogFileLFN )
-        else:
-          DIRAC.gLogger.notice('Not Found in LFC',simtelOutLogFileLFN )
-      DIRAC.exit( -1 )
+#      DIRAC.gLogger.notice('Try to restablish Catalogs coherence')
+#      res = fcc.getReplicas(simtelOutLogFileLFN)
+#      if len(res['Value']['Successful'])!=0:
+#        DIRAC.gLogger.notice('Found in DFC',simtelOutLogFileLFN )
+#        res = fcc.removeFile(simtelOutLogFileLFN)
+#        print 'removing res', res
+#        fcL = FileCatalog('LcgFileCatalog')
+#        res = fcL.getReplicas(simtelOutLogFileLFN)
+#        if len(res['Value']['Successful'])!=0:
+#          DIRAC.gLogger.notice('Found in LFC',simtelOutLogFileLFN )
+#        else:
+#          DIRAC.gLogger.notice('Not Found in LFC',simtelOutLogFileLFN )
+#      DIRAC.exit( -1 )
   else:
     DIRAC.gLogger.error('Error during addFile call:', ret['Message'])
     jobReport.setApplicationStatus('OutputData Upload Error')
     DIRAC.exit( -1 )
     
-################################################    
-  res = fcc.getReplicas(simtelOutLogFileLFN)  
-  if len(res['Value']['Successful'])!=0:
-    DIRAC.gLogger.notice('Found in DFC',simtelOutLogFileLFN )
-  fcL = FileCatalog('LcgFileCatalog')
-  res = fcL.getReplicas(simtelOutLogFileLFN)
-  if len(res['Value']['Successful'])!=0:
-    DIRAC.gLogger.notice('Found in LFC',simtelOutLogFileLFN )
- #####################################################   
 
   DIRAC.gLogger.notice( 'Put and register simtel Histo File in LFC and DFC:', simtelOutHistFileLFN)
   ret = dirac.addFile( simtelOutHistFileLFN, simtelHistFileName, storage_element )
@@ -423,7 +433,7 @@ zcat %s | $SIM_TELARRAY_PATH/run_sim_%s""" % (corsikaFileName, simtelExecName))
       if len(res['Value']['Successful'])!=0:
         DIRAC.gLogger.notice('Found in DFC',simtelOutHistFileLFN)
         res = fcc.removeFile(simtelOutHistFileLFN)
-        print 'removing res', res 
+        print 'removing res', res
       DIRAC.exit( -1 )
   else:
     DIRAC.gLogger.error('Error during addFile call:', ret['Message'])
@@ -760,4 +770,3 @@ if __name__ == '__main__':
   except Exception:
     DIRAC.gLogger.exception()
     DIRAC.exit( -1 )
-
