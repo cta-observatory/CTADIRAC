@@ -154,8 +154,7 @@ def main():
   fd.write( """#! /bin/sh                                                                                                                         
 echo "go for sim_telarray"
 . ./examples_common.sh
-
-echo "print CORSIKA_IO_BUFFER: " $CORSIKA_IO_BUFFER
+export CORSIKA_IO_BUFFER=800MB
 zcat %s | $SIM_TELARRAY_PATH/run_sim_%s""" % (corsikaFileName, simtelExecName))
   fd.close()
 
