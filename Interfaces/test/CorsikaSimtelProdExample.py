@@ -54,7 +54,7 @@ def CorsikaSimtelProdExample( args = None ) :
   
   j.setJobGroup(cfgfile[7:])
 
-  j.setInputSandbox( [ 'INPUTS_CTA_PROD2_proton_South','fileCatalog.cfg','prodConfigFile'] )
+  j.setInputSandbox( [ cfgfile,'fileCatalog.cfg','prodConfigFile'] ) 
 
   j.setParameters(['fileCatalog.cfg','--template',cfgfile,'--mode',mode,'-D',storage_element])
 
