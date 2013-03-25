@@ -183,8 +183,9 @@ def main():
   cmd = 'mv Data/sim_telarray/' + simtelExecName + '/0.0deg/Data/*.simtel.gz ' + simtelFileName
   if(os.system(cmd)):
     DIRAC.exit( -1 )
-  simtelOutFileDir = "%s/Data/%s" % (simtelDirPath,runNumSeriesDir)
-  simtelOutFileLFN = "%s/%s" % (simtelOutFileDir,simtelFileName)
+    
+  simtelOutFileDir = os.path.join(simtelDirPath,'Data',runNumSeriesDir)
+  simtelOutFileLFN = os.path.join(simtelOutFileDir,simtelFileName)
   simtelRunNumberSeriesDirExist = fcc.isDirectory(simtelOutFileDir)['Value']['Successful'][simtelOutFileDir]
   newSimtelRunFileSeriesDir = (simtelRunNumberSeriesDirExist != True)  # if new runFileSeries, will need to add new MD
 
@@ -192,15 +193,16 @@ def main():
   cmd = 'mv Data/sim_telarray/' + simtelExecName + '/0.0deg/Log/*.log.gz ' + simtelLogFileName
   if(os.system(cmd)):
     DIRAC.exit( -1 )
-  simtelOutLogFileDir = "%s/Log/%s" % (simtelDirPath,runNumSeriesDir)
-  simtelOutLogFileLFN = "%s/%s" % (simtelOutLogFileDir,simtelLogFileName)
+
+  simtelOutLogFileDir = os.path.join(simtelDirPath,'Log',runNumSeriesDir)
+  simtelOutLogFileLFN = os.path.join(simtelOutLogFileDir,simtelLogFileName)
 
   simtelHistFileName = particle + '_' + thetaP + '_' + phiP + '_alt' + obslev + '_' + 'run' + run_number + '.hdata.gz'
   cmd = 'mv Data/sim_telarray/' + simtelExecName + '/0.0deg/Histograms/*.hdata.gz ' + simtelHistFileName
   if(os.system(cmd)):
     DIRAC.exit( -1 )
-  simtelOutHistFileDir = "%s/Histograms/%s" % (simtelDirPath,runNumSeriesDir)
-  simtelOutHistFileLFN = "%s/%s" % (simtelOutHistFileDir,simtelHistFileName)
+  simtelOutHistFileDir = os.path.join(simtelDirPath,'Histograms',runNumSeriesDir)
+  simtelOutHistFileLFN = os.path.join(simtelOutHistFileDir,simtelHistFileName)
   
 ################################################  
   DIRAC.gLogger.notice( 'Put and register simtel File in LFC and DFC:', simtelOutFileLFN)
@@ -383,11 +385,10 @@ def createGlobalsFromConfigFiles(prodConfigFileName, corsikaConfigFileName, simt
   
   pathroot = dictProdKW['pathroot'][0]
   #building full prod, corsika and simtel Directories path
-  prodDirPath = "%s%s" % (pathroot,prodName)
-  corsikaPathTuple = [prodName,corsikaProdVersion]
-  corsikaDirPath = "%s%s" % ( pathroot, '/'.join( corsikaPathTuple ) )
-  corsikaParticleDirPath = "%s/%s" % (corsikaDirPath,particle)
-  simtelDirPath = '%s/%s' % (corsikaParticleDirPath,simtelProdVersion)
+  prodDirPath = os.path.join(pathroot,prodName)
+  corsikaDirPath = os.path.join(prodDirPath,corsikaProdVersion)
+  corsikaParticleDirPath = os.path.join(corsikaDirPath,particle)
+  simtelDirPath = os.path.join(corsikaParticleDirPath,simtelProdVersion)
   
 def fileToKWDict (fileName, keywordsList):    
   #print 'parsing %s...' % fileName
@@ -546,21 +547,21 @@ def createSimtelFileSystAndMD():
   if res != DIRAC.S_OK:
     return DIRAC.S_ERROR ('MD Error: Problem creating Simtel Directory MD ')
     
-  simtelDataDirPath = '%s/%s' % (simtelDirPath,'Data')
+  simtelDataDirPath = os.path.join(simtelDirPath,'Data')
   simtelDataDirMD={}
   simtelDataDirMD['outputType'] = 'Data'
   res = createDirAndInsertMD(simtelDataDirPath, simtelDataDirMD)  
   if res != DIRAC.S_OK:
     return DIRAC.S_ERROR ('Problem creating Simtel Data Directory MD ')
 
-  simtelLogDirPath = '%s/%s' % (simtelDirPath,'Log')
+  simtelLogDirPath = os.path.join(simtelDirPath,'Log')
   simtelLogDirMD={}
   simtelLogDirMD['outputType'] = 'Log'
   res = createDirAndInsertMD(simtelLogDirPath, simtelLogDirMD)  
   if res != DIRAC.S_OK:
     return DIRAC.S_ERROR ('Problem creating Simtel Log Directory MD ')
 
-  simtelHistoDirPath = '%s/%s' % (simtelDirPath,'Histograms')
+  simtelHistoDirPath = os.path.join(simtelDirPath,'Histograms')
   simtelHistoDirMD={}
   simtelHistoDirMD['outputType'] = 'Histo'
   res = createDirAndInsertMD(simtelHistoDirPath, simtelHistoDirMD)  
