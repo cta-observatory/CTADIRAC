@@ -23,7 +23,7 @@ def CorsikaSimtelProdExample( args = None ) :
   j = CorsikaSimtelProdJob()
   j.setVersion('prod-2_21122012')
 
-  j.setExecutable('corsika_autoinputs') 
+  j.setExecutable('corsika_autoinputs')
 
   mode = 'corsika_simtel'
 #  mode = 'corsika_standalone'
@@ -54,7 +54,7 @@ def CorsikaSimtelProdExample( args = None ) :
   
   j.setJobGroup(cfgfile[7:])
 
-  j.setInputSandbox( [ 'INPUTS_CTA_PROD2_proton_South','fileCatalog.cfg','prodConfigFile'] )
+  j.setInputSandbox( [ cfgfile,'fileCatalog.cfg','prodConfigFile'] )
 
   j.setParameters(['fileCatalog.cfg','--template',cfgfile,'--mode',mode,'-D',storage_element])
 
