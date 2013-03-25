@@ -191,8 +191,9 @@ zcat %s | $SIM_TELARRAY_PATH/run_sim_%s""" % (corsikaFileName, simtelExecName))
   cmd = 'mv Data/sim_telarray/' + simtelExecName + '/0.0deg/Data/*.simtel.gz ' + simtelFileName 
   if(os.system(cmd)):
     DIRAC.exit( -1 )
-  simtelOutFileDir = "%s/Data/%s" % (simtelDirPath,runNumSeriesDir)
-  simtelOutFileLFN = "%s/%s" % (simtelOutFileDir,simtelFileName)
+
+  simtelOutFileDir = os.path.join(simtelDirPath,'Data',runNumSeriesDir)
+  simtelOutFileLFN = os.path.join(simtelOutFileDir,simtelFileName)
   simtelRunNumberSeriesDirExist = fcc.isDirectory(simtelOutFileDir)['Value']['Successful'][simtelOutFileDir]
   newSimtelRunFileSeriesDir = (simtelRunNumberSeriesDirExist != True)  # if new runFileSeries, will need to add new MD
 
@@ -200,16 +201,16 @@ zcat %s | $SIM_TELARRAY_PATH/run_sim_%s""" % (corsikaFileName, simtelExecName))
   cmd = 'mv Data/sim_telarray/' + simtelExecName + '/0.0deg/Log/*.log.gz ' + simtelLogFileName 
   if(os.system(cmd)):
     DIRAC.exit( -1 )
-  simtelOutLogFileDir = "%s/Log/%s" % (simtelDirPath,runNumSeriesDir)
-  simtelOutLogFileLFN = "%s/%s" % (simtelOutLogFileDir,simtelLogFileName)
+  simtelOutLogFileDir = os.path.join(simtelDirPath,'Log',runNumSeriesDir)
+  simtelOutLogFileLFN = os.path.join(simtelOutLogFileDir,simtelLogFileName)
 
   simtelHistFileName = particle + '_' + str(thetaP) + '_' + str(phiP) + '_alt' + str(obslev) + '_' + 'run' + run_number + '.hdata.gz' 
   cmd = 'mv Data/sim_telarray/' + simtelExecName + '/0.0deg/Histograms/*.hdata.gz ' + simtelHistFileName 
   if(os.system(cmd)):
     DIRAC.exit( -1 )
-  simtelOutHistFileDir = "%s/Histograms/%s" % (simtelDirPath,runNumSeriesDir)
-  simtelOutHistFileLFN = "%s/%s" % (simtelOutHistFileDir,simtelHistFileName)
- 
+  simtelOutHistFileDir = os.path.join(simtelDirPath,'Histograms',runNumSeriesDir)
+  simtelOutHistFileLFN = os.path.join(simtelOutHistFileDir,simtelHistFileName)
+
 ################################################  
   DIRAC.gLogger.notice( 'Put and register simtel File in LFC and DFC:', simtelOutFileLFN)
   ret = dirac.addFile( simtelOutFileLFN, simtelFileName, storage_element )   
@@ -333,7 +334,6 @@ def createGlobalsFromConfigFiles(simtelConfigFileName):
   global viewCone 
   global pathroot
   global simtelOffset
-  global prodDirPath
   global corsikaDirPath
   global corsikaParticleDirPath
   global simtelDirPath
@@ -393,8 +393,9 @@ def createGlobalsFromConfigFiles(simtelConfigFileName):
   corsikaProdVersion = corsikaDirPathMD['corsikaProdVersion']
   pattern = "%s" % ('/'.join( [prodName,corsikaProdVersion,particle] ))
   pathroot = corsikaDirPath.split(pattern)[0]
-  corsikaParticleDirPath = "%s%s" % (pathroot,pattern)
-  simtelDirPath = '%s/%s' % (corsikaParticleDirPath,simtelProdVersion)
+#  corsikaParticleDirPath = "%s%s" % (pathroot,pattern)
+  corsikaParticleDirPath = os.path.join(pathroot,pattern)
+  simtelDirPath = os.path.join(corsikaParticleDirPath,simtelProdVersion)
 
 
 def createIndexes(indexesTypesDict):
@@ -475,22 +476,22 @@ def createSimtelFileSystAndMD():
   res = createDirAndInsertMD(simtelDirPath, simtelDirMD)
   if res != DIRAC.S_OK:
     return DIRAC.S_ERROR ('MD Error: Problem creating Simtel Directory MD ')
-    
-  simtelDataDirPath = '%s/%s' % (simtelDirPath,'Data')
+
+  simtelDataDirPath = os.path.join(simtelDirPath,'Data')
   simtelDataDirMD={} 
   simtelDataDirMD['outputType'] = 'Data'
   res = createDirAndInsertMD(simtelDataDirPath, simtelDataDirMD)  
   if res != DIRAC.S_OK:
     return DIRAC.S_ERROR ('Problem creating Simtel Data Directory MD ')
-
-  simtelLogDirPath = '%s/%s' % (simtelDirPath,'Log')
+    
+  simtelLogDirPath = os.path.join(simtelDirPath,'Log')
   simtelLogDirMD={} 
   simtelLogDirMD['outputType'] = 'Log'
   res = createDirAndInsertMD(simtelLogDirPath, simtelLogDirMD)  
   if res != DIRAC.S_OK:
     return DIRAC.S_ERROR ('Problem creating Simtel Log Directory MD ')
 
-  simtelHistoDirPath = '%s/%s' % (simtelDirPath,'Histograms')
+  simtelHistoDirPath = os.path.join(simtelDirPath,'Histograms')
   simtelHistoDirMD={} 
   simtelHistoDirMD['outputType'] = 'Histo'
   res = createDirAndInsertMD(simtelHistoDirPath, simtelHistoDirMD)  
