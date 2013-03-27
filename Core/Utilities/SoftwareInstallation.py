@@ -206,59 +206,6 @@ def installSoftwareEnviron( package, area ):
   
   try:
   
-    if (packageTuple[0] == 'corsika_simhessarray' and version == 'test_18122012'):
-      fd = open( fileName, 'w' )
-      fd.write( """
-unset HESSROOT
-export HESSROOT
-unset LD_LIBRARY_PATH
-export LD_LIBRARY_PATH
-
-# Top-level path under which we normally installed everything
-if [ ! -z "${CTA_PATH}" ]; then
-   cd "${CTA_PATH}" || exit 1
-fi
-
-./prepare_for_examples || exit 1
-
-if [ ! -x corsika-run/corsika ]; then
-   echo "No CORSIKA program found."
-   exit 1
-fi
-
-if [ ! -x sim_telarray/bin/sim_telarray ]; then
-   echo "No sim_telarray program found."
-   exit 1
-fi
-
-# Top-level path under which we normally installed everything
-if [ -z "${CTA_PATH}" ]; then
-   export CTA_PATH="$(pwd -P)"
-fi
-
-# Paths to software, libraries, configuration files (read-only)
-export CORSIKA_PATH="$(cd ${CTA_PATH}/corsika-run && pwd -P)"
-export SIM_TELARRAY_PATH="$(cd ${CTA_PATH}/sim_telarray && pwd -P)"
-export HESSIO_PATH="$(cd ${CTA_PATH}/hessioxxx && pwd -P)"
-export LD_LIBRARY_PATH="${HESSIO_PATH}/lib"
-export PATH="${HESSIO_PATH}/bin:${SIM_TELARRAY_PATH}/bin:${PATH}"
-
-if [ -z "${MCDATA_PATH}" ]; then
-   if [ ! -z "${CTA_DATA}" ]; then
-      export MCDATA_PATH="${CTA_DATA}"
-   else
-      export MCDATA_PATH="${CTA_PATH}/Data"
-   fi
-fi
-
-export CORSIKA_DATA="${MCDATA_PATH}/corsika"
-export SIM_TELARRAY_DATA="${MCDATA_PATH}/sim_telarray"
-
-printenv | egrep '^(CTA_PATH|CORSIKA_PATH|SIM_TELARRAY_PATH|SIM_TELARRAY_CONFIG_PATH|SIMTEL_CONFIG_PATH|HESSIO_PATH|CTA_DATA|MCDATA_PATH|CORSIKA_DATA|SIM_TELARRAY_DATA|HESSROOT|LD_LIBRARY_PATH|PATH|RUNPATH)=' | sort
-""")
-      fd.close()
-      return DIRAC.S_OK()
-
     if packageTuple[0] == 'corsika_simhessarray':
       fd = open( fileName, 'w' )
       fd.write( """
