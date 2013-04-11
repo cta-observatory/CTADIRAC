@@ -2,19 +2,15 @@
 import DIRAC
 import os
 
-def setRunNumber( optionValue ):
-  global run_number
-  run_number = optionValue.split('ParametricParameters=')[1]
-  return DIRAC.S_OK()
 
-def setCorsikaTemplate( optionValue ):
-  global corsikaTemplate
-  corsikaTemplate = optionValue
+def setInputFile ( optionValue ):
+  global corsikaFileLFN
+  corsikaFileLFN = optionValue.split('ParametricInputData=LFN:')[1]
   return DIRAC.S_OK()
 
 def setExecutable( optionValue ):
-  global executable
-  executable = optionValue
+  global simtelExecName
+  simtelExecName = optionValue
   return DIRAC.S_OK()
 
 def setVersion( optionValue ):
@@ -22,22 +18,10 @@ def setVersion( optionValue ):
   version = optionValue
   return DIRAC.S_OK()
 
-def setMode( optionValue ):
-  global mode
-  mode = optionValue
-  return DIRAC.S_OK()
-
 def setStorageElement( optionValue ):
   global storage_element
   storage_element = optionValue
   return DIRAC.S_OK()
-
-def sendOutputCorsika(stdid,line):
-  logfilename = executable + '.log'
-  f = open( logfilename,'a')
-  f.write(line)
-  f.write('\n')
-  f.close()
 
 def sendOutputSimTel(stdid,line):
   logfilename = 'simtel.log'
@@ -53,11 +37,9 @@ def main():
 
   from DIRAC.Core.Base import Script
 
-  Script.registerSwitch( "p:", "run_number=", "Run Number", setRunNumber )
-  Script.registerSwitch( "T:", "template=", "Template", setCorsikaTemplate )
-  Script.registerSwitch( "E:", "executable=", "Executable", setExecutable )
+  Script.registerSwitch( "p:", "inputfile=", "Input File", setInputFile )
+  Script.registerSwitch( "E:", "simtelExecName=", "SimtelExecName", setExecutable )
   Script.registerSwitch( "V:", "version=", "Version", setVersion )
-  Script.registerSwitch( "M:", "mode=", "Mode", setMode )
   Script.registerSwitch( "D:", "storage_element=", "Storage Element", setStorageElement )
 
   from DIRAC.Resources.Catalog.FileCatalogClient import FileCatalogClient
@@ -65,8 +47,7 @@ def main():
 
   Script.parseCommandLine()
   global fcc, fcL, storage_element
-  
-  from CTADIRAC.Core.Workflow.Modules.CorsikaApp import CorsikaApp
+
   from CTADIRAC.Core.Utilities.SoftwareInstallation import checkSoftwarePackage
   from CTADIRAC.Core.Utilities.SoftwareInstallation import installSoftwarePackage
   from CTADIRAC.Core.Utilities.SoftwareInstallation import installSoftwareEnviron
@@ -128,56 +109,20 @@ def main():
   
   from DIRAC.Interfaces.API.Dirac import Dirac
   dirac = Dirac()
+  ############################
   
   #############
+  # CLAUDIA: simtelConfigFile should be built from ???
   simtelConfigFilesPath = 'sim_telarray/multi'
-  simtelConfigFile = simtelConfigFilesPath + '/multi_cta-ultra5.cfg'  
-  #simtelConfigFile = simtelConfigFilesPath + '/multi_cta-prod1s.cfg'                         
-  createGlobalsFromConfigFiles('prodConfigFile', corsikaTemplate, simtelConfigFile)
-  
-  ######################Building prod Directory Metadata #######################
-  resultCreateProdDirMD = createProdFileSystAndMD()  
-  if not resultCreateProdDirMD['OK']:
-    DIRAC.gLogger.error( 'Failed to create prod Directory MD')
-    jobReport.setApplicationStatus('Failed to create prod Directory MD')
-    DIRAC.gLogger.error('Metadata coherence problem, no file produced')
-    DIRAC.exit( -1 )
-  else:
-    print 'prod Directory MD successfully created'
+  simtelConfigFile = simtelConfigFilesPath + '/multi_cta-ultra5.cfg'                          
+  createGlobalsFromConfigFiles(simtelConfigFile)
 
-  ######################Building corsika Directory Metadata #######################
-  
-  resultCreateCorsikaDirMD = createCorsikaFileSystAndMD()  
-  if not resultCreateCorsikaDirMD['OK']:
-    DIRAC.gLogger.error( 'Failed to create corsika Directory MD')
-    jobReport.setApplicationStatus('Failed to create corsika Directory MD')
-    DIRAC.gLogger.error('Metadata coherence problem, no corsikaFile produced')
-    DIRAC.exit( -1 )
-  else:
-    print 'corsika Directory MD successfully created'
-  
-  ############ Producing Corsika File
-  cs = CorsikaApp()
-  cs.setSoftwarePackage(CorsikaSimtelPack)
-  cs.csExe = executable
-  cs.csArguments = ['--run-number',run_number,'--run','corsika',corsikaTemplate]
-  corsikaReturnCode = cs.execute()
-  
-  if corsikaReturnCode != 0:
-    DIRAC.gLogger.error( 'Corsika Application: Failed')
-    jobReport.setApplicationStatus('Corsika Application: Failed')
-    DIRAC.exit( -1 )
-###################### rename of corsika output file #######################
-  rundir = 'run' + run_number
-  filein = rundir + '/' + corsikaOutputFileName
-  corsikaFileName = particle + '_' + thetaP + '_' + phiP + '_alt' + obslev + '_' + 'run' + run_number +  '.corsika.gz'
-  mv_cmd = 'mv ' + filein + ' ' + corsikaFileName
-  if(os.system(mv_cmd)):
-    DIRAC.exit( -1 )
-########################  
-
-########################  
+  #######################  
 ## files spread in 1000-runs subDirectories
+
+  corsikaFileName = os.path.basename(corsikaFileLFN)
+  run_number = corsikaFileName.split('run')[1].split('.corsika.gz')[0] # run001412.corsika.gz
+
   runNum = int(run_number)
   subRunNumber = '%03d'%runNum
   runNumModMille = runNum%1000
@@ -185,91 +130,12 @@ def main():
   runNumSeriesDir = '%03dxxx'%runNumTrunc
   print 'runNumSeriesDir=',runNumSeriesDir
   
-  ### create corsika tar luisa ####################
-  corsikaTarName = particle + '_' + thetaP + '_' + phiP + '_alt' + obslev + '_' + 'run' + run_number +  '.corsika.tar.gz'
-  filetar1 = rundir + '/'+'input'
-  filetar2 = rundir + '/'+ 'DAT' + run_number + '.dbase'
-  filetar3 = rundir + '/run' + str(int(run_number)) + '.log'
-  cmdTuple = ['/bin/tar','zcf',corsikaTarName, filetar1,filetar2,filetar3]
-  DIRAC.gLogger.notice( 'Executing command tuple:', cmdTuple )
-  ret = systemCall( 0, cmdTuple, sendOutput)
-  if not ret['OK']:
-    DIRAC.gLogger.error( 'Failed to execute tar')
-    DIRAC.exit( -1 )
-
-######################################################   
-  corsikaOutFileDir = os.path.join(corsikaDirPath,particle,'Data',runNumSeriesDir)
-  corsikaOutFileLFN = os.path.join(corsikaOutFileDir,corsikaFileName)
-  corsikaRunNumberSeriesDirExist = fcc.isDirectory(corsikaOutFileDir)['Value']['Successful'][corsikaOutFileDir]
-  newCorsikaRunNumberSeriesDir = (corsikaRunNumberSeriesDirExist != True)  # if new runFileSeries, will need to add new MD
-
-#### create a file to DISABLE_WATCHDOG_CPU_WALLCLOCK_CHECK ################
   f = open('DISABLE_WATCHDOG_CPU_WALLCLOCK_CHECK', 'w' )
   f.close()
-
-  DIRAC.gLogger.notice( 'Put and register corsika File in LFC and DFC:', corsikaOutFileLFN)
-  ret = dirac.addFile(corsikaOutFileLFN, corsikaFileName, storage_element)  
-  
-  res = CheckCatalogCoherence(corsikaOutFileLFN)
-
-  if res != DIRAC.S_OK:
-    DIRAC.gLogger.error('Job failed: Catalog Coherence problem found')
-    jobReport.setApplicationStatus('OutputData Upload Error')
-    DIRAC.exit( -1 )
-    
-  if not ret['OK']:
-    DIRAC.gLogger.error('Error during addFile call:', ret['Message'])
-    jobReport.setApplicationStatus('OutputData Upload Error')
-    DIRAC.exit( -1 )  
-    
-  # put and register corsikaTarFile:
-  corsikaTarFileDir = os.path.join(corsikaDirPath,particle,'Log',runNumSeriesDir)
-  corsikaTarFileLFN = os.path.join(corsikaTarFileDir,corsikaTarName)
 
 ##### If storage element is IN2P3-tape save simtel file on disk ###############  
   if storage_element == 'CC-IN2P3-Tape':
     storage_element = 'CC-IN2P3-Disk'
-
-  DIRAC.gLogger.notice( 'Put and register corsikaTar File in LFC and DFC:', corsikaTarFileLFN)
-  ret = dirac.addFile(corsikaTarFileLFN, corsikaTarName, storage_element)
-  
-####Checking and restablishing catalog coherence #####################  
-  res = CheckCatalogCoherence(corsikaTarFileLFN)
-  if res != DIRAC.S_OK:
-    DIRAC.gLogger.error('Job failed: Catalog Coherence problem found')
-    jobReport.setApplicationStatus('OutputData Upload Error')
-    DIRAC.exit( -1 )
-     
-  if not ret['OK']:
-    DIRAC.gLogger.error('Error during addFile call:', ret['Message'])
-    jobReport.setApplicationStatus('OutputData Upload Error')
-    DIRAC.exit( -1 )
-######################################################################
-      
-  if newCorsikaRunNumberSeriesDir:
-    insertRunFileSeriesMD(corsikaOutFileDir,runNumTrunc)
-    insertRunFileSeriesMD(corsikaTarFileDir,runNumTrunc)
-
- ###### insert corsika File Level metadata ############################################
-  corsikaFileMD={}
-  corsikaFileMD['runNumber'] = int(run_number)
-  corsikaFileMD['jobID'] = jobID
-  corsikaFileMD['corsikaReturnCode'] = corsikaReturnCode
-  corsikaFileMD['nbShowers'] = nbShowers
-
-  result = fcc.setMetadata(corsikaOutFileLFN,corsikaFileMD)
-  print "result setMetadata=",result
-  if not result['OK']:
-    print 'ResultSetMetadata:',result['Message']
-
-  result = fcc.setMetadata(corsikaTarFileLFN,corsikaFileMD)
-  print "result setMetadata=",result
-  if not result['OK']:
-    print 'ResultSetMetadata:',result['Message']
-
-#####  Exit now if only corsika simulation required
-  if (mode == 'corsika_standalone'):
-    DIRAC.exit()
 
 ############ Producing SimTel File
  ######################Building simtel Directory Metadata #######################
@@ -282,7 +148,7 @@ def main():
     DIRAC.exit( -1 )
   else:
     print 'simtel Directory MD successfully created'
-  
+
 #### execute simtelarray ################
   fd = open('run_sim.sh', 'w' )
   fd.write( """#! /bin/sh                                                                                                                         
@@ -306,7 +172,7 @@ zcat %s | $SIM_TELARRAY_PATH/run_sim_%s""" % (corsikaFileName, simtelExecName))
     # Tag corsika File if Broken Pipe
     corsikaTagMD={}
     corsikaTagMD['CorsikaToReprocess'] = 'CorsikaToReprocess'
-    result = fcc.setMetadata(corsikaOutFileLFN,corsikaTagMD)
+    result = fcc.setMetadata(corsikaFileLFN,corsikaTagMD)
     print "result setMetadata=",result
     if not result['OK']:
       print 'ResultSetMetadata:',result['Message']
@@ -314,37 +180,37 @@ zcat %s | $SIM_TELARRAY_PATH/run_sim_%s""" % (corsikaFileName, simtelExecName))
     jobReport.setApplicationStatus('Broken pipe')
     DIRAC.exit( -1 )
 
+
   if not ret['OK']:
     DIRAC.gLogger.error( 'Failed to execute run_sim.sh')
     DIRAC.gLogger.error( 'run_sim.sh status is:', simtelReturnCode)
     DIRAC.exit( -1 )
 
 ## putAndRegister simtel data/log/histo Output File:
-########### 0.0deg it's hard coded or is the offset?
-
-  simtelFileName = particle + '_' + thetaP + '_' + phiP + '_alt' + obslev + '_' + 'run' + run_number + '.simtel.gz'
+  simtelFileName = particle + '_' + str(thetaP) + '_' + str(phiP) + '_alt' + str(obslev) + '_' + 'run' + run_number + '.simtel.gz'
   cmd = 'mv Data/sim_telarray/' + simtelExecName + '/0.0deg/Data/*.simtel.gz ' + simtelFileName
   if(os.system(cmd)):
     DIRAC.exit( -1 )
+
   simtelOutFileDir = os.path.join(simtelDirPath,'Data',runNumSeriesDir)
   simtelOutFileLFN = os.path.join(simtelOutFileDir,simtelFileName)
   simtelRunNumberSeriesDirExist = fcc.isDirectory(simtelOutFileDir)['Value']['Successful'][simtelOutFileDir]
   newSimtelRunFileSeriesDir = (simtelRunNumberSeriesDirExist != True)  # if new runFileSeries, will need to add new MD
 
-  simtelLogFileName = particle + '_' + thetaP + '_' + phiP + '_alt' + obslev + '_' + 'run' + run_number + '.log.gz'
+  simtelLogFileName = particle + '_' + str(thetaP) + '_' + str(phiP) + '_alt' + str(obslev) + '_' + 'run' + run_number + '.log.gz'
   cmd = 'mv Data/sim_telarray/' + simtelExecName + '/0.0deg/Log/*.log.gz ' + simtelLogFileName
   if(os.system(cmd)):
     DIRAC.exit( -1 )
   simtelOutLogFileDir = os.path.join(simtelDirPath,'Log',runNumSeriesDir)
   simtelOutLogFileLFN = os.path.join(simtelOutLogFileDir,simtelLogFileName)
 
-  simtelHistFileName = particle + '_' + thetaP + '_' + phiP + '_alt' + obslev + '_' + 'run' + run_number + '.hdata.gz'
+  simtelHistFileName = particle + '_' + str(thetaP) + '_' + str(phiP) + '_alt' + str(obslev) + '_' + 'run' + run_number + '.hdata.gz'
   cmd = 'mv Data/sim_telarray/' + simtelExecName + '/0.0deg/Histograms/*.hdata.gz ' + simtelHistFileName
   if(os.system(cmd)):
     DIRAC.exit( -1 )
   simtelOutHistFileDir = os.path.join(simtelDirPath,'Histograms',runNumSeriesDir)
   simtelOutHistFileLFN = os.path.join(simtelOutHistFileDir,simtelHistFileName)
-  
+
 ################################################  
   DIRAC.gLogger.notice( 'Put and register simtel File in LFC and DFC:', simtelOutFileLFN)
   ret = dirac.addFile( simtelOutFileLFN, simtelFileName, storage_element )   
@@ -354,7 +220,7 @@ zcat %s | $SIM_TELARRAY_PATH/run_sim_%s""" % (corsikaFileName, simtelExecName))
     DIRAC.gLogger.error('Job failed: Catalog Coherence problem found')
     jobReport.setApplicationStatus('OutputData Upload Error')
     DIRAC.exit( -1 )
-    
+     
   if not ret['OK']:
     DIRAC.gLogger.error('Error during addFile call:', ret['Message'])
     jobReport.setApplicationStatus('OutputData Upload Error')
@@ -418,21 +284,21 @@ zcat %s | $SIM_TELARRAY_PATH/run_sim_%s""" % (corsikaFileName, simtelExecName))
   if not result['OK']:
     print 'ResultSetMetadata:',result['Message']
 
-  result = fcc.addFileAncestors({simtelOutFileLFN:{'Ancestors': [ corsikaOutFileLFN ] }})
+  result = fcc.addFileAncestors({simtelOutFileLFN:{'Ancestors': [ corsikaFileLFN ] }})
   print 'result addFileAncestor:', result
 
-  result = fcc.addFileAncestors({simtelOutLogFileLFN:{'Ancestors': [ corsikaOutFileLFN ] }})
+  result = fcc.addFileAncestors({simtelOutLogFileLFN:{'Ancestors': [ corsikaFileLFN ] }})
   print 'result addFileAncestor:', result
 
-  result = fcc.addFileAncestors({simtelOutHistFileLFN:{'Ancestors': [ corsikaOutFileLFN ] }})
+  result = fcc.addFileAncestors({simtelOutHistFileLFN:{'Ancestors': [ corsikaFileLFN ] }})
   print 'result addFileAncestor:', result
+
 
   result = fcc.setMetadata(simtelOutFileLFN,simtelFileMD)
   if not result['OK']:
     print 'ResultSetMetadata:',result['Message']
     
   DIRAC.exit()
-
 
 def CheckCatalogCoherence(fileLFN):
 ####Checking and restablishing catalog coherence #####################  
@@ -457,9 +323,8 @@ def CheckCatalogCoherence(fileLFN):
    return DIRAC.S_ERROR
     
   return DIRAC.S_OK
-     
 
-def createGlobalsFromConfigFiles(prodConfigFileName, corsikaConfigFileName, simtelConfigFileName):
+def createGlobalsFromConfigFiles(simtelConfigFileName):
 
   global prodName
   global thetaP
@@ -468,37 +333,37 @@ def createGlobalsFromConfigFiles(prodConfigFileName, corsikaConfigFileName, simt
   global energyInfo
   global viewCone
   global pathroot
-  global nbShowers
   global simtelOffset
-  global prodDirPath
   global corsikaDirPath
   global corsikaParticleDirPath
   global simtelDirPath
-  global corsikaOutputFileName
-  global simtelExecName
   global corsikaProdVersion
   global simtelProdVersion
   global obslev
 
   # Getting MD Values from Config Files:
   prodKEYWORDS =  ['prodName','simtelExeName','pathroot']
-  dictProdKW = fileToKWDict(prodConfigFileName,prodKEYWORDS)
 
-  corsikaKEYWORDS = ['THETAP', 'PHIP', 'PRMPAR', 'ESLOPE' , 'ERANGE', 'VIEWCONE','NSHOW','TELFIL','OBSLEV']
-  dictCorsikaKW = fileToKWDict(corsikaConfigFileName,corsikaKEYWORDS)
+########################################################################
+  corsikaDirPath = os.path.dirname(corsikaFileLFN)
+  corsikaDirPathMD = fcc.getDirectoryMetadata(corsikaDirPath)
+
+  if not corsikaDirPathMD['OK']:
+    print corsikaDirPathMD['Message']
+    return corsikaDirPathMD
+
+  corsikaDirPathMD = corsikaDirPathMD[ 'Value' ]
+  thetaP = corsikaDirPathMD['thetaP']
+  phiP = corsikaDirPathMD['phiP']
+  particle = corsikaDirPathMD['particle']
+  obslev = corsikaDirPathMD['altitude']
+#########################################################################
 
   simtelKEYWORDS = ['env offset']
 
   # Formatting MD values retrieved in configFiles
-  prodName = dictProdKW['prodName'][0]
   corsikaProdVersion = version + '_corsika'
   simtelProdVersion = version + '_simtel'
-  thetaP = str(float(dictCorsikaKW['THETAP'][0]))
-  phiP = str(float(dictCorsikaKW['PHIP'][0]))
-  obslev = str(float(dictCorsikaKW['OBSLEV'][0])/100.)#why on earth is this in cm....
-  nbShowers = str(int(dictCorsikaKW['NSHOW'][0]))
-  corsikaOutputFileName = dictCorsikaKW['TELFIL'][0]  
-  simtelExecName = dictProdKW['simtelExeName'][0]
   
   #building simtelArray Offset
   dictSimtelKW={}
@@ -510,11 +375,9 @@ def createGlobalsFromConfigFiles(prodConfigFileName, corsikaConfigFileName, simt
       if (word in simtelKEYWORDS and not isAComment) :
         offset = lineSplitEqual[1].split()[0]
         dictSimtelKW[word] = offset
+
   simtelOffset = dictSimtelKW['env offset']
   
-  #building viewCone
-  viewConeRange = dictCorsikaKW['VIEWCONE']
-  viewCone = str(float(viewConeRange[1]))
     
   #building ParticleName
   dictParticleCode={}
@@ -525,38 +388,14 @@ def createGlobalsFromConfigFiles(prodConfigFileName, corsikaConfigFileName, simt
   dictParticleCode['1407'] = 'nitrogen'
   dictParticleCode['2814'] = 'silicon'
   dictParticleCode['5626'] = 'iron'
-  particleCode = dictCorsikaKW['PRMPAR'][0]
-  particle = dictParticleCode[particleCode]
-  if viewCone=='0.0':
-    particle+="_ptsrc"
 
-  #building energy info:
-  eslope = dictCorsikaKW['ESLOPE'][0]
-  eRange = dictCorsikaKW['ERANGE']
-  emin = eRange[0]
-  emax = eRange[1]
-  energyInfo = eslope + '_' + emin + '-' + emax
-  
-  pathroot = dictProdKW['pathroot'][0]
-  #building full prod, corsika and simtel Directories path
-  prodDirPath = os.path.join(pathroot,prodName)
-  corsikaDirPath = os.path.join(prodDirPath,corsikaProdVersion)
-  corsikaParticleDirPath = os.path.join(corsikaDirPath,particle)
+  prodName = corsikaDirPathMD['prodName']
+  corsikaProdVersion = corsikaDirPathMD['corsikaProdVersion']
+  pattern = "%s" % ('/'.join( [prodName,corsikaProdVersion,particle] ))
+  pathroot = corsikaDirPath.split(pattern)[0]
+#  corsikaParticleDirPath = "%s%s" % (pathroot,pattern)
+  corsikaParticleDirPath = os.path.join(pathroot,pattern)
   simtelDirPath = os.path.join(corsikaParticleDirPath,simtelProdVersion)
-  
-def fileToKWDict (fileName, keywordsList):    
-  #print 'parsing %s...' % fileName
-  dict={}
-  configFile = open(fileName, "r").readlines()
-  for line in configFile:
-    if (len(line.split())>0):
-      for word in line.split():
-        if line.split()[0] is not '*' and word in keywordsList:
-          lineSplit = line.split()
-          lenLineSplit = len(lineSplit)
-          value = lineSplit[1:lenLineSplit]
-          dict[word] = value
-  return dict
 
 
 def createIndexes(indexesTypesDict):
@@ -619,85 +458,8 @@ def insertRunFileSeriesMD(runNumSeriesPath,runNumSeries):
   runNumSeriesDirMD={}
   runNumSeriesDirMD['runNumSeries'] = runNumSeries * 1000
   fcc.setMetadata(runNumSeriesPath,runNumSeriesDirMD)
-  
-def createProdDirIndexes():
-  # before creating indexes, it would be fine to know what are those that already exist in the DB
-  # Creating INDEXES in DFC DB
-  prodDirMDFields={}
-  prodDirMDFields['lastRunNumber'] = 'int'
-  createIndexes(prodDirMDFields)    
-  
-def createProdFileSystAndMD():
-  # before creating indexes, it would be fine to know what are those that already exist in the DB
-  # Creating INDEXES in DFC DB
-  prodDirMDFields={}
-  prodDirMDFields['prodName'] = 'VARCHAR(128)'
-  createIndexes(prodDirMDFields)  
-  
-  # Adding Directory level metadata Values to DFC
-  prodDirMD={}
-  prodDirMD['prodName'] = prodName
-    
-  res = createDirAndInsertMD(prodDirPath, prodDirMD)  
-  if res != DIRAC.S_OK:
-    return DIRAC.S_ERROR ('Problem creating Prod Directory MD ')
-        
-  return DIRAC.S_OK ('Prod Directory MD successfully created')
-  
-def createCorsikaFileSystAndMD():
-  # before creating indexes, it would be fine to know what are those that already exist in the DB
-  # Creating INDEXES in DFC DB
-  corsikaDirMDFields={}
-  corsikaDirMDFields['prodName'] = 'VARCHAR(128)'
-  corsikaDirMDFields['thetaP'] = 'float'
-  corsikaDirMDFields['phiP'] = 'float'
-  corsikaDirMDFields['altitude'] = 'float'
-  corsikaDirMDFields['particle'] = 'VARCHAR(128)'  
-  corsikaDirMDFields['energyInfo'] = 'VARCHAR(128)'
-  corsikaDirMDFields['viewCone'] = 'float'
-  corsikaDirMDFields['corsikaProdVersion'] = 'VARCHAR(128)'
-  corsikaDirMDFields['nbShowers'] = 'int'  
-  corsikaDirMDFields['outputType'] = 'VARCHAR(128)'
-  corsikaDirMDFields['runNumSeries'] = 'int'  
-  
-  createIndexes(corsikaDirMDFields)  
-  
-  # Adding Directory level metadata Values to DFC
-  corsikaDirMD={}
-  corsikaDirMD['thetaP'] = thetaP
-  corsikaDirMD['phiP'] = phiP
-  corsikaDirMD['altitude'] = obslev
-  corsikaDirMD['energyInfo'] = energyInfo
-  corsikaDirMD['corsikaProdVersion'] = corsikaProdVersion
-
-  res = createDirAndInsertMD(corsikaDirPath, corsikaDirMD)  
-  if res != DIRAC.S_OK:
-    return DIRAC.S_ERROR ('Problem creating Corsika Directory MD ')
-    
-  corsikaParticleDirMD={}
-  corsikaParticleDirMD['particle'] = particle
-  corsikaParticleDirMD['viewCone'] = viewCone
    
-  res = createDirAndInsertMD(corsikaParticleDirPath, corsikaParticleDirMD)  
-  if res != DIRAC.S_OK:
-    return DIRAC.S_ERROR ('Problem creating Corsika Particle Directory MD ')
-    
-  corsikaParticleDataDirPath = os.path.join(corsikaParticleDirPath,'Data')  
-  corsikaParticleDataDirMD={}
-  corsikaParticleDataDirMD['outputType'] = 'Data'
-  res = createDirAndInsertMD(corsikaParticleDataDirPath, corsikaParticleDataDirMD)  
-  if res != DIRAC.S_OK:
-    return DIRAC.S_ERROR ('Problem creating Corsika Particle Data Directory MD ')
-
-  corsikaParticleLogDirPath = os.path.join(corsikaParticleDirPath,'Log')  
-  corsikaParticleLogDirMD={}
-  corsikaParticleLogDirMD['outputType'] = 'Log'
-  res = createDirAndInsertMD(corsikaParticleLogDirPath, corsikaParticleLogDirMD)  
-  if res != DIRAC.S_OK:
-    return DIRAC.S_ERROR ('Problem creating Corsika Particle Log Directory MD ')
-    
-  return DIRAC.S_OK ('Corsika Directory MD successfully created')
-
+ 
 def createSimtelFileSystAndMD():
   # Creating INDEXES in DFC DB
   simtelDirMDFields={}
@@ -714,14 +476,14 @@ def createSimtelFileSystAndMD():
   res = createDirAndInsertMD(simtelDirPath, simtelDirMD)
   if res != DIRAC.S_OK:
     return DIRAC.S_ERROR ('MD Error: Problem creating Simtel Directory MD ')
-    
+
   simtelDataDirPath = os.path.join(simtelDirPath,'Data')
   simtelDataDirMD={}
   simtelDataDirMD['outputType'] = 'Data'
   res = createDirAndInsertMD(simtelDataDirPath, simtelDataDirMD)  
   if res != DIRAC.S_OK:
     return DIRAC.S_ERROR ('Problem creating Simtel Data Directory MD ')
-
+    
   simtelLogDirPath = os.path.join(simtelDirPath,'Log')
   simtelLogDirMD={}
   simtelLogDirMD['outputType'] = 'Log'
@@ -735,6 +497,7 @@ def createSimtelFileSystAndMD():
   res = createDirAndInsertMD(simtelHistoDirPath, simtelHistoDirMD)  
   if res != DIRAC.S_OK:
     return DIRAC.S_ERROR ('Problem creating Simtel Histo Directory MD ')
+
     
   return DIRAC.S_OK ('Simtel Directory MD successfully created')
 
@@ -746,3 +509,4 @@ if __name__ == '__main__':
   except Exception:
     DIRAC.gLogger.exception()
     DIRAC.exit( -1 )
+
