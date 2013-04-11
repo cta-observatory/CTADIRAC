@@ -13,6 +13,11 @@ def setExecutable( optionValue ):
   simtelExecName = optionValue
   return DIRAC.S_OK()
 
+def setConfig( optionValue ):
+  global simtelConfig
+  simtelConfig = optionValue
+  return DIRAC.S_OK()
+
 def setVersion( optionValue ):
   global version
   version = optionValue
@@ -39,6 +44,7 @@ def main():
 
   Script.registerSwitch( "p:", "inputfile=", "Input File", setInputFile )
   Script.registerSwitch( "E:", "simtelExecName=", "SimtelExecName", setExecutable )
+  Script.registerSwitch( "S:", "simtelConfig=", "SimtelConfig", setConfig )
   Script.registerSwitch( "V:", "version=", "Version", setVersion )
   Script.registerSwitch( "D:", "storage_element=", "Storage Element", setStorageElement )
 
@@ -76,21 +82,6 @@ def main():
         cmd = 'cp -u -r ' + corsika_subdir + '/* .'       
         os.system(cmd)
         continue
-    if workingArea:
-      if checkSoftwarePackage( package, workingArea() )['OK']:
-        DIRAC.gLogger.notice( 'Package found in Local Area:', package )
-        continue
-      if installSoftwarePackage( package, workingArea() )['OK']:
-      ############## compile #############################
-        if version == 'prod-2_21122012':
-          cmdTuple = ['./build_all','prod2','qgs2']
-        else:
-          cmdTuple = ['./build_all','ultra','qgs2']
-        ret = systemCall( 0, cmdTuple, sendOutput)
-        if not ret['OK']:
-          DIRAC.gLogger.error( 'Failed to compile')
-          DIRAC.exit( -1 )
-        continue
 
     DIRAC.gLogger.error( 'Check Failed for software package:', package )
     DIRAC.gLogger.error( 'Software package not available')
@@ -110,11 +101,13 @@ def main():
   from DIRAC.Interfaces.API.Dirac import Dirac
   dirac = Dirac()
   ############################
-  
-  #############
-  # CLAUDIA: simtelConfigFile should be built from ???
-  simtelConfigFilesPath = 'sim_telarray/multi'
-  simtelConfigFile = simtelConfigFilesPath + '/multi_cta-ultra5.cfg'                          
+
+########## 
+  # changed!!!!!
+  #simtelConfigFilesPath = 'sim_telarray/multi'
+  #simtelConfigFile = simtelConfigFilesPath + '/multi_cta-ultra5.cfg'                         
+  simtelConfigFilesPath = 'CODE'
+  simtelConfigFile = os.path.join(simtelConfigFilesPath,'multi_' + simtelConfig + '.cfg')
   createGlobalsFromConfigFiles(simtelConfigFile)
 
   #######################  
@@ -151,11 +144,11 @@ def main():
 
 #### execute simtelarray ################
   fd = open('run_sim.sh', 'w' )
-  fd.write( """#! /bin/sh                                                                                                                         
-echo "go for sim_telarray"
-. ./examples_common.sh
+  fd.write( """#! /bin/sh   
+export SVNPROD2=$PWD
+source $SVNPROD2/CODE/prod2_simtel_config.sh build_%s
 export CORSIKA_IO_BUFFER=800MB
-zcat %s | $SIM_TELARRAY_PATH/run_sim_%s""" % (corsikaFileName, simtelExecName))
+zcat %s | $SVNPROD2/CODE/run_sim_prod2_generic %s""" % (simtelExecName, corsikaFileName, simtelConfig))
   fd.close()
 
   os.system('chmod u+x run_sim.sh')
@@ -187,8 +180,11 @@ zcat %s | $SIM_TELARRAY_PATH/run_sim_%s""" % (corsikaFileName, simtelExecName))
     DIRAC.exit( -1 )
 
 ## putAndRegister simtel data/log/histo Output File:
+
+##############################################
+
   simtelFileName = particle + '_' + str(thetaP) + '_' + str(phiP) + '_alt' + str(obslev) + '_' + 'run' + run_number + '.simtel.gz'
-  cmd = 'mv Data/sim_telarray/' + simtelExecName + '/0.0deg/Data/*.simtel.gz ' + simtelFileName
+  cmd = 'mv ' + os.path.join('Data/sim_telarray',simtelCfg,simtelOffset+'deg','Data/*.simtel.gz') + ' ' + simtelFileName
   if(os.system(cmd)):
     DIRAC.exit( -1 )
 
@@ -198,14 +194,16 @@ zcat %s | $SIM_TELARRAY_PATH/run_sim_%s""" % (corsikaFileName, simtelExecName))
   newSimtelRunFileSeriesDir = (simtelRunNumberSeriesDirExist != True)  # if new runFileSeries, will need to add new MD
 
   simtelLogFileName = particle + '_' + str(thetaP) + '_' + str(phiP) + '_alt' + str(obslev) + '_' + 'run' + run_number + '.log.gz'
-  cmd = 'mv Data/sim_telarray/' + simtelExecName + '/0.0deg/Log/*.log.gz ' + simtelLogFileName
+  cmd = 'mv ' + os.path.join('Data/sim_telarray',simtelCfg,simtelOffset+'deg','Log/*.log.gz') + ' ' + simtelLogFileName
+
   if(os.system(cmd)):
     DIRAC.exit( -1 )
   simtelOutLogFileDir = os.path.join(simtelDirPath,'Log',runNumSeriesDir)
   simtelOutLogFileLFN = os.path.join(simtelOutLogFileDir,simtelLogFileName)
 
   simtelHistFileName = particle + '_' + str(thetaP) + '_' + str(phiP) + '_alt' + str(obslev) + '_' + 'run' + run_number + '.hdata.gz'
-  cmd = 'mv Data/sim_telarray/' + simtelExecName + '/0.0deg/Histograms/*.hdata.gz ' + simtelHistFileName
+  cmd = 'mv ' + os.path.join('Data/sim_telarray',simtelCfg,simtelOffset+'deg','Histograms/*.hdata.gz') + ' ' + simtelHistFileName
+
   if(os.system(cmd)):
     DIRAC.exit( -1 )
   simtelOutHistFileDir = os.path.join(simtelDirPath,'Histograms',runNumSeriesDir)
@@ -334,6 +332,7 @@ def createGlobalsFromConfigFiles(simtelConfigFileName):
   global viewCone
   global pathroot
   global simtelOffset
+  global simtelCfg
   global corsikaDirPath
   global corsikaParticleDirPath
   global simtelDirPath
@@ -358,8 +357,8 @@ def createGlobalsFromConfigFiles(simtelConfigFileName):
   particle = corsikaDirPathMD['particle']
   obslev = corsikaDirPathMD['altitude']
 #########################################################################
-
-  simtelKEYWORDS = ['env offset']
+  
+  simtelKEYWORDS = ['env offset','cfg','extra_defs']
 
   # Formatting MD values retrieved in configFiles
   corsikaProdVersion = version + '_corsika'
@@ -368,15 +367,16 @@ def createGlobalsFromConfigFiles(simtelConfigFileName):
   #building simtelArray Offset
   dictSimtelKW={}
   simtelConfigFile = open(simtelConfigFileName, "r").readlines()
-  for line in simtelConfigFile:
-    lineSplitEqual = line.split('=')
-    isAComment = '#' in lineSplitEqual[0].split()
-    for word in lineSplitEqual:
-      if (word in simtelKEYWORDS and not isAComment) :
-        offset = lineSplitEqual[1].split()[0]
-        dictSimtelKW[word] = offset
 
+  for line in simtelConfigFile:
+    if (len(line.split())>0):
+      if line[0] is not '#':
+         for i in range(0,len(simtelKEYWORDS)-1):
+           lineTuple = line.split(simtelKEYWORDS[i] +'=')[1].split(simtelKEYWORDS[i+1])
+           dictSimtelKW[simtelKEYWORDS[i]] = lineTuple[0].strip()
+          
   simtelOffset = dictSimtelKW['env offset']
+  simtelCfg = dictSimtelKW['cfg']
   
     
   #building ParticleName
@@ -393,13 +393,11 @@ def createGlobalsFromConfigFiles(simtelConfigFileName):
   corsikaProdVersion = corsikaDirPathMD['corsikaProdVersion']
   pattern = "%s" % ('/'.join( [prodName,corsikaProdVersion,particle] ))
   pathroot = corsikaDirPath.split(pattern)[0]
-#  corsikaParticleDirPath = "%s%s" % (pathroot,pattern)
   corsikaParticleDirPath = os.path.join(pathroot,pattern)
-  simtelDirPath = os.path.join(corsikaParticleDirPath,simtelProdVersion)
-
+  simtelDirPath = os.path.join(corsikaParticleDirPath,simtelProdVersion+'_'+simtelConfig)
 
 def createIndexes(indexesTypesDict):
-  #CLAUDIA ToBeDone: only if they don't already exist: waiting for Release update
+  #CLAUDIAToBeDone: only if they don't already exist: waiting for Release update
   for mdField in indexesTypesDict.keys():
     mdFieldType = indexesTypesDict[mdField]
     result = fcc.addMetadataField(mdField,mdFieldType)
@@ -464,12 +462,14 @@ def createSimtelFileSystAndMD():
   # Creating INDEXES in DFC DB
   simtelDirMDFields={}
   simtelDirMDFields['simtelArrayProdVersion'] = 'VARCHAR(128)'
+  simtelDirMDFields['simtelArrayConfig'] = 'VARCHAR(128)'
   simtelDirMDFields['offset'] = 'float'
   createIndexes(simtelDirMDFields)  
   
   # Adding Directory level metadata Values to DFC
   simtelDirMD={}
   simtelDirMD['simtelArrayProdVersion'] = simtelProdVersion
+  simtelDirMD['simtelArrayConfig'] = simtelConfig
   simtelOffsetCorr = simtelOffset[1:-1]
   simtelDirMD['offset'] = float(simtelOffsetCorr)
 
@@ -509,4 +509,3 @@ if __name__ == '__main__':
   except Exception:
     DIRAC.gLogger.exception()
     DIRAC.exit( -1 )
-
