@@ -8,6 +8,7 @@ Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      '  %s [option|cfgfile] ... [inputfilelist] ...' % Script.scriptName,
                                      'Arguments:',
                                      '  inputfilelist: Input File List',
+                                     '  simtelConfig: cta-ultra5/4MSST',
                                      '  storageElement: Storage Element'] ) )
 Script.parseCommandLine()
 
@@ -21,8 +22,8 @@ def SimtelProdExample( args = None ) :
   if (len(args)<1 or len(args)>2):
     Script.showHelp()
 
-  if (len(args)==2):
-    storage_element = args[1]
+  if (len(args)==3):
+    storage_element = args[2]
   else :
     storage_element = 'LUPM-Disk'
 
@@ -35,19 +36,25 @@ def SimtelProdExample( args = None ) :
     infileLFNList.append(infileLFN)
 
   j = SimtelProdJob()
-
-  j.setVersion('prod-2_21122012')
-
-  j.setExecutable('cta-ultra5') 
+ 
+  j.setVersion('prod-2_08032013')
 
   j.setParametricInputData(infileLFNList) 
 
-  j.setName('repro')
+  j.setExecutable('prod2_qgs2') 
+  
+  simtel_config = args[1]
 
-  j.setInputSandbox( [ 'fileCatalog.cfg'] ) 
+  j.setParameters(['fileCatalog.cfg','-S',simtel_config,'-D',storage_element])
 
-  j.setParameters(['fileCatalog.cfg','-D',storage_element])
+  j.setInputSandbox( [ 'fileCatalog.cfg','CONFIG'] )
+
   j.setOutputSandbox( ['simtel.log'])
+
+  name = 'repro_' + simtel_config
+  j.setName(name)
+ 
+  j.setJobGroup(name)
 
   j.setCPUTime(100000)
 
