@@ -237,6 +237,7 @@ export SIM_TELARRAY_DATA="${MCDATA_PATH}/sim_telarray"
 export CTA_PATH="$(pwd -P)"
 export LD_LIBRARY_PATH="${CTA_PATH}/hessioxxx/lib"
 export HESSIO_BIN="${PWD}/hessioxxx/bin"
+export CORSIKA_IO_BUFFER=800MB
 
 export PATH="${PATH}:${HESSIO_BIN}:${SIM_TELARRAY_PATH}:${CORSIKA_PATH}"
 """)
