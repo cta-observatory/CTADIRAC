@@ -230,6 +230,7 @@ ln -s ./sim_telarray/cfg/common/atmprof1.dat
 
 export CORSIKA_PATH="$(cd corsika-run && pwd -P)"
 export SIM_TELARRAY_PATH="$(cd sim_telarray && pwd -P)"
+export SIMTEL_CONFIG_PREPROCESSOR="${SIM_TELARRAY_PATH}/bin"
 export MCDATA_PATH="$(pwd -P)/Data"
 export CORSIKA_DATA="${MCDATA_PATH}/corsika"
 export SIM_TELARRAY_DATA="${MCDATA_PATH}/sim_telarray"
