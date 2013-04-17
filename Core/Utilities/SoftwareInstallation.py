@@ -9,7 +9,7 @@
      check of SW installed in the shared software area, called by the JobAgent
      the Job parameter "SoftwarePackages" defines the list of packages to
      install.
-     If any of the packages is not available in the shared software area, 
+     If any of the packages is not available in the shared software area,
      it will attempt to do the installation in a LocalArea directory
 
   It also provides additional functions to handle the installation of SW and
@@ -118,7 +118,7 @@ def installSoftwarePackage( package, area ):
   """
     Install the requested version of package under the given area
   """
-  gLogger.notice( 'Installing software package:', ' at '.join( [package, area] ) ) 
+  gLogger.notice( 'Installing software package:', ' at '.join( [package, area] ) )
   tarLFN = os.path.join( LFN_ROOT, SW_DIR, package ) + '.tar.gz'
   tarLFNcrypt = tarLFN + '.crypt'
   tarLFNs = [tarLFN,tarLFNcrypt]
@@ -152,9 +152,9 @@ def installSoftwarePackage( package, area ):
       ########## extract #######################
         tarMode = "r|*"
         if area == workingArea():
-          installDir = os.path.join( area ) 
+          installDir = os.path.join( area )
         else:
-          installDir = os.path.join( area, packageTuple[0], packageTuple[1]) 
+          installDir = os.path.join( area, packageTuple[0], packageTuple[1])
         tar = tarfile.open( name = tarFileName, mode = tarMode )
         for tarInfo in tar:
           tar.extract( tarInfo, installDir )
@@ -230,6 +230,7 @@ ln -s ./sim_telarray/cfg/common/atmprof1.dat
 
 export CORSIKA_PATH="$(cd corsika-run && pwd -P)"
 export SIM_TELARRAY_PATH="$(cd sim_telarray && pwd -P)"
+export SIMTEL_CONFIG_PREPROCESSOR="${SIM_TELARRAY_PATH}/bin"
 export MCDATA_PATH="$(pwd -P)/Data"
 export CORSIKA_DATA="${MCDATA_PATH}/corsika"
 export SIM_TELARRAY_DATA="${MCDATA_PATH}/sim_telarray"
@@ -266,7 +267,7 @@ export LD_LIBRARY_PATH=${EPDFREE}/lib:${LD_LIBRARY_PATH}
 export GAMMALIB=%s/ctools/%s/ctools
 source $GAMMALIB/bin/gammalib-init.sh
 export CTOOLS=%s/ctools/%s/ctools
-source $CTOOLS/bin/ctools-init.sh 
+source $CTOOLS/bin/ctools-init.sh
 """ % (area,version,area,version) )
       fd.close()
       return DIRAC.S_OK()               
@@ -337,7 +338,7 @@ export NOPARIS=0
 export MYSQL_LIBPATH=${HESSROOT}/lib
 
 export LD_LIBRARY_PATH=/usr/lib64:${LD_LIBRARY_PATH}
-export GCCPATH=/usr 
+export GCCPATH=/usr
 export CXX_KIND=/usr/bin/g++
 
 export PATH=${GCCPATH}/bin:${ROOTSYS}/bin:${HESSUSER}/bin:${HESSROOT}/bin:${WORKING_DIR}/local/bin:${PATH}
@@ -352,7 +353,7 @@ export LD_LIBRARY_PATH=${WORKING_DIR}/local/lib:${GCCPATH}/lib:${ROOTSYS}/lib:${
 
 def getSoftwareEnviron( package, environ = None ):
   """
-    Check shared and local Area for the given package and return 
+    Check shared and local Area for the given package and return
     the new environ dictionary
   """
   if environ == None:
@@ -364,7 +365,7 @@ def getSoftwareEnviron( package, environ = None ):
 
   gLogger.notice( 'Getting environment for', package )
 
-  for area in [workingArea(), sharedArea(), localArea()]: 
+  for area in [workingArea(), sharedArea(), localArea()]:
     if area:
       if not checkSoftwarePackage( package, area )['OK']:
         continue
