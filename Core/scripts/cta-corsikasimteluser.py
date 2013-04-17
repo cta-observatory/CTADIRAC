@@ -18,7 +18,6 @@ def main():
   from DIRAC.Core.Base import Script
  
   Script.registerSwitch( "T:", "template=", "Corsika Template" )
-#  Script.registerSwitch( "S:", "simexe=", "Simtel Executable")
   Script.registerSwitch( "p:", "run_number=", "Do not use: Run Number automatically set" )
   Script.registerSwitch( "E:", "executable=", "Executable (Use SetExecutable)")
   Script.registerSwitch( "v:", "version=", "Version (Use setVersion)")  
@@ -31,7 +30,6 @@ def main():
   ## default values ##############
   run_number = None
   template = None
-#  simexe = None
   executable = None
   version = None
   
@@ -41,8 +39,6 @@ def main():
       run_number = switch[1].split('ParametricParameters=')[1]
     elif switch[0] == "template" or switch[0] == "T":
       template = switch[1]
- #   elif switch[0] == "simexe" or switch[0] == "S":
-  #    simexe = switch[1]
     elif switch[0] == "executable" or switch[0] == "E":
       executable = switch[1]
     elif switch[0] == "version" or switch[0] == "v":
@@ -52,9 +48,6 @@ def main():
     Script.showHelp()
     jobReport.setApplicationStatus('Missing options')
     DIRAC.exit( -1 )   
-
-  #import sys
-  #args = sys.argv[1:]
 
   from CTADIRAC.Core.Workflow.Modules.CorsikaApp import CorsikaApp
   from CTADIRAC.Core.Utilities.SoftwareInstallation import checkSoftwarePackage
@@ -82,7 +75,7 @@ def main():
         DIRAC.gLogger.notice( 'Package found in Shared Area:', package )
         installSoftwareEnviron( package, workingArea() )
         packageTuple =  package.split('/')
-        corsika_subdir = sharedArea() + '/' + packageTuple[0] + '/' + version 
+        corsika_subdir = sharedArea() + '/' + packageTuple[0] + '/' + version
         cmd = 'cp -u -r ' + corsika_subdir + '/* .'        
         os.system(cmd)
         continue
@@ -92,7 +85,10 @@ def main():
         continue
       if installSoftwarePackage( package, workingArea() )['OK']:
       ############## compile #############################
-        cmdTuple = ['./build_all','ultra','qgs2']
+        if version == 'clean_23012012':
+          cmdTuple = ['./build_all','ultra','qgs2']
+        elif version in ['prod-2_21122012','prod-2_08032013']:
+          cmdTuple = ['./build_all','prod2','qgs2']
         ret = systemCall( 0, cmdTuple, sendOutput)
         if not ret['OK']:
           DIRAC.gLogger.error( 'Failed to execute build')
@@ -107,7 +103,7 @@ def main():
   cs = CorsikaApp()
   cs.setSoftwarePackage(CorsikaSimtelPack)
   cs.csExe = executable
-  cs.csArguments = ['--run-number',run_number,'--run','corsika',template] 
+  cs.csArguments = ['--run-number',run_number,'--run','corsika',template]
   corsikaReturnCode = cs.execute()
   
   if corsikaReturnCode != 0:
@@ -149,28 +145,23 @@ def main():
   inputfile = 'input_file='+destcorsikafilename
   inputfileopt = ['-C',inputfile]
   cmdTuple.extend(inputfileopt)
-  # add output file argument for sim_telarray 
+  # add output file argument for sim_telarray
   destsimtelfilename = 'simtel_run' + run_number + '.simtel.gz'
   outputfile = 'output_file='+destsimtelfilename
   outputfileopt = ['-C',outputfile]
   cmdTuple.extend(outputfileopt)
-  # add histo argument for sim_telarray 
+  # add histo argument for sim_telarray
   desthistofilename = 'simtel_run' + run_number + '.hdata.gz'
   histofile = 'histogram_file='+desthistofilename
   histofileopt = ['-C',histofile]
   cmdTuple.extend(histofileopt)
 
-  ## remove 'parametric arguments' #############
-  #cmdTuple = cmdTuple[:-2]
-  
   # add other arguments for sim_telarray specified by user ######
   simtelparfile = open('simtel.par', 'r').readlines()
   
   for line in simtelparfile:
     for word in line.split():
       cmdTuple.append(word)
-      
-#  cmdTuple.extend(args[11:])
 
   DIRAC.gLogger.notice( 'Executing command tuple:', cmdTuple )
   ret = systemCall( 0, cmdTuple, sendSimtelOutput,env = corsikaEnviron )
