@@ -2,7 +2,6 @@
 import DIRAC
 import os
 
-
 def setInputFile ( optionValue ):
   global corsikaFileLFN
   corsikaFileLFN = optionValue.split('ParametricInputData=LFN:')[1]
@@ -102,13 +101,17 @@ def main():
   dirac = Dirac()
   ############################
 
-########## 
+##########
   # changed!!!!!
   #simtelConfigFilesPath = 'sim_telarray/multi'
   #simtelConfigFile = simtelConfigFilesPath + '/multi_cta-ultra5.cfg'                         
   simtelConfigFilesPath = 'CODE'
   simtelConfigFile = os.path.join(simtelConfigFilesPath,'multi_' + simtelConfig + '.cfg')
   createGlobalsFromConfigFiles(simtelConfigFile)
+
+  simtelCfgform = simtelCfg[1:-1]
+  simtelOffsetform = simtelOffset[1:-1]
+  cmd = os.path.join('Data/sim_telarray',simtelCfgform,simtelOffsetform+'deg','Data/*.simtel.gz')
 
   #######################  
 ## files spread in 1000-runs subDirectories
@@ -184,7 +187,8 @@ zcat %s | $SVNPROD2/CODE/run_sim_prod2_generic %s""" % (simtelExecName, corsikaF
 ##############################################
 
   simtelFileName = particle + '_' + str(thetaP) + '_' + str(phiP) + '_alt' + str(obslev) + '_' + 'run' + run_number + '.simtel.gz'
-  cmd = 'mv ' + os.path.join('Data/sim_telarray',simtelCfg,simtelOffset+'deg','Data/*.simtel.gz') + ' ' + simtelFileName
+  cmd = 'mv ' + os.path.join('Data/sim_telarray',simtelCfgform,simtelOffsetform+'deg','Data/*.simtel.gz') + ' ' + simtelFileName
+
   if(os.system(cmd)):
     DIRAC.exit( -1 )
 
@@ -194,7 +198,7 @@ zcat %s | $SVNPROD2/CODE/run_sim_prod2_generic %s""" % (simtelExecName, corsikaF
   newSimtelRunFileSeriesDir = (simtelRunNumberSeriesDirExist != True)  # if new runFileSeries, will need to add new MD
 
   simtelLogFileName = particle + '_' + str(thetaP) + '_' + str(phiP) + '_alt' + str(obslev) + '_' + 'run' + run_number + '.log.gz'
-  cmd = 'mv ' + os.path.join('Data/sim_telarray',simtelCfg,simtelOffset+'deg','Log/*.log.gz') + ' ' + simtelLogFileName
+  cmd = 'mv ' + os.path.join('Data/sim_telarray',simtelCfgform,simtelOffsetform+'deg','Log/*.log.gz') + ' ' + simtelLogFileName
 
   if(os.system(cmd)):
     DIRAC.exit( -1 )
@@ -202,7 +206,7 @@ zcat %s | $SVNPROD2/CODE/run_sim_prod2_generic %s""" % (simtelExecName, corsikaF
   simtelOutLogFileLFN = os.path.join(simtelOutLogFileDir,simtelLogFileName)
 
   simtelHistFileName = particle + '_' + str(thetaP) + '_' + str(phiP) + '_alt' + str(obslev) + '_' + 'run' + run_number + '.hdata.gz'
-  cmd = 'mv ' + os.path.join('Data/sim_telarray',simtelCfg,simtelOffset+'deg','Histograms/*.hdata.gz') + ' ' + simtelHistFileName
+  cmd = 'mv ' + os.path.join('Data/sim_telarray',simtelCfgform,simtelOffsetform+'deg','Histograms/*.hdata.gz') + ' ' + simtelHistFileName
 
   if(os.system(cmd)):
     DIRAC.exit( -1 )
@@ -497,7 +501,6 @@ def createSimtelFileSystAndMD():
   res = createDirAndInsertMD(simtelHistoDirPath, simtelHistoDirMD)  
   if res != DIRAC.S_OK:
     return DIRAC.S_ERROR ('Problem creating Simtel Histo Directory MD ')
-
     
   return DIRAC.S_OK ('Simtel Directory MD successfully created')
 
