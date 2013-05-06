@@ -31,9 +31,9 @@ def softclean( args = None ) :
 
   j = Job()
 
-  j.setInputSandbox( ['cleanscript.py'] )   
+  j.setInputSandbox( ['cta-swclean.py'] )   
 
-  j.setExecutable('./cleanscript.py', version)
+  j.setExecutable('./cta-swclean.py', version)
 
   j.setDestination([site])
 
