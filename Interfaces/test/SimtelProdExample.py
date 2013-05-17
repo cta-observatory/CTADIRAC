@@ -54,7 +54,7 @@ def SimtelProdExample( args = None ) :
   j.setName(name)
   j.setJobGroup(name)
 
-  j.setInputSandbox( [ 'fileCatalog.cfg','CTADIRAC','cta-simtelprodold.py','grid_prod2-repro.sh','LFN:/vo.cta.in2p3.fr/user/j/johann.cohen-tanugi/PROD2/SVN-PROD2_rev1869.tar.gz'] )
+  j.setInputSandbox( [ 'fileCatalog.cfg','grid_prod2-repro.sh','LFN:/vo.cta.in2p3.fr/user/j/johann.cohen-tanugi/PROD2/SVN-PROD2_rev1869.tar.gz'] )
 
   j.setParameters(['fileCatalog.cfg','-D',storage_element,'-S',simtelArrayConfig])
   j.setOutputSandbox( ['simtel.log'])
