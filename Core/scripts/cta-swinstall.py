@@ -56,7 +56,7 @@ def main():
         fd = open('run_compile.sh', 'w' )
         fd.write( """#! /bin/sh                                                                                                                         
 cd %s
-./build_all prod2 qgs
+./build_all prod2 qgs2
 ./CODE/build_simtel prod2 qgs2 build_prod2_qgs2
 ./CODE/build_simtel sc2_111 qgs2 build_sc2_111_qgs2""" % (installdir))
 
