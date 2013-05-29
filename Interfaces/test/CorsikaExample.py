@@ -15,7 +15,7 @@ def CorsikaExample( args = None ) :
   from DIRAC.Interfaces.API.Dirac import Dirac
 
   j = CorsikaJob()
-  j.setVersion('clean_23012012')
+  j.setVersion('prod-2_21122012')
 
   executable = 'corsika_autoinputs'
   j.setExecutable(executable)
@@ -32,9 +32,9 @@ def CorsikaExample( args = None ) :
 
   j.setGenericParametricInput(ilist)
   j.setName('run%s')
-  j.setInputSandbox( [ 'INPUTS_CTA_ULTRA3_proton'] )
+  j.setInputSandbox( ['INPUTS_CTA_PROD2_gamma_South'] )
   
-  j.setParameters(['--run','corsika','--template','INPUTS_CTA_ULTRA3_proton'])
+  j.setParameters(['--run','corsika','--template','INPUTS_CTA_PROD2_gamma_South'])
 
   j.setOutputSandbox( ['corsika_autoinputs.log'])
   
