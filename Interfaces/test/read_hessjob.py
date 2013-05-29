@@ -64,8 +64,11 @@ def read_hessjob():
 
 if __name__ == '__main__':
 
+  args = Script.getPositionalArgs()
+
   try:
-    read_hessjob()
+    read_hessjob( args )
   except Exception:
     Script.gLogger.exception()
+    
 
