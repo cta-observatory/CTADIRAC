@@ -105,7 +105,7 @@ def main():
       ############## compile #############################
         if version == 'clean_23012012':
           cmdTuple = ['./build_all','ultra','qgs2']
-        elif version in ['prod-2_21122012','prod-2_08032013']:
+        elif version in ['prod-2_21122012','prod-2_08032013','prod-2_06052013']:
           cmdTuple = ['./build_all','prod2','qgs2']
         ret = systemCall( 0, cmdTuple, sendOutput)
         if not ret['OK']:
