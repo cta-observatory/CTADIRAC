@@ -1,7 +1,9 @@
 #!/usr/bin/env python
+"""
+  Submit a read_hess Job
+"""
 
 from DIRAC.Core.Base import Script
-import os
 
 Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      'Usage:',
@@ -11,7 +13,9 @@ Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
 
 Script.parseCommandLine()
 
-def read_hessjob():
+import os
+
+def read_hessjob( args = None ):
 
   from DIRAC.Interfaces.API.Dirac import Dirac
   from DIRAC.Interfaces.API.Job import Job
