@@ -117,7 +117,9 @@ def main():
 
   if simtelConfig=="6INROW":
     all_configs=["SCMST","4MSST","SCSST","ASTRI","NSBX3","STD"]
-  else :
+  elif simtelConfig=="5INROW":
+    all_configs=["4MSST","SCSST","ASTRI","NSBX3","STD"]
+  else:
     all_configs=[simtelConfig]
 
   for current_conf in all_configs:
