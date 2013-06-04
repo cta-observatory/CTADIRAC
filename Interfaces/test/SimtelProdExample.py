@@ -9,7 +9,7 @@ Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      'Arguments:',
                                      '  inputfilelist: Input File List',
                                      '  storageElement: Storage Element',
-                                     ' reprocessing configuration (STD,NSBX3,SCMST,SCSST,4MSST,ASTRI,6INROW)'] ) )
+                                     ' reprocessing configuration (STD,NSBX3,SCMST,SCSST,4MSST,ASTRI,5INROW,6INROW)'] ) )
 Script.parseCommandLine()
 
 import os
@@ -41,7 +41,7 @@ def SimtelProdExample( args = None ) :
   simtelArrayConfig = "STD"
 
   if (len(args)>=3):
-    if args[2] not in ['STD','NSBX3','SCMST','SCSST','4MSST','ASTRI','6INROW']:
+    if args[2] not in ['STD','NSBX3','SCMST','SCSST','4MSST','ASTRI','5INROW','6INROW']:
       print "arrayConfig argument %s incorrect"%args[2]
       Script.showHelp()
 
