@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import DIRAC
 import os
-from DIRAC.Interfaces.API.Dirac import Dirac
 from DIRAC.WorkloadManagementSystem.Client.JobReport import JobReport
 
 def setRunNumber( optionValue ):
@@ -125,7 +124,7 @@ def main():
 
     DIRAC.gLogger.error( 'Check Failed for software package:', package )
     DIRAC.gLogger.error( 'Software package not available')
-    DIRAC.exit( -1 ) 
+    DIRAC.exit( -1 )
 
  ###########
   ## Checking MD coherence
@@ -138,7 +137,7 @@ def main():
   fcc = FileCatalogClient()
   fcL = FileCatalog('LcgFileCatalog')
   
-  
+  from DIRAC.Interfaces.API.Dirac import Dirac
   dirac = Dirac()
   
   #############
@@ -395,7 +394,7 @@ def main():
       DIRAC.exit( -1 )
 
 ## putAndRegister simtel data/log/histo Output File:
-    cfg = cfg_dict[current_conf] 
+    cfg = cfg_dict[current_conf]
     cmd = 'mv Data/sim_telarray/' + cfg + '/0.0deg/Data/*.simtel.gz ' + simtelFileName
     if(os.system(cmd)):
       DIRAC.exit( -1 )
@@ -423,7 +422,7 @@ def main():
     from DIRAC.ConfigurationSystem.Client.Helpers.Operations import Operations
     opsHelper = Operations()
     
-    global seList 
+    global seList
     seList = opsHelper.getValue( 'ProductionOutputs/SimtelProd', [] )
     seList  = List.randomize( seList )
 
@@ -513,6 +512,7 @@ def CheckCatalogCoherence(fileLFN):
 def upload_to_seList(FileLFN,FileName):
 
   DIRAC.gLogger.notice( 'Put and register simtel Log File in LFC and DFC:', FileLFN)
+  from DIRAC.Interfaces.API.Dirac import Dirac
   from DIRAC.Core.Utilities.SiteSEMapping import getSEsForSite
   result = getSEsForSite( DIRAC.siteName() )
   if result['OK']:
@@ -547,7 +547,7 @@ def upload_to_seList(FileLFN,FileName):
       break
 
   for se in failing_se:
-    seList.remove(se) 
+    seList.remove(se)
 
   DIRAC.gLogger.notice('Failing SE list:',failing_se)
   if upload_result != 'OK':
