@@ -10,7 +10,7 @@ from DIRAC.Core.Base import Script
 Script.registerSwitch( "", "MCCampaign=", "PROD2" )
 Script.registerSwitch( "", "particle=", "gamma/gamma_ptsrc/proton/electron" )
 Script.registerSwitch( "", "simtelArrayConfig=", "STD/NSBX3/SCMST/4MSST/SCSST/ASTRI" )
-Script.registerSwitch( "", "outputType=", "Data/Log/Histograms" )
+Script.registerSwitch( "", "outputType=", "Data/Log/Histo" )
 Script.registerSwitch( "", "viewCone=", "10/0" )
 Script.registerSwitch( "", "corsikaprodversion=", "prod-2_06052013_corsika" )
 Script.registerSwitch( "", "simtelArrayProdVersion=", "prod-2_06052013_simtel/prod-2_06052013_sc3_simtel" )
@@ -108,8 +108,8 @@ result = fc.findFilesByMetadata(metaDict,path='/',rpc='',url='',timeout=120)
 if not result['OK']:
   print 'ERROR %s' % result['Message']
   exitCode = 2
-
-for f in result['Value']:
-  print f
+else:
+  for f in result['Value']:
+    print f
   
 DIRAC.exit( exitCode )
