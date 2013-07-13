@@ -80,12 +80,6 @@ def main():
   global fcc, fcL, storage_element
   
   from CTADIRAC.Core.Workflow.Modules.CorsikaApp import CorsikaApp
-  from CTADIRAC.Core.Utilities.SoftwareInstallation import checkSoftwarePackage
-  from CTADIRAC.Core.Utilities.SoftwareInstallation import installSoftwarePackage
-  from CTADIRAC.Core.Utilities.SoftwareInstallation import installSoftwareEnviron
-  from CTADIRAC.Core.Utilities.SoftwareInstallation import localArea
-  from CTADIRAC.Core.Utilities.SoftwareInstallation import sharedArea
-  from CTADIRAC.Core.Utilities.SoftwareInstallation import workingArea
   from DIRAC.Core.Utilities.Subprocess import systemCall
 
 
@@ -94,37 +88,6 @@ def main():
   global jobReport
   jobReport = JobReport( jobID )
 
-  CorsikaSimtelPack = 'corsika_simhessarray/' + version + '/corsika_simhessarray'
-
-  packs = [CorsikaSimtelPack]
-
-  for package in packs:
-    DIRAC.gLogger.notice( 'Checking:', package )
-    if sharedArea:
-      if checkSoftwarePackage( package, sharedArea() )['OK']:
-        DIRAC.gLogger.notice( 'Package found in Shared Area:', package )
-        installSoftwareEnviron( package, workingArea() )
-        packageTuple =  package.split('/')
-        corsika_subdir = sharedArea() + '/' + packageTuple[0] + '/' + version  
-        cmd = 'cp -u -r ' + corsika_subdir + '/* .'       
-        os.system(cmd)
-        continue
-    if workingArea:
-      if checkSoftwarePackage( package, workingArea() )['OK']:
-        DIRAC.gLogger.notice( 'Package found in Local Area:', package )
-        continue
-      if installSoftwarePackage( package, workingArea() )['OK']:
-      ############## compile #############################
-        cmdTuple = ['./build_all','prod2','qgs2']
-        ret = systemCall( 0, cmdTuple, sendOutput)
-        if not ret['OK']:
-          DIRAC.gLogger.error( 'Failed to execute build')
-          DIRAC.exit( -1 )
-        continue
-
-    DIRAC.gLogger.error( 'Check Failed for software package:', package )
-    DIRAC.gLogger.error( 'Software package not available')
-    DIRAC.exit( -1 ) 
 
  ###########
   ## Checking MD coherence
@@ -168,6 +131,9 @@ def main():
     print 'corsika Directory MD successfully created'
   
   ############ Producing Corsika File
+
+  install_CorsikaSimtelPack(version)
+  CorsikaSimtelPack = 'corsika_simhessarray/' + version + '/corsika_simhessarray' 
   cs = CorsikaApp()
   cs.setSoftwarePackage(CorsikaSimtelPack)
   cs.csExe = executable
@@ -217,7 +183,6 @@ def main():
 #### create a file to DISABLE_WATCHDOG_CPU_WALLCLOCK_CHECK ################
   f = open('DISABLE_WATCHDOG_CPU_WALLCLOCK_CHECK', 'w' )
   f.close()
-
 
   if savecorsika == 'True':
     DIRAC.gLogger.notice( 'Put and register corsika File in LFC and DFC:', corsikaOutFileLFN)
@@ -289,9 +254,11 @@ def main():
 
   cfg_dict = {"4MSST":'cta-prod2-4m-dc',"SCSST":'cta-prod2-sc-sst',"STD":'cta-prod2',"NSBX3":'cta-prod2',"ASTRI":'cta-prod2-astri',"SCMST":'cta-prod2-sc3'}
 
-  if simtelConfig=="5INROW":
-    all_configs=["SCMST","4MSST","SCSST","ASTRI","STD"]
-  else :
+  if simtelConfig=="6INROW":
+    all_configs=["4MSST","SCSST","ASTRI","NSBX3","STD","SCMST"]
+  elif simtelConfig=="5INROW":
+    all_configs=["4MSST","SCSST","ASTRI","NSBX3","STD"]
+  else:
     all_configs=[simtelConfig]
 
   for current_conf in all_configs:
@@ -300,35 +267,18 @@ def main():
 
     if current_conf == "SCMST":
       current_version = version + '_sc3'
+      DIRAC.gLogger.notice('current version is', current_version)
+      if os.path.isdir('sim_telarray'):
+        DIRAC.gLogger.notice('Package found in the local area. Removing package...')
+        cmd = 'rm -R sim_telarray corsika-6990 hessioxxx corsika-run'
+        if(os.system(cmd)):
+          DIRAC.exit( -1 )
+        install_CorsikaSimtelPack(current_version)
     else:
       current_version = version
-      
-    #if os.path.isdir('sim_telarray'):
-    #  DIRAC.gLogger.notice('Package found in the local area. Removing package...')
-    #  cmd = 'rm -R sim_telarray corsika-6990 hessioxxx corsika-run'
-    #  if(os.system(cmd)):
-    #    DIRAC.exit( -1 )
+      DIRAC.gLogger.notice('current version is', current_version)
 
-    DIRAC.gLogger.notice('current version is', current_version)
-    #CorsikaSimtelPack = 'corsika_simhessarray/' + current_version + '/corsika_simhessarray'
-
-    #packs = [CorsikaSimtelPack]
-
-    #for package in packs:
-    #  DIRAC.gLogger.notice( 'Checking:', package )
-    #  if sharedArea:
-    #    if checkSoftwarePackage( package, sharedArea() )['OK']:
-    #      DIRAC.gLogger.notice( 'Package found in Shared Area:', package )
-    #      installSoftwareEnviron( package, workingArea() )
-    #      packageTuple =  package.split('/')
-    #      corsika_subdir = sharedArea() + '/' + packageTuple[0] + '/' + current_version  
-    #      cmd = 'cp -u -r ' + corsika_subdir + '/* .'       
-    #      os.system(cmd)
-    #      continue
-
-    #  DIRAC.gLogger.error( 'Check Failed for software package:', package )
-    #  DIRAC.gLogger.error( 'Software package not available')
-    #  DIRAC.exit( -1 )  
+########################################################
 
     global simtelDirPath
     global simtelProdVersion
@@ -346,7 +296,7 @@ def main():
     else:
       print 'simtel Directory MD successfully created'
 
-############## introduce file existence check here ########################
+############## check simtel data file LFN exists ########################
     simtelFileName = particle + '_' + str(thetaP) + '_' + str(phiP) + '_alt' + str(obslev) + '_' + 'run' + run_number + '.simtel.gz'
     simtelDirPath_conf = simtelDirPath + '_' + current_conf
     simtelOutFileDir = os.path.join(simtelDirPath_conf,'Data',runNumSeriesDir)
@@ -372,29 +322,26 @@ def main():
     ret = systemCall( 0, cmdTuple, sendOutputSimTel)
     simtelReturnCode, stdout, stderr = ret['Value']
 
-    if(os.system('grep Broken simtel.log')):
-      print 'not broken'
-    else:
-      print 'broken'
-    
-    # Tag corsika File if Broken Pipe
-      corsikaTagMD={}
-      corsikaTagMD['CorsikaToReprocess'] = 'CorsikaToReprocess'
-      result = fcc.setMetadata(corsikaOutFileLFN,corsikaTagMD)
-      print "result setMetadata=",result
-      if not result['OK']:
-        print 'ResultSetMetadata:',result['Message']
-  
+    if(os.system('grep Broken simtel.log')==0):
+      DIRAC.gLogger.error('Broken string found in simtel.log')
       jobReport.setApplicationStatus('Broken pipe')
       DIRAC.exit( -1 )
+   
+    # Tag corsika File if Broken Pipe
+      #corsikaTagMD={}
+      #corsikaTagMD['CorsikaToReprocess'] = 'CorsikaToReprocess'
+      #result = fcc.setMetadata(corsikaOutFileLFN,corsikaTagMD)
+      #print "result setMetadata=",result
+      #if not result['OK']:
+      #  print 'ResultSetMetadata:',result['Message']
 
     if not ret['OK']:
       DIRAC.gLogger.error( 'Failed to execute run_sim.sh')
       DIRAC.gLogger.error( 'run_sim.sh status is:', simtelReturnCode)
       DIRAC.exit( -1 )
 
-## putAndRegister simtel data/log/histo Output File:
-    cfg = cfg_dict[current_conf] 
+##   check simtel data/log/histo Output File exist
+    cfg = cfg_dict[current_conf]
     cmd = 'mv Data/sim_telarray/' + cfg + '/0.0deg/Data/*.simtel.gz ' + simtelFileName
     if(os.system(cmd)):
       DIRAC.exit( -1 )
@@ -417,25 +364,90 @@ def main():
     simtelOutHistFileDir = os.path.join(simtelDirPath_conf,'Histograms',runNumSeriesDir)
     simtelOutHistFileLFN = os.path.join(simtelOutHistFileDir,simtelHistFileName)
 
+########### quality check on Histo ############################################# 
+    fd = open('check_histo.sh', 'w' )
+    fd.write( """#! /bin/sh  
+nsim=$(list_histograms %s|fgrep 'Histogram 6 '|sed 's/^.*contents: //'| sed 's:/.*$::')
+nevents=%d
+if [ $nsim -lt $(( $nevents - 2 )) ]; then
+echo 'nsim found: ' $nsim
+echo 'nsim expected:' $nevents
+exit 1
+else
+echo 'nsim found: ' $nsim
+echo 'nsim expected:' $nevents
+fi
+""" % (simtelHistFileName,int(nbShowers)*int(cscat)))
+    fd.close()
+
+    from CTADIRAC.Core.Utilities.SoftwareInstallation import getSoftwareEnviron
+    CorsikaSimtelPack = 'corsika_simhessarray/' + version + '/corsika_simhessarray'
+    ret = getSoftwareEnviron( CorsikaSimtelPack )
+
+    if not ret['OK']:
+      error = ret['Message']
+      DIRAC.gLogger.error( error, CorsikaSimtelPack )
+      DIRAC.exit( -1 )
+
+    corsikaEnviron = ret['Value']
+
+    os.system('chmod u+x check_histo.sh')
+    cmdTuple = ['./check_histo.sh']
+    DIRAC.gLogger.notice( 'Executing command tuple:', cmdTuple )
+    ret = systemCall( 0, cmdTuple, sendOutput,env = corsikaEnviron)
+    checkHistoReturnCode, stdout, stderr = ret['Value']
+
+    if not ret['OK']:
+      DIRAC.gLogger.error( 'Failed to execute check_histo.sh')
+      DIRAC.gLogger.error( 'check_histo.sh status is:', checkHistoReturnCode)
+      DIRAC.exit( -1 )
+
+    if (checkHistoReturnCode!=0):
+      DIRAC.gLogger.error( 'Failure during check_histo.sh')
+      DIRAC.gLogger.error( 'check_histo.sh status is:', checkHistoReturnCode)
+      jobReport.setApplicationStatus('Histo check Failed')
+      DIRAC.exit( -1 )
+
+########## quality check on Log #############################
+    cmd = 'zcat %s | grep Finished.' % simtelLogFileName
+    DIRAC.gLogger.notice( 'Executing system call:', cmd )
+    if(os.system(cmd)):
+      jobReport.setApplicationStatus('Log check Failed')
+      DIRAC.exit( -1 )
+
 ################################################  
     from DIRAC.Core.Utilities import List
     from DIRAC.ConfigurationSystem.Client.Helpers.Operations import Operations
     opsHelper = Operations()
     
-    global seList 
+    global seList
     seList = opsHelper.getValue( 'ProductionOutputs/SimtelProd', [] )
     seList  = List.randomize( seList )
 
     DIRAC.gLogger.notice('SeList is:',seList)
-    upload_to_seList(simtelOutFileLFN,simtelFileName)
-######################################################################
+
+#########  Upload data/log/histo ##############################################
+
+    res = upload_to_seList(simtelOutFileLFN,simtelFileName)
+
+    if res != DIRAC.S_OK:
+      DIRAC.gLogger.error('OutputData Upload Error',simtelOutFileLFN)
+      jobReport.setApplicationStatus('OutputData Upload Error')
+      DIRAC.exit( -1 )
 
     res = CheckCatalogCoherence(simtelOutLogFileLFN)
     if res == DIRAC.S_OK:
       DIRAC.gLogger.notice('Log file already exists. Removing:',simtelOutLogFileLFN)
       ret = dirac.removeFile( simtelOutLogFileLFN )
 
-    upload_to_seList(simtelOutLogFileLFN,simtelLogFileName)
+    res = upload_to_seList(simtelOutLogFileLFN,simtelLogFileName)
+
+    if res != DIRAC.S_OK:
+      DIRAC.gLogger.error('Upload simtel Log Error',simtelOutLogFileLFN)
+      DIRAC.gLogger.notice('Removing simtel data file:',simtelOutFileLFN)
+      ret = dirac.removeFile( simtelOutFileLFN )
+      jobReport.setApplicationStatus('OutputData Upload Error')
+      DIRAC.exit( -1 )
 ######################################################################
 
     res = CheckCatalogCoherence(simtelOutHistFileLFN)
@@ -443,7 +455,17 @@ def main():
       DIRAC.gLogger.notice('Histo file already exists. Removing:',simtelOutHistFileLFN)
       ret = dirac.removeFile( simtelOutHistFileLFN )
 
-    upload_to_seList(simtelOutHistFileLFN,simtelHistFileName)
+    res = upload_to_seList(simtelOutHistFileLFN,simtelHistFileName)
+
+    if res != DIRAC.S_OK:
+      DIRAC.gLogger.error('Upload simtel Histo Error',simtelOutHistFileLFN)
+      DIRAC.gLogger.notice('Removing simtel data file:',simtelOutFileLFN)
+      ret = dirac.removeFile( simtelOutFileLFN )
+      DIRAC.gLogger.notice('Removing simtel log file:',simtelOutLogFileLFN)
+      ret = dirac.removeFile( simtelOutLogFileLFN )
+      jobReport.setApplicationStatus('OutputData Upload Error')
+      DIRAC.exit( -1 )
+
 ######################################################################
     
     if newSimtelRunFileSeriesDir:
@@ -484,6 +506,32 @@ def main():
     
   DIRAC.exit()
 
+
+def install_CorsikaSimtelPack(version):
+
+  from CTADIRAC.Core.Utilities.SoftwareInstallation import checkSoftwarePackage
+  from CTADIRAC.Core.Utilities.SoftwareInstallation import installSoftwarePackage
+  from CTADIRAC.Core.Utilities.SoftwareInstallation import installSoftwareEnviron
+  from CTADIRAC.Core.Utilities.SoftwareInstallation import sharedArea
+  from CTADIRAC.Core.Utilities.SoftwareInstallation import workingArea
+
+  CorsikaSimtelPack = 'corsika_simhessarray/' + version + '/corsika_simhessarray'
+  packs = [CorsikaSimtelPack]
+  for package in packs:
+    DIRAC.gLogger.notice( 'Checking:', package )
+    if sharedArea:
+      if checkSoftwarePackage( package, sharedArea() )['OK']:
+        DIRAC.gLogger.notice( 'Package found in Shared Area:', package )
+        installSoftwareEnviron( package, workingArea() )
+        packageTuple =  package.split('/')
+        corsika_subdir = sharedArea() + '/' + packageTuple[0] + '/' + version  
+        cmd = 'cp -u -r ' + corsika_subdir + '/* .'       
+        os.system(cmd)
+        continue
+    DIRAC.gLogger.error( 'Check Failed for software package:', package )
+    DIRAC.gLogger.error( 'Software package not available')
+    DIRAC.exit( -1 )  
+
 def CheckCatalogCoherence(fileLFN):
 ####Checking and restablishing catalog coherence #####################  
   res = fcc.getReplicas(fileLFN)  
@@ -511,7 +559,7 @@ def CheckCatalogCoherence(fileLFN):
 
 def upload_to_seList(FileLFN,FileName):
 
-  DIRAC.gLogger.notice( 'Put and register simtel Log File in LFC and DFC:', FileLFN)
+  DIRAC.gLogger.notice( 'Put and register in LFC and DFC:', FileLFN)
   from DIRAC.Interfaces.API.Dirac import Dirac
   from DIRAC.Core.Utilities.SiteSEMapping import getSEsForSite
   result = getSEsForSite( DIRAC.siteName() )
@@ -547,12 +595,11 @@ def upload_to_seList(FileLFN,FileName):
       break
 
   for se in failing_se:
-    seList.remove(se) 
+    seList.remove(se)
 
   DIRAC.gLogger.notice('Failing SE list:',failing_se)
   if upload_result != 'OK':
-    jobReport.setApplicationStatus('OutputData Upload Error')
-    DIRAC.exit( -1 )
+    return DIRAC.S_ERROR
 
   return DIRAC.S_OK
      
@@ -566,6 +613,7 @@ def createGlobalsFromConfigFiles(prodConfigFileName, corsikaConfigFileName,versi
   global viewCone
   global pathroot
   global nbShowers
+  global cscat
   global simtelOffset
   global prodDirPath
   global corsikaDirPath
@@ -580,7 +628,7 @@ def createGlobalsFromConfigFiles(prodConfigFileName, corsikaConfigFileName,versi
   prodKEYWORDS =  ['prodName','pathroot']
   dictProdKW = fileToKWDict(prodConfigFileName,prodKEYWORDS)
 
-  corsikaKEYWORDS = ['THETAP', 'PHIP', 'PRMPAR', 'ESLOPE' , 'ERANGE', 'VIEWCONE','NSHOW','TELFIL','OBSLEV']
+  corsikaKEYWORDS = ['THETAP', 'PHIP', 'PRMPAR', 'ESLOPE' , 'ERANGE', 'VIEWCONE','NSHOW','TELFIL','OBSLEV','CSCAT']
   dictCorsikaKW = fileToKWDict(corsikaConfigFileName,corsikaKEYWORDS)
 
   #simtelKEYWORDS = ['env offset']
@@ -593,6 +641,7 @@ def createGlobalsFromConfigFiles(prodConfigFileName, corsikaConfigFileName,versi
   phiP = str(float(dictCorsikaKW['PHIP'][0]))
   obslev = str(float(dictCorsikaKW['OBSLEV'][0])/100.)#why on earth is this in cm....
   nbShowers = str(int(dictCorsikaKW['NSHOW'][0]))
+  cscat = str(int(dictCorsikaKW['CSCAT'][0]))
   corsikaOutputFileName = dictCorsikaKW['TELFIL'][0]  
   
   #building simtelArray Offset
@@ -681,7 +730,6 @@ def createDirAndInsertMD(dirPath, requiredDirMD):
         mdToAdd[mdkey] = requiredDirMD[mdkey]     
       else:
         test = (str(dirMD[mdkey]) == str(mdvalue))
-
         if (test == False):
       	  print 'metadata key exist, but values are not coherent: actual value=%s, required value=%s' % (dirMD[mdkey],mdvalue)
       	  return DIRAC.S_ERROR ('MD Error: Problem during Dir Metadata verification, values are not coherent at least for %s key' % mdkey)
