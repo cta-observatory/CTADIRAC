@@ -11,7 +11,7 @@ Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      '  runMax:     Max runNumber',
                                      '  cfgFile:    Corsika config file',
                                      '  storageElement: Storage Element',
-                                     '  reprocessing configuration (STD)'] ) )
+                                     '  reprocessing configuration (4MSST/SCSST/STD/NSBX3/ASTRI/SCMST/6INROW)'] ) )
 
 Script.parseCommandLine()
 
@@ -45,7 +45,7 @@ def CorsikaSimtelProdExample( args = None ) :
   cfgfile = args[2]
 
   simtelArrayConfig = "STD"
-  if args[4] not in ['STD']:
+  if args[4] not in ['4MSST','SCSST','STD','NSBX3','ASTRI','SCMST','6INROW']:
     print "arrayConfig argument %s incorrect"%args[4]
     Script.showHelp()
 
@@ -67,8 +67,6 @@ def CorsikaSimtelProdExample( args = None ) :
   j.setOutputSandbox( ['corsika_autoinputs.log', 'simtel.log'])
 
   j.setCPUTime(100000)
-
-  #j.setBannedSites(['LCG.CIEMAT.es','LCG.UNI-DORTMUND.de','LCG.M3PEC.fr','LCG.Prague.cz'])
 
   Script.gLogger.info( j._toJDL() )
   Dirac().submit( j )
