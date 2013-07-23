@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-  Submit a Corsika Example Job
+  Submit a CorsikaSimtel Example Job
 """
 from DIRAC.Core.Base import Script
 Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
@@ -10,8 +10,7 @@ Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      '  runMin:     Min runNumber',
                                      '  runMax:     Max runNumber',
                                      '  cfgFile:    Corsika config file',
-                                     '  storageElement: Storage Element',
-                                     '  reprocessing configuration (4MSST/SCSST/STD/NSBX3/ASTRI/SCMST/6INROW)'] ) )
+                                     '  reprocessing configuration'] ) )
 
 Script.parseCommandLine()
 
@@ -23,7 +22,7 @@ def CorsikaSimtelProdExample( args = None ) :
   from DIRAC.Interfaces.API.Dirac import Dirac
   
   j = CorsikaSimtelProdJob()
-  j.setVersion('prod-2_06052013')
+  j.setVersion('prod-2_22072013')
 
   j.setExecutable('corsika_autoinputs') 
 
@@ -32,12 +31,7 @@ def CorsikaSimtelProdExample( args = None ) :
 
   ilist = []
 
-  if (len(args) != 5):
-    Script.showHelp()
-  
-  storage_element = args[3]
-  if storage_element not in ('CC-IN2P3-Disk','CYF-STORM-Disk','DESY-ZN-Disk'):
-    print 'Storage element is not valid'
+  if (len(args) != 4):
     Script.showHelp()
 
   runMin = int(args[0])
@@ -45,11 +39,11 @@ def CorsikaSimtelProdExample( args = None ) :
   cfgfile = args[2]
 
   simtelArrayConfig = "STD"
-  if args[4] not in ['4MSST','SCSST','STD','NSBX3','ASTRI','SCMST','6INROW']:
+  if args[3] not in ['STD','6INROW']:
     print "arrayConfig argument %s incorrect"%args[4]
     Script.showHelp()
 
-  simtelArrayConfig = args[4]
+  simtelArrayConfig = args[3]
 
   for i in range(runMin,runMax+1):
     run_number = '%06d' % i
@@ -58,15 +52,17 @@ def CorsikaSimtelProdExample( args = None ) :
   j.setGenericParametricInput(ilist)                                                                                         
   j.setName('run%s')
   
-  j.setJobGroup('SAC_'+cfgfile[7:])
+  j.setJobGroup(cfgfile[7:])
 
   j.setInputSandbox( [ cfgfile,'fileCatalog.cfg','prodConfigFile','grid_prod2-repro.sh','LFN:/vo.cta.in2p3.fr/user/j/johann.cohen-tanugi/PROD2/SVN-PROD2_rev1869.tar.gz'] ) 
 
-  j.setParameters(['fileCatalog.cfg','--template',cfgfile,'--mode',mode,'-D',storage_element,'-S',simtelArrayConfig,'--savecorsika','False'])
-
+  j.setParameters(['fileCatalog.cfg','--template',cfgfile,'--mode',mode,'-S',simtelArrayConfig,'--savecorsika','False'])
+ 
   j.setOutputSandbox( ['corsika_autoinputs.log', 'simtel.log'])
 
   j.setCPUTime(100000)
+
+  j.setBannedSites(['LCG.UNI-DORTMUND.de','LCG.PIC.es'])
 
   Script.gLogger.info( j._toJDL() )
   Dirac().submit( j )
