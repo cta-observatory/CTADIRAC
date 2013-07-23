@@ -33,11 +33,6 @@ def setSaveCorsika( optionValue ):
   savecorsika = optionValue
   return DIRAC.S_OK()
 
-def setStorageElement( optionValue ):
-  global storage_element
-  storage_element = optionValue
-  return DIRAC.S_OK()
-
 def setConfig( optionValue ):
   global simtelConfig
   simtelConfig = optionValue
@@ -71,7 +66,6 @@ def main():
   Script.registerSwitch( "V:", "version=", "Version", setVersion )
   Script.registerSwitch( "M:", "mode=", "Mode", setMode )
   Script.registerSwitch( "C:", "savecorsika=", "Save Corsika", setSaveCorsika )
-  Script.registerSwitch( "D:", "storage_element=", "Storage Element", setStorageElement )
 
   from DIRAC.Resources.Catalog.FileCatalogClient import FileCatalogClient
   from DIRAC.Resources.Catalog.FileCatalog import FileCatalog
@@ -514,6 +508,8 @@ def install_CorsikaSimtelPack(version):
   from CTADIRAC.Core.Utilities.SoftwareInstallation import installSoftwareEnviron
   from CTADIRAC.Core.Utilities.SoftwareInstallation import sharedArea
   from CTADIRAC.Core.Utilities.SoftwareInstallation import workingArea
+  from DIRAC.Core.Utilities.Subprocess import systemCall
+
 
   CorsikaSimtelPack = 'corsika_simhessarray/' + version + '/corsika_simhessarray'
   packs = [CorsikaSimtelPack]
@@ -527,6 +523,18 @@ def install_CorsikaSimtelPack(version):
         corsika_subdir = sharedArea() + '/' + packageTuple[0] + '/' + version  
         cmd = 'cp -u -r ' + corsika_subdir + '/* .'       
         os.system(cmd)
+        continue
+    if workingArea:
+      if checkSoftwarePackage( package, workingArea() )['OK']:
+        DIRAC.gLogger.notice( 'Package found in Local Area:', package )
+        continue
+      if installSoftwarePackage( package, workingArea() )['OK']:
+      ############## compile #############################
+        cmdTuple = ['./build_all','prod2','qgs2']
+        ret = systemCall( 0, cmdTuple, sendOutput)
+        if not ret['OK']:
+          DIRAC.gLogger.error( 'Failed to execute build')
+          DIRAC.exit( -1 )
         continue
     DIRAC.gLogger.error( 'Check Failed for software package:', package )
     DIRAC.gLogger.error( 'Software package not available')
