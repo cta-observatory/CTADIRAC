@@ -243,6 +243,25 @@ export PATH="${PATH}:${HESSIO_BIN}:${SIM_TELARRAY_PATH}:${CORSIKA_PATH}"
 """)
       fd.close()
       return DIRAC.S_OK()
+    if packageName == 'evndisplay':
+      if area == sharedArea():
+        packagedir = os.path.join(sharedArea(),packageName,version)
+        fileName = os.path.basename(fileName)
+      else:
+        packagedir = workingArea()
+
+      fd = open( fileName, 'w' )
+      fd.write( """
+export ROOTSYS=%s/root
+export HESSIOSYS=%s/hessioxxx
+export EVNDISPSYS=%s/evndisp
+export LD_LIBRARY_PATH=${ROOTSYS}/lib:${HESSIOSYS}/lib:${LD_LIBRARY_PATH}
+export PATH=${ROOTSYS}/bin:${HESSIOSYS}/bin:${EVNDISPSYS}/bin:${PATH}
+export OBS_EVNDISP_ANA_DIR=$PWD/EVNDISP.CTA.runparameter
+export OBS_USER_DATA_DIR=$PWD
+""" % (packagedir,packagedir,packagedir))
+      fd.close()
+      return DIRAC.S_OK()      
     if package == 'PyFACT/v0.1/PyFACT':
       fd = open( fileName, 'w' )
       fd.write( """                                                                                                                                            
