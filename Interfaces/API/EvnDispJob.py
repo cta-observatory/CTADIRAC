@@ -18,7 +18,7 @@ class EvnDispJob( Job ) :
     Job.__init__( self )
 
     self.workflow = Workflow()
-    self.executable = '$DIRACROOT/scripts/cta-evndisp.py'
+    self.executable = '$DIRACROOT/scripts/cta-evndisp'
     self.setCPUTime( cpuTime )
     global argumentStr
 
