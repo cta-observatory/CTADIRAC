@@ -201,6 +201,7 @@ def installSoftwareEnviron( package, area ):
     Install Environment file for the given package
   """
   packageTuple = package.split( '/' )
+  packageName = packageTuple[0]
   version = packageTuple[1]
   fileName = _getEnvFileName( package, area )
   
