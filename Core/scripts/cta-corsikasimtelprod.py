@@ -246,7 +246,7 @@ def main():
 ############ Producing SimTel File
  ######################Building simtel Directory Metadata #######################
 
-  cfg_dict = {"4MSST":'cta-prod2-4m-dc',"SCSST":'cta-prod2-sc-sst',"STD":'cta-prod2',"NSBX3":'cta-prod2',"ASTRI":'cta-prod2-astri',"SCMST":'cta-prod2-sc3'}
+  cfg_dict = {"4MSST":'cta-prod2-4m-dc',"SCSST":'cta-prod2-sc-sst',"STD":'cta-prod2',"NSBX3":'cta-prod2',"ASTRI":'cta-prod2-astri',"SCMST":'cta-prod2-sc3',"NORTH":'cta-prod2n'}
 
   if simtelConfig=="6INROW":
     all_configs=["4MSST","SCSST","ASTRI","NSBX3","STD","SCMST"]
@@ -305,7 +305,7 @@ def main():
     fd = open('run_sim.sh', 'w' )
     fd.write( """#! /bin/sh  
   export SVNPROD2=$PWD
-  export SVNTAG=SVN-PROD2_rev1869
+  export SVNTAG=SVN-PROD2_rev2350
   export CORSIKA_IO_BUFFER=800MB
   ./grid_prod2-repro.sh %s %s""" % (corsikaFileName,current_conf))
     fd.close()
