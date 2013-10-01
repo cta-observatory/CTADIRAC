@@ -10,7 +10,7 @@ Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      '  runMin:     Min runNumber',
                                      '  runMax:     Max runNumber',
                                      '  cfgFile:    Corsika config file',
-                                     '  reprocessing configuration'] ) )
+                                     '  reprocessing configuration: 4MSST/SCSST/ASTRI/NSBX3/STD/SCMST/NORTH'] ) )
 
 Script.parseCommandLine()
 
@@ -54,7 +54,7 @@ def CorsikaSimtelProdExample( args = None ) :
   
   j.setJobGroup(cfgfile[7:])
 
-  j.setInputSandbox( [ cfgfile,'fileCatalog.cfg','prodConfigFile','grid_prod2-repro.sh','LFN:/vo.cta.in2p3.fr/user/j/johann.cohen-tanugi/PROD2/SVN-PROD2_rev1869.tar.gz'] ) 
+  j.setInputSandbox( [ cfgfile,'fileCatalog.cfg','prodConfigFile','grid_prod2-repro.sh','LFN:/vo.cta.in2p3.fr/user/a/arrabito/PROD2/SVN-PROD2_rev2350.tar.gz'] ) 
 
   j.setParameters(['fileCatalog.cfg','--template',cfgfile,'--mode',mode,'-S',simtelArrayConfig,'--savecorsika','False'])
  
