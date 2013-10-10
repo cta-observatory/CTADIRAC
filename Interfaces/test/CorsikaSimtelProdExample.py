@@ -39,7 +39,7 @@ def CorsikaSimtelProdExample( args = None ) :
   cfgfile = args[2]
 
   simtelArrayConfig = "STD"
-  if args[3] not in ['STD','6INROW']:
+  if args[3] not in ['STD','6INROW','NORTH']:
     print "arrayConfig argument %s incorrect"%args[4]
     Script.showHelp()
 
