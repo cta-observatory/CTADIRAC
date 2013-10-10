@@ -24,7 +24,7 @@ def CorsikaSimtelProdExample( args = None ) :
   j = CorsikaSimtelProdJob()
   j.setVersion('prod-2_22072013')
 
-  j.setExecutable('corsika_autoinputs') 
+  j.setExecutable('corsika_autoinputs')
 
   mode = 'corsika_simtel'
 #  mode = 'corsika_standalone'
@@ -39,7 +39,7 @@ def CorsikaSimtelProdExample( args = None ) :
   cfgfile = args[2]
 
   simtelArrayConfig = "STD"
-  if args[3] not in ['STD','6INROW']:
+  if args[3] not in ['STD','6INROW','NORTH']:
     print "arrayConfig argument %s incorrect"%args[4]
     Script.showHelp()
 
@@ -54,7 +54,7 @@ def CorsikaSimtelProdExample( args = None ) :
   
   j.setJobGroup(cfgfile[7:])
 
-  j.setInputSandbox( [ cfgfile,'fileCatalog.cfg','prodConfigFile','grid_prod2-repro.sh','LFN:/vo.cta.in2p3.fr/user/a/arrabito/PROD2/SVN-PROD2_rev2350.tar.gz'] ) 
+  j.setInputSandbox( [ cfgfile,'fileCatalog.cfg','prodConfigFile','grid_prod2-repro.sh','LFN:/vo.cta.in2p3.fr/user/a/arrabito/PROD2/SVN-PROD2_rev2350.tar.gz'] )
 
   j.setParameters(['fileCatalog.cfg','--template',cfgfile,'--mode',mode,'-S',simtelArrayConfig,'--savecorsika','False'])
  
