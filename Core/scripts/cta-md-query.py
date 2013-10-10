@@ -9,18 +9,18 @@ from DIRAC.Core.Base import Script
 
 Script.registerSwitch( "", "MCCampaign=", "PROD2" )
 Script.registerSwitch( "", "particle=", "gamma/gamma_ptsrc/proton/electron" )
-Script.registerSwitch( "", "simtelArrayConfig=", "STD/NSBX3/SCMST/4MSST/SCSST/ASTRI" )
+Script.registerSwitch( "", "simtelArrayConfig=", "STD/NSBX3/SCMST/4MSST/SCSST/ASTRI/NORTH" )
 Script.registerSwitch( "", "outputType=", "Data/Log/Histo" )
 Script.registerSwitch( "", "viewCone=", "10/0" )
 Script.registerSwitch( "", "corsikaprodversion=", "prod-2_21122012_corsika/prod-2_06052013_corsika/prod-2_22072013_corsika" )
 Script.registerSwitch( "", "simtelArrayProdVersion=", "prod-2_06052013_simtel/prod-2_06052013_sc3_simtel/prod-2_22072013_simtel" )
-Script.registerSwitch( "", "altitude=", "2662/3600" )
+Script.registerSwitch( "", "altitude=", "2662/3600/2434/1655/2290" )
 Script.registerSwitch( "", "thetaP=", "20" )
 Script.registerSwitch( "", "phiP=", "0/180" )
 Script.registerSwitch( "", "energyInfo=", "-2.0_3.0-330E3/-2.0_4.0-600E3" )
 #Script.registerSwitch( "", "runNumSeries=", "runNumSeries" )
 Script.registerSwitch( "", "offset=", "0" )
-#Script.registerSwitch( "", "prodName=", "prodName" )
+Script.registerSwitch( "", "prodName=", "prodName" )
 
 Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      'Usage:',
@@ -30,7 +30,7 @@ Script.parseCommandLine( ignoreErrors = True )
 #Default values
 particle = None
 MCCampaign = None
-#prodName = None
+prodName = None
 outputType = None
 viewCone = None
 corsikaProdVersion = None
@@ -53,9 +53,9 @@ for switch in Script.getUnprocessedSwitches():
   elif switch[0].lower() == "mccampaign":
     MCCampaign = switch[1]
     metaDict['MCCampaign'] = MCCampaign
- # elif switch[0].lower() == "prodname":
- #   prodName = switch[1]
- #   metaDict['prodName'] = prodName
+  elif switch[0].lower() == "prodname":
+    prodName = switch[1]
+    metaDict['prodName'] = prodName
   elif switch[0].lower() == "outputtype":
     outputType = switch[1]
     metaDict['outputType'] = outputType
