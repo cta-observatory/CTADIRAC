@@ -5,49 +5,70 @@
 from DIRAC.Core.Base import Script
 Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      'Usage:',
-                                     '  %s [option|cfgfile] ... [NJobs] ...' % Script.scriptName,
+                                     '  %s [option|cfgfile] ... [runMin] ...' % Script.scriptName,
                                      'Arguments:',
-                                     '  NJobs:     Number of Jobs' ] ) )
+                                     '  runMin:     Min runNumber',
+                                     '  runMax:     Max runNumber',
+                                     '  cfgFile:    Corsika config file',
+                                     '  reprocessing configuration: 4MSST/SCSST/ASTRI/NSBX3/STD/NORTH'] ) )
+
 Script.parseCommandLine()
 
+import os
+
 def CorsikaSimtelExample( args = None ) :
+  
   from CTADIRAC.Interfaces.API.CorsikaSimtelJob import CorsikaSimtelJob
   from DIRAC.Interfaces.API.Dirac import Dirac
-
+  
   j = CorsikaSimtelJob()
-  j.setVersion('clean_23012012')
+  j.setVersion('prod-2_22072013')
 
-  executable = 'corsika_autoinputs'
-  j.setExecutable(executable) 
+  j.setExecutable('corsika_autoinputs')
+
+  mode = 'corsika_simtel'
+#  mode = 'corsika_standalone'
 
   ilist = []
-  if not args:
+
+  if (len(args) != 4):
     Script.showHelp()
 
-  NJobs = int(args[0])
+  runMin = int(args[0])
+  runMax = int(args[1])
+  cfgfile = args[2]
 
-  for i in range(1,NJobs+1):
+  simtelArrayConfig = "STD"
+  if args[3] not in ['STD','4MSST', 'SCSST', 'ASTRI', 'NSBX3', 'NORTH']:
+    print "arrayConfig argument %s incorrect"%args[4]
+    Script.showHelp()
+
+  simtelArrayConfig = args[3]
+
+  for i in range(runMin,runMax+1):
     run_number = '%06d' % i
     ilist.append(run_number)
 
-  j.setGenericParametricInput(ilist)
+  j.setGenericParametricInput(ilist)                                                                                         
   j.setName('run%s')
-  
-  j.setParameters(['--template','INPUTS_CTA_ULTRA3_proton','--simexe','run_sim_cta-ultra3'])
-  
-  j.setInputSandbox( [ 'INPUTS_CTA_ULTRA3_proton'] )
 
-  j.setOutputSandbox( ['corsika_autoinputs.log','simtel.log'])
+  j.setInputSandbox( [ cfgfile,'grid_prod2-repro.sh','LFN:/vo.cta.in2p3.fr/MC/PROD2/SVN-PROD2.tar.gz'] )
+
+  j.setParameters(['--template',cfgfile,'--mode',mode,'-S',simtelArrayConfig])
+ 
+  j.setOutputSandbox( ['corsika_autoinputs.log', 'simtel.log'])
 
 #  Retrieve your Output Data  
-  corsika_out = 'corsika_run%s.corsika.gz'
-  corsikatar_out = 'corsika_run%s.tar.gz'
-  sim_out = 'Data/sim_telarray/cta-ultra3/0.0deg/Data/*.simtel.gz'
-  log_out = 'Data/sim_telarray/cta-ultra3/0.0deg/Log/*.log.gz'
-  hist_out = 'Data/sim_telarray/cta-ultra3/0.0deg/Histograms/*.hdata.gz'
+  corsika_out = '*.corsika.gz'
+  corsikatar_out = '*.corsika.tar.gz'
+  sim_out = '*.simtel.gz'
+  log_out = '*.log.gz'
+  hist_out = '*.hdata.gz'
   j.setOutputData([corsika_out,corsikatar_out,sim_out,log_out,hist_out])
 
   j.setCPUTime(100000)
+
+  j.setBannedSites(['LCG.UNI-DORTMUND.de','LCG.PIC.es'])
 
   Script.gLogger.info( j._toJDL() )
   Dirac().submit( j )
@@ -61,4 +82,3 @@ if __name__ == '__main__':
     CorsikaSimtelExample( args )
   except Exception:
     Script.gLogger.exception()
-
