@@ -153,6 +153,7 @@ def main():
 ####################################
 
     os.system('chmod u+x run_sim.sh')
+    os.system('chmod u+x grid_prod2-repro.sh')
     cmdTuple = ['./run_sim.sh']
     ret = systemCall( 0, cmdTuple, sendSimtelOutput)
     simtelReturnCode, stdout, stderr = ret['Value']
