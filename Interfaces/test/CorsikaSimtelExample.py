@@ -10,7 +10,7 @@ Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      '  runMin:     Min runNumber',
                                      '  runMax:     Max runNumber',
                                      '  cfgFile:    Corsika config file',
-                                     '  reprocessing configuration: 4MSST/SCSST/ASTRI/NSBX3/STD/NORTH'] ) )
+                                     '  reprocessing configuration: STD/NSBX3/4MSST/SCSST/ASTRI/NORTH'] ) )
 
 Script.parseCommandLine()
 
