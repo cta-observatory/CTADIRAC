@@ -40,7 +40,7 @@ def CorsikaSimtelExample( args = None ) :
 
   simtelArrayConfig = "STD"
   if args[3] not in ['STD','4MSST', 'SCSST', 'ASTRI', 'NSBX3', 'NORTH']:
-    print "arrayConfig argument %s incorrect"%args[4]
+    print "arrayConfig argument %s incorrect"%args[3]
     Script.showHelp()
 
   simtelArrayConfig = args[3]
