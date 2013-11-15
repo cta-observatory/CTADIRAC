@@ -56,7 +56,7 @@ def main():
 ############ Producing SimTel File
 
   install_CorsikaSimtelPack(version)
-  CorsikaSimtelPack = 'corsika_simhessarray/' + version + '/corsika_simhessarray' 
+  CorsikaSimtelPack = 'corsika_simhessarray/' + version + '/corsika_simhessarray'
 
   cfg_dict = {"4MSST":'cta-prod2-4m-dc',"SCSST":'cta-prod2-sc-sst',"STD":'cta-prod2',"NSBX3":'cta-prod2',"ASTRI":'cta-prod2-astri',"NORTH":'cta-prod2n'}
 
@@ -164,7 +164,28 @@ def install_CorsikaSimtelPack(version):
         continue
       if installSoftwarePackage( package, workingArea() )['OK']:
       ############## compile #############################
-        cmdTuple = ['./build_all','prod2','qgs2']
+        if version == 'prod-2_22072013_tox':
+############### compile tox ################
+          fd = open('run_compile.sh', 'w' )
+          fd.write( """#! /bin/sh  
+./build_all prod2 qgs2
+
+# If the code was already there, we just clean but do not remove it.                                 
+if [ -d "hessioxxx" ]; then
+   (cd hessioxxx && make clean && make EXTRA_DEFINES='-DH_MAX_TEL=55 -DH_MAX_PIX=1984 -DH_MAX_SECTORS=13100 -DNO_LOW_GAIN')
+fi
+
+# If the code was already there, we just clean but do not remove it.                                 
+if [ -d "sim_telarray" ]; then
+   (cd sim_telarray && make clean && make EXTRA_DEFINES='-DH_MAX_TEL=55 -DH_MAX_PIX=1984 -DH_MAX_SECTORS=13100 -DNO_LOW_GAIN' install)
+fi""")
+          fd.close()
+          os.system('chmod u+x run_compile.sh')
+          cmdTuple = ['./run_compile.sh']
+##########################################
+        else:
+          cmdTuple = ['./build_all','prod2','qgs2']
+
         ret = systemCall( 0, cmdTuple, sendOutput)
         if not ret['OK']:
           DIRAC.gLogger.error( 'Failed to execute build')
@@ -182,6 +203,3 @@ if __name__ == '__main__':
   except Exception:
     DIRAC.gLogger.exception()
     DIRAC.exit( -1 )
-
-
-
