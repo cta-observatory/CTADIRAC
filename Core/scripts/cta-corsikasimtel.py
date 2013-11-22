@@ -158,10 +158,10 @@ def main():
     ret = systemCall( 0, cmdTuple, sendSimtelOutput)
     simtelReturnCode, stdout, stderr = ret['Value']
 
-    if(os.system('grep Broken simtel.log')==0):
-      DIRAC.gLogger.error('Broken string found in simtel.log')
-      jobReport.setApplicationStatus('Broken pipe')
-      DIRAC.exit( -1 )
+ #   if(os.system('grep Broken simtel.log')==0):
+ #     DIRAC.gLogger.error('Broken string found in simtel.log')
+ #     jobReport.setApplicationStatus('Broken pipe')
+ #     DIRAC.exit( -1 )
 
     if not ret['OK']:
       DIRAC.gLogger.error( 'Failed to execute run_sim.sh')
@@ -219,27 +219,9 @@ def install_CorsikaSimtelPack(version):
       if installSoftwarePackage( package, workingArea() )['OK']:
       ############## compile #############################
         if version == 'prod-2_22072013_tox':
-############### compile tox ################
-          fd = open('run_compile.sh', 'w' )
-          fd.write( """#! /bin/sh  
-./build_all prod2 qgs2
-
-# If the code was already there, we just clean but do not remove it.                                 
-if [ -d "hessioxxx" ]; then
-   (cd hessioxxx && make clean && make EXTRA_DEFINES='-DH_MAX_TEL=55 -DH_MAX_PIX=1984 -DH_MAX_SECTORS=13100 -DNO_LOW_GAIN')
-fi
-
-# If the code was already there, we just clean but do not remove it.                                 
-if [ -d "sim_telarray" ]; then
-   (cd sim_telarray && make clean && make EXTRA_DEFINES='-DH_MAX_TEL=55 -DH_MAX_PIX=1984 -DH_MAX_SECTORS=13100 -DNO_LOW_GAIN' install)
-fi""")
-          fd.close()
-          os.system('chmod u+x run_compile.sh')
-          cmdTuple = ['./run_compile.sh']
-##########################################
-        else:
-          cmdTuple = ['./build_all','prod2','qgs2']
-
+          DIRAC.gLogger.notice( 'Use already compiled version:', version )
+          continue
+        cmdTuple = ['./build_all','prod2','qgs2']
         ret = systemCall( 0, cmdTuple, sendOutput)
         if not ret['OK']:
           DIRAC.gLogger.error( 'Failed to execute build')
