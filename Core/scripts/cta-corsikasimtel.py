@@ -158,10 +158,10 @@ def main():
     ret = systemCall( 0, cmdTuple, sendSimtelOutput)
     simtelReturnCode, stdout, stderr = ret['Value']
 
- #   if(os.system('grep Broken simtel.log')==0):
- #     DIRAC.gLogger.error('Broken string found in simtel.log')
- #     jobReport.setApplicationStatus('Broken pipe')
- #     DIRAC.exit( -1 )
+    if(os.system('grep Broken simtel.log')==0):
+      DIRAC.gLogger.error('Broken string found in simtel.log')
+      jobReport.setApplicationStatus('Broken pipe')
+      DIRAC.exit( -1 )
 
     if not ret['OK']:
       DIRAC.gLogger.error( 'Failed to execute run_sim.sh')
