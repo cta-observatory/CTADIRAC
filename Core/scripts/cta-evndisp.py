@@ -56,13 +56,10 @@ def main():
   ed = EvnDispApp()
   ed.setSoftwarePackage(EvnDispPack)
 
-###### execute evndisplay converter ##################
+########## Use of trg mask file #######################
   usetrgfile = sys.argv[7]
   DIRAC.gLogger.notice( 'Usetrgfile:', usetrgfile )
-
   simtelFileLFN = sys.argv[-1].split('ParametricInputData=LFN:')[1]
-  executable = sys.argv[5]
-  args = sys.argv[8:-4]
 
 ########## download trg mask file #######################
   if usetrgfile == 'True':
@@ -76,22 +73,35 @@ def main():
     args.extend(['-t',os.path.basename(trgmaskFileLFN)])
 ############################################################
 
-  dstfile = os.path.basename(simtelFileLFN).replace('simtel.gz','dst.root')
-  args.extend(['-o',dstfile, os.path.basename(simtelFileLFN)])
+####  Parse the Layout List #################
+  layoutList = parseLayoutList(sys.argv[9])
+#############################################
 
-  execute_module(ed,executable,args)
-
+####  Loop over the Layout List #################
+  for layout in layoutList: 
+###### execute evndisplay converter ##################
+    executable = sys.argv[5]
+    dstfile = layout + '_' + os.path.basename(simtelFileLFN).replace('simtel.gz','dst.root')
+    logfileName =  executable + '_' + layout + '.log'
+    layout = os.path.join('EVNDISP.CTA.runparameter/DetectorGeometry',layout)
+    DIRAC.gLogger.notice( 'Layout is:', layout)
+    args = sys.argv[10:-4]
+    args.extend(['-a',layout])
+    args.extend(['-o',dstfile, os.path.basename(simtelFileLFN)])
+    execute_module(ed,executable,args)
 ########### check existence of DST file ###############
-
-  if not os.path.isfile(dstfile):
-    DIRAC.gLogger.error( 'DST file Missing:', dstfile )
-    jobReport.setApplicationStatus('DST file Missing')
-    DIRAC.exit( -1 )
+    if not os.path.isfile(dstfile):
+      DIRAC.gLogger.error( 'DST file Missing:', dstfile )
+      jobReport.setApplicationStatus('DST file Missing')
+      DIRAC.exit( -1 )
 
 ########### quality check on Log #############################################
-  logfileName =  executable + '.log'
-  fd = open('check_log.sh', 'w' )
-  fd.write( """#! /bin/sh  
+    cmd = 'mv ' + executable + '.log' + ' ' + logfileName 
+    if(os.system(cmd)):
+      DIRAC.exit( -1 )
+
+    fd = open('check_log.sh', 'w' )
+    fd.write( """#! /bin/sh  
 MCevts=$(grep writing  %s | grep "MC events" | awk '{print $2}')
 if [ $MCevts -gt 0 ]; then
     exit 0
@@ -100,31 +110,34 @@ else
     exit -1
 fi
 """ % (logfileName))
-  fd.close()
+    fd.close()
 
-  os.system('chmod u+x check_log.sh')
-  cmd = './check_log.sh'
-  DIRAC.gLogger.notice( 'Executing system call:', cmd )
-  if(os.system(cmd)):
-    jobReport.setApplicationStatus('Converter Log Check Failed')
-    DIRAC.exit( -1 )
-
-###### execute evndisplay stage1 ###############
-  executable = 'evndisp'
-  args = ['-sourcefile',dstfile,'-shorttree','-l2setspecialchannels','nofile','-writenoMCTree','-outputdirectory','outdir']
-  args.extend(sys.argv[-4:-2])
-  execute_module(ed,executable,args)
-
-  for name in glob.glob('outdir/*.root'):
-    evndispOutFile = name.split('.root')[0] + '_evndisp.root'
-    cmd = 'mv ' +  name + ' ' + os.path.basename(evndispOutFile)
+    os.system('chmod u+x check_log.sh')
+    cmd = './check_log.sh'
+    DIRAC.gLogger.notice( 'Executing system call:', cmd )
     if(os.system(cmd)):
+      jobReport.setApplicationStatus('Converter Log Check Failed')
       DIRAC.exit( -1 )
 
+###### execute evndisplay stage1 ###############
+    executable = 'evndisp'
+    logfileName =  executable + '_' + os.path.basename(layout) + '.log'
+    args = ['-sourcefile',dstfile,'-shorttree','-l2setspecialchannels','nofile','-writenoMCTree','-outputdirectory','outdir']
+    args.extend(sys.argv[-4:-2])
+    execute_module(ed,executable,args)
+
+    for name in glob.glob('outdir/*.root'):
+      evndispOutFile = name.split('.root')[0] + '_' + os.path.basename(layout) + '_evndisp.root'
+      cmd = 'mv ' +  name + ' ' + os.path.basename(evndispOutFile)
+      if(os.system(cmd)):
+        DIRAC.exit( -1 )
+
 ########### quality check on Log #############################################
-  logfileName =  executable + '.log'
-  fd = open('check_log.sh', 'w' )
-  fd.write( """#! /bin/sh  
+    cmd = 'mv ' + executable + '.log' + ' ' + logfileName 
+    if(os.system(cmd)):
+      DIRAC.exit( -1 )
+    fd = open('check_log.sh', 'w' )
+    fd.write( """#! /bin/sh  
 if grep -i "error" %s; then
 exit 1
 fi
@@ -134,17 +147,29 @@ else
 exit 1
 fi
 """ % (logfileName,logfileName))
-  fd.close()
+    fd.close()
 
-  os.system('chmod u+x check_log.sh')
-  cmd = './check_log.sh'
-  DIRAC.gLogger.notice( 'Executing system call:', cmd )
-  if(os.system(cmd)):
-    jobReport.setApplicationStatus('EvnDisp Log Check Failed')
-    DIRAC.exit( -1 )
+    os.system('chmod u+x check_log.sh')
+    cmd = './check_log.sh'
+    DIRAC.gLogger.notice( 'Executing system call:', cmd )
+    if(os.system(cmd)):
+      jobReport.setApplicationStatus('EvnDisp Log Check Failed')
+      DIRAC.exit( -1 )
 ##################################################################
  
   DIRAC.exit()
+
+def parseLayoutList(layoutlist):
+
+  f = open(layoutlist,'r')
+
+  layoutList = []
+  for line in f:
+    layout = line.strip()
+    if line!="\n":
+      layoutList.append(layout)
+
+  return layoutList
 
 def execute_module(ed,executable,args):
 
