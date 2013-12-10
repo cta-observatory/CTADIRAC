@@ -39,6 +39,12 @@ class EvnDispJob( Job ) :
     global argumentStr
     argumentStr= argumentStr + usetrgfileStr
     self.setConfigArgs( argumentStr )
+    
+  def setLayoutList(self, layoutlist):
+    layoutlistStr = ' ' + '-L' + ' ' + layoutlist
+    global argumentStr
+    argumentStr= argumentStr + layoutlistStr
+    self.setConfigArgs( argumentStr )  
 
   def setConverterOpt(self, parameters = None):
     global argumentStr
