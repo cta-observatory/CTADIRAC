@@ -8,6 +8,7 @@ Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      '  %s [option|cfgfile] ... [inputfilelist] ...' % Script.scriptName,
                                      'Arguments:',
                                      '  inputfilelist: Input File List',
+                                     '  layoutlist: Layout File List',
                                      '  usetrgfile: True/False'] ) )
 Script.parseCommandLine()
 
@@ -21,7 +22,8 @@ def EvnDispExample( args = None ) :
   executable = 'CTA.convert_hessio_to_VDST'
   j.setExecutable(executable) 
 
-  if not args:
+  #if not args:
+  if len(args) < 2:
     Script.showHelp()
 
   LFN_file = args[0]
@@ -36,21 +38,24 @@ def EvnDispExample( args = None ) :
   j.setParametricInputData(infileLFNList)
 
   usetrgfile = 'False'
-  if len(args) == 2:
-    usetrgfile = args[1]
+  if len(args) == 3:
+    usetrgfile = args[2]
 
   j.setUseTrgFile(usetrgfile)
+ 
+  layoutlist = args[1]
+  j.setLayoutList(layoutlist)
 
-  j.setConverterOpt(['-f','1','-c','Aar.peds.root','-a','EVNDISP.CTA.runparameter/DetectorGeometry/CTA.prod2.2a.lis'])
+  j.setConverterOpt(['-f','1','-c','Aar.peds.root'])
 
   j.setEvnDispOpt(['-reconstructionparameter','EVNDISP.prod2.reconstruction.runparameter'])
   
-  j.setInputSandbox( [ 'LFN:/vo.cta.in2p3.fr/user/a/arrabito/EvnDisp/Aar.peds.root' ])
+  j.setInputSandbox( [ 'LFN:/vo.cta.in2p3.fr/user/a/arrabito/EvnDisp/Aar.peds.root',layoutlist])
 
   j.setOutputSandbox( ['*.log'])
 
 #  Retrieve your Output Data  
-  j.setOutputData('*_evndisp.root')
+  j.setOutputData(['*_evndisp.root']) 
 
   j.setCPUTime(100000)
 
