@@ -1,10 +1,3 @@
-"""
-  Simple Wrapper on the Job class to handle EvnDisp
-"""
-
-__RCSID__ = "$Id$"
-
-from DIRAC.Interfaces.API.Job import Job
 from DIRAC.Core.Workflow.Workflow                   import Workflow
 #####################
 from CTADIRAC.Core.Utilities import SoftwareInstallation
@@ -18,7 +11,7 @@ class EvnDispJob( Job ) :
     Job.__init__( self )
 
     self.workflow = Workflow()
-    self.executable = '$DIRACROOT/scripts/cta-evndisp'
+    self.executable = '$DIRACROOT/scripts/cta-evndisp.py'
     self.setCPUTime( cpuTime )
     global argumentStr
 
@@ -47,11 +40,21 @@ class EvnDispJob( Job ) :
     self.setConfigArgs( argumentStr )    
 
   def setConverterOpt(self, parameters = None):
-    global argumentStr
-    argumentStr = argumentStr + ' ' + "%s" % ( ' '.join( parameters ) )
-    self.setConfigArgs( argumentStr )
+    converterparfile = 'converter.par'
+    f = open( converterparfile,'w')
+    converterparargStr = "%s" % ( ' '.join( parameters ) )
+    f.write(converterparargStr)
+    f.close()
+    global parfileList 
+    parfileList = [ converterparfile ] 
+    self.addToInputSandbox = ( parfileList )
 
   def setEvnDispOpt(self, parameters = None):
-    global argumentStr
-    argumentStr = argumentStr + ' ' + "%s" % ( ' '.join( parameters ) )
-    self.setConfigArgs( argumentStr )
+    evndispparfile = 'evndisp.par'
+    f = open( evndispparfile,'w')
+    evndispargStr = "%s" % ( ' '.join( parameters ) )
+    f.write(evndispargStr)
+    f.close()
+    global parfileList 
+    parfileList.append(evndispparfile) 
+    self.addToInputSandbox = ( parfileList )
