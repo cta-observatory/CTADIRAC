@@ -55,6 +55,7 @@ def main():
 
   ed = EvnDispApp()
   ed.setSoftwarePackage(EvnDispPack)
+  args = []
 
 ########## Use of trg mask file #######################
   usetrgfile = sys.argv[7]
@@ -85,7 +86,13 @@ def main():
     logfileName =  executable + '_' + layout + '.log'
     layout = os.path.join('EVNDISP.CTA.runparameter/DetectorGeometry',layout)
     DIRAC.gLogger.notice( 'Layout is:', layout)
-    args = sys.argv[10:-4]
+
+  # add other arguments for evndisplay converter specified by user ######
+    converterparfile = open('converter.par', 'r').readlines()  
+    for line in converterparfile:
+      for word in line.split():
+        args.append(word) 
+#########################################################
     args.extend(['-a',layout])
     args.extend(['-o',dstfile, os.path.basename(simtelFileLFN)])
     execute_module(ed,executable,args)
@@ -122,8 +129,14 @@ fi
 ###### execute evndisplay stage1 ###############
     executable = 'evndisp'
     logfileName =  executable + '_' + os.path.basename(layout) + '.log'
-    args = ['-sourcefile',dstfile,'-shorttree','-l2setspecialchannels','nofile','-writenoMCTree','-outputdirectory','outdir']
-    args.extend(sys.argv[-4:-2])
+
+    args = ['-sourcefile',dstfile,'-outputdirectory','outdir']
+  # add other arguments for evndisp specified by user ######
+    evndispparfile = open('evndisp.par', 'r').readlines()  
+    for line in evndispparfile:
+      for word in line.split():
+        args.append(word) 
+
     execute_module(ed,executable,args)
 
     for name in glob.glob('outdir/*.root'):
