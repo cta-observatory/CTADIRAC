@@ -1,3 +1,10 @@
+"""
+  Simple Wrapper on the Job class to handle EvnDisp
+"""
+
+__RCSID__ = "$Id$"
+
+from DIRAC.Interfaces.API.Job import Job
 from DIRAC.Core.Workflow.Workflow                   import Workflow
 #####################
 from CTADIRAC.Core.Utilities import SoftwareInstallation
@@ -11,7 +18,7 @@ class EvnDispJob( Job ) :
     Job.__init__( self )
 
     self.workflow = Workflow()
-    self.executable = '$DIRACROOT/scripts/cta-evndisp.py'
+    self.executable = '$DIRACROOT/scripts/cta-evndisp'
     self.setCPUTime( cpuTime )
     global argumentStr
 
