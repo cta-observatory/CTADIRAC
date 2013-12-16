@@ -47,8 +47,8 @@ def EvnDispExample( args = None ) :
   j.setLayoutList(layoutlist)
 
   j.setConverterOpt(['-f','1','-c','Aar.peds.root'])
-
-  j.setEvnDispOpt(['-reconstructionparameter','EVNDISP.prod2.reconstruction.runparameter'])
+  
+  j.setEvnDispOpt(['-reconstructionparameter','EVNDISP.prod2.reconstruction.runparameter','-shorttree','-l2setspecialchannels','nofile','-writenoMCTree'])
   
   j.setInputSandbox( [ 'LFN:/vo.cta.in2p3.fr/user/a/arrabito/EvnDisp/Aar.peds.root',layoutlist])
 
