@@ -10,7 +10,7 @@ def sendOutput(stdid,line):
 def main():
 
   from DIRAC.Core.Base import Script
-  Script.initialize() 
+  Script.initialize()
 
   DIRAC.gLogger.notice('Platform is:')
   os.system('dirac-platform')
@@ -55,31 +55,29 @@ def main():
 
   ed = EvnDispApp()
   ed.setSoftwarePackage(EvnDispPack)
-  args = []
-
 ########## Use of trg mask file #######################
   usetrgfile = sys.argv[7]
   DIRAC.gLogger.notice( 'Usetrgfile:', usetrgfile )
   simtelFileLFN = sys.argv[-1].split('ParametricInputData=LFN:')[1]
-
-########## download trg mask file #######################
-  if usetrgfile == 'True':
-    trgmaskFileLFN=simtelFileLFN.replace('simtel.gz','trgmask.gz')
-    DIRAC.gLogger.notice( 'Trying to download the trgmask File', trgmaskFileLFN)
-    result = ReplicaManager().getFile( trgmaskFileLFN)
-    if not result['OK']:
-      DIRAC.gLogger.error( 'Failed to download trgmakfile:', result )
-      jobReport.setApplicationStatus('Trgmakfile download Error')
-      DIRAC.exit( -1 )    
-    args.extend(['-t',os.path.basename(trgmaskFileLFN)])
-############################################################
 
 ####  Parse the Layout List #################
   layoutList = parseLayoutList(sys.argv[9])
 #############################################
 
 ####  Loop over the Layout List #################
-  for layout in layoutList: 
+  for layout in layoutList:
+    args = []
+  ########## download trg mask file #######################
+    if usetrgfile == 'True':
+      trgmaskFileLFN=simtelFileLFN.replace('simtel.gz','trgmask.gz')
+      DIRAC.gLogger.notice( 'Trying to download the trgmask File', trgmaskFileLFN)
+      result = ReplicaManager().getFile( trgmaskFileLFN)
+      if not result['OK']:
+        DIRAC.gLogger.error( 'Failed to download trgmakfile:', result )
+        jobReport.setApplicationStatus('Trgmakfile download Error')
+        DIRAC.exit( -1 )    
+      args.extend(['-t',os.path.basename(trgmaskFileLFN)])
+############################################################
 ###### execute evndisplay converter ##################
     executable = sys.argv[5]
     dstfile = layout + '_' + os.path.basename(simtelFileLFN).replace('simtel.gz','dst.root')
@@ -91,7 +89,7 @@ def main():
     converterparfile = open('converter.par', 'r').readlines()  
     for line in converterparfile:
       for word in line.split():
-        args.append(word) 
+        args.append(word)
 #########################################################
     args.extend(['-a',layout])
     args.extend(['-o',dstfile, os.path.basename(simtelFileLFN)])
@@ -103,7 +101,7 @@ def main():
       DIRAC.exit( -1 )
 
 ########### quality check on Log #############################################
-    cmd = 'mv ' + executable + '.log' + ' ' + logfileName 
+    cmd = 'mv ' + executable + '.log' + ' ' + logfileName
     if(os.system(cmd)):
       DIRAC.exit( -1 )
 
@@ -135,7 +133,7 @@ fi
     evndispparfile = open('evndisp.par', 'r').readlines()  
     for line in evndispparfile:
       for word in line.split():
-        args.append(word) 
+        args.append(word)
 
     execute_module(ed,executable,args)
 
@@ -146,7 +144,7 @@ fi
         DIRAC.exit( -1 )
 
 ########### quality check on Log #############################################
-    cmd = 'mv ' + executable + '.log' + ' ' + logfileName 
+    cmd = 'mv ' + executable + '.log' + ' ' + logfileName
     if(os.system(cmd)):
       DIRAC.exit( -1 )
     fd = open('check_log.sh', 'w' )
