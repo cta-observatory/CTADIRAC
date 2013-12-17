@@ -55,24 +55,10 @@ def main():
 
   ed = EvnDispApp()
   ed.setSoftwarePackage(EvnDispPack)
-  args = []
-
 ########## Use of trg mask file #######################
   usetrgfile = sys.argv[7]
   DIRAC.gLogger.notice( 'Usetrgfile:', usetrgfile )
   simtelFileLFN = sys.argv[-1].split('ParametricInputData=LFN:')[1]
-
-########## download trg mask file #######################
-  if usetrgfile == 'True':
-    trgmaskFileLFN=simtelFileLFN.replace('simtel.gz','trgmask.gz')
-    DIRAC.gLogger.notice( 'Trying to download the trgmask File', trgmaskFileLFN)
-    result = ReplicaManager().getFile( trgmaskFileLFN)
-    if not result['OK']:
-      DIRAC.gLogger.error( 'Failed to download trgmakfile:', result )
-      jobReport.setApplicationStatus('Trgmakfile download Error')
-      DIRAC.exit( -1 )    
-    args.extend(['-t',os.path.basename(trgmaskFileLFN)])
-############################################################
 
 ####  Parse the Layout List #################
   layoutList = parseLayoutList(sys.argv[9])
@@ -80,6 +66,18 @@ def main():
 
 ####  Loop over the Layout List #################
   for layout in layoutList: 
+    args = []
+  ########## download trg mask file #######################
+    if usetrgfile == 'True':
+      trgmaskFileLFN=simtelFileLFN.replace('simtel.gz','trgmask.gz')
+      DIRAC.gLogger.notice( 'Trying to download the trgmask File', trgmaskFileLFN)
+      result = ReplicaManager().getFile( trgmaskFileLFN)
+      if not result['OK']:
+        DIRAC.gLogger.error( 'Failed to download trgmakfile:', result )
+        jobReport.setApplicationStatus('Trgmakfile download Error')
+        DIRAC.exit( -1 )    
+      args.extend(['-t',os.path.basename(trgmaskFileLFN)])
+############################################################
 ###### execute evndisplay converter ##################
     executable = sys.argv[5]
     dstfile = layout + '_' + os.path.basename(simtelFileLFN).replace('simtel.gz','dst.root')
