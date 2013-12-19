@@ -17,7 +17,7 @@ def EvnDispExample( args = None ) :
   from DIRAC.Interfaces.API.Dirac import Dirac
 
   j = EvnDispJob()
-  j.setVersion('prod2_130718')
+  j.setVersion('prod2_131218')
 
   executable = 'CTA.convert_hessio_to_VDST'
   j.setExecutable(executable) 
@@ -46,11 +46,11 @@ def EvnDispExample( args = None ) :
   layoutlist = args[1]
   j.setLayoutList(layoutlist)
 
-  j.setConverterOpt(['-f','1','-c','Aar.peds.root'])
+  j.setConverterOpt(['-f','1','-c','Calibration/Aar.peds.root'])
   
   j.setEvnDispOpt(['-reconstructionparameter','EVNDISP.prod2.reconstruction.runparameter','-shorttree','-l2setspecialchannels','nofile','-writenoMCTree'])
   
-  j.setInputSandbox( [ 'LFN:/vo.cta.in2p3.fr/user/a/arrabito/EvnDisp/Aar.peds.root',layoutlist])
+  j.setInputSandbox( [layoutlist])
 
   j.setOutputSandbox( ['*.log'])
 
