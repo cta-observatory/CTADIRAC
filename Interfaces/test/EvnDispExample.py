@@ -9,7 +9,7 @@ Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      '  %s [option|cfgfile] ... [inputfilelist] ...' % Script.scriptName,
                                      'Arguments:',
                                      '  inputfilelist: Input File List',
-				                             '  maxFilesPerJob: Max Files Per Job',
+				     '  maxFilesPerJob: Max Files Per Job',
                                      '  layoutlist: Layout File List',
                                      '  usetrgfile: True/False (optional, default is False)'] ) )
 Script.parseCommandLine()
@@ -64,7 +64,7 @@ def EvnDispExample( args = None ) :
   
   j.setEvnDispOpt(['-reconstructionparameter','EVNDISP.prod2.reconstruction.runparameter','-shorttree','-l2setspecialchannels','nofile','-writenoMCTree'])
   
-  j.setInputSandbox( [layoutlist])
+  j.setInputSandbox( [layoutlist,'cta-evndisp.py','CTADIRAC'])
 
   j.setOutputSandbox( ['*.log'])
 
