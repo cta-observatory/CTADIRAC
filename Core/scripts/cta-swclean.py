@@ -13,10 +13,11 @@ def main():
   Script.parseCommandLine()
 
   args = Script.getPositionalArgs()
-  version = args[0]
+  package = args[0]
+  version = args[1]
 
-  path = os.path.join('${VO_VO_CTA_IN2P3_FR_SW_DIR}/software/corsika_simhessarray',version)
-  cmd = 'rm -R ' + path
+  path = os.path.join('${VO_VO_CTA_IN2P3_FR_SW_DIR}/software',package,version)
+  cmd = 'rm -Rf ' + path
 
   if(os.system(cmd)):
     DIRAC.exit( -1 )
