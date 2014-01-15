@@ -55,10 +55,19 @@ def main():
 
   ed = EvnDispApp()
   ed.setSoftwarePackage(EvnDispPack)
+
 ########## Use of trg mask file #######################
   usetrgfile = sys.argv[7]
   DIRAC.gLogger.notice( 'Usetrgfile:', usetrgfile )
-  simtelFileLFN = sys.argv[-1].split('ParametricInputData=LFN:')[1]
+
+####### Use of multiple inputs per job ###
+  simtelFileLFNList = sys.argv[-1].split('ParametricParameters={')[1].split('}')[0].replace(',',' ')
+  # first element of the list
+  simtelFileLFN = simtelFileLFNList.split(' ')[0]  
+  ## convert the string into a list and get the basename
+  simtelFileList = []
+  for word in simtelFileLFNList.split():
+    simtelFileList.append(os.path.basename(word))
 
 ####  Parse the Layout List #################
   layoutList = parseLayoutList(sys.argv[9])
@@ -67,7 +76,7 @@ def main():
 ####  Loop over the Layout List #################
   for layout in layoutList: 
     args = []
-  ########## download trg mask file #######################
+########## download trg mask file #######################
     if usetrgfile == 'True':
       trgmaskFileLFN=simtelFileLFN.replace('simtel.gz','trgmask.gz')
       DIRAC.gLogger.notice( 'Trying to download the trgmask File', trgmaskFileLFN)
@@ -92,7 +101,8 @@ def main():
         args.append(word) 
 #########################################################
     args.extend(['-a',layout])
-    args.extend(['-o',dstfile, os.path.basename(simtelFileLFN)])
+    args.extend(['-o',dstfile])
+    args.extend(simtelFileList)
     execute_module(ed,executable,args)
 ########### check existence of DST file ###############
     if not os.path.isfile(dstfile):
