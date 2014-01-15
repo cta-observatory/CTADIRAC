@@ -3,27 +3,22 @@
   Submit a EvnDisplay Example Job
 """
 from DIRAC.Core.Base import Script
+import sys
 Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      'Usage:',
                                      '  %s [option|cfgfile] ... [inputfilelist] ...' % Script.scriptName,
                                      'Arguments:',
                                      '  inputfilelist: Input File List',
+				                             '  maxFilesPerJob: Max Files Per Job',
                                      '  layoutlist: Layout File List',
-                                     '  usetrgfile: True/False'] ) )
+                                     '  usetrgfile: True/False (optional, default is False)'] ) )
 Script.parseCommandLine()
 
 def EvnDispExample( args = None ) :
   from CTADIRAC.Interfaces.API.EvnDispJob import EvnDispJob
   from DIRAC.Interfaces.API.Dirac import Dirac
 
-  j = EvnDispJob()
-  j.setVersion('prod2_131218')
-
-  executable = 'CTA.convert_hessio_to_VDST'
-  j.setExecutable(executable) 
-
-  #if not args:
-  if len(args) < 2:
+  if len(args)!=3 and len(args)!=4:
     Script.showHelp()
 
   LFN_file = args[0]
@@ -35,15 +30,34 @@ def EvnDispExample( args = None ) :
     if line!="\n":
       infileLFNList.append(infileLFN)
 
-  j.setParametricInputData(infileLFNList)
-
   usetrgfile = 'False'
-  if len(args) == 3:
-    usetrgfile = args[2]
+  if len(args) == 4:
+    usetrgfile = args[3]
+ 
+  maxFilesPerJob = args[1]
+
+  if (maxFilesPerJob > 1 and usetrgfile == 'True'):
+    Script.gLogger.notice("Multiple input files per job are not compatible with usetrgfile=True")
+    Script.gLogger.notice("Set maxFilesPerJob=1")
+    sys.exit(1)
+
+  layoutlist = args[2]
+
+  res = Dirac().splitInputData(infileLFNList,maxFilesPerJob)
+
+ #########################################################################
+
+  j = EvnDispJob()
+  j.setVersion('prod2_131218')
+
+  executable = 'CTA.convert_hessio_to_VDST'
+  j.setExecutable(executable)
+
+  j.setGenericParametricInput(res['Value'])
+
+  j.setInputData('%s')
 
   j.setUseTrgFile(usetrgfile)
- 
-  layoutlist = args[1]
   j.setLayoutList(layoutlist)
 
   j.setConverterOpt(['-f','1','-c','Calibration/Aar.peds.root'])
@@ -55,13 +69,14 @@ def EvnDispExample( args = None ) :
   j.setOutputSandbox( ['*.log'])
 
 #  Retrieve your Output Data  
-  j.setOutputData(['*_evndisp.root']) 
+  j.setOutputData(['*_evndisp.root'])
 
   j.setCPUTime(100000)
 
   Script.gLogger.info( j._toJDL() )
-  Dirac().submit( j )
-  
+  res = Dirac().submit( j )
+  print res
+
 if __name__ == '__main__':
 
   args = Script.getPositionalArgs()
