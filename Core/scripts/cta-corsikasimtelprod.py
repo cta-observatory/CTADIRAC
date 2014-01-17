@@ -74,6 +74,7 @@ def main():
   global fcc, fcL, storage_element
   
   from CTADIRAC.Core.Workflow.Modules.CorsikaApp import CorsikaApp
+  from CTADIRAC.Core.Workflow.Modules.Read_CtaApp import Read_CtaApp
   from DIRAC.Core.Utilities.Subprocess import systemCall
 
 
@@ -252,6 +253,8 @@ def main():
     all_configs=["4MSST","SCSST","ASTRI","NSBX3","STD","SCMST"]
   elif simtelConfig=="5INROW":
     all_configs=["4MSST","SCSST","ASTRI","NSBX3","STD"]
+  elif simtelConfig=="3INROW":
+    all_configs=["SCSST","STD","SCMST"]
   else:
     all_configs=[simtelConfig]
 
@@ -280,7 +283,6 @@ def main():
     simtelProdVersion = current_version + '_simtel'
     simtelDirPath = os.path.join(corsikaParticleDirPath,simtelProdVersion)
   
-    #resultCreateSimtelDirMD = createSimtelFileSystAndMD()  
     resultCreateSimtelDirMD = createSimtelFileSystAndMD(current_conf)
     if not resultCreateSimtelDirMD['OK']:
       DIRAC.gLogger.error( 'Failed to create simtelArray Directory MD')
@@ -288,7 +290,7 @@ def main():
       DIRAC.gLogger.error('Metadata coherence problem, no simtelArray File produced')
       DIRAC.exit( -1 )
     else:
-      print 'simtel Directory MD successfully created'
+      DIRAC.gLogger.notice('simtel Directory MD successfully created')
 
 ############## check simtel data file LFN exists ########################
     simtelFileName = particle + '_' + str(thetaP) + '_' + str(phiP) + '_alt' + str(obslev) + '_' + 'run' + run_number + '.simtel.gz'
@@ -320,14 +322,6 @@ def main():
       DIRAC.gLogger.error('Broken string found in simtel.log')
       jobReport.setApplicationStatus('Broken pipe')
       DIRAC.exit( -1 )
-   
-    # Tag corsika File if Broken Pipe
-      #corsikaTagMD={}
-      #corsikaTagMD['CorsikaToReprocess'] = 'CorsikaToReprocess'
-      #result = fcc.setMetadata(corsikaOutFileLFN,corsikaTagMD)
-      #print "result setMetadata=",result
-      #if not result['OK']:
-      #  print 'ResultSetMetadata:',result['Message']
 
     if not ret['OK']:
       DIRAC.gLogger.error( 'Failed to execute run_sim.sh')
@@ -364,11 +358,11 @@ def main():
 nsim=$(list_histograms %s|fgrep 'Histogram 6 '|sed 's/^.*contents: //'| sed 's:/.*$::')
 nevents=%d
 if [ $nsim -lt $(( $nevents - 2 )) ]; then
-echo 'nsim found: ' $nsim
+echo 'nsim found:' $nsim
 echo 'nsim expected:' $nevents
 exit 1
 else
-echo 'nsim found: ' $nsim
+echo 'nsim found:' $nsim
 echo 'nsim expected:' $nevents
 fi
 """ % (simtelHistFileName,int(nbShowers)*int(cscat)))
@@ -420,7 +414,7 @@ fi
 
     DIRAC.gLogger.notice('SeList is:',seList)
 
-#########  Upload data/log/histo ##############################################
+#########  Upload simtel data/log/histo ##############################################
 
     res = upload_to_seList(simtelOutFileLFN,simtelFileName)
 
@@ -442,7 +436,6 @@ fi
       ret = dirac.removeFile( simtelOutFileLFN )
       jobReport.setApplicationStatus('OutputData Upload Error')
       DIRAC.exit( -1 )
-######################################################################
 
     res = CheckCatalogCoherence(simtelOutHistFileLFN)
     if res == DIRAC.S_OK:
@@ -460,12 +453,16 @@ fi
       jobReport.setApplicationStatus('OutputData Upload Error')
       DIRAC.exit( -1 )
 
-######################################################################
+#    simtelRunNumberSeriesDirExist = fcc.isDirectory(simtelOutFileDir)['Value']['Successful'][simtelOutFileDir]
+#    newSimtelRunFileSeriesDir = (simtelRunNumberSeriesDirExist != True)  # if new runFileSeries, will need to add new MD
     
     if newSimtelRunFileSeriesDir:
+      print 'insertRunFileSeriesMD'
       insertRunFileSeriesMD(simtelOutFileDir,runNumTrunc)
       insertRunFileSeriesMD(simtelOutLogFileDir,runNumTrunc)
       insertRunFileSeriesMD(simtelOutHistFileDir,runNumTrunc)
+    else:
+      print 'NotinsertRunFileSeriesMD'
     
 ###### simtel File level metadata ############################################
     simtelFileMD={}
@@ -497,6 +494,162 @@ fi
 
       result = fcc.addFileAncestors({simtelOutHistFileLFN:{'Ancestors': [ corsikaOutFileLFN ] }})
       print 'result addFileAncestor:', result
+
+#####  Exit now if only corsika simulation required
+    if (mode == 'corsika_simtel'):
+      continue
+
+######### run read_cta #######################################
+
+    rcta = Read_CtaApp()
+    rcta.setSoftwarePackage(CorsikaSimtelPack)
+    rcta.rctaExe = 'read_cta'
+
+    powerlaw_dict = {'gamma':'-2.57','gamma_ptsrc':'-2.57','proton':'-2.70','electron':'-3.21'}
+    dstFileName = particle + '_' + str(thetaP) + '_' + str(phiP) + '_alt' + str(obslev) + '_' + 'run' + run_number + '.simtel-dst0.gz'
+    dstHistoFileName = particle + '_' + str(thetaP) + '_' + str(phiP) + '_alt' + str(obslev) + '_' + 'run' + run_number + '.hdata-dst0.gz'
+
+    rcta.rctaArguments = ['-r', '4', '-u', '--integration-scheme', '4', '--integration-window', '7,3', '--tail-cuts', '6,8', '--min-pix', '2', '--min-amp', '20', '--type', '1,0,0,400', '--tail-cuts', '9,12', '--min-amp', '20', '--type', '2,0,0,100', '--tail-cuts', '8,11', '--min-amp', '19', '--type', '3,0,0,40', '--tail-cuts', '6,9', '--min-amp', '15', '--type', '4,0,0,15', '--tail-cuts', '3.7,5.5', '--min-amp', '8', '--dst-level', '0', '--dst-file', dstFileName, '--histogram-file', dstHistoFileName, '--powerlaw', powerlaw_dict[particle], simtelFileName]
+
+    rctaReturnCode = rcta.execute()
+  
+    if rctaReturnCode != 0:
+      DIRAC.gLogger.error( 'read_cta Application: Failed')
+      jobReport.setApplicationStatus('read_cta Application: Failed')
+      DIRAC.exit( -1 )
+
+######## run dst quality checks ######################################
+
+    fd = open('check_dst_histo.sh', 'w' )
+    fd.write( """#! /bin/sh  
+dsthistfilename=%s
+dstfile=%s
+n6="$(list_histograms -h 6 ${dsthistfilename} | grep 'Histogram of type' | sed 's/.*bins, //' | sed 's/ entries.//')" 
+n12001="$(list_histograms -h 12001 ${dsthistfilename} | grep 'Histogram of type' | sed 's/.*bins, //' | sed 's/ entries.//')" 
+if [ $n6 -ne $n12001 ]; then
+echo 'n6 found:' $n6
+echo 'n12001 found:' $n12001
+exit 1
+else
+echo 'n6 found:' $n6
+echo 'n12001 found:' $n12001
+fi
+
+n12002="$(list_histograms -h 12002 ${dsthistfilename} | grep 'Histogram of type' | sed 's/.*bins, //' | sed 's/ entries.//')" 
+nev="$(statio ${dstfile} | egrep '^2010' | cut -f2)"
+if [ -z "$nev" ]; then nev="0"; fi
+
+if [ $nev -ne $n12002 ]; then
+echo 'nev found:' $nev
+echo 'n12002 found:' $n12002
+exit 1
+else
+echo 'nev found:' $nev
+echo 'n12002 found:' $n12002
+fi
+""" % (dstHistoFileName,dstFileName))
+    fd.close()
+
+    os.system('chmod u+x check_dst_histo.sh')
+    cmdTuple = ['./check_dst_histo.sh']
+    DIRAC.gLogger.notice( 'Executing command tuple:', cmdTuple )
+    ret = systemCall( 0, cmdTuple, sendOutput,env = corsikaEnviron)
+    checkHistoReturnCode, stdout, stderr = ret['Value']
+
+    if not ret['OK']:
+      DIRAC.gLogger.error( 'Failed to execute check_dst_histo.sh')
+      DIRAC.gLogger.error( 'check_dst_histo.sh status is:', checkHistoReturnCode)
+      DIRAC.exit( -1 )
+
+    if (checkHistoReturnCode!=0):
+      DIRAC.gLogger.error( 'Failure during check_dst_histo.sh')
+      DIRAC.gLogger.error( 'check_dst_histo.sh status is:', checkHistoReturnCode)
+      jobReport.setApplicationStatus('Histo check Failed')
+      DIRAC.exit( -1 )
+
+############create MD and upload dst data/histo ##########################################################
+
+    global dstDirPath
+    global dstProdVersion
+
+    dstProdVersion = current_version + '_dst'
+    dstDirPath = os.path.join(simtelDirPath_conf,dstProdVersion)
+
+    dstOutFileDir = os.path.join(dstDirPath,'Data',runNumSeriesDir)
+    dstOutFileLFN = os.path.join(dstOutFileDir,dstFileName)
+
+    resultCreateDstDirMD = createDstFileSystAndMD()
+    if not resultCreateDstDirMD['OK']:
+      DIRAC.gLogger.error( 'Failed to create Dst Directory MD')
+      jobReport.setApplicationStatus('Failed to create Dst Directory MD')
+      DIRAC.gLogger.error('Metadata coherence problem, no Dst File produced')
+      DIRAC.exit( -1 )
+    else:
+      DIRAC.gLogger.notice('Dst Directory MD successfully created')
+############################################################
+
+    res = CheckCatalogCoherence(dstOutFileLFN)
+    if res == DIRAC.S_OK:
+      DIRAC.gLogger.notice('dst file already exists. Removing:',dstOutFileLFN)
+      ret = dirac.removeFile( dstOutFileLFN )
+
+    res = upload_to_seList(dstOutFileLFN,dstFileName)
+
+    if res != DIRAC.S_OK:
+      DIRAC.gLogger.error('Upload dst Error',dstOutFileLFN)
+      jobReport.setApplicationStatus('OutputData Upload Error')
+      DIRAC.exit( -1 )
+
+##############################################################
+    dstHistoFileDir = os.path.join(dstDirPath,'Histograms',runNumSeriesDir)
+    dstHistoFileLFN = os.path.join(dstHistoFileDir,dstHistoFileName)
+
+    res = CheckCatalogCoherence(dstHistoFileLFN)
+    if res == DIRAC.S_OK:
+      DIRAC.gLogger.notice('dst histo file already exists. Removing:',dstHistoFileLFN)
+      ret = dirac.removeFile( dstHistoFileLFN )
+
+    res = upload_to_seList(dstHistoFileLFN,dstHistoFileName)
+
+    if res != DIRAC.S_OK:
+      DIRAC.gLogger.error('Upload dst Error',dstHistoFileName)
+      jobReport.setApplicationStatus('OutputData Upload Error')
+      DIRAC.exit( -1 )
+
+########### Insert RunNumSeries MD ##########################
+
+    dstRunNumberSeriesDirExist = fcc.isDirectory(dstOutFileDir)['Value']['Successful'][dstOutFileDir]
+    newDstRunFileSeriesDir = (dstRunNumberSeriesDirExist != True)  # if new runFileSeries, will need to add new MD
+
+    if newDstRunFileSeriesDir:
+      insertRunFileSeriesMD(dstOutFileDir,runNumTrunc)
+      insertRunFileSeriesMD(dstHistoFileDir,runNumTrunc)
+
+####### dst File level metadata ###############################################
+    dstFileMD={}
+    dstFileMD['runNumber'] = int(run_number)
+    dstFileMD['jobID'] = jobID
+    dstFileMD['rctaReturnCode'] = rctaReturnCode
+  
+    result = fcc.setMetadata(dstOutFileLFN,dstFileMD)
+    print "result setMetadata=",result
+    if not result['OK']:
+      print 'ResultSetMetadata:',result['Message']
+
+    result = fcc.setMetadata(dstHistoFileLFN,dstFileMD)
+    print "result setMetadata=",result
+    if not result['OK']:
+      print 'ResultSetMetadata:',result['Message']
+
+########## set the ancestors for dst #####################################
+
+    result = fcc.addFileAncestors({dstOutFileLFN:{'Ancestors': [ simtelOutFileLFN] }})
+    print 'result addFileAncestor:', result
+
+    result = fcc.addFileAncestors({dstHistoFileLFN:{'Ancestors': [ simtelOutFileLFN] }})
+    print 'result addFileAncestor:', result
+
+######################################################
     
   DIRAC.exit()
 
@@ -525,12 +678,15 @@ def install_CorsikaSimtelPack(version):
         os.system(cmd)
         continue
     if workingArea:
-      if checkSoftwarePackage( package, workingArea() )['OK']:
-        DIRAC.gLogger.notice( 'Package found in Local Area:', package )
-        continue
       if installSoftwarePackage( package, workingArea() )['OK']:
       ############## compile #############################
-        cmdTuple = ['./build_all','prod2','qgs2']
+        if 'sc3' in version:
+          compilation_opt = 'sc3'
+        else:
+          compilation_opt = 'prod2'
+
+        DIRAC.gLogger.notice( 'Compiling with option:',compilation_opt)
+        cmdTuple = ['./build_all',compilation_opt,'qgs2']
         ret = systemCall( 0, cmdTuple, sendOutput)
         if not ret['OK']:
           DIRAC.gLogger.error( 'Failed to execute build')
@@ -891,6 +1047,37 @@ def createSimtelFileSystAndMD(current_conf):
     return DIRAC.S_ERROR ('Problem creating Simtel Histo Directory MD ')
     
   return DIRAC.S_OK ('Simtel Directory MD successfully created')
+
+
+def createDstFileSystAndMD():
+  # Creating INDEXES in DFC DB
+  dstDirMDFields={}
+  dstDirMDFields['dstProdVersion'] = 'VARCHAR(128)'
+  createIndexes(dstDirMDFields)  
+  
+  # Adding Directory level metadata Values to DFC
+  dstDirMD={}
+  dstDirMD['dstProdVersion'] = dstProdVersion
+
+  res = createDirAndInsertMD(dstDirPath, dstDirMD)
+  if res != DIRAC.S_OK:
+    return DIRAC.S_ERROR ('MD Error: Problem creating Dst Directory MD ')
+    
+  dstDataDirPath = os.path.join(dstDirPath,'Data')
+  dstDataDirMD={}
+  dstDataDirMD['outputType'] = 'Data'
+  res = createDirAndInsertMD(dstDataDirPath, dstDataDirMD)  
+  if res != DIRAC.S_OK:
+    return DIRAC.S_ERROR ('Problem creating Dst Data Directory MD ')
+
+  dstHistoDirPath = os.path.join(dstDirPath,'Histograms')
+  dstHistoDirMD={}
+  dstHistoDirMD['outputType'] = 'Histo'
+  res = createDirAndInsertMD(dstHistoDirPath, dstHistoDirMD)  
+  if res != DIRAC.S_OK:
+    return DIRAC.S_ERROR ('Problem creating Dst Histo Directory MD ')
+    
+  return DIRAC.S_OK ('Dst Directory MD successfully created')
 
 
 if __name__ == '__main__':
