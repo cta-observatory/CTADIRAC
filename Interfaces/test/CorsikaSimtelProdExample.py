@@ -10,7 +10,7 @@ Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      '  runMin:     Min runNumber',
                                      '  runMax:     Max runNumber',
                                      '  cfgFile:    Corsika config file',
-                                     '  reprocessing configuration: 4MSST/SCSST/ASTRI/NSBX3/STD/SCMST/NORTH'] ) )
+                                     '  reprocessing configuration: 4MSST/SCSST/ASTRI/NSBX3/STD/SCMST/NORTH/3INROW'] ) )
 
 Script.parseCommandLine()
 
@@ -22,12 +22,13 @@ def CorsikaSimtelProdExample( args = None ) :
   from DIRAC.Interfaces.API.Dirac import Dirac
   
   j = CorsikaSimtelProdJob()
-  j.setVersion('prod-2_22072013')
+  j.setVersion('prod-2_15122013')
 
   j.setExecutable('corsika_autoinputs') 
 
-  mode = 'corsika_simtel'
+#  mode = 'corsika_simtel'
 #  mode = 'corsika_standalone'
+  mode = 'corsika_simtel_dst'
 
   ilist = []
 
@@ -39,7 +40,7 @@ def CorsikaSimtelProdExample( args = None ) :
   cfgfile = args[2]
 
   simtelArrayConfig = "STD"
-  if args[3] not in ['STD','6INROW','NORTH']:
+  if args[3] not in ['STD','6INROW','NORTH','3INROW','SCMST']:
     print "arrayConfig argument %s incorrect"%args[4]
     Script.showHelp()
 
@@ -65,7 +66,9 @@ def CorsikaSimtelProdExample( args = None ) :
   j.setBannedSites(['LCG.UNI-DORTMUND.de','LCG.PIC.es'])
 
   Script.gLogger.info( j._toJDL() )
-  Dirac().submit( j )
+  res = Dirac().submit( j )
+
+  print res
 
 
 if __name__ == '__main__':
