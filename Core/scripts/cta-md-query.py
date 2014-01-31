@@ -14,10 +14,11 @@ Script.registerSwitch( "", "outputType=", "Data/Log/Histo" )
 Script.registerSwitch( "", "viewCone=", "10/0" )
 Script.registerSwitch( "", "corsikaprodversion=", "prod-2_21122012_corsika/prod-2_06052013_corsika/prod-2_22072013_corsika" )
 Script.registerSwitch( "", "simtelArrayProdVersion=", "prod-2_06052013_simtel/prod-2_06052013_sc3_simtel/prod-2_22072013_simtel" )
-Script.registerSwitch( "", "altitude=", "1650/1655/2434/2662/2290/3600" )
-Script.registerSwitch( "", "thetaP=", "20" )
+Script.registerSwitch( "", "dstProdVersion=", "prod-2_15122013_dst/prod-2_15122013_sc3_dst" )
+Script.registerSwitch( "", "altitude=", "1640/1650/1655/2434/2662/2290/3600" )
+Script.registerSwitch( "", "thetaP=", "20/40" )
 Script.registerSwitch( "", "phiP=", "0/180" )
-Script.registerSwitch( "", "energyInfo=", "-2.0_3.0-330E3/-2.0_4.0-600E3" )
+Script.registerSwitch( "", "energyInfo=", "-2.0_3.0-330E3/-2.0_4.0-600E3/-2.0_6.0-660E3" )
 #Script.registerSwitch( "", "runNumSeries=", "runNumSeries" )
 Script.registerSwitch( "", "offset=", "0" )
 Script.registerSwitch( "", "prodName=", "prodName" )
@@ -35,6 +36,7 @@ outputType = None
 viewCone = None
 corsikaProdVersion = None
 simtelArrayProdVersion = None
+dstProdVersion = None
 simtelArrayConfig = None
 thetaP = None
 altitude = None
@@ -77,6 +79,9 @@ for switch in Script.getUnprocessedSwitches():
   elif switch[0].lower() == "simtelarrayprodversion":
     simtelArrayProdVersion = switch[1]
     metaDict['simtelArrayProdVersion'] = simtelArrayProdVersion
+  elif switch[0].lower() == "dstprodversion":
+    dstProdVersion = switch[1]
+    metaDict['dstProdVersion'] = dstProdVersion
   elif switch[0].lower() == "energyinfo":
     energyInfo = switch[1]
     metaDict['energyInfo'] = energyInfo
