@@ -66,7 +66,7 @@ def CorsikaSimtelExample( args = None ) :
   hist_out = '*.hdata.gz'
   j.setOutputData([corsika_out,corsikatar_out,sim_out,log_out,hist_out])
 
-  j.setCPUTime(100000)
+  j.setCPUTime(200000)
 
   j.setBannedSites(['LCG.UNI-DORTMUND.de','LCG.PIC.es'])
 
