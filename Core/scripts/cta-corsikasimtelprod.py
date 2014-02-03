@@ -741,6 +741,7 @@ def upload_to_seList(FileLFN,FileName):
       res = CheckCatalogCoherence(FileLFN)
       if res != DIRAC.S_OK:
         DIRAC.gLogger.error('Job failed: Catalog Coherence problem found')
+        DIRAC.gLogger.notice('Failing SE:',se)
         failing_se.append(se)
         continue
       upload_result = 'OK'
@@ -754,14 +755,17 @@ def upload_to_seList(FileLFN,FileName):
       if res != DIRAC.S_OK:
         DIRAC.gLogger.error('Job failed: Catalog Coherence problem found')
         failing_se.append(se)
+        DIRAC.gLogger.notice('Failing SE:',se)
         continue
       upload_result = 'OK'
       break
 
-  for se in failing_se:
-    seList.remove(se)
-
   DIRAC.gLogger.notice('Failing SE list:',failing_se)
+
+  #for se in failing_se:
+  #  seList.remove(se)
+
+#  DIRAC.gLogger.notice('Failing SE list:',failing_se)
   if upload_result != 'OK':
     return DIRAC.S_ERROR
 
