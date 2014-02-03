@@ -64,7 +64,7 @@ def EvnDispExample( args = None ) :
   
   j.setEvnDispOpt(['-reconstructionparameter','EVNDISP.prod2.reconstruction.runparameter','-shorttree','-l2setspecialchannels','nofile','-writenoMCTree'])
   
-  j.setInputSandbox( [layoutlist,'cta-evndisp.py','CTADIRAC'])
+  j.setInputSandbox( [layoutlist])
 
   j.setOutputSandbox( ['*.log'])
 
@@ -73,9 +73,11 @@ def EvnDispExample( args = None ) :
 
   j.setCPUTime(100000)
 
+  j.setName('evndisp')
+
   Script.gLogger.info( j._toJDL() )
   res = Dirac().submit( j )
-  print res
+  #print res
 
 if __name__ == '__main__':
 
