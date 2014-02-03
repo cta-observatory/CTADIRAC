@@ -18,8 +18,8 @@ class Read_CtaJob( Job ) :
     Job.__init__( self )
 
     self.workflow = Workflow()
-    #self.executable = '$DIRACROOT/scripts/cta-read_cta'
-    self.executable = '$DIRACROOT/CTADIRAC/Core/scripts/cta-read_cta.py'
+    self.executable = '$DIRACROOT/scripts/cta-read-cta'
+#    self.executable = '$DIRACROOT/CTADIRAC/Core/scripts/cta-read_cta.py'
     self.setCPUTime( cpuTime )
     global argumentStr
 
