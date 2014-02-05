@@ -14,7 +14,6 @@ Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
 
 Script.parseCommandLine()
 
-import os
 
 def CorsikaSimtelExample( args = None ) :
   
@@ -22,7 +21,7 @@ def CorsikaSimtelExample( args = None ) :
   from DIRAC.Interfaces.API.Dirac import Dirac
   
   j = CorsikaSimtelJob()
-  j.setVersion('prod-2_22072013')
+  j.setVersion('prod-2_15122013')
 
   j.setExecutable('corsika_autoinputs')
 
@@ -52,7 +51,11 @@ def CorsikaSimtelExample( args = None ) :
   j.setGenericParametricInput(ilist)                                                                                         
   j.setName('run%s')
 
-  j.setInputSandbox( [ cfgfile,'grid_prod2-repro.sh','LFN:/vo.cta.in2p3.fr/MC/PROD2/SVN-PROD2.tar.gz'] )
+  if mode == 'corsika_standalone':
+    j.setInputSandbox( [cfgfile] )
+  else:
+    j.setInputSandbox( [cfgfile,'grid_prod2-repro.sh','LFN:/vo.cta.in2p3.fr/MC/PROD2/SVN-PROD2.tar.gz'] )
+
 
   j.setParameters(['--template',cfgfile,'--mode',mode,'-S',simtelArrayConfig])
  
@@ -66,13 +69,11 @@ def CorsikaSimtelExample( args = None ) :
   hist_out = '*.hdata.gz'
   j.setOutputData([corsika_out,corsikatar_out,sim_out,log_out,hist_out])
 
-  j.setCPUTime(100000)
-
-  j.setBannedSites(['LCG.UNI-DORTMUND.de','LCG.PIC.es'])
+  j.setCPUTime(200000)
 
   Script.gLogger.info( j._toJDL() )
-  Dirac().submit( j )
-
+  res = Dirac().submit( j )
+  print res
 
 if __name__ == '__main__':
 
