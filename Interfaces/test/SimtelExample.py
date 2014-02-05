@@ -3,25 +3,36 @@
   Submit a Simtel Example Job
 """
 from DIRAC.Core.Base import Script
+import DIRAC
 Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      'Usage:',
                                      '  %s [option|cfgfile] ... [inputfilelist] ...' % Script.scriptName,
                                      'Arguments:',
-                                     '  inputfilelist: Input File List',
-                                     ' reprocessing configuration (STD,NSBX3,SCSST,4MSST,ASTRI)'] ) )
+                                     '  inputfilelist: Corsika Input File List',
+                                     '  reprocessing configuration: STD/NSBX3/4MSST/SCSST/ASTRI/NORTH'] ) )
 Script.parseCommandLine()
 
-import os
+
 
 def SimtelExample( args = None ) :
   
   from CTADIRAC.Interfaces.API.SimtelJob import SimtelJob
   from DIRAC.Interfaces.API.Dirac import Dirac
 
+  j = SimtelJob()
+
+  j.setVersion('prod-2_15122013')
+
   if (len(args) != 2):
+    Script.gLogger.notice('Wrong number of arguments')
     Script.showHelp()
 
+  if args[1] not in ['STD','4MSST', 'SCSST', 'ASTRI', 'NSBX3', 'NORTH']:
+    Script.gLogger.notice("reprocessing configuration is incorrect:",args[1])
+    DIRAC.exit( -1 )
+
   LFN_file = args[0]
+  simtelArrayConfig = args[1]
   f = open(LFN_file,'r')
 
   infileLFNList = []
@@ -30,25 +41,14 @@ def SimtelExample( args = None ) :
     if line!="\n":
       infileLFNList.append(infileLFN)
 
-  if args[1] not in ['STD','4MSST', 'SCSST', 'ASTRI', 'NSBX3', 'NORTH']:
-    print "arrayConfig argument %s incorrect"%args[1]
-    Script.showHelp()
-
-  simtelArrayConfig = args[1]
-
-  j = SimtelJob()
-
-  j.setVersion('prod-2_22072013')
-
   j.setParametricInputData(infileLFNList)
-#  j.setType( 'CorsikaRepro' )
 
   name = 'repro_' + simtelArrayConfig
   j.setName(name)
 
-  j.setInputSandbox( [ 'grid_prod2-repro.sh','LFN:/vo.cta.in2p3.fr/MC/PROD2/SVN-PROD2.tar.gz'] )
-
   j.setParameters(['-S',simtelArrayConfig])
+
+  j.setInputSandbox( [ 'grid_prod2-repro.sh','LFN:/vo.cta.in2p3.fr/MC/PROD2/SVN-PROD2.tar.gz'] )
   j.setOutputSandbox( ['simtel.log'])
 
 #  Retrieve your Output Data  
@@ -58,9 +58,13 @@ def SimtelExample( args = None ) :
   j.setOutputData([sim_out,log_out,hist_out])
 
   j.setCPUTime(100000)
-  Script.gLogger.info( j._toJDL() )
-  Dirac().submit( j )
 
+  j.setJobGroup('repro_t1')
+
+  Script.gLogger.info( j._toJDL() )
+
+  res = Dirac().submit( j )
+  print res
 
 if __name__ == '__main__':
 
