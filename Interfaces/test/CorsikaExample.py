@@ -2,52 +2,61 @@
 """
   Submit a Corsika Example Job
 """
+import DIRAC
 from DIRAC.Core.Base import Script
 Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      'Usage:',
-                                     '  %s [option|cfgfile] ... [NJobs] ...' % Script.scriptName,
+                                     '  %s [option|cfgfile] ... [runMin] ...' % Script.scriptName,
                                      'Arguments:',
-                                     '  NJobs:     Number of Jobs' ] ) )
+                                     '  runMin:     Min runNumber',
+                                     '  runMax:     Max runNumber',
+                                     '  cfgFile:    Corsika config file'] ) )
+
 Script.parseCommandLine()
 
+
 def CorsikaExample( args = None ) :
-  from CTADIRAC.Interfaces.API.CorsikaJob import CorsikaJob
+  
+  from CTADIRAC.Interfaces.API.CorsikaSimtelJob import CorsikaSimtelJob
   from DIRAC.Interfaces.API.Dirac import Dirac
+  
+  j = CorsikaSimtelJob()
 
-  j = CorsikaJob()
-  j.setVersion('prod-2_21122012')
+  j.setVersion('prod-2_15122013')
 
-  executable = 'corsika_autoinputs'
-  j.setExecutable(executable)
+  j.setExecutable('corsika_autoinputs')
 
-  ilist = []
-  if not args:
+  if (len(args) != 3):
+    Script.gLogger.notice('Wrong number of arguments')
     Script.showHelp()
 
-  NJobs = int(args[0])
+  runMin = int(args[0])
+  runMax = int(args[1])
+  cfgfile = args[2]
 
-  for i in range(1,NJobs+1):
+  ilist = []
+  for i in range(runMin,runMax+1):
     run_number = '%06d' % i
     ilist.append(run_number)
 
-  j.setGenericParametricInput(ilist)
+  j.setGenericParametricInput(ilist)                                                                                         
   j.setName('run%s')
-  j.setInputSandbox( ['INPUTS_CTA_PROD2_gamma_South'] )
-  
-  j.setParameters(['--run','corsika','--template','INPUTS_CTA_PROD2_gamma_South'])
+
+  j.setInputSandbox( [cfgfile] )
+
+  j.setParameters(['--template',cfgfile,'--mode','corsika_standalone'])
 
   j.setOutputSandbox( ['corsika_autoinputs.log'])
-  
-  #  Retrieve your Output Data  
-  corsika_out = 'corsika_run%s.corsika.gz'
-  corsikatar_out = 'corsika_run%s.tar.gz'
-  j.setOutputData([corsika_out,corsikatar_out])
 
-  j.setCPUTime(100000)
+#  Retrieve your Output Data  
+  j.setOutputData(['*.corsika.gz','*.corsika.tar.gz'])
+
+  j.setCPUTime(200000)
 
   Script.gLogger.info( j._toJDL() )
-  Dirac().submit( j )
 
+  res = Dirac().submit( j )
+  print res
 
 if __name__ == '__main__':
 
@@ -57,4 +66,3 @@ if __name__ == '__main__':
     CorsikaExample( args )
   except Exception:
     Script.gLogger.exception()
-
