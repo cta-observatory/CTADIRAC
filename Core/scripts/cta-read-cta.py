@@ -47,8 +47,8 @@ def main():
 
   simtelFileLFN = sys.argv[-1].split('ParametricInputData=LFN:')[1]
   simtelFileName = os.path.basename(simtelFileLFN)
-  dstFileName = simtelFileName.replace('simtel.gz','simtel-dst0.gz')
-  dstHistoFileName = simtelFileName.replace('simtel.gz','hdata-dst0.gz')
+  dstFileName = simtelFileName.replace('simtel.gz','simtel-dst.gz')
+  dstHistoFileName = simtelFileName.replace('simtel.gz','hdata-dst.gz')
 
   args.extend(['--dst-file', dstFileName, '--histogram-file', dstHistoFileName, simtelFileName])
   rcta.rctaArguments = args
