@@ -34,7 +34,7 @@ def Read_CtaExample( args = None ) :
   j.setRead_CtaOpt(['-r', '4', '-u', '--integration-scheme', '4', '--integration-window', '7,3', '--tail-cuts', '6,8', '--min-pix', '2', '--min-amp', '20', '--type', '1,0,0,400', '--tail-cuts', '9,12', '--min-amp', '20', '--type', '2,0,0,100', '--tail-cuts', '8,11', '--min-amp', '19', '--type', '3,0,0,40', '--tail-cuts', '6,9', '--min-amp', '15', '--type', '4,0,0,15', '--tail-cuts', '3.7,5.5', '--min-amp', '8', '--dst-level', '0', '--powerlaw', '-2.57'])
 
 #  Retrieve your Output Data  
-  j.setOutputData(['*simtel-dst0.gz','*hdata-dst0.gz'])
+  j.setOutputData(['*simtel-dst.gz','*hdata-dst.gz'])
 
   j.setCPUTime(100000)
 
