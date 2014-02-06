@@ -36,6 +36,7 @@ def Read_CtaExample( args = None ) :
 #  Retrieve your Output Data  
   j.setOutputData(['*simtel-dst.gz','*hdata-dst.gz'])
 
+  j.setName('read_cta')
   j.setCPUTime(100000)
 
   Script.gLogger.info( j._toJDL() )
