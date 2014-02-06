@@ -1,5 +1,5 @@
 #######################################################################
-# $Id: SoftwareInstallation.py 416 2012-02-16 11:57:26Z arrabito@in2p3.fr $
+# $Id$
 # File :   SoftwareInstallation.py
 # Author : Ricardo Graciani
 ########################################################################
@@ -282,14 +282,22 @@ export LD_LIBRARY_PATH=${EPDFREE}/lib:${LD_LIBRARY_PATH}
 """ % (area) )
       fd.close()
       return DIRAC.S_OK()
+
     if packageTuple[0] == 'ctools':
-      fd = open( fileName, 'w' )
+      if area == sharedArea():
+        packagedir = os.path.join(sharedArea(),packageName,version)
+        fileName = os.path.basename(fileName)
+      else:
+        packagedir = workingArea()
+      fd = open(fileName, 'w' )
       fd.write( """
-export GAMMALIB=%s/ctools/%s/ctools
+#!/bin/bash
+export CTASTDIR=%s
+export GAMMALIB=${CTASTDIR}
 source $GAMMALIB/bin/gammalib-init.sh
-export CTOOLS=%s/ctools/%s/ctools
-source $CTOOLS/bin/ctools-init.sh 
-""" % (area,version,area,version) )
+export CTOOLS=${CTASTDIR}
+source $CTOOLS/bin/ctools-init.sh
+""" % (packagedir) )
       fd.close()
       return DIRAC.S_OK()               
 
