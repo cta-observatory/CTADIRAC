@@ -3,7 +3,7 @@
   Submit a EvnDisplay Example Job
 """
 from DIRAC.Core.Base import Script
-import sys
+import DIRAC
 Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      'Usage:',
                                      '  %s [option|cfgfile] ... [inputfilelist] ...' % Script.scriptName,
@@ -39,11 +39,15 @@ def EvnDispExample( args = None ) :
   if (maxFilesPerJob > 1 and usetrgfile == 'True'):
     Script.gLogger.notice("Multiple input files per job are not compatible with usetrgfile=True")
     Script.gLogger.notice("Set maxFilesPerJob=1")
-    sys.exit(1)
+    DIRAC.exit( -1 )
 
   layoutlist = args[2]
 
   res = Dirac().splitInputData(infileLFNList,maxFilesPerJob)
+
+  if not res['OK']:
+     Script.gLogger.error( 'Failed to splitInputData')
+     DIRAC.exit( -1 )
 
  #########################################################################
 
