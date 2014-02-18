@@ -1,4 +1,8 @@
 #!/bin/env python
+"""
+  Simple terminal job monitoring
+  
+"""
 
 owner=""
 jobGroup=""
@@ -12,10 +16,17 @@ from DIRAC.Core.Base import Script
 from DIRAC.Core.Utilities.Time import toString, date, day
 import datetime
 
-Script.registerSwitch( "", "jobGroup=", "Get status for jobs in the given group" )
-Script.registerSwitch( "", "owner=", "Get status for jobs of the given owner" )
+Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
+                                     'Usage:',
+                                     '  %s [options]' % Script.scriptName,
+				     'e.g.:',
+				     '  %s --owner=bregeon --hours=24' % Script.scriptName] ) )
+
+
+Script.registerSwitch( "", "owner=", "the job owner" )
+Script.registerSwitch( "", "jobGroup=", "the job group" )
 Script.registerSwitch( "", "hours=", "Get status for jobs of the last n hours" )
-Script.registerSwitch( "", "failed=", "1 or 0 : Save or not failed jobs in failed.txt" )
+Script.registerSwitch( "", "failed=", "1 or 0 : Save or not failed jobs in \"failed.txt\"" )
 Script.parseCommandLine( ignoreErrors = True )
 
 args = Script.getPositionalArgs()
@@ -28,7 +39,7 @@ for switch in Script.getUnprocessedSwitches():
   elif switch[0].lower() == "hours":
     nHours = int(switch[1])
   elif switch[0].lower() == "failed":
-    SaveFailed = int(failed)
+    SaveFailed = int(switch[1])
 
 #print owner, jobGroup, nHours
 
@@ -44,11 +55,15 @@ onehour = datetime.timedelta(hours = 1)
 now=datetime.datetime.now()
 
 results=dirac.selectJobs(jobGroup=jobGroup, owner=owner, date=now-nHours*onehour)
-jobsList=results['Value']
+if not results.has_key('Value'):
+    print("No job found for group \"%s\" and owner \"%s\" in the past %s hours"%
+       (jobGroup, owner, nHours))
+    sys.exit(0)
 
-print("%s jobs found for group %s and owner %s in the past %s hours"%
+# Found some jobs, print information
+jobsList=results['Value']
+print("%s jobs found for group \"%s\" and owner \"%s\" in the past %s hours\n"%
        (len(jobsList), jobGroup, owner, nHours))
-print
 
 status=dirac.status(jobsList)
 
