@@ -11,7 +11,7 @@ nHours=24
 def highlight(string):
     return '\x1b[31;1m%s\x1b[0m' % (string)
     
-import os, sys, copy
+import os, copy
 from DIRAC.Core.Base import Script
 from DIRAC.Core.Utilities.Time import toString, date, day
 import datetime
@@ -21,7 +21,6 @@ Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      '  %s [options]' % Script.scriptName,
 				     'e.g.:',
 				     '  %s --owner=bregeon --hours=24' % Script.scriptName] ) )
-
 
 Script.registerSwitch( "", "owner=", "the job owner" )
 Script.registerSwitch( "", "jobGroup=", "the job group" )
@@ -56,13 +55,13 @@ now=datetime.datetime.now()
 
 results=dirac.selectJobs(jobGroup=jobGroup, owner=owner, date=now-nHours*onehour)
 if not results.has_key('Value'):
-    print("No job found for group \"%s\" and owner \"%s\" in the past %s hours"%
+    Script.gLogger.notice("No job found for group \"%s\" and owner \"%s\" in the past %s hours"%
        (jobGroup, owner, nHours))
-    sys.exit(0)
+    Script.sys.exit(0)
 
 # Found some jobs, print information
 jobsList=results['Value']
-print("%s jobs found for group \"%s\" and owner \"%s\" in the past %s hours\n"%
+Script.gLogger.notice("%s jobs found for group \"%s\" and owner \"%s\" in the past %s hours\n"%
        (len(jobsList), jobGroup, owner, nHours))
 
 status=dirac.status(jobsList)
@@ -81,8 +80,8 @@ for job in jobsList:
     minstatus=status['Value'][int(job)]['MinorStatus']
     majstatus=status['Value'][int(job)]['Status']
     if majstatus not in StatusDict.keys():
-        print 'Add %s to BASE_STATUS_DIR'%majstatus
-	sys.exit(1)
+        Script.gLogger.notice('Add %s to BASE_STATUS_DIR'%majstatus)
+	Script.sys.exit(1)
     StatusDict[majstatus]+=1
     StatusDict['Total']+=1
     if site not in SitesDict.keys():
@@ -98,7 +97,7 @@ for job in jobsList:
         else:
             SitesDict[site][majstatus]+=1
 
-print "%12s\tWaiting\tRunning\tFailed\tStalled\tDone\tTotal"%"Site"
+Script.gLogger.notice("%12s\tWaiting\tRunning\tFailed\tStalled\tDone\tTotal"%"Site")
 for key,val in SitesDict.items():
     txt="%12s\t%s\t%s\t%s\t%s\t%s\t%s"%\
           (key[4:], val['Waiting'], val['Running'], val['Failed'], val['Stalled'], val['Done'], val['Total'])
@@ -106,9 +105,9 @@ for key,val in SitesDict.items():
         # More than 10% crash, print bold red
         if float(val['Failed'])/float(val['Done'])>0.1:
             txt=highlight(txt)
-    print(txt)
+    Script.gLogger.notice(txt)
 
-print("%12s\t%s\t%s\t%s\t%s\t%s\t%s"%
+Script.gLogger.notice("%12s\t%s\t%s\t%s\t%s\t%s\t%s"%
           ('Total', StatusDict['Waiting'], StatusDict['Running'], StatusDict['Failed'], StatusDict['Stalled'],
             StatusDict['Done'], StatusDict['Total']))
 
