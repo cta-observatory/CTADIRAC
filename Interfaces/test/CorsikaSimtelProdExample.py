@@ -53,7 +53,7 @@ def CorsikaSimtelProdExample( args = None ) :
   j.setGenericParametricInput(ilist)                                                                                         
   j.setName('run%s')
   
-  j.setJobGroup(cfgfile[7:])
+  j.setJobGroup(cfgfile[11:])
 
   j.setInputSandbox( [ cfgfile,'fileCatalog.cfg','prodConfigFile','grid_prod2-repro.sh','LFN:/vo.cta.in2p3.fr/user/a/arrabito/PROD2/SVN-PROD2_rev2350.tar.gz'] ) 
 
