@@ -70,7 +70,7 @@ status=dirac.status(jobsList)
 #print dirac.getJobSummary(3075536)
 
 # print out my favourite tables
-BASE_STATUS_DIR={'Matched':0, 'Waiting':0, 'Running':0, 'Failed':0, 'Stalled':0, 'Checking':0, 'Done':0, 'Completed':0, 'Total':0}
+BASE_STATUS_DIR={'Received':0, 'Matched':0, 'Waiting':0, 'Running':0, 'Failed':0, 'Stalled':0, 'Checking':0, 'Done':0, 'Completed':0, 'Total':0}
 SitesDict={}
 StatusDict=copy.copy(BASE_STATUS_DIR)
 
