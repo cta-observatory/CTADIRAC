@@ -357,7 +357,7 @@ def main():
     fd.write( """#! /bin/sh  
 nsim=$(list_histograms %s|fgrep 'Histogram 6 '|sed 's/^.*contents: //'| sed 's:/.*$::')
 nevents=%d
-if [ $nsim -lt $(( $nevents - 2 )) ]; then
+if [ $nsim -lt $(( $nevents - 20 )) ]; then
 echo 'nsim found:' $nsim
 echo 'nsim expected:' $nevents
 exit 1
