@@ -1,7 +1,7 @@
-[v1r1?p?]
+[v1r18p2]
 
 *JB
 NEW: add release.note file according to issue #5895
-CHANGE: 
+CHANGE: relax the check on the nb of events from 2 to 20 missing events in cta-corsikasimtelprod.py 
 BUGFIX:
 
