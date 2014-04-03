@@ -699,6 +699,11 @@ def install_CorsikaSimtelPack(version):
 def CheckCatalogCoherence(fileLFN):
 ####Checking and restablishing catalog coherence #####################  
   res = fcc.getReplicas(fileLFN)  
+
+  if not res['OK']:
+    DIRAC.gLogger.error('getReplicas res not OK:',fileLFN)
+    return DIRAC.S_ERROR
+
   ndfc = len(res['Value']['Successful'])
   if ndfc!=0:
     DIRAC.gLogger.notice('Found in DFC:',fileLFN)
