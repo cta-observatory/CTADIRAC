@@ -1,0 +1,43 @@
+# 4m DC SST Winstone cone configuration file
+# empty cone + 3mm BOROFLOAT 33 entrance window - coated, cut-off angle 24deg, wavelength 400nm
+# top diameter = 2.32 cm (flat-to-flat)
+# cone type = hexagonal
+# cone height = 3.67 cm
+# GAPD type = hexagonal
+# bottom diameter = 0.944 cm (flat-to-flat)
+# Column 1: Angle[deg];
+# Column 2: Fraction of those photons entering the cone
+#           which make it into the GAPD.
+# Column 3: Average number of reflections in cone (for your information).
+0.0	0.8305	    0	
+1.0	0.8337	    0
+2.0	0.8223	    0	
+3.0	0.8243	    0
+4.0	0.8221	    0
+5.0	0.822	    0
+6.0	0.8283	    0
+7.0	0.8252	    0
+8.0	0.8358	    0
+9.0	0.8297	    0
+10.0	0.8163	    0
+11.0	0.8223	    0
+12.0	0.8212	    0
+13.0	0.818	    0
+14.0	0.8111	    0
+15.0	0.8053	    0
+16.0	0.7979	    0
+17.0	0.7887	    0
+18.0	0.7709	    0
+19.0	0.7579	    0
+20.0	0.7268	    0
+21.0	0.673	    0
+22.0	0.5654	    0
+23.0	0.4293	    0
+24.0	0.3102	    0
+25.0	0.163	    0
+26.0	0.097	    0
+27.0	0.0495	    0
+28.0	0.0244	    0
+29.0	0.0048	    0
+30.0	0.0022	    0
+31.0	0.0	    0
