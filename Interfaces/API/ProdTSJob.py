@@ -41,7 +41,7 @@ class ProdTSJob( Job ) :
   def setParameters(self, parameters = None):
     global argumentStr
     argumentStr = argumentStr + ' ' + "%s" % ( ' '.join( parameters ) )
-    self.setExecutable('$DIRACROOT/scripts/cta-tsprod',argumentStr)
+    self.setExecutable('$DIRACROOT/scripts/cta-prodts',argumentStr)
 
 
 
