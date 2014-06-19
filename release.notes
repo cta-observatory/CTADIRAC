@@ -5,3 +5,12 @@ NEW: add release.note file according to issue #5895
 CHANGE: relax the check on the nb of events from 2 to 20 missing events in cta-corsikasimtelprod.py 
 BUGFIX:
 
+[v1r19]
+
+*LA
+NEW: add MC Simulation Transformation Example. To be used for client
+
+[v1r19p1]
+
+*LA
+Identical to v1r19. Created to be used for Pilots (Depends on DIRAC:v6r10p20, see releases.cfg)
