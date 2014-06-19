@@ -14,3 +14,9 @@ NEW: add MC Simulation Transformation Example. To be used for client
 
 *LA
 Identical to v1r19. Created to be used for Pilots (Depends on DIRAC:v6r10p20, see releases.cfg)
+
+[v1r19p2]
+
+*LA
+BUGFIX: Wrong script name in Interfaces/API/ProdTSJob.py
+"self.setExecutable('$DIRACROOT/scripts/cta-prodts',argumentStr)"
