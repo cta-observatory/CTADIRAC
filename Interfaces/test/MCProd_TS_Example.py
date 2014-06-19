@@ -41,7 +41,7 @@ def MCProd_TS_Example( args = None ) :
 
   j.setParameters(['fileCatalog.cfg','--template',cfgfile,'--mode','corsika_simtel_dst','--run_number', '@{JOB_ID}', '-N', '300', '-S',simtelArrayConfig,'--savecorsika','False'])
 
-  j.setInputSandbox( ['LFN:/vo.cta.in2p3.fr/user/a/arrabito/TS/cta-corsikasimtelprod.py','LFN:/vo.cta.in2p3.fr/MC/PROD2/CFG_rev6956/prod2_cfg.tar.gz'])
+  j.setInputSandbox( ['LFN:/vo.cta.in2p3.fr/MC/PROD2/CFG_rev6956/prod2_cfg.tar.gz'])
 
   j.setOutputSandbox( ['*.log','applicationLog.txt'])
 
