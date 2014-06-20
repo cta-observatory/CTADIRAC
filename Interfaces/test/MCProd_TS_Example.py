@@ -7,9 +7,9 @@ from DIRAC.Core.Base import Script
 
 Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      'Usage:',
-                                     '  %s [option|cfgfile] ... [runMin] ...' % Script.scriptName,
+                                     '  %s [option|cfgfile] ... [corsikaTemplate] ...' % Script.scriptName,
                                      'Arguments:',
-                                     '  cfgFile:    Corsika config file as in prod2_cfg.tar.gz',
+                                     '  corsikaTemplate:    Corsika config file as in /vo.cta.in2p3.fr/MC/PROD2/CFG_revxxxx/prod2_cfg.tar.gz',
                                      '  reprocessing configuration: STD/NSBX3/4MSST/SCSST/ASTRI/NORTH'] ) )
 
 Script.parseCommandLine()
@@ -39,7 +39,11 @@ def MCProd_TS_Example( args = None ) :
   #j.setPathRoot('/vo.cta.in2p3.fr/MC/PROD2/') # official
   j.setPathRoot('/vo.cta.in2p3.fr/user/a/arrabito/MC/PROD2/') # for test
 
-  j.setParameters(['fileCatalog.cfg','--template',cfgfile,'--mode','corsika_simtel_dst','--run_number', '@{JOB_ID}', '-N', '300', '-S',simtelArrayConfig,'--savecorsika','False'])
+  #mode = 'corsika_standalone'
+  #mode = 'corsika_simtel'
+  mode = 'corsika_simtel_dst'
+
+  j.setParameters(['fileCatalog.cfg','--template',cfgfile,'--mode',mode,'--run_number', '@{JOB_ID}', '-N', '25000', '-S',simtelArrayConfig,'--savecorsika','False'])
 
   j.setInputSandbox( ['LFN:/vo.cta.in2p3.fr/MC/PROD2/CFG_rev6956/prod2_cfg.tar.gz'])
 
@@ -47,6 +51,7 @@ def MCProd_TS_Example( args = None ) :
 
   j.setCPUTime(200000)
 
+  ### Temporary fix #######
   j.workflow.addParameter(Parameter("JOB_ID","000000","string","","",True,False, "Temporary fix")) 
   j.workflow.addParameter(Parameter("PRODUCTION_ID","000000","string","","",True, False, "Temporary fix"))
 
