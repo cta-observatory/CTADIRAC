@@ -30,3 +30,8 @@ Identical to v1r19p2. Created to be used for client (Depends on DIRAC:v6r9p33, s
 
 *LA
 NEW: add Data Management Transformation Example. To be used for client
+
+[v1r19p5]
+
+*LA
+BUGFIX: in cta-evndisp.py. To be used for the Pilot
