@@ -57,7 +57,7 @@ def MCProd_TS_Example( args = None ) :
 
   t = Transformation( )
 
-  t.setTransformationName("ProdExemple") # This must vary 
+  t.setTransformationName("ProdExemple") # This must be unique
   #t.setTransformationGroup("Group1")
   t.setType("MCSimulation")
 
@@ -65,7 +65,7 @@ def MCProd_TS_Example( args = None ) :
   t.setLongDescription( "corsika-simtel production" ) #mandatory
   t.setBody ( j.workflow.toXML() )
 
-  t.addTransformation() #transformation is created here
+  t.addTransformation() # Transformation is created here
   t.setStatus("Active")
   t.setAgentType("Automatic")
 
