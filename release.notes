@@ -20,3 +20,13 @@ Identical to v1r19. Created to be used for Pilots (Depends on DIRAC:v6r10p20, se
 *LA
 BUGFIX: Wrong script name in Interfaces/API/ProdTSJob.py
 "self.setExecutable('$DIRACROOT/scripts/cta-prodts',argumentStr)"
+
+[v1r19p3]
+
+*LA
+Identical to v1r19p2. Created to be used for client (Depends on DIRAC:v6r9p33, see releases.cfg)
+
+[v1r19p4]
+
+*LA
+NEW: add Data Management Transformation Example. To be used for client
