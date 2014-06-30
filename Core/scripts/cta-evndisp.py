@@ -40,12 +40,12 @@ def main():
     if checkSoftwarePackage( package, sharedArea() )['OK']:
       DIRAC.gLogger.notice( 'Package found in Shared Area:', package )
       installSoftwareEnviron( package, sharedArea() )
-      cmd = 'cp -r ' + os.path.join(sharedArea(),'evndisplay',version,'EVNDISP.CTA.runparameter') + ' .'
-      if(os.system(cmd)):
-        DIRAC.exit( -1 )
-      cmd = 'cp -r ' + os.path.join(sharedArea(),'evndisplay',version,'Calibration') + ' .'
-      if(os.system(cmd)):
-        DIRAC.exit( -1 )
+#      cmd = 'cp -r ' + os.path.join(sharedArea(),'evndisplay',version,'EVNDISP.CTA.runparameter') + ' .'
+#      if(os.system(cmd)):
+#        DIRAC.exit( -1 )
+#      cmd = 'cp -r ' + os.path.join(sharedArea(),'evndisplay',version,'Calibration') + ' .'
+#      if(os.system(cmd)):
+#        DIRAC.exit( -1 )
       continue
     else:
       installSoftwarePackage( package, workingArea() )
