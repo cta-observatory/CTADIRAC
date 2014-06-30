@@ -92,8 +92,7 @@ def main():
 ############################################################
 ###### execute evndisplay converter ##################
     executable = sys.argv[5]
-#    dstfile = layout + '_' + os.path.basename(simtelFileLFN).replace('simtel.gz','dst.root')
-    dstfile = layout + '_' + str(jobID) + '_' + os.path.basename(simtelFileLFN).replace('simtel.gz','dst.root')
+    dstfile = layout + '_' + os.path.basename(simtelFileLFN).replace('simtel.gz','dst.root')
     logfileName =  executable + '_' + layout + '.log'
     layout = os.path.join('EVNDISP.CTA.runparameter/DetectorGeometry',layout)
     DIRAC.gLogger.notice( 'Layout is:', layout)
@@ -152,7 +151,7 @@ fi
     execute_module(ed,executable,args)
 
     for name in glob.glob('outdir/*.root'):
-      evndispOutFile = name.split('.root')[0] + '_' + os.path.basename(layout) + '_evndisp.root'
+      evndispOutFile = name.split('.root')[0] + '_' + str(jobID) + '_' + os.path.basename(layout) + '_evndisp.root'
       cmd = 'mv ' +  name + ' ' + os.path.basename(evndispOutFile)
       if(os.system(cmd)):
         DIRAC.exit( -1 )
