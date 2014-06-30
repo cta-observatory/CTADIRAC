@@ -52,7 +52,7 @@ def EvnDispExample( args = None ) :
  #########################################################################
 
   j = EvnDispJob()
-  j.setVersion('prod2_131218')
+  j.setVersion('prod2_143006')
 
   executable = 'CTA.convert_hessio_to_VDST'
   j.setExecutable(executable)
