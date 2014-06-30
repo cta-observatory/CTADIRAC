@@ -35,3 +35,11 @@ NEW: add Data Management Transformation Example. To be used for client
 
 *LA
 BUGFIX: in cta-evndisp.py. To be used for the Pilot
+
+[v1r19p6]
+
+*LA
+CHANGE: Separate config. and source code in cta-evndisp.py.
+CHANGE: Add JOBID in output file names in cta-evndisp.py. 
+To be used for the Pilot
+   
