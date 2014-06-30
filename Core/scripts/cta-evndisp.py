@@ -40,12 +40,12 @@ def main():
     if checkSoftwarePackage( package, sharedArea() )['OK']:
       DIRAC.gLogger.notice( 'Package found in Shared Area:', package )
       installSoftwareEnviron( package, sharedArea() )
-      cmd = 'cp -r ' + os.path.join(sharedArea(),'evndisplay',version,'EVNDISP.CTA.runparameter') + ' .'
-      if(os.system(cmd)):
-        DIRAC.exit( -1 )
-      cmd = 'cp -r ' + os.path.join(sharedArea(),'evndisplay',version,'Calibration') + ' .'
-      if(os.system(cmd)):
-        DIRAC.exit( -1 )
+#      cmd = 'cp -r ' + os.path.join(sharedArea(),'evndisplay',version,'EVNDISP.CTA.runparameter') + ' .'
+#      if(os.system(cmd)):
+#        DIRAC.exit( -1 )
+#      cmd = 'cp -r ' + os.path.join(sharedArea(),'evndisplay',version,'Calibration') + ' .'
+#      if(os.system(cmd)):
+#        DIRAC.exit( -1 )
       continue
     else:
       installSoftwarePackage( package, workingArea() )
@@ -92,7 +92,8 @@ def main():
 ############################################################
 ###### execute evndisplay converter ##################
     executable = sys.argv[5]
-    dstfile = layout + '_' + os.path.basename(simtelFileLFN).replace('simtel.gz','dst.root')
+#    dstfile = layout + '_' + os.path.basename(simtelFileLFN).replace('simtel.gz','dst.root')
+    dstfile = layout + '_' + str(jobID) + '_' + os.path.basename(simtelFileLFN).replace('simtel.gz','dst.root')
     logfileName =  executable + '_' + layout + '.log'
     layout = os.path.join('EVNDISP.CTA.runparameter/DetectorGeometry',layout)
     DIRAC.gLogger.notice( 'Layout is:', layout)
