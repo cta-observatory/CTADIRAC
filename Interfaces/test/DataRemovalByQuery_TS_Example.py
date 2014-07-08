@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-  Create a Transformation for bulk data removal based on a Catalog query
+  Create a Transformation for bulk data removal based on Catalog Query
 """
 
 __RCSID__ = "$Id"
