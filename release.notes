@@ -42,4 +42,15 @@ BUGFIX: in cta-evndisp.py. To be used for the Pilot
 CHANGE: Separate config. and source code in cta-evndisp.py.
 CHANGE: Add JOBID in output file names in cta-evndisp.py. 
 To be used for the Pilot
+
+[v1r19p7]
+
+*LA
+Identical to v1r19p6. Created to be used for client (Depends on DIRAC:v6r9p33, see releases.cfg)
+
+[v1r19p8]
+
+*LA
+CHANGE: Remove dst intermediate file in cta-evndisp.py to save disk space.
+To be used for the Pilot
    
