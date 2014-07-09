@@ -180,6 +180,10 @@ fi
       jobReport.setApplicationStatus('EvnDisp Log Check Failed')
       DIRAC.exit( -1 )
 ##################################################################
+########### remove the converted dst file #############################################
+    cmd = 'rm ' + dstfile 
+    if(os.system(cmd)):
+      DIRAC.exit( -1 )
  
   DIRAC.exit()
 
