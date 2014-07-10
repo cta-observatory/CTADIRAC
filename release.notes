@@ -53,4 +53,15 @@ Identical to v1r19p6. Created to be used for client (Depends on DIRAC:v6r9p33, s
 *LA
 CHANGE: Remove dst intermediate file in cta-evndisp.py to save disk space.
 To be used for the Pilot
+
+[v1r20]
+*LA
+NEW: Add Re-processing Transformations
+BUGFIX: seList in cta-prodts.py 
+To be used for client
+
+[v1r20p1]
+*LA
+Identical to v1r20
+To be used for the Pilot
    
