@@ -1,0 +1,30 @@
+# Matching to the following telescope definitions:
+# 1 - 5: LST, 6 - 59: MST, 60 - 96: DC-SST, 97 - 168: SC-SST, 160: MST/SCT, 170 - 173: LST, 174 - 197: MST/SCT
+# Keep in mind: #60 and #169, # 170 at the same place, #3 is less than 40 m away.
+# LSTs #1 and #2 are not meant to be used together with #3.
+# No implementation foreseen with both DC-SSTs and SC-SSTs in place.
+# LST Triggers: (2,3,5); (1,2,4,5,173); (4,5,170,173), (1,2,4,171,172)
+
+# LSTs (+extra LSTs), MSTs, DC-SSTs, extra MSTs (in place of SCTs):
+Trigger 2 of 2,3,5,         6 to 59,     61 to 96,       174 to 197 width 1000
+Trigger 2 of 1,2,4,5,173,   6 to 59, 60, 61 to 96,       174 to 197 width 1000
+Trigger 2 of 1,2,4,5,173,   6 to 59,     61 to 96,  169, 174 to 197 width 1000
+Trigger 2 of 4,5,170,173,   6 to 59,     61 to 96,       174 to 197 width 1000
+Trigger 2 of 1,2,4,171,172, 6 to 59, 60, 61 to 96,       174 to 197 width 1000
+Trigger 2 of 1,2,4,171,172, 6 to 59,     61 to 96,  169, 174 to 197 width 1000
+
+# LSTs (+extra LSTs), MSTs, SC-SSTs, extra MSTs (in place of SCTs):
+Trigger 2 of 2,3,5,         6 to 59,     97 to 168,      174 to 197 width 1000
+Trigger 2 of 1,2,4,5,173,   6 to 59,     97 to 168, 169, 174 to 197 width 1000
+Trigger 2 of 4,5,170,173,   6 to 59,     97 to 168,      174 to 197 width 1000
+Trigger 2 of 1,2,4,171,172, 6 to 59,     97 to 168, 169, 174 to 197 width 1000
+
+# Any MSTs including central one, independent of LSTs:
+Trigger 2 of 6 to 60, 169, 174 to 197 width 1000
+
+# Mono triggers for LSTs?
+# Trigger 1 of 1,2,3,4,5 width 100
+
+# Mono triggers for selected (extra) MSTs:
+Trigger 1 of 20, 21, 40, 41, 169, 174 to 197 width 1000
+

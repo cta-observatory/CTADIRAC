@@ -1,0 +1,67 @@
+[v1r18p2]
+
+*JB
+NEW: add release.note file according to issue #5895
+CHANGE: relax the check on the nb of events from 2 to 20 missing events in cta-corsikasimtelprod.py 
+BUGFIX:
+
+[v1r19]
+
+*LA
+NEW: add MC Simulation Transformation Example. To be used for client
+
+[v1r19p1]
+
+*LA
+Identical to v1r19. Created to be used for Pilots (Depends on DIRAC:v6r10p20, see releases.cfg)
+
+[v1r19p2]
+
+*LA
+BUGFIX: Wrong script name in Interfaces/API/ProdTSJob.py
+"self.setExecutable('$DIRACROOT/scripts/cta-prodts',argumentStr)"
+
+[v1r19p3]
+
+*LA
+Identical to v1r19p2. Created to be used for client (Depends on DIRAC:v6r9p33, see releases.cfg)
+
+[v1r19p4]
+
+*LA
+NEW: add Data Management Transformation Example. To be used for client
+
+[v1r19p5]
+
+*LA
+BUGFIX: in cta-evndisp.py. To be used for the Pilot
+
+[v1r19p6]
+
+*LA
+CHANGE: Separate config. and source code in cta-evndisp.py.
+CHANGE: Add JOBID in output file names in cta-evndisp.py. 
+To be used for the Pilot
+
+[v1r19p7]
+
+*LA
+Identical to v1r19p6. Created to be used for client (Depends on DIRAC:v6r9p33, see releases.cfg)
+
+[v1r19p8]
+
+*LA
+CHANGE: Remove dst intermediate file in cta-evndisp.py to save disk space.
+To be used for the Pilot
+
+[v1r20]
+*LA
+NEW: Add Re-processing Transformations
+BUGFIX: seList in cta-prodts.py 
+To be used for client
+
+[v1r20p1]
+*LA
+Identical to v1r20
+To be used for the Pilot
+   
