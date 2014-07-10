@@ -2,7 +2,6 @@
 import DIRAC
 import os
 import fileinput
-from DIRAC.WorkloadManagementSystem.Client.JobReport import JobReport
 
 def setRunNumber( optionValue ):
   global run_number
@@ -89,13 +88,16 @@ def main():
 
   from DIRAC.Resources.Catalog.FileCatalogClient import FileCatalogClient
   from DIRAC.Resources.Catalog.FileCatalog import FileCatalog
-
-  Script.parseCommandLine()
-  global fcc, fcL
-  
+  from DIRAC.WorkloadManagementSystem.Client.JobReport import JobReport 
+  from DIRAC.Core.Utilities import List
+  from DIRAC.ConfigurationSystem.Client.Helpers.Operations import Operations
   from CTADIRAC.Core.Workflow.Modules.CorsikaApp import CorsikaApp
   from CTADIRAC.Core.Workflow.Modules.Read_CtaApp import Read_CtaApp
   from DIRAC.Core.Utilities.Subprocess import systemCall
+  from DIRAC.Interfaces.API.Dirac import Dirac
+
+  Script.parseCommandLine()
+  global fcc, fcL
 
   jobID = os.environ['JOBID']
   jobID = int( jobID )
@@ -113,7 +115,6 @@ def main():
   fcc = FileCatalogClient()
   fcL = FileCatalog('LcgFileCatalog')
   
-  from DIRAC.Interfaces.API.Dirac import Dirac
   dirac = Dirac()
   
   #############
@@ -198,9 +199,16 @@ def main():
   f = open('DISABLE_WATCHDOG_CPU_WALLCLOCK_CHECK', 'w' )
   f.close()
 
+### Initialize the Storage Element List for Output Data #####################
+################################################  
+  global seList
+  opsHelper = Operations()
+  seList = opsHelper.getValue( 'ProductionOutputs/SimtelProd', [] )
+  seList  = List.randomize( seList )
+  DIRAC.gLogger.notice('SeList is:',seList)
+
   if savecorsika == 'True':
     DIRAC.gLogger.notice( 'Put and register corsika File in LFC and DFC:', corsikaOutFileLFN)
-    #ret = dirac.addFile(corsikaOutFileLFN, corsikaFileName, storage_element)  
     res = upload_to_seList(corsikaOutFileLFN,corsikaFileName)
 
     if res != DIRAC.S_OK:
@@ -213,7 +221,6 @@ def main():
     corsikaTarFileLFN = os.path.join(corsikaTarFileDir,corsikaTarName)
 
     DIRAC.gLogger.notice( 'Put and register corsikaTar File in LFC and DFC:', corsikaTarFileLFN)
-    #ret = dirac.addFile(corsikaTarFileLFN, corsikaTarName, storage_element)
     res = upload_to_seList(corsikaTarFileLFN,corsikaTarName)
 
     if res != DIRAC.S_OK:
@@ -406,17 +413,6 @@ fi
     if(os.system(cmd)):
       jobReport.setApplicationStatus('Log check Failed')
       DIRAC.exit( -1 )
-
-################################################  
-    from DIRAC.Core.Utilities import List
-    from DIRAC.ConfigurationSystem.Client.Helpers.Operations import Operations
-    opsHelper = Operations()
-    
-    global seList
-    seList = opsHelper.getValue( 'ProductionOutputs/SimtelProd', [] )
-    seList  = List.randomize( seList )
-
-    DIRAC.gLogger.notice('SeList is:',seList)
 
 #########  Upload simtel data/log/histo ##############################################
     res = upload_to_seList(simtelOutFileLFN,simtelFileName)
