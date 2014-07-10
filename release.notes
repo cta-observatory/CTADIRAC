@@ -64,4 +64,8 @@ To be used for client
 *LA
 Identical to v1r20
 To be used for the Pilot
+
+[v1r20p2]
+*LA
+BUGFIX: cta-reprots.py Missing
    
