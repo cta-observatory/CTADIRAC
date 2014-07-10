@@ -39,7 +39,7 @@ def CorsikaSimtelUserExample( args = None ) :
   
   j.setSimtelParameters(['--help'])
 
-  j.setOutputSandbox( ['corsika_autoinputs.log','simtel.log.gz'])
+  j.setOutputSandbox( ['corsika_autoinputs.log','simtel.log.gz','applicationLog.txt'])
 
 #  Retrieve your Output Data  
   corsika_out = 'corsika_run%s.corsika.gz'

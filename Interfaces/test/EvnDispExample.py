@@ -68,7 +68,7 @@ def EvnDispExample( args = None ) :
   
   j.setEvnDispOpt(['-reconstructionparameter','EVNDISP.prod2.reconstruction.runparameter','-shorttree','-l2setspecialchannels','nofile','-writenoMCTree'])
   
-  j.setInputSandbox( [layoutlist, 'LFN:/vo.cta.in2p3.fr/user/a/arrabito/evndisp_config.tar.gz'])
+  j.setInputSandbox( [layoutlist, 'LFN:/vo.cta.in2p3.fr/user/a/arrabito/evndisp_config.tar.gz','applicationLog.txt'])
 
   j.setOutputSandbox( ['*.log'])
 

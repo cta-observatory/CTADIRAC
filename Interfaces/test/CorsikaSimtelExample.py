@@ -52,7 +52,7 @@ def CorsikaSimtelExample( args = None ) :
 
   j.setParameters(['--template',cfgfile,'--mode','corsika_simtel','-S',simtelArrayConfig])
 
-  j.setOutputSandbox( ['corsika_autoinputs.log', 'simtel.log'])
+  j.setOutputSandbox( ['corsika_autoinputs.log', 'simtel.log','applicationLog.txt'])
 
 #  Retrieve your Output Data  
   corsika_out = '*.corsika.gz'
