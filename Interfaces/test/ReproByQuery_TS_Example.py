@@ -23,7 +23,7 @@ def ReproByQuery_TS_Example( args = None ) :
     Script.gLogger.notice('Wrong number of arguments')
     Script.showHelp()
 
-  if args[0] not in ['STD','NSBX3','SCMST','SCSST','4MSST','ASTRI']:
+  if args[0] not in ['STD','NSBX3','SCMST','SCSST','4MSST','ASTRI','NORTH']:
     Script.gLogger.notice('reprocessing configuration incorrect:',args[0])
     Script.showHelp()
 
@@ -44,7 +44,7 @@ def ReproByQuery_TS_Example( args = None ) :
   t = Transformation( )
   tc = TransformationClient( )
 
-  t.setTransformationName("ReprobyQuery_1") # This must vary 
+  t.setTransformationName("ReprobyQuery1") # This must vary 
   t.setType("DataReprocessing")
 
   t.setDescription("simtel repro example")

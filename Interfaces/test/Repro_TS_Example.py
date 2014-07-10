@@ -33,7 +33,7 @@ def Repro_TS_Example( args = None ) :
     if line!="\n":
       infileList.append(infile)
 
-  if args[1] not in ['STD','NSBX3','SCMST','SCSST','4MSST','ASTRI']:
+  if args[1] not in ['STD','NSBX3','SCMST','SCSST','4MSST','ASTRI','NORTH']:
     Script.gLogger.notice('reprocessing configuration incorrect:',args[1])
     Script.showHelp()
 
@@ -54,7 +54,7 @@ def Repro_TS_Example( args = None ) :
   t = Transformation( )
   tc = TransformationClient( )
 
-  t.setTransformationName("Repro_test1") # This must vary 
+  t.setTransformationName("Reprotest1") # This must vary 
   #t.setTransformationGroup("Group1")
   t.setType("DataReprocessing")
 
