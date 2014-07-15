@@ -85,10 +85,65 @@ def main():
         continue
       if installSoftwarePackage( package, workingArea() )['OK']:
       ############## compile #############################
-        if version == 'clean_23012012':
-          cmdTuple = ['./build_all','ultra','qgs2']
-        elif version in ['prod-2_21122012','prod-2_08032013']:
-          cmdTuple = ['./build_all','prod2','qgs2']
+        cmdTuple = ['./build_all','prod2','qgs2']
+######### special case for Astri ############################
+        if version == 'prod-2_08072014_to':
+        ############## compile #############################
+          fd = open('run_compile.sh', 'w' )
+          fd.write( """#! /bin/sh  
+source ./build_all prod2 qgs2
+#
+echo " Let's check that build_all did its work " 
+ls -alFsh 
+echo "+++++++++++++++++++++++++++++++++++++++++++++++++"
+echo " Let's see what files are in the corsika-run directory " 
+ls -alFsh ./corsika-run
+#
+if [ ! -x ./corsika-run/corsika ]
+then 
+    echo " ERROR: Corsika executable found. Exit " 
+    exit 1
+fi
+echo "+++++++++++++++++++++++++++++++++++++++++++++++++"
+#
+echo " Now let's try to compile hessio according to Federico's recipe "
+cd ./hessioxxx 
+make clean 
+make EXTRA_DEFINES="-DCTA_PROD2 -DWITH_LOW_GAIN_CHANNEL"
+# 
+echo " Let's see what files are in the lib directory " 
+ls -alFsh ./lib
+#
+if [ ! -f ./lib/libhessio.so ]
+then 
+    echo " ERROR: libhessio library not found. Exit " 
+    exit 1
+fi
+echo "+++++++++++++++++++++++++++++++++++++++++++++++++"
+#
+cd .. # come back to original dir
+# 
+echo " Now let's try to compile simtel according to Federico's recipe "
+cd ./sim_telarray
+make clean 
+make EXTRA_DEFINES="-DCTA_PROD2 -DWITH_LOW_GAIN_CHANNEL"
+make install 
+# 
+echo " Let's see what files are in the bin directory " 
+ls -alFsh ./bin
+#
+if [ ! -x ./bin/sim_telarray ]
+then 
+    echo " ERROR: sim_telarray excutable not found. Exit " 
+    exit 1
+fi
+echo "+++++++++++++++++++++++++++++++++++++++++++++++++"
+#
+echo " Everything was compiled and linked properly" """)
+          fd.close()
+          os.system('chmod u+x run_compile.sh')
+          cmdTuple = ['./run_compile.sh']
+##########################################################################
         ret = systemCall( 0, cmdTuple, sendOutput)
         if not ret['OK']:
           DIRAC.gLogger.error( 'Failed to execute build')
