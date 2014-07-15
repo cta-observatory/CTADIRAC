@@ -55,7 +55,7 @@ def ReproByQuery_TS_Example( args = None ) :
   t.setStatus("Active")
   t.setAgentType("Automatic")
   transID = t.getTransformationID()
-  tc.createTransformationInputDataQuery(transID['Value'], {'particle': 'proton','prodName':'ConfigtestCorsika','outputType':'Data'}) # Files are added here
+  tc.createTransformationInputDataQuery(transID['Value'], {'particle': 'proton','prodName':'ConfigtestCorsika','outputType':'corsikaData'}) # Files are added here. Note that the corsikaData meta-data exists only for this test directory
  
 if __name__ == '__main__':
 
