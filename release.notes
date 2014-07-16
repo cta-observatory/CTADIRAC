@@ -68,4 +68,21 @@ To be used for the Pilot
 [v1r20p2]
 *LA
 BUGFIX: cta-reprots.py Missing
-   
+
+[v1r20p3]
+*LA
+CHANGE: Add compilation options for astri in cta-corsikasimteluser.py
+
+[v1r20p4]
+*LA
+CHANGE: Add compilation options for astri in cta-corsikasimtel.py
+
+[v1r21]
+*LA
+BUGFIX: There was a problem in the dir structure of branch v1r20
+To be used for Pilot
+
+[v1r21p1]
+*LA
+Identical to v1r21
+To be used for Client
