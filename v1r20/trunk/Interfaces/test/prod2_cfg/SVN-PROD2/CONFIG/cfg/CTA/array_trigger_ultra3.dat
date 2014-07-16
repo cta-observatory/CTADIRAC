@@ -1,0 +1,6 @@
+trigger 2 of 1 to 9 width 120
+trigger 2 of 1, 5, 10 width 120
+trigger 2 of 11 to 135 width 300
+trigger 2 of 136 to 231 width 800
+trigger 2 of 232 to 271 width 800
+trigger 2 of 272 to 275 width 800
