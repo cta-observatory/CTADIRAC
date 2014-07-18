@@ -86,3 +86,8 @@ To be used for Pilot
 *LA
 Identical to v1r21
 To be used for Client
+
+[v1r21p2]
+*LA
+Identical to v1r21p1
+To be used for Client: Depends on v6r11p4
