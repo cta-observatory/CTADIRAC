@@ -91,3 +91,14 @@ To be used for Client
 *LA
 Identical to v1r21p1
 To be used for Client: Depends on v6r11p4
+
+[v1r21p3]
+*LA
+Add outputType for corsika and dst everywhere 
+To be used for Pilot
+
+[v1r21p4]
+*LA
+Identical to v1r21p3
+To be used for Client
+
