@@ -10,7 +10,7 @@ from DIRAC.Core.Base import Script
 Script.registerSwitch( "", "MCCampaign=", "PROD2" )
 Script.registerSwitch( "", "particle=", "gamma/gamma_ptsrc/proton/electron" )
 Script.registerSwitch( "", "simtelArrayConfig=", "STD/NSBX3/SCMST/4MSST/SCSST/ASTRI/NORTH" )
-Script.registerSwitch( "", "outputType=", "Data/Log/Histo" )
+Script.registerSwitch( "", "outputType=", "Data/Log/Histo/corsikaData/corsikaLog/dstData/dstHisto" )
 Script.registerSwitch( "", "viewCone=", "10/0" )
 Script.registerSwitch( "", "corsikaprodversion=", "prod-2_21122012_corsika/prod-2_06052013_corsika/prod-2_22072013_corsika/prod-2_15122013_corsika" )
 Script.registerSwitch( "", "simtelArrayProdVersion=", "prod-2_06052013_simtel/prod-2_06052013_sc3_simtel/prod-2_22072013_simtel/prod-2_15122013_simtel/prod-2_15122013_simtel_sc3" )
