@@ -1013,14 +1013,14 @@ def createCorsikaFileSystAndMD():
     
   corsikaParticleDataDirPath = os.path.join(corsikaParticleDirPath,'Data')  
   corsikaParticleDataDirMD={}
-  corsikaParticleDataDirMD['outputType'] = 'Data'
+  corsikaParticleDataDirMD['outputType'] = 'corsikaData'
   res = createDirAndInsertMD(corsikaParticleDataDirPath, corsikaParticleDataDirMD)  
   if res != DIRAC.S_OK:
     return DIRAC.S_ERROR ('Problem creating Corsika Particle Data Directory MD ')
 
   corsikaParticleLogDirPath = os.path.join(corsikaParticleDirPath,'Log')  
   corsikaParticleLogDirMD={}
-  corsikaParticleLogDirMD['outputType'] = 'Log'
+  corsikaParticleLogDirMD['outputType'] = 'corsikaLog'
   res = createDirAndInsertMD(corsikaParticleLogDirPath, corsikaParticleLogDirMD)  
   if res != DIRAC.S_OK:
     return DIRAC.S_ERROR ('Problem creating Corsika Particle Log Directory MD ')
@@ -1094,14 +1094,14 @@ def createDstFileSystAndMD():
     
   dstDataDirPath = os.path.join(dstDirPath,'Data')
   dstDataDirMD={}
-  dstDataDirMD['outputType'] = 'Data'
+  dstDataDirMD['outputType'] = 'dstData'
   res = createDirAndInsertMD(dstDataDirPath, dstDataDirMD)  
   if res != DIRAC.S_OK:
     return DIRAC.S_ERROR ('Problem creating Dst Data Directory MD ')
 
   dstHistoDirPath = os.path.join(dstDirPath,'Histograms')
   dstHistoDirMD={}
-  dstHistoDirMD['outputType'] = 'Histo'
+  dstHistoDirMD['outputType'] = 'dstHisto'
   res = createDirAndInsertMD(dstHistoDirPath, dstHistoDirMD)  
   if res != DIRAC.S_OK:
     return DIRAC.S_ERROR ('Problem creating Dst Histo Directory MD ')
