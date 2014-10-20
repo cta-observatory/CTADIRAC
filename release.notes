@@ -102,3 +102,12 @@ To be used for Pilot
 Identical to v1r21p3
 To be used for Client
 
+[v1r22]
+*LA
+Enable to run converter step only in EvnDisplay jobs
+To be used for Pilot
+
+[v1r22p1]
+*LA
+Identical to v1r22
+To be used for Client
