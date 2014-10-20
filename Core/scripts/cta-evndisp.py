@@ -92,7 +92,14 @@ def main():
 ############################################################
 ###### execute evndisplay converter ##################
     executable = sys.argv[5]
-    dstfile = layout + '_' + os.path.basename(simtelFileLFN).replace('simtel.gz','dst.root')
+
+############ dst file Name ############################
+    run_number = simtelFileList[-1].split('run')[1].split('.simtel.gz')[0]
+    runNum = int(run_number)
+    subRunNumber = '%03d'%runNum
+    dstfile =subRunNumber + '_' + str(jobID) + '_' + os.path.basename(layout) + '_dst.root'
+###########################################
+
     logfileName =  executable + '_' + layout + '.log'
     layout = os.path.join('EVNDISP.CTA.runparameter/DetectorGeometry',layout)
     DIRAC.gLogger.notice( 'Layout is:', layout)
@@ -136,6 +143,12 @@ fi
     if(os.system(cmd)):
       jobReport.setApplicationStatus('Converter Log Check Failed')
       DIRAC.exit( -1 )
+
+   ####  Check the mode #################
+    mode = sys.argv[11]
+    if(mode=='convert_standalone'):
+      #DIRAC.exit()
+      continue
 
 ###### execute evndisplay stage1 ###############
     executable = 'evndisp'
