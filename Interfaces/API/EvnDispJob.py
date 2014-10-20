@@ -46,6 +46,12 @@ class EvnDispJob( Job ) :
     argumentStr= argumentStr + layoutlistStr
     self.setConfigArgs( argumentStr )    
 
+  def setMode(self, mode):
+    modeStr = ' ' + '-M' + ' ' + mode
+    global argumentStr
+    argumentStr= argumentStr + modeStr
+    self.setConfigArgs( argumentStr )  
+
   def setConverterOpt(self, parameters = None):
     converterparfile = 'converter.par'
     f = open( converterparfile,'w')

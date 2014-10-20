@@ -11,7 +11,7 @@ Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      '  inputfilelist: Input File List',
 				     '  maxFilesPerJob: Max Files Per Job',
                                      '  layoutlist: Layout File List',
-                                     '  usetrgfile: True/False (optional, default is False)'] ) )
+				     '  usetrgfile: True/False (optional, default is False)'] ) )
 Script.parseCommandLine()
 
 def EvnDispExample( args = None ) :
@@ -63,17 +63,24 @@ def EvnDispExample( args = None ) :
 
   j.setUseTrgFile(usetrgfile)
   j.setLayoutList(layoutlist)
+  #mode = 'convert_standalone'
+  mode = 'convert_evndisp'
+  j.setMode(mode)
 
   j.setConverterOpt(['-f','1','-c','Calibration/Aar.peds.root'])
+
+  if mode == 'convert_evndisp':
+    j.setEvnDispOpt(['-reconstructionparameter','EVNDISP.prod2.reconstruction.runparameter','-shorttree','-l2setspecialchannels','nofile','-writenoMCTree'])
   
-  j.setEvnDispOpt(['-reconstructionparameter','EVNDISP.prod2.reconstruction.runparameter','-shorttree','-l2setspecialchannels','nofile','-writenoMCTree'])
-  
-  j.setInputSandbox( [layoutlist, 'LFN:/vo.cta.in2p3.fr/user/a/arrabito/evndisp_config.tar.gz','applicationLog.txt'])
+  j.setInputSandbox( [layoutlist, 'LFN:/vo.cta.in2p3.fr/user/a/arrabito/evndisp_config.tar.gz'])
 
   j.setOutputSandbox( ['*.log'])
 
 #  Retrieve your Output Data  
-  j.setOutputData(['*_evndisp.root'])
+  if mode == 'convert_standalone':
+    j.setOutputData(['*dst.root'])
+  else:
+    j.setOutputData(['*_evndisp.root'])
 
   j.setCPUTime(100000)
 
