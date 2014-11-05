@@ -98,10 +98,7 @@ for switch in Script.getUnprocessedSwitches():
 if metaDict == {}:
   Script.showHelp()
 
-from DIRAC.Resources.Catalog.FileCatalog import FileCatalog
 from DIRAC.Resources.Catalog.FileCatalogClient import FileCatalogClient
-
-fcD = FileCatalog('DIRACFileCatalog')
 
 fc = FileCatalogClient()
 
