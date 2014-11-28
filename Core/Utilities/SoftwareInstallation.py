@@ -114,7 +114,7 @@ class SoftwareInstallation:
     return DIRAC.S_OK()
 
 
-def installSoftwarePackage( package, area ):
+def installSoftwarePackage( package, area, extract = True ):
   """
     Install the requested version of package under the given area
   """
@@ -134,6 +134,9 @@ def installSoftwarePackage( package, area ):
   for tar in tarLFNs:
     if tar in result['Value']['Successful']:
       gLogger.notice( 'Downloaded tarfile:', tar )
+      if extract == False:
+        gLogger.notice( 'Software package installed successfully:', package )
+        return installSoftwareEnviron( package, area )
       packageTuple = package.split( '/' )
       tarFileName =  packageTuple[2] + '.tar.gz'       
 
@@ -205,8 +208,7 @@ def installSoftwareEnviron( package, area ):
   version = packageTuple[1]
   fileName = _getEnvFileName( package, area )
   
-  try:
-  
+  try:  
     if packageTuple[0] == 'corsika_simhessarray':
       fd = open( fileName, 'w' )
       fd.write( """
@@ -215,7 +217,17 @@ export HESSROOT
 unset LD_LIBRARY_PATH
 export LD_LIBRARY_PATH
 
-./prepare_for_examples
+# Top-level path under which we normally installed everything
+if [ ! -z "${CTA_PATH}" ]; then
+   cd "${CTA_PATH}" || exit 1
+fi
+
+#### needed starting from prod-2_13112014
+if [ -d sim ]; then
+   cd sim
+fi
+
+./prepare_for_examples || exit 1
 
 if [ ! -x corsika-run/corsika ]; then
    echo "No CORSIKA program found."
@@ -227,20 +239,35 @@ if [ ! -x sim_telarray/bin/sim_telarray ]; then
    exit 1
 fi
 
-ln -s ./sim_telarray/cfg/common/atmprof1.dat
+# Top-level path under which we normally installed everything
+if [ -z "${CTA_PATH}" ]; then
+   export CTA_PATH="$(pwd -P)"
+fi
 
-export CORSIKA_PATH="$(cd corsika-run && pwd -P)"
-export SIM_TELARRAY_PATH="$(cd sim_telarray && pwd -P)"
+# Paths to software, libraries, configuration files (read-only)
+export CORSIKA_PATH="$(cd ${CTA_PATH}/corsika-run && pwd -P)"
+export SIM_TELARRAY_PATH="$(cd ${CTA_PATH}/sim_telarray && pwd -P)"
+export HESSIO_PATH="$(cd ${CTA_PATH}/hessioxxx && pwd -P)"
+export LD_LIBRARY_PATH="${HESSIO_PATH}/lib"
+export PATH="${HESSIO_PATH}/bin:${SIM_TELARRAY_PATH}/bin:${PATH}"
+##### added for the grid ##################
+export CORSIKA_IO_BUFFER=800MB
 export SIMTEL_CONFIG_PREPROCESSOR="${SIM_TELARRAY_PATH}/bin/pfp"
-export MCDATA_PATH="$(pwd -P)/Data"
+########### still needed for the grid ? ############
+#ln -s ./sim_telarray/cfg/common/atmprof1.dat
+
+if [ -z "${MCDATA_PATH}" ]; then
+   if [ ! -z "${CTA_DATA}" ]; then
+      export MCDATA_PATH="${CTA_DATA}"
+   else
+      export MCDATA_PATH="${CTA_PATH}/Data"
+   fi
+fi
+
 export CORSIKA_DATA="${MCDATA_PATH}/corsika"
 export SIM_TELARRAY_DATA="${MCDATA_PATH}/sim_telarray"
-export CTA_PATH="$(pwd -P)"
-export LD_LIBRARY_PATH="${CTA_PATH}/hessioxxx/lib"
-export HESSIO_BIN="${PWD}/hessioxxx/bin"
-export CORSIKA_IO_BUFFER=800MB
 
-export PATH="${PATH}:${HESSIO_BIN}:${SIM_TELARRAY_PATH}:${CORSIKA_PATH}"
+printenv | egrep '^(CTA_PATH|CORSIKA_PATH|SIM_TELARRAY_PATH|SIM_TELARRAY_CONFIG_PATH|SIMTEL_CONFIG_PATH|HESSIO_PATH|CTA_DATA|MCDATA_PATH|CORSIKA_DATA|SIM_TELARRAY_DATA|HESSROOT|LD_LIBRARY_PATH|PATH|RUNPATH)=' | sort
 """)
       fd.close()
       return DIRAC.S_OK()
