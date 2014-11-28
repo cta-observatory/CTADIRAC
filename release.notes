@@ -115,9 +115,13 @@ To be used for Client
 [v1r23]
 *LA
 Add cta-get-storage-usage.py script
-To be used for Pilot
+To be used for Pilot (NOT Used, last change affects only the client)
 
 [v1r23p1]
 *LA
 Identical to v1r23
 To be used for Client
+
+[v1r24]
+*LA
+Update of DIRAC servers to version v6r12p3

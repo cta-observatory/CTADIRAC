@@ -22,6 +22,11 @@ def main():
   if(os.system(cmd)):
     DIRAC.exit( -1 )
 
+  DIRAC.gLogger.notice('Directory content after cleaning')
+  cmd = 'ls -l ' + path
+  if(os.system(cmd)):
+    DIRAC.exit( -1 )
+
   DIRAC.exit()
 
 
