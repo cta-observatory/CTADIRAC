@@ -125,3 +125,8 @@ To be used for Client
 [v1r24]
 *LA
 Update of DIRAC servers to version v6r12p3
+
+[v1r25]
+*LA
+Add corsikasimtel-pipe for production jobs
+

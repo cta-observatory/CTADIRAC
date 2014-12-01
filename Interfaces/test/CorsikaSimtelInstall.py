@@ -37,6 +37,7 @@ def CorsikaSimtelInstall( args = None ) :
   j.setDestination([site])
   j.setName('corsikasimtelInstall')
   j.setCPUTime(100000)
+  j.setJobGroup('SoftInstall')
   Script.gLogger.info( j._toJDL() )
   Dirac().submit( j )
 
