@@ -130,3 +130,7 @@ Update of DIRAC servers to version v6r12p3
 *LA
 Add corsikasimtel-pipe for production jobs
 
+[v1r25p1]
+*LA
+Few bug fixes. No need to update the pilot version
+
