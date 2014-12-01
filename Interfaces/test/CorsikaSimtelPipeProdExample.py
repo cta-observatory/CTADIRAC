@@ -66,7 +66,6 @@ def CorsikaSimtelPipeProdExample( args = None ) :
   Script.gLogger.info( j._toJDL() )
   res = Dirac().submit( j )
 
-  #print res
 
 
 if __name__ == '__main__':
