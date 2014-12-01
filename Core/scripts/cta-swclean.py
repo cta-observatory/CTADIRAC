@@ -23,6 +23,7 @@ def main():
     DIRAC.exit( -1 )
 
   DIRAC.gLogger.notice('Directory content after cleaning')
+  path = os.path.join('${VO_VO_CTA_IN2P3_FR_SW_DIR}/software',package)
   cmd = 'ls -l ' + path
   if(os.system(cmd)):
     DIRAC.exit( -1 )

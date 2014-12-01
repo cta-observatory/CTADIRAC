@@ -61,12 +61,11 @@ def CorsikaSimtelPipeProdExample( args = None ) :
   
   j.setCPUTime(720000)
 
-  j.setBannedSites(['LCG.UNI-DORTMUND.de'])
+  j.setBannedSites(['LCG.UNI-DORTMUND.de','ARC.SE-SNIC-T2.se','LCG.INFN-TORINO.it'])
 
   Script.gLogger.info( j._toJDL() )
   res = Dirac().submit( j )
 
-  #print res
 
 
 if __name__ == '__main__':
