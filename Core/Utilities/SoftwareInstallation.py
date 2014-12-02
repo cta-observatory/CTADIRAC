@@ -252,7 +252,7 @@ export LD_LIBRARY_PATH="${HESSIO_PATH}/lib"
 export PATH="${HESSIO_PATH}/bin:${SIM_TELARRAY_PATH}/bin:${PATH}"
 ##### added for the grid ##################
 export CORSIKA_IO_BUFFER=800MB
-export SIMTEL_CONFIG_PREPROCESSOR="${SIM_TELARRAY_PATH}/bin/pfp"
+export SIMTEL_CONFIG_PREPROCESSOR="${SIM_TELARRAY_PATH}/bin/pfp -v"
 ########### still needed for the grid ? ############
 #ln -s ./sim_telarray/cfg/common/atmprof1.dat
 

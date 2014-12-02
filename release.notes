@@ -134,3 +134,6 @@ Add corsikasimtel-pipe for production jobs
 *LA
 Few bug fixes. No need to update the pilot version
 
+[v1r25p2]
+*LA
+Fix in corsika env.
