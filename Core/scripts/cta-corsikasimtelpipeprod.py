@@ -74,6 +74,8 @@ def main():
   global fcc, fcL, storage_element
 
   from CTADIRAC.Core.Utilities.SoftwareInstallation import getSoftwareEnviron
+  from CTADIRAC.Core.Utilities.SoftwareInstallation import installSoftwareEnviron
+  from CTADIRAC.Core.Utilities.SoftwareInstallation import workingArea
   from CTADIRAC.Core.Workflow.Modules.CorsikaApp import CorsikaApp
   from CTADIRAC.Core.Workflow.Modules.Read_CtaApp import Read_CtaApp
   from DIRAC.Core.Utilities.Subprocess import systemCall
@@ -127,7 +129,7 @@ def main():
   ############ Producing Corsika File
   global CorsikaSimtelPack
   CorsikaSimtelPack = os.path.join('corsika_simhessarray', version, 'corsika_simhessarray')
-  install_CorsikaSimtelPack(version)
+  install_CorsikaSimtelPack(version, 'sim')
   cs = CorsikaApp()
   cs.setSoftwarePackage(CorsikaSimtelPack)
   cs.csExe = executable
@@ -281,6 +283,7 @@ def main():
 #        if(os.system(cmd)):
 #          DIRAC.exit( -1 )
 #        install_CorsikaSimtelPack(current_version)
+      installSoftwareEnviron( CorsikaSimtelPack, workingArea(), 'sim-sc3')
     else:
       current_version = version
       DIRAC.gLogger.notice('current version is', current_version)
@@ -645,7 +648,7 @@ fi
   DIRAC.exit()
 
 
-def install_CorsikaSimtelPack(version):
+def install_CorsikaSimtelPack(version, build_dir):
 
   from CTADIRAC.Core.Utilities.SoftwareInstallation import checkSoftwarePackage
   from CTADIRAC.Core.Utilities.SoftwareInstallation import installSoftwarePackage
@@ -660,7 +663,7 @@ def install_CorsikaSimtelPack(version):
     if sharedArea:
       if checkSoftwarePackage( package, sharedArea() )['OK']:
         DIRAC.gLogger.notice( 'Package found in Shared Area:', package )
-        installSoftwareEnviron( package, workingArea() )
+        installSoftwareEnviron( package, workingArea(), build_dir)
         packageTuple =  package.split('/')
         corsika_subdir = os.path.join(sharedArea(),packageTuple[0],version) 
         cmd = 'cp -u -r ' + corsika_subdir + '/* .'       
@@ -670,8 +673,6 @@ def install_CorsikaSimtelPack(version):
     if workingArea:
       print 'workingArea is %s ' % workingArea()
       if installSoftwarePackage( package, workingArea(), extract = False )['OK']:
-        os.system('pwd')
-        os.system('ls -l')
         fd = open('run_compile.sh', 'w' )
         fd.write( """#!/bin/sh      
 current_dir=%s
@@ -680,12 +681,13 @@ mkdir sim sim-sc3
 (cd sim-sc3 && tar zxvf ${current_dir}/corsika_simhessarray.tar.gz && ./build_all sc3 qgs2)""" % (workingArea()))
         fd.close()
         os.system('chmod u+x run_compile.sh')
-        os.system('cat run_compile.sh')
+        #os.system('cat run_compile.sh')
         cmdTuple = ['./run_compile.sh']
         ret = systemCall( 0, cmdTuple, sendOutput)
         if not ret['OK']:
           DIRAC.gLogger.error( 'Failed to compile')
           DIRAC.exit( -1 )
+        installSoftwareEnviron( package, workingArea(), build_dir )
         continue
 
     DIRAC.gLogger.error( 'Software package not correctly installed')

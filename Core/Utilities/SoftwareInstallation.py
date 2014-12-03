@@ -199,7 +199,7 @@ def _getSoftwareDir( package, area ):
                        packageTuple[1])
 
 
-def installSoftwareEnviron( package, area ):
+def installSoftwareEnviron( package, area, build_dir = 'sim' ):
   """
     Install Environment file for the given package
   """
@@ -223,8 +223,8 @@ if [ ! -z "${CTA_PATH}" ]; then
 fi
 
 #### needed starting from prod-2_13112014
-if [ -d sim ]; then
-   cd sim
+if [ -d %s ]; then
+   cd %s
 fi
 
 ./prepare_for_examples || exit 1
@@ -268,7 +268,7 @@ export CORSIKA_DATA="${MCDATA_PATH}/corsika"
 export SIM_TELARRAY_DATA="${MCDATA_PATH}/sim_telarray"
 
 printenv | egrep '^(CTA_PATH|CORSIKA_PATH|SIM_TELARRAY_PATH|SIM_TELARRAY_CONFIG_PATH|SIMTEL_CONFIG_PATH|HESSIO_PATH|CTA_DATA|MCDATA_PATH|CORSIKA_DATA|SIM_TELARRAY_DATA|HESSROOT|LD_LIBRARY_PATH|PATH|RUNPATH)=' | sort
-""")
+""" % (build_dir,build_dir))
       fd.close()
       return DIRAC.S_OK()
     if packageName == 'evndisplay':
