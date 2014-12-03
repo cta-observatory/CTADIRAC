@@ -64,15 +64,6 @@ mkdir sim sim-sc3
     if(os.system('./run_compile.sh')):
       DIRAC.gLogger.error( 'Failed to compile')
       DIRAC.exit( -1 )
-    #cmdTuple = ['./run_compile.sh']
-    #ret = systemCall( 0, cmdTuple, sendOutput)
-    #if not ret['OK']:
-      #DIRAC.gLogger.error( 'Failed to compile')
-      #DIRAC.exit( -1 )
-    #status, stdout, stderr = ret['Value']
-    #if (status != 0):
-      #DIRAC.gLogger.error( 'Failed to compile')
-      #DIRAC.exit( -1 )
     continue
 
     DIRAC.gLogger.error( 'Software package not correctly installed')
