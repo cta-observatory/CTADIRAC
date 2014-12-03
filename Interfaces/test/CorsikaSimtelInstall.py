@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-  Submit a Software Installation Job
+  Submit a CorsikaSimtel Software Installation Job
 """
 import os
 import DIRAC

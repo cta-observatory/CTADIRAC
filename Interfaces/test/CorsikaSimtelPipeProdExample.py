@@ -57,7 +57,7 @@ def CorsikaSimtelPipeProdExample( args = None ) :
 
   j.setParameters(['fileCatalog.cfg','--template',cfgfile,'--mode',mode,'-S',simtelArrayConfig,'--savecorsika','False'])
  
-  j.setOutputSandbox( ['corsika_autoinputs.log'])
+  j.setOutputSandbox( ['corsika_autoinputs.log','read_cta.log'])
   
   j.setCPUTime(720000)
 

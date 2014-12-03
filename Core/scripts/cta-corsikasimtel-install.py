@@ -22,16 +22,19 @@ def main():
   
   area = sharedArea()
 
+
   if area:
     gLogger.notice( 'Using Shared Area at:', area)    
-   # if defined, check that it really exists
-    if not os.path.isdir( area ):
-      gLogger.error( 'Missing Shared Area Directory:', area )
-      if createSharedArea() == True:
-        gLogger.notice( 'Shared Area created')
-      else:
-        gLogger.error( 'Failed to create Shared Area Directory:', area )
-        DIRAC.exit ( -1 )
+  else:
+    if createSharedArea() == True:
+      gLogger.notice( 'Shared Area created:', sharedArea())
+      if (os.mkdir( os.path.join(sharedArea(),'corsika_simhessarray'))):
+        gLogger.error( 'Failed to create corsika_simhessarray Directory')
+        DIRAC.exit( -1 )
+      gLogger.notice( 'corsika_simhessarray Directory created')
+    else:
+      gLogger.error( 'Failed to create Shared Area Directory')
+      DIRAC.exit ( -1 )
 
   CorsikaSimtelPack = os.path.join('corsika_simhessarray', version, 'corsika_simhessarray')
 
@@ -40,15 +43,15 @@ def main():
   for package in packs:
     DIRAC.gLogger.notice( 'Checking:', package )
     packageTuple = package.split( '/' )
-    if sharedArea:
-      if checkSoftwarePackage( package, sharedArea() )['OK']:
-        DIRAC.gLogger.notice( 'Package found in Shared Area:', package )
-        continue
+#    if sharedArea:
+    if checkSoftwarePackage( package, sharedArea() )['OK']:
+      DIRAC.gLogger.notice( 'Package found in Shared Area:', package )
+      continue
 #      if installSoftwarePackage( package, sharedArea() )['OK']:
       ############## compile #############################
-      installdir = os.path.join( sharedArea(), packageTuple[0], packageTuple[1])
-      fd = open('run_compile.sh', 'w' )
-      fd.write( """#!/bin/sh      
+    installdir = os.path.join( sharedArea(), packageTuple[0], packageTuple[1])
+    fd = open('run_compile.sh', 'w' )
+    fd.write( """#!/bin/sh      
 current_dir=${PWD}
 installdir=%s
 mkdir ${installdir} 
@@ -56,20 +59,21 @@ cd ${installdir}
 mkdir sim sim-sc3
 (cd sim && tar zxvf ${current_dir}/corsika_simhessarray.tar.gz && ./build_all prod2 qgs2)
 (cd sim-sc3 && tar zxvf ${current_dir}/corsika_simhessarray.tar.gz && ./build_all sc3 qgs2)""" % (installdir))
-      fd.close()
-      os.system('chmod u+x run_compile.sh')
-      if(os.system('./run_compile.sh')):
-        DIRAC.exit( -1 )
-      cmdTuple = ['./run_compile.sh']
-      ret = systemCall( 0, cmdTuple, sendOutput)
-      if not ret['OK']:
-        DIRAC.gLogger.error( 'Failed to compile')
-        DIRAC.exit( -1 )
-      status, stdout, stderr = ret['Value']
-      if (status != 0):
-        DIRAC.gLogger.error( 'Failed to compile')
-        DIRAC.exit( -1 )
-      continue
+    fd.close()
+    os.system('chmod u+x run_compile.sh')
+    if(os.system('./run_compile.sh')):
+      DIRAC.gLogger.error( 'Failed to compile')
+      DIRAC.exit( -1 )
+    #cmdTuple = ['./run_compile.sh']
+    #ret = systemCall( 0, cmdTuple, sendOutput)
+    #if not ret['OK']:
+      #DIRAC.gLogger.error( 'Failed to compile')
+      #DIRAC.exit( -1 )
+    #status, stdout, stderr = ret['Value']
+    #if (status != 0):
+      #DIRAC.gLogger.error( 'Failed to compile')
+      #DIRAC.exit( -1 )
+    continue
 
     DIRAC.gLogger.error( 'Software package not correctly installed')
     DIRAC.exit( -1 )  
