@@ -141,3 +141,8 @@ Fix in corsika env.
 [v1r25p3]
 *LA
 Fix in corsikasimtelpipeprod in read_cta step
+
+[v1r25p4]
+
+*LA
+NEW: Add MC prod jobs using pipe with TS

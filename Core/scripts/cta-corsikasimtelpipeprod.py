@@ -146,7 +146,7 @@ def main():
     DIRAC.exit( -1 )
 
   if(os.system('grep Broken corsika_autoinputs.log')==0):
-    DIRAC.gLogger.error('Broken string found in simtel.log')
+    DIRAC.gLogger.error('Broken string found in corsika_autoinputs.log')
     jobReport.setApplicationStatus('Broken pipe')
     DIRAC.exit( -1 )
 
@@ -503,7 +503,11 @@ fi
     dstFileName = particle + '_' + str(thetaP) + '_' + str(phiP) + '_alt' + str(obslev) + '_' + 'run' + run_number + '.simtel-dst0.gz'
     dstHistoFileName = particle + '_' + str(thetaP) + '_' + str(phiP) + '_alt' + str(obslev) + '_' + 'run' + run_number + '.hdata-dst0.gz'
 
-    rcta.rctaArguments = ['-r', '4', '-u', '--integration-scheme', '4', '--integration-window', '7,3', '--tail-cuts', '6,8', '--min-pix', '2', '--min-amp', '20', '--type', '1,0,0,400', '--tail-cuts', '9,12', '--min-amp', '20', '--type', '2,0,0,100', '--tail-cuts', '8,11', '--min-amp', '19', '--type', '3,0,0,40', '--tail-cuts', '6,9', '--min-amp', '15', '--type', '4,0,0,15', '--tail-cuts', '3.7,5.5', '--min-amp', '8', '--dst-level', '0', '--dst-file', dstFileName, '--histogram-file', dstHistoFileName, '--powerlaw', powerlaw_dict[particle], simtelFileName]
+#    rcta.rctaArguments = ['-r', '4', '-u', '--integration-scheme', '4', '--integration-window', '7,3', '--tail-cuts', '6,8', '--min-pix', '2', '--min-amp', '20', '--type', '1,0,0,400', '--tail-cuts', '9,12', '--min-amp', '20', '--type', '2,0,0,100', '--tail-cuts', '8,11', '--min-amp', '19', '--type', '3,0,0,40', '--tail-cuts', '6,9', '--min-amp', '15', '--type', '4,0,0,15', '--tail-cuts', '3.7,5.5', '--min-amp', '8', '--dst-level', '0', '--dst-file', dstFileName, '--histogram-file', dstHistoFileName, '--powerlaw', powerlaw_dict[particle], simtelFileName]
+
+## added some options starting from Armazones_2K prod.
+
+    rcta.rctaArguments = ['-r', '4', '-u', '--integration-scheme', '4', '--integration-window', '7,3', '--tail-cuts', '6,8', '--min-pix', '2', '--min-amp', '20', '--type', '1,0,0,400', '--tail-cuts', '9,12', '--min-amp', '20', '--type', '2,0,0,100', '--tail-cuts', '8,11', '--min-amp', '19', '--type', '3,0,0,40', '--tail-cuts', '6,9', '--min-amp', '15', '--type', '4,0,0,15', '--tail-cuts', '3.7,5.5', '--min-amp', '8', '--type', '5,0,0,70,5.6', '--tail-cuts', '2.4,3.2', '--min-amp', '5.6', '--dst-level', '0', '--dst-file', dstFileName, '--histogram-file', dstHistoFileName, '--powerlaw', powerlaw_dict[particle], simtelFileName]
 
     rctaReturnCode = rcta.execute()
   
