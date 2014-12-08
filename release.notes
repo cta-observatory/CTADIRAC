@@ -143,6 +143,10 @@ Fix in corsika env.
 Fix in corsikasimtelpipeprod in read_cta step
 
 [v1r26]
-
 *LA
 NEW: Add MC prod jobs using pipe with TS
+
+[v1r26p1]
+*LA
+BUGFIX: Fix problem in reading CS for cta-prodpipets.py
+

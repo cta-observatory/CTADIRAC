@@ -89,19 +89,17 @@ def main():
 
   from DIRAC.Resources.Catalog.FileCatalogClient import FileCatalogClient
   from DIRAC.Resources.Catalog.FileCatalog import FileCatalog
+
+  Script.parseCommandLine()
+  global fcc, fcL, storage_element
+
   from DIRAC.WorkloadManagementSystem.Client.JobReport import JobReport 
-  from DIRAC.Core.Utilities import List
-  from DIRAC.ConfigurationSystem.Client.Helpers.Operations import Operations
   from CTADIRAC.Core.Utilities.SoftwareInstallation import getSoftwareEnviron
   from CTADIRAC.Core.Utilities.SoftwareInstallation import installSoftwareEnviron
   from CTADIRAC.Core.Utilities.SoftwareInstallation import workingArea
   from CTADIRAC.Core.Workflow.Modules.CorsikaApp import CorsikaApp
   from CTADIRAC.Core.Workflow.Modules.Read_CtaApp import Read_CtaApp
   from DIRAC.Core.Utilities.Subprocess import systemCall
-  from DIRAC.Interfaces.API.Dirac import Dirac
-
-  Script.parseCommandLine()
-  global fcc, fcL, storage_element
 
   jobID = os.environ['JOBID']
   jobID = int( jobID )
@@ -119,7 +117,7 @@ def main():
   fcc = FileCatalogClient()
   fcL = FileCatalog('LcgFileCatalog')
   
-  #from DIRAC.Interfaces.API.Dirac import Dirac
+  from DIRAC.Interfaces.API.Dirac import Dirac
   dirac = Dirac()
   
   #############
@@ -421,8 +419,8 @@ fi
       DIRAC.exit( -1 )
 
 ################################################  
-    #from DIRAC.Core.Utilities import List
-    #from DIRAC.ConfigurationSystem.Client.Helpers.Operations import Operations
+    from DIRAC.Core.Utilities import List
+    from DIRAC.ConfigurationSystem.Client.Helpers.Operations import Operations
     opsHelper = Operations()
     
     global seList
