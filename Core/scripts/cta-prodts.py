@@ -10,6 +10,11 @@ def setRunNumber( optionValue ):
   #run_number = optionValue.split('ParametricParameters=')[1]
   return DIRAC.S_OK()
 
+def setStartRunNumber( optionValue ):
+  global start_run_number
+  start_run_number = '%06d' % int(optionValue)
+  return DIRAC.S_OK()
+
 def setCorsikaTemplate( optionValue ):
   global corsikaTemplate
   corsikaTemplate = optionValue
@@ -77,6 +82,7 @@ def main():
   from DIRAC.Core.Base import Script
 
   Script.registerSwitch( "r:", "run_number=", "Run Number", setRunNumber )
+  Script.registerSwitch( "i:", "start_run_number=", "Start Run Number", setStartRunNumber )
   Script.registerSwitch( "T:", "template=", "Template", setCorsikaTemplate )
   Script.registerSwitch( "E:", "executable=", "Executable", setExecutable )
   Script.registerSwitch( "S:", "simtelConfig=", "SimtelConfig", setConfig )
@@ -155,6 +161,7 @@ def main():
   cs = CorsikaApp()
   cs.setSoftwarePackage(CorsikaSimtelPack)
   cs.csExe = executable
+  run_number = str(int(start_run_number) + int(run_number))
   cs.csArguments = ['--run-number',run_number,'--run','corsika',corsikaTemplate]
   corsikaReturnCode = cs.execute()
   
