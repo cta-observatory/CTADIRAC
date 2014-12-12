@@ -161,8 +161,9 @@ def main():
   cs = CorsikaApp()
   cs.setSoftwarePackage(CorsikaSimtelPack)
   cs.csExe = executable
-  run_number = str(int(start_run_number) + int(run_number))
-  cs.csArguments = ['--run-number',run_number,'--run','corsika',corsikaTemplate]
+  current_run_number = int(start_run_number) + int(run_number)
+  current_run_number = '%06d' % current_run_number
+  cs.csArguments = ['--run-number',current_run_number,'--run','corsika',corsikaTemplate]
   corsikaReturnCode = cs.execute()
   
   if corsikaReturnCode != 0:
@@ -170,9 +171,9 @@ def main():
     jobReport.setApplicationStatus('Corsika Application: Failed')
     DIRAC.exit( -1 )
 ###################### rename of corsika output file #######################
-  rundir = 'run' + run_number
+  rundir = 'run' + current_run_number
   filein = rundir + '/' + corsikaOutputFileName
-  corsikaFileName = particle + '_' + thetaP + '_' + phiP + '_alt' + obslev + '_' + 'run' + run_number +  '.corsika.gz'
+  corsikaFileName = particle + '_' + thetaP + '_' + phiP + '_alt' + obslev + '_' + 'run' + current_run_number +  '.corsika.gz'
   mv_cmd = 'mv ' + filein + ' ' + corsikaFileName
   if(os.system(mv_cmd)):
     DIRAC.exit( -1 )
@@ -180,7 +181,7 @@ def main():
 
 ########################  
 ## files spread in 1000-runs subDirectories
-  runNum = int(run_number)
+  runNum = int(current_run_number)
   subRunNumber = '%03d'%runNum
   runNumModMille = runNum%1000
   runNumTrunc = (runNum - runNumModMille)/1000
@@ -188,10 +189,10 @@ def main():
   print 'runNumSeriesDir=',runNumSeriesDir
   
   ### create corsika tar luisa ####################
-  corsikaTarName = particle + '_' + thetaP + '_' + phiP + '_alt' + obslev + '_' + 'run' + run_number +  '.corsika.tar.gz'
+  corsikaTarName = particle + '_' + thetaP + '_' + phiP + '_alt' + obslev + '_' + 'run' + current_run_number +  '.corsika.tar.gz'
   filetar1 = rundir + '/'+'input'
-  filetar2 = rundir + '/'+ 'DAT' + run_number + '.dbase'
-  filetar3 = rundir + '/run' + str(int(run_number)) + '.log'
+  filetar2 = rundir + '/'+ 'DAT' + current_run_number + '.dbase'
+  filetar3 = rundir + '/run' + str(int(current_run_number)) + '.log'
   cmdTuple = ['/bin/tar','zcf',corsikaTarName, filetar1,filetar2,filetar3]
   DIRAC.gLogger.notice( 'Executing command tuple:', cmdTuple )
   ret = systemCall( 0, cmdTuple, sendOutput)
@@ -255,7 +256,7 @@ def main():
 
  ###### insert corsika File Level metadata ############################################
     corsikaFileMD={}
-    corsikaFileMD['runNumber'] = int(run_number)
+    corsikaFileMD['runNumber'] = int(current_run_number)
     corsikaFileMD['jobID'] = jobID
     corsikaFileMD['corsikaReturnCode'] = corsikaReturnCode
     corsikaFileMD['nbShowers'] = nbShowers
@@ -333,7 +334,7 @@ def main():
       DIRAC.gLogger.notice('simtel Directory MD successfully created')
 
 ############## check simtel data file LFN exists ########################
-    simtelFileName = particle + '_' + str(thetaP) + '_' + str(phiP) + '_alt' + str(obslev) + '_' + 'run' + run_number + '.simtel.gz'
+    simtelFileName = particle + '_' + str(thetaP) + '_' + str(phiP) + '_alt' + str(obslev) + '_' + 'run' + current_run_number + '.simtel.gz'
     simtelDirPath_conf = simtelDirPath + '_' + current_conf
     simtelOutFileDir = os.path.join(simtelDirPath_conf,'Data',runNumSeriesDir)
     simtelOutFileLFN = os.path.join(simtelOutFileDir,simtelFileName)
@@ -387,7 +388,7 @@ ln -s ../$SVNTAG
     simtelRunNumberSeriesDirExist = fcc.isDirectory(simtelOutFileDir)['Value']['Successful'][simtelOutFileDir]
     newSimtelRunFileSeriesDir = (simtelRunNumberSeriesDirExist != True)  # if new runFileSeries, will need to add new MD
 
-    simtelLogFileName = particle + '_' + str(thetaP) + '_' + str(phiP) + '_alt' + str(obslev) + '_' + 'run' + run_number + '.log.gz'
+    simtelLogFileName = particle + '_' + str(thetaP) + '_' + str(phiP) + '_alt' + str(obslev) + '_' + 'run' + current_run_number + '.log.gz'
     #cmd = 'mv Data/sim_telarray/' + cfg + '/0.0deg/Log/*.log.gz ' + simtelLogFileName
     cmd = cmdprefix + 'Log/*'+ cfg + '_*.log.gz ' + simtelLogFileName
     if(os.system(cmd)):
@@ -395,7 +396,7 @@ ln -s ../$SVNTAG
     simtelOutLogFileDir = os.path.join(simtelDirPath_conf,'Log',runNumSeriesDir)
     simtelOutLogFileLFN = os.path.join(simtelOutLogFileDir,simtelLogFileName)
 
-    simtelHistFileName = particle + '_' + str(thetaP) + '_' + str(phiP) + '_alt' + str(obslev) + '_' + 'run' + run_number + '.hdata.gz'
+    simtelHistFileName = particle + '_' + str(thetaP) + '_' + str(phiP) + '_alt' + str(obslev) + '_' + 'run' + current_run_number + '.hdata.gz'
     #cmd = 'mv Data/sim_telarray/' + cfg + '/0.0deg/Histograms/*.hdata.gz ' + simtelHistFileName
     cmd = cmdprefix + 'Histograms/*'+ cfg + '_*.hdata.gz ' + simtelHistFileName
     if(os.system(cmd)):
@@ -515,7 +516,7 @@ fi
     
 ###### simtel File level metadata ############################################
     simtelFileMD={}
-    simtelFileMD['runNumber'] = int(run_number)
+    simtelFileMD['runNumber'] = int(current_run_number)
     simtelFileMD['jobID'] = jobID
     simtelFileMD['simtelReturnCode'] = simtelReturnCode
   
@@ -555,8 +556,8 @@ fi
     rcta.rctaExe = 'read_cta'
 
     powerlaw_dict = {'gamma':'-2.57','gamma_ptsrc':'-2.57','proton':'-2.70','electron':'-3.21'}
-    dstFileName = particle + '_' + str(thetaP) + '_' + str(phiP) + '_alt' + str(obslev) + '_' + 'run' + run_number + '.simtel-dst0.gz'
-    dstHistoFileName = particle + '_' + str(thetaP) + '_' + str(phiP) + '_alt' + str(obslev) + '_' + 'run' + run_number + '.hdata-dst0.gz'
+    dstFileName = particle + '_' + str(thetaP) + '_' + str(phiP) + '_alt' + str(obslev) + '_' + 'run' + current_run_number + '.simtel-dst0.gz'
+    dstHistoFileName = particle + '_' + str(thetaP) + '_' + str(phiP) + '_alt' + str(obslev) + '_' + 'run' + current_run_number + '.hdata-dst0.gz'
 
 ## added some options starting from Armazones_2K prod.
     rcta.rctaArguments = ['-r', '4', '-u', '--integration-scheme', '4', '--integration-window', '7,3', '--tail-cuts', '6,8', '--min-pix', '2', '--min-amp', '20', '--type', '1,0,0,400', '--tail-cuts', '9,12', '--min-amp', '20', '--type', '2,0,0,100', '--tail-cuts', '8,11', '--min-amp', '19', '--type', '3,0,0,40', '--tail-cuts', '6,9', '--min-amp', '15', '--type', '4,0,0,15', '--tail-cuts', '3.7,5.5', '--min-amp', '8', '--type', '5,0,0,70,5.6', '--tail-cuts', '2.4,3.2', '--min-amp', '5.6', '--dst-level', '0', '--dst-file', dstFileName, '--histogram-file', dstHistoFileName, '--powerlaw', powerlaw_dict[particle], simtelFileName]
@@ -677,7 +678,7 @@ fi
 
 ####### dst File level metadata ###############################################
     dstFileMD={}
-    dstFileMD['runNumber'] = int(run_number)
+    dstFileMD['runNumber'] = int(current_run_number)
     dstFileMD['jobID'] = jobID
     dstFileMD['rctaReturnCode'] = rctaReturnCode
   
