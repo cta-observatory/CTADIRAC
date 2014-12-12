@@ -30,11 +30,11 @@ def MCProdTSExample( args = None ) :
 
   j = ProdTSJob()
 
-  j.setVersion('prod-2_15122013')
+  j.setVersion('prod-2_13112014b')
 
   j.setApplication('corsika_autoinputs')
 
-  j.setProdName('ConfigTestTS')
+  j.setProdName('ConfigxxxTS')
 
   #j.setPathRoot('/vo.cta.in2p3.fr/MC/PROD2/') # official
   j.setPathRoot('/vo.cta.in2p3.fr/user/a/arrabito/MC/PROD2/') # for test
