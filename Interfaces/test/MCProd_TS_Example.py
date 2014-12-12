@@ -9,12 +9,12 @@ Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      'Usage:',
                                      '  %s [option|cfgfile] ... [corsikaTemplate] ...' % Script.scriptName,
                                      'Arguments:',
-                                     '  corsikaTemplate:    Corsika config file as in /vo.cta.in2p3.fr/MC/PROD2/CFG_revxxxx/prod2_cfg.tar.gz',
-                                     '  reprocessing configuration: STD/NSBX3/4MSST/SCSST/ASTRI/NORTH'] ) )
+                                     '  corsikaTemplate:    Corsika config file as in /vo.cta.in2p3.fr/MC/PROD2/xxx/prod2_cfg.tar.gz',
+                                     '  reprocessing configuration: STD/NSBX3/4MSST/SCSST/ASTRI/NORTH/3INROW'] ) )
 
 Script.parseCommandLine()
 
-def MCProd_TS_Example( args = None ) :
+def MCProdTSExample( args = None ) :
 
   from DIRAC.TransformationSystem.Client.Transformation import Transformation
   from DIRAC.Core.Workflow.Parameter import Parameter
@@ -45,9 +45,9 @@ def MCProd_TS_Example( args = None ) :
 
   j.setParameters(['fileCatalog.cfg','--template',cfgfile,'--mode',mode,'--run_number', '@{JOB_ID}', '-N', '25000', '-S',simtelArrayConfig,'--savecorsika','False'])
 
-  j.setInputSandbox( ['LFN:/vo.cta.in2p3.fr/MC/PROD2/CFG_rev6956/prod2_cfg.tar.gz'])
+  j.setInputSandbox( ['LFN:/vo.cta.in2p3.fr/MC/PROD2/Armazones2K/prod2_cfg.tar.gz'])
 
-  j.setOutputSandbox( ['*.log','applicationLog.txt'])
+  j.setOutputSandbox( ['*.log'])
 
   j.setCPUTime(200000)
 
@@ -75,7 +75,7 @@ if __name__ == '__main__':
   args = Script.getPositionalArgs()
 
   try:
-    MCProd_TS_Example( args )
+    MCProdTSExample( args )
   except Exception:
     Script.gLogger.exception()
 

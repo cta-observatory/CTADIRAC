@@ -150,3 +150,6 @@ NEW: Add MC prod jobs using pipe with TS
 *LA
 BUGFIX: Fix problem in reading CS for cta-prodpipets.py
 
+[v1r26p2]
+*LA
+BUGFIX: Fix problem in reading CS for cta-prodpipets.py (in v1r26p1 forgot to commit the change!)

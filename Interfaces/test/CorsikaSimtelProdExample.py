@@ -22,7 +22,7 @@ def CorsikaSimtelProdExample( args = None ) :
   from DIRAC.Interfaces.API.Dirac import Dirac
   
   j = CorsikaSimtelProdJob()
-  j.setVersion('prod-2_15122013')
+  j.setVersion('prod-2_13112014b')
 
   j.setExecutable('corsika_autoinputs') 
 
@@ -55,20 +55,18 @@ def CorsikaSimtelProdExample( args = None ) :
   
   j.setJobGroup(cfgfile[11:])
 
-  j.setInputSandbox( [ cfgfile,'fileCatalog.cfg','prodConfigFile','grid_prod2-repro.sh','LFN:/vo.cta.in2p3.fr/user/a/arrabito/PROD2/SVN-PROD2_rev2350.tar.gz'] ) 
+  j.setInputSandbox( [ cfgfile,'fileCatalog.cfg','prodConfigFile','grid_prod2-repro.sh','LFN:/vo.cta.in2p3.fr/user/a/arrabito/PROD2/SVN-PROD2_rev10503.tar.gz'] ) 
 
   j.setParameters(['fileCatalog.cfg','--template',cfgfile,'--mode',mode,'-S',simtelArrayConfig,'--savecorsika','False'])
  
-  j.setOutputSandbox( ['corsika_autoinputs.log', 'simtel.log','applicationLog.txt'])
+  j.setOutputSandbox( ['corsika_autoinputs.log', 'simtel.log','read_cta.log'])
 
   j.setCPUTime(100000)
 
-  j.setBannedSites(['LCG.UNI-DORTMUND.de','LCG.PIC.es'])
+  #j.setBannedSites(['LCG.UNI-DORTMUND.de'])
 
   Script.gLogger.info( j._toJDL() )
   res = Dirac().submit( j )
-
-  print res
 
 
 if __name__ == '__main__':

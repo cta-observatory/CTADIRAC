@@ -322,7 +322,6 @@ def main():
 
 ##   check simtel data/log/histo Output File exist
     cfg = cfg_dict[current_conf]
-    #cmd = 'mv sim/Data/sim_telarray/' + cfg + '/0.0deg/Data/*.simtel.gz ' + simtelFileName
     cmd = 'mv sim/Data/sim_telarray/' + cfg + '/0.0deg/Data/*'+ cfg + '_*.simtel.gz ' + simtelFileName
     if(os.system(cmd)):
       DIRAC.exit( -1 )
@@ -332,7 +331,6 @@ def main():
     newSimtelRunFileSeriesDir = (simtelRunNumberSeriesDirExist != True)  # if new runFileSeries, will need to add new MD
 
     simtelLogFileName = particle + '_' + str(thetaP) + '_' + str(phiP) + '_alt' + str(obslev) + '_' + 'run' + run_number + '.log.gz'
-    #cmd = 'mv sim/Data/sim_telarray/' + cfg + '/0.0deg/Log/*.log.gz ' + simtelLogFileName
     cmd = 'mv sim/Data/sim_telarray/' + cfg + '/0.0deg/Log/*'+ cfg + '_*.log.gz ' + simtelLogFileName
     if(os.system(cmd)):
       DIRAC.exit( -1 )
@@ -340,7 +338,6 @@ def main():
     simtelOutLogFileLFN = os.path.join(simtelOutLogFileDir,simtelLogFileName)
 
     simtelHistFileName = particle + '_' + str(thetaP) + '_' + str(phiP) + '_alt' + str(obslev) + '_' + 'run' + run_number + '.hdata.gz'
-    #cmd = 'mv sim/Data/sim_telarray/' + cfg + '/0.0deg/Histograms/*.hdata.gz ' + simtelHistFileName
     cmd = 'mv sim/Data/sim_telarray/' + cfg + '/0.0deg/Histograms/*'+ cfg + '_*.hdata.gz ' + simtelHistFileName
     if(os.system(cmd)):
       DIRAC.exit( -1 )
