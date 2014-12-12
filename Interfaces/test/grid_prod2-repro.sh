@@ -105,7 +105,7 @@ if [ "$2" = "SCSST" ]; then
 echo ""
 echo "Reprocessing normal SC-SST telescopes only with fixed threshold and mono trigger."
 zcat $1 | \
-  ( cd sim_telarray && env offset="0.0" cfg="cta-prod2-sc-sst" extra_defs="-DNEW_MAJORITY_THRESHOLDS" extra_config="-C ignore_telescopes=1,2,3,4,5,6,10,14,15,16,17,18,19,20,21,22,23,24,25,26,33,40,41,42,43,44,45,46,53,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197" ./generic_run.sh -c $SVNPROD2/$SVNTAG/CONFIG/cfg/CTA/CTA-ULTRA5-small-sc.cfg)
+  ( cd sim_telarray && env offset="0.0" cfg="cta-prod2-sc-sst" extra_defs="-DNEW_MAJORITY_THRESHOLDS -DSUBARRAY_EXTRACTED" extra_config="-C maximum_telescopes=197" ./generic_run.sh -c $SVNPROD2/$SVNTAG/CONFIG/cfg/CTA/CTA-ULTRA5-small-sc.cfg)
 fi
 
 if [ "$2" = "ASTRI" ]; then
