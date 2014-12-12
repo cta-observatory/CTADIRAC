@@ -67,7 +67,12 @@ def MCProdTSExample( args = None ) :
   t.setLongDescription( "corsika-simtel production" ) #mandatory
   t.setBody ( j.workflow.toXML() )
 
-  t.addTransformation() # Transformation is created here
+  res = t.addTransformation() # Transformation is created here
+
+  if not res['OK']:
+    print res['Message']
+    DIRAC.exit(-1)
+
   t.setStatus("Active")
   t.setAgentType("Automatic")
 
