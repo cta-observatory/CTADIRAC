@@ -618,6 +618,10 @@ fi
       jobReport.setApplicationStatus('Histo check Failed')
       DIRAC.exit( -1 )
 
+#########    Temporary fix: remove read_cta.log Then just remove it from the OSB ##########################
+
+    os.system('rm read_cta.log') 
+ 
 ############create MD and upload dst data/histo ##########################################################
 
     global dstDirPath
