@@ -153,3 +153,7 @@ BUGFIX: Fix problem in reading CS for cta-prodpipets.py
 [v1r26p2]
 *LA
 BUGFIX: Fix problem in reading CS for cta-prodpipets.py (in v1r26p1 forgot to commit the change!)
+
+[v1r26p7]
+*LA
+BUGFIX: 'temporary bug fix: remove read_cta.log from cta-prodts.py'
