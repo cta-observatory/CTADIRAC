@@ -68,7 +68,7 @@ def main():
 
   CorsikaSimtelPack = 'corsika_simhessarray/' + version + '/corsika_simhessarray'
 
-  cfg_dict = {"4MSST":'cta-prod2-4m-dc',"SCSST":'cta-prod2-sc-sst',"STD":'cta-prod2',"NSBX3":'cta-prod2',"ASTRI":'cta-prod2-astri',"NORTH":'cta-prod2n'}
+  cfg_dict = {"4MSST":'cta-prod2-4m-dc',"SCSST":'cta-prod2-sc-sst',"STD":'cta-prod2',"NSBX3":'cta-prod2',"ASTRI":'cta-prod2-astri',"NORTH":'cta-prod2n',"ASTRISLN":'cta-astri-sln'}
 
   #if simtelConfig=="6INROW":
   #  all_configs=["4MSST","SCSST","ASTRI","NSBX3","STD","SCMST"]

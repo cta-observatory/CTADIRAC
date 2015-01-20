@@ -157,3 +157,7 @@ BUGFIX: Fix problem in reading CS for cta-prodpipets.py (in v1r26p1 forgot to co
 [v1r26p7]
 *LA
 BUGFIX: 'temporary bug fix: remove read_cta.log from cta-prodts.py'
+
+[v1r26p8]
+*LA
+CHANGE: add comp option to cta-simtel.py
