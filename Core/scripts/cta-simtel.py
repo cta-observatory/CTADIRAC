@@ -19,13 +19,15 @@ def main():
   Script.registerSwitch( "p:", "inputfile=", "Input File" )
   Script.registerSwitch( "S:", "simtelConfig=", "SimtelConfig" )
   Script.registerSwitch( "V:", "version=", "Version (Use setVersion)")
+  Script.registerSwitch( "C:", "comp=", "Compile (True/False)")
 
   Script.parseCommandLine( ignoreErrors = True )
 
   ## default values ##############
   simtelConfig = None
   version = None
-  
+  comp = True
+
   ### set switch values ###
   for switch in Script.getUnprocessedSwitches():
     if switch[0] == "inputfile" or switch[0] == "p":
@@ -33,7 +35,9 @@ def main():
     elif switch[0] == "simtelConfig" or switch[0] == "S":
       simtelConfig = switch[1]
     elif switch[0] == "version" or switch[0] == "V":
-      version = switch[1]      
+      version = switch[1]    
+    elif switch[0] == "comp" or switch[0] == "C":
+      comp = switch[1]  
   
   if version == None:
     Script.showHelp()
@@ -54,8 +58,14 @@ def main():
   jobReport = JobReport( jobID )
 
 ############ Producing SimTel File
+  if comp == True:
+    install_CorsikaSimtelPack(version)
+  else:
+    CorsikaSimtelPack = 'corsika_simhessarray/' + version + '/corsika_simhessarray'
+    res = installSoftwarePackage(  CorsikaSimtelPack, workingArea() )
+    if not res['OK']:
+      DIRAC.gLogger.error( 'Failed to execute installSoftwarePackage', res)
 
-  install_CorsikaSimtelPack(version)
   CorsikaSimtelPack = 'corsika_simhessarray/' + version + '/corsika_simhessarray'
 
   cfg_dict = {"4MSST":'cta-prod2-4m-dc',"SCSST":'cta-prod2-sc-sst',"STD":'cta-prod2',"NSBX3":'cta-prod2',"ASTRI":'cta-prod2-astri',"NORTH":'cta-prod2n'}
