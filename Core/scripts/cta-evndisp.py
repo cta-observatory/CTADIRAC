@@ -96,8 +96,11 @@ def main():
 ############ dst file Name ############################
     run_number = simtelFileList[-1].split('run')[1].split('.simtel.gz')[0]
     runNum = int(run_number)
-    subRunNumber = '%03d'%runNum
-    dstfile =subRunNumber + '_' + str(jobID) + '_' + os.path.basename(layout) + '_dst.root'
+    subRunNumber = '%06d'%runNum
+    particle = simtelFileList[-1].split('_')[0]
+    if 'ptsrc' in simtelFileList[-1]: 
+      particle = particle + '_' + 'ptsrc'
+    dstfile = particle + '_run' + subRunNumber + '_' + str(jobID) + '_' + os.path.basename(layout) + '_dst.root'
 ###########################################
 
     logfileName =  executable + '_' + layout + '.log'
