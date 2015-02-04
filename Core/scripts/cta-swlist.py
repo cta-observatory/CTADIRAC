@@ -19,9 +19,7 @@ def main():
   version = args[1]
 
   DIRAC.gLogger.notice('Software area:', sharedArea())
-
   path = sharedArea()
-
   DIRAC.gLogger.notice('Directory content:', path)
   cmd = 'ls -l ' + path
   if(os.system(cmd)):
@@ -33,7 +31,7 @@ def main():
   if(os.system(cmd)):
     DIRAC.exit( -1 )
 
-  path = os.path.join(path,package,version)
+  path = os.path.join(path,version)
   DIRAC.gLogger.notice('Directory content:', path)
   cmd = 'ls -l ' + path
   if(os.system(cmd)):
