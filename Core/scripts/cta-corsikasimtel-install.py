@@ -53,12 +53,16 @@ def main():
     fd = open('run_compile.sh', 'w' )
     fd.write( """#!/bin/sh      
 current_dir=${PWD}
+package=%s
 installdir=%s
+if ! [ -d ${package} ]; then
+mkdir ${package}
+fi
 mkdir ${installdir} 
 cd ${installdir} 
 mkdir sim sim-sc3
 (cd sim && tar zxvf ${current_dir}/corsika_simhessarray.tar.gz && ./build_all prod2 qgs2)
-(cd sim-sc3 && tar zxvf ${current_dir}/corsika_simhessarray.tar.gz && ./build_all sc3 qgs2)""" % (installdir))
+(cd sim-sc3 && tar zxvf ${current_dir}/corsika_simhessarray.tar.gz && ./build_all sc3 qgs2)""" % (packageTuple[0],installdir))
     fd.close()
     os.system('chmod u+x run_compile.sh')
     if(os.system('./run_compile.sh')):

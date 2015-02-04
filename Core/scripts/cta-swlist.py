@@ -11,6 +11,7 @@ def main():
   from DIRAC import gLogger
   from DIRAC.Core.Base import Script
   from CTADIRAC.Core.Utilities.SoftwareInstallation import sharedArea
+
   Script.parseCommandLine()
 
   args = Script.getPositionalArgs()
@@ -18,15 +19,22 @@ def main():
   version = args[1]
 
   DIRAC.gLogger.notice('Software area:', sharedArea())
-  path = os.path.join(sharedArea(),package,version)
 
-  DIRAC.gLogger.notice('Cleaning directory:', path)
-  cmd = 'rm -Rf ' + path
+  path = sharedArea()
+
+  DIRAC.gLogger.notice('Directory content:', path)
+  cmd = 'ls -l ' + path
   if(os.system(cmd)):
     DIRAC.exit( -1 )
 
-  DIRAC.gLogger.notice('Directory content after cleaning')
-  path = os.path.join(sharedArea(),package)
+  path = os.path.join(path,package)
+  DIRAC.gLogger.notice('Directory content:', path)
+  cmd = 'ls -l ' + path
+  if(os.system(cmd)):
+    DIRAC.exit( -1 )
+
+  path = os.path.join(path,package,version)
+  DIRAC.gLogger.notice('Directory content:', path)
   cmd = 'ls -l ' + path
   if(os.system(cmd)):
     DIRAC.exit( -1 )
