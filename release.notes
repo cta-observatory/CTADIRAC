@@ -160,8 +160,12 @@ BUGFIX: 'temporary bug fix: remove read_cta.log from cta-prodts.py'
 
 [v1r26p8]
 *LA
-CHANGE: add comp option to cta-simtel.py[v1r26p8]
+CHANGE: add comp option to cta-simtel.py
 
 [v1r26p9]
 *LA
 CHANGE: add astri-sln cfg to cta-simtel.py
+
+[v1r26p10]
+*LA
+CHANGE: modify output file name in cta-evndisp.py
