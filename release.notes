@@ -169,3 +169,7 @@ CHANGE: add astri-sln cfg to cta-simtel.py
 [v1r26p10]
 *LA
 CHANGE: modify output file name in cta-evndisp.py
+
+[v1r26p11]
+*LA
+CHANGE: Replace ReplicaManager with DataManager everywhere
