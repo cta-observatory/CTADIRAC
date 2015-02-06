@@ -29,7 +29,7 @@ LFN_ROOT = '/vo.cta.in2p3.fr'
 TIMEOUT = 600
 
 import DIRAC
-from DIRAC.DataManagementSystem.Client.ReplicaManager import ReplicaManager
+from DIRAC.DataManagementSystem.Client.DataManager import DataManager
 
 gLogger = DIRAC.gLogger.getSubLogger( __name__, True )
 
@@ -123,7 +123,7 @@ def installSoftwarePackage( package, area, extract = True ):
   tarLFNcrypt = tarLFN + '.crypt'
   tarLFNs = [tarLFN,tarLFNcrypt]
   gLogger.notice( 'Trying to download a tarfile in the list:', tarLFNs )
-  result = ReplicaManager().getFile( tarLFNs )
+  result = DataManager().getFile( tarLFNs )
   
   if not result['OK']:
     gLogger.error( 'Failed to download tarfile:', tarLFNs )
