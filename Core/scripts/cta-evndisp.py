@@ -14,7 +14,7 @@ def main():
 
   DIRAC.gLogger.notice('Platform is:')
   os.system('dirac-platform')
-  from DIRAC.DataManagementSystem.Client.ReplicaManager import ReplicaManager
+  from DIRAC.DataManagementSystem.Client.DataManager import DataManager
   from CTADIRAC.Core.Workflow.Modules.EvnDispApp import EvnDispApp
   from CTADIRAC.Core.Utilities.SoftwareInstallation import checkSoftwarePackage
   from CTADIRAC.Core.Utilities.SoftwareInstallation import installSoftwarePackage
@@ -83,7 +83,7 @@ def main():
     if usetrgfile == 'True':
       trgmaskFileLFN=simtelFileLFN.replace('simtel.gz','trgmask.gz')
       DIRAC.gLogger.notice( 'Trying to download the trgmask File', trgmaskFileLFN)
-      result = ReplicaManager().getFile( trgmaskFileLFN)
+      result = DataManager().getFile( trgmaskFileLFN )
       if not result['OK']:
         DIRAC.gLogger.error( 'Failed to download trgmakfile:', result )
         jobReport.setApplicationStatus('Trgmakfile download Error')
