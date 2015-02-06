@@ -13,7 +13,6 @@ def main():
 
   DIRAC.gLogger.notice('Platform is:')
   os.system('dirac-platform')
-  from DIRAC.DataManagementSystem.Client.ReplicaManager import ReplicaManager
   from CTADIRAC.Core.Workflow.Modules.Read_CtaApp import Read_CtaApp
   from CTADIRAC.Core.Utilities.SoftwareInstallation import checkSoftwarePackage
   from CTADIRAC.Core.Utilities.SoftwareInstallation import installSoftwarePackage
