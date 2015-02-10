@@ -14,7 +14,7 @@ Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
 
 Script.parseCommandLine()
 
-def DataRemovalByQuery_TS_Example( args = None ) :
+def DataRemovalByQueryTSExample( args = None ) :
 
   from DIRAC.TransformationSystem.Client.Transformation import Transformation
   from DIRAC.TransformationSystem.Client.TransformationClient import TransformationClient

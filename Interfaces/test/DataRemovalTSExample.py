@@ -13,7 +13,7 @@ Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
 
 Script.parseCommandLine()
 
-def DataRemoval_TS_Example( args = None ) :
+def DataRemovalTSExample( args = None ) :
 
   from DIRAC.TransformationSystem.Client.Transformation import Transformation
   from DIRAC.TransformationSystem.Client.TransformationClient import TransformationClient
@@ -42,7 +42,7 @@ def DataRemoval_TS_Example( args = None ) :
   t.setDescription("corsika Removal")
   t.setLongDescription( "corsika Removal" ) # Mandatory
 
-  t.setGroupSize(2) # Here you specify how many files should be grouped within the same request, e.g. 100 
+  t.setGroupSize( 1 )  # Here you specify how many files should be grouped within the same request, e.g. 100
   t.setBody ( "Removal;RemoveFile" ) # Mandatory (the default is a ReplicateAndRegister operation)
 
   t.addTransformation() # Transformation is created here
