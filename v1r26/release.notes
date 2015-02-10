@@ -1,0 +1,148 @@
+[v1r18p2]
+
+*JB
+NEW: add release.note file according to issue #5895
+CHANGE: relax the check on the nb of events from 2 to 20 missing events in cta-corsikasimtelprod.py 
+BUGFIX:
+
+[v1r19]
+
+*LA
+NEW: add MC Simulation Transformation Example. To be used for client
+
+[v1r19p1]
+
+*LA
+Identical to v1r19. Created to be used for Pilots (Depends on DIRAC:v6r10p20, see releases.cfg)
+
+[v1r19p2]
+
+*LA
+BUGFIX: Wrong script name in Interfaces/API/ProdTSJob.py
+"self.setExecutable('$DIRACROOT/scripts/cta-prodts',argumentStr)"
+
+[v1r19p3]
+
+*LA
+Identical to v1r19p2. Created to be used for client (Depends on DIRAC:v6r9p33, see releases.cfg)
+
+[v1r19p4]
+
+*LA
+NEW: add Data Management Transformation Example. To be used for client
+
+[v1r19p5]
+
+*LA
+BUGFIX: in cta-evndisp.py. To be used for the Pilot
+
+[v1r19p6]
+
+*LA
+CHANGE: Separate config. and source code in cta-evndisp.py.
+CHANGE: Add JOBID in output file names in cta-evndisp.py. 
+To be used for the Pilot
+
+[v1r19p7]
+
+*LA
+Identical to v1r19p6. Created to be used for client (Depends on DIRAC:v6r9p33, see releases.cfg)
+
+[v1r19p8]
+
+*LA
+CHANGE: Remove dst intermediate file in cta-evndisp.py to save disk space.
+To be used for the Pilot
+
+[v1r20]
+*LA
+NEW: Add Re-processing Transformations
+BUGFIX: seList in cta-prodts.py 
+To be used for client
+
+[v1r20p1]
+*LA
+Identical to v1r20
+To be used for the Pilot
+
+[v1r20p2]
+*LA
+BUGFIX: cta-reprots.py Missing
+
+[v1r20p3]
+*LA
+CHANGE: Add compilation options for astri in cta-corsikasimteluser.py
+
+[v1r20p4]
+*LA
+CHANGE: Add compilation options for astri in cta-corsikasimtel.py
+
+[v1r21]
+*LA
+BUGFIX: There was a problem in the dir structure of branch v1r20
+To be used for Pilot
+
+[v1r21p1]
+*LA
+Identical to v1r21
+To be used for Client
+
+[v1r21p2]
+*LA
+Identical to v1r21p1
+To be used for Client: Depends on v6r11p4
+
+[v1r21p3]
+*LA
+Add outputType for corsika and dst everywhere 
+To be used for Pilot
+
+[v1r21p4]
+*LA
+Identical to v1r21p3
+To be used for Client
+
+[v1r22]
+*LA
+Enable to run converter step only in EvnDisplay jobs
+To be used for Pilot
+
+[v1r22p1]
+*LA
+Identical to v1r22
+To be used for Client
+
+[v1r23]
+*LA
+Add cta-get-storage-usage.py script
+To be used for Pilot (NOT Used, last change affects only the client)
+
+[v1r23p1]
+*LA
+Identical to v1r23
+To be used for Client
+
+[v1r24]
+*LA
+Update of DIRAC servers to version v6r12p3
+
+[v1r25]
+*LA
+Add corsikasimtel-pipe for production jobs
+
+[v1r25p1]
+*LA
+Few bug fixes. No need to update the pilot version
+
+[v1r25p2]
+*LA
+Fix in corsika env.
+
+[v1r25p3]
+*LA
+Fix in corsikasimtelpipeprod in read_cta step
+
+[v1r26]
+
+*LA
+NEW: Add MC prod jobs using pipe with TS

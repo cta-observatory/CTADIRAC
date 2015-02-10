@@ -1,0 +1,1652 @@
+
+# File generated with:  ./modular_camera -d 174 -p 5.0 -g 0.1 -F 1120 --cathode-diameter 2.45
+#
+# Modular camera with 163 modules of 7 pixels each.
+# Each of the 1141 pixels has a size of 4.900 cm (flat-to-flat, hex. funnel hori.).
+# Between pixels is a gap of 0.100 cm. Pixel spacing is 5.000 cm.
+# The pixel spacing corresponds to 0.256 deg at f=11.20 m for pixel plus any gap.
+# The camera has a nominal diameter of 1.740 m (radius 0.870 m), resulting in a
+# nominal field-of-view diameter of 8.88 deg at a focal length of 11.20 m.
+# Pixel centers are within a radius of 0.917 m (max. pos. FoV diameter 9.356 deg.).
+# All pixel corners are within 0.943 m (max. corner FoV diameter 9.626 deg.).
+# The edge starts at a radius of 0.869 m (contiguous FoV diameter 8.869 deg.).
+# Mean radius of camera edge is 0.889 m (mean FoV diameter 9.074 deg.).
+# Area covered by pixels+gaps: 2.470 m^2 (equivalent radius: 0.887 m, FoV 9.05 deg.)
+# The angular efficiency of funnels is read from file 'hess_funnels_r78.dat'.
+# Funnels walls are assumed to have an average reflectivity of 78.0%.
+#
+
+# This file contains only the DigitalSumTrigger subset of trigger conditions.
+
+# PixType format:
+# Par.  1: pixel type (here always 1)
+#       2: PMT type (must be 0)
+#       3: cathode shape type (see below)
+#       4: visible cathode diameter [cm]
+#       5: funnel shape type (see below)
+#       6: funnel diameter (flat-to-flat for hexagons and squares) [cm]
+#       7: depth of funnel [cm]
+#       8: a) funnel efficiency "filename",   b) funnel plate transparency
+#       9: a) optional wavelength "filename", b) funnel wall reflectivity
+# Cases a) and b) are distinguished by the format of parameter 8: a quoted
+# string indicates case a) while a real number indicates case b).
+# In case a) in column 8, columns 3, 4, and 7 are not used. If in case a)
+# the optional file name for the wavelength dependence is provided, the
+# overall scale in the file provided as parameter 8 is ignored because
+# it is rescaled such that the average over all mirrors is equal to
+# the given wavelength dependent value.
+#
+# Shape types: 0: circ., 1: hex(flat x), 2: sq., 3: hex(flat y)
+
+PixType 1   0  0 2.450   1 4.900 5.100   "hess_funnels_r78.dat"
+
+# Camera rotation angle [deg].
+# New Keyword: Requires 2012-08-21 or newer sim_telarray AND hessio[xxx].
+# Rotates the whole camera with all the pixels by the given angle.
+# Note that Hillas parameters are given in the 'de-rotated' system
+# to avoid portability issues of analysis programs.
+# Rotate 0.0   # Not needed if zero.
+
+# Pixel format:
+# Par.  1: pixel number (starting at 0)
+#       2: pixel type (must be 1)
+#       3: x position [cm]
+#       4: y position [cm]
+#       5: drawer/module number
+#       6: board number in module
+#       7: channel number n board
+#       8: board Id number ('0x....')
+#       9: pixel on (is on if parameter is missing)
+
+# Module 0 with 7 pixels of shape type 1 at	   0.000	   0.000
+# Module 1 with 7 pixels of shape type 1 at	 -12.500	  -4.330
+# Module 2 with 7 pixels of shape type 1 at	  12.500	   4.330
+# Module 3 with 7 pixels of shape type 1 at	 -25.000	  -8.660
+# Module 4 with 7 pixels of shape type 1 at	  25.000	   8.660
+# Module 5 with 7 pixels of shape type 1 at	 -37.500	 -12.990
+# Module 6 with 7 pixels of shape type 1 at	  37.500	  12.990
+# Module 7 with 7 pixels of shape type 1 at	 -50.000	 -17.321
+# Module 8 with 7 pixels of shape type 1 at	  50.000	  17.321
+# Module 9 with 7 pixels of shape type 1 at	 -62.500	 -21.651
+# Module 10 with 7 pixels of shape type 1 at	  62.500	  21.651
+# Module 11 with 7 pixels of shape type 1 at	 -75.000	 -25.981
+# Module 12 with 7 pixels of shape type 1 at	  75.000	  25.981
+# Module 13 with 7 pixels of shape type 1 at	  -2.500	 -12.990
+# Module 14 with 7 pixels of shape type 1 at	 -15.000	 -17.321
+# Module 15 with 7 pixels of shape type 1 at	  10.000	  -8.660
+# Module 16 with 7 pixels of shape type 1 at	 -27.500	 -21.651
+# Module 17 with 7 pixels of shape type 1 at	  22.500	  -4.330
+# Module 18 with 7 pixels of shape type 1 at	 -40.000	 -25.981
+# Module 19 with 7 pixels of shape type 1 at	  35.000	  -0.000
+# Module 20 with 7 pixels of shape type 1 at	 -52.500	 -30.311
+# Module 21 with 7 pixels of shape type 1 at	  47.500	   4.330
+# Module 22 with 7 pixels of shape type 1 at	 -65.000	 -34.641
+# Module 23 with 7 pixels of shape type 1 at	  60.000	   8.660
+# Module 24 with 7 pixels of shape type 1 at	 -77.500	 -38.971
+# Module 25 with 7 pixels of shape type 1 at	  72.500	  12.990
+# Module 26 with 7 pixels of shape type 1 at	  85.000	  17.321
+# Module 27 with 7 pixels of shape type 1 at	   2.500	  12.990
+# Module 28 with 7 pixels of shape type 1 at	 -10.000	   8.660
+# Module 29 with 7 pixels of shape type 1 at	  15.000	  17.321
+# Module 30 with 7 pixels of shape type 1 at	 -22.500	   4.330
+# Module 31 with 7 pixels of shape type 1 at	  27.500	  21.651
+# Module 32 with 7 pixels of shape type 1 at	 -35.000	   0.000
+# Module 33 with 7 pixels of shape type 1 at	  40.000	  25.981
+# Module 34 with 7 pixels of shape type 1 at	 -47.500	  -4.330
+# Module 35 with 7 pixels of shape type 1 at	  52.500	  30.311
+# Module 36 with 7 pixels of shape type 1 at	 -60.000	  -8.660
+# Module 37 with 7 pixels of shape type 1 at	  65.000	  34.641
+# Module 38 with 7 pixels of shape type 1 at	 -72.500	 -12.990
+# Module 39 with 7 pixels of shape type 1 at	  77.500	  38.971
+# Module 40 with 7 pixels of shape type 1 at	 -85.000	 -17.321
+# Module 41 with 7 pixels of shape type 1 at	  -5.000	 -25.981
+# Module 42 with 7 pixels of shape type 1 at	 -17.500	 -30.311
+# Module 43 with 7 pixels of shape type 1 at	   7.500	 -21.651
+# Module 44 with 7 pixels of shape type 1 at	 -30.000	 -34.641
+# Module 45 with 7 pixels of shape type 1 at	  20.000	 -17.321
+# Module 46 with 7 pixels of shape type 1 at	 -42.500	 -38.971
+# Module 47 with 7 pixels of shape type 1 at	  32.500	 -12.990
+# Module 48 with 7 pixels of shape type 1 at	 -55.000	 -43.301
+# Module 49 with 7 pixels of shape type 1 at	  45.000	  -8.660
+# Module 50 with 7 pixels of shape type 1 at	 -67.500	 -47.631
+# Module 51 with 7 pixels of shape type 1 at	  57.500	  -4.330
+# Module 52 with 7 pixels of shape type 1 at	  70.000	  -0.000
+# Module 53 with 7 pixels of shape type 1 at	  82.500	   4.330
+# Module 54 with 7 pixels of shape type 1 at	   5.000	  25.981
+# Module 55 with 7 pixels of shape type 1 at	  -7.500	  21.651
+# Module 56 with 7 pixels of shape type 1 at	  17.500	  30.311
+# Module 57 with 7 pixels of shape type 1 at	 -20.000	  17.321
+# Module 58 with 7 pixels of shape type 1 at	  30.000	  34.641
+# Module 59 with 7 pixels of shape type 1 at	 -32.500	  12.990
+# Module 60 with 7 pixels of shape type 1 at	  42.500	  38.971
+# Module 61 with 7 pixels of shape type 1 at	 -45.000	   8.660
+# Module 62 with 7 pixels of shape type 1 at	  55.000	  43.301
+# Module 63 with 7 pixels of shape type 1 at	 -57.500	   4.330
+# Module 64 with 7 pixels of shape type 1 at	  67.500	  47.631
+# Module 65 with 7 pixels of shape type 1 at	 -70.000	   0.000
+# Module 66 with 7 pixels of shape type 1 at	 -82.500	  -4.330
+# Module 67 with 7 pixels of shape type 1 at	  -7.500	 -38.971
+# Module 68 with 7 pixels of shape type 1 at	 -20.000	 -43.301
+# Module 69 with 7 pixels of shape type 1 at	   5.000	 -34.641
+# Module 70 with 7 pixels of shape type 1 at	 -32.500	 -47.631
+# Module 71 with 7 pixels of shape type 1 at	  17.500	 -30.311
+# Module 72 with 7 pixels of shape type 1 at	 -45.000	 -51.962
+# Module 73 with 7 pixels of shape type 1 at	  30.000	 -25.981
+# Module 74 with 7 pixels of shape type 1 at	 -57.500	 -56.292
+# Module 75 with 7 pixels of shape type 1 at	  42.500	 -21.651
+# Module 76 with 7 pixels of shape type 1 at	  55.000	 -17.321
+# Module 77 with 7 pixels of shape type 1 at	  67.500	 -12.990
+# Module 78 with 7 pixels of shape type 1 at	  80.000	  -8.660
+# Module 79 with 7 pixels of shape type 1 at	   7.500	  38.971
+# Module 80 with 7 pixels of shape type 1 at	  -5.000	  34.641
+# Module 81 with 7 pixels of shape type 1 at	  20.000	  43.301
+# Module 82 with 7 pixels of shape type 1 at	 -17.500	  30.311
+# Module 83 with 7 pixels of shape type 1 at	  32.500	  47.631
+# Module 84 with 7 pixels of shape type 1 at	 -30.000	  25.981
+# Module 85 with 7 pixels of shape type 1 at	  45.000	  51.962
+# Module 86 with 7 pixels of shape type 1 at	 -42.500	  21.651
+# Module 87 with 7 pixels of shape type 1 at	  57.500	  56.292
+# Module 88 with 7 pixels of shape type 1 at	 -55.000	  17.321
+# Module 89 with 7 pixels of shape type 1 at	 -67.500	  12.990
+# Module 90 with 7 pixels of shape type 1 at	 -80.000	   8.660
+# Module 91 with 7 pixels of shape type 1 at	 -10.000	 -51.962
+# Module 92 with 7 pixels of shape type 1 at	 -22.500	 -56.292
+# Module 93 with 7 pixels of shape type 1 at	   2.500	 -47.631
+# Module 94 with 7 pixels of shape type 1 at	 -35.000	 -60.622
+# Module 95 with 7 pixels of shape type 1 at	  15.000	 -43.301
+# Module 96 with 7 pixels of shape type 1 at	 -47.500	 -64.952
+# Module 97 with 7 pixels of shape type 1 at	  27.500	 -38.971
+# Module 98 with 7 pixels of shape type 1 at	  40.000	 -34.641
+# Module 99 with 7 pixels of shape type 1 at	  52.500	 -30.311
+# Module 100 with 7 pixels of shape type 1 at	  65.000	 -25.981
+# Module 101 with 7 pixels of shape type 1 at	  77.500	 -21.651
+# Module 102 with 7 pixels of shape type 1 at	  10.000	  51.962
+# Module 103 with 7 pixels of shape type 1 at	  -2.500	  47.631
+# Module 104 with 7 pixels of shape type 1 at	  22.500	  56.292
+# Module 105 with 7 pixels of shape type 1 at	 -15.000	  43.301
+# Module 106 with 7 pixels of shape type 1 at	  35.000	  60.622
+# Module 107 with 7 pixels of shape type 1 at	 -27.500	  38.971
+# Module 108 with 7 pixels of shape type 1 at	  47.500	  64.952
+# Module 109 with 7 pixels of shape type 1 at	 -40.000	  34.641
+# Module 110 with 7 pixels of shape type 1 at	 -52.500	  30.311
+# Module 111 with 7 pixels of shape type 1 at	 -65.000	  25.981
+# Module 112 with 7 pixels of shape type 1 at	 -77.500	  21.651
+# Module 113 with 7 pixels of shape type 1 at	 -12.500	 -64.952
+# Module 114 with 7 pixels of shape type 1 at	 -25.000	 -69.282
+# Module 115 with 7 pixels of shape type 1 at	   0.000	 -60.622
+# Module 116 with 7 pixels of shape type 1 at	 -37.500	 -73.612
+# Module 117 with 7 pixels of shape type 1 at	  12.500	 -56.292
+# Module 118 with 7 pixels of shape type 1 at	  25.000	 -51.962
+# Module 119 with 7 pixels of shape type 1 at	  37.500	 -47.631
+# Module 120 with 7 pixels of shape type 1 at	  50.000	 -43.301
+# Module 121 with 7 pixels of shape type 1 at	  62.500	 -38.971
+# Module 122 with 7 pixels of shape type 1 at	  75.000	 -34.641
+# Module 123 with 7 pixels of shape type 1 at	  12.500	  64.952
+# Module 124 with 7 pixels of shape type 1 at	   0.000	  60.622
+# Module 125 with 7 pixels of shape type 1 at	  25.000	  69.282
+# Module 126 with 7 pixels of shape type 1 at	 -12.500	  56.292
+# Module 127 with 7 pixels of shape type 1 at	  37.500	  73.612
+# Module 128 with 7 pixels of shape type 1 at	 -25.000	  51.962
+# Module 129 with 7 pixels of shape type 1 at	 -37.500	  47.631
+# Module 130 with 7 pixels of shape type 1 at	 -50.000	  43.301
+# Module 131 with 7 pixels of shape type 1 at	 -62.500	  38.971
+# Module 132 with 7 pixels of shape type 1 at	 -75.000	  34.641
+# Module 133 with 7 pixels of shape type 1 at	 -15.000	 -77.942
+# Module 134 with 7 pixels of shape type 1 at	 -27.500	 -82.272
+# Module 135 with 7 pixels of shape type 1 at	  -2.500	 -73.612
+# Module 136 with 7 pixels of shape type 1 at	  10.000	 -69.282
+# Module 137 with 7 pixels of shape type 1 at	  22.500	 -64.952
+# Module 138 with 7 pixels of shape type 1 at	  35.000	 -60.622
+# Module 139 with 7 pixels of shape type 1 at	  47.500	 -56.292
+# Module 140 with 7 pixels of shape type 1 at	  60.000	 -51.962
+# Module 141 with 7 pixels of shape type 1 at	  72.500	 -47.631
+# Module 142 with 7 pixels of shape type 1 at	  15.000	  77.942
+# Module 143 with 7 pixels of shape type 1 at	   2.500	  73.612
+# Module 144 with 7 pixels of shape type 1 at	  27.500	  82.272
+# Module 145 with 7 pixels of shape type 1 at	 -10.000	  69.282
+# Module 146 with 7 pixels of shape type 1 at	 -22.500	  64.952
+# Module 147 with 7 pixels of shape type 1 at	 -35.000	  60.622
+# Module 148 with 7 pixels of shape type 1 at	 -47.500	  56.292
+# Module 149 with 7 pixels of shape type 1 at	 -60.000	  51.962
+# Module 150 with 7 pixels of shape type 1 at	 -72.500	  47.631
+# Module 151 with 7 pixels of shape type 1 at	  -5.000	 -86.603
+# Module 152 with 7 pixels of shape type 1 at	   7.500	 -82.272
+# Module 153 with 7 pixels of shape type 1 at	  20.000	 -77.942
+# Module 154 with 7 pixels of shape type 1 at	  32.500	 -73.612
+# Module 155 with 7 pixels of shape type 1 at	  45.000	 -69.282
+# Module 156 with 7 pixels of shape type 1 at	  57.500	 -64.952
+# Module 157 with 7 pixels of shape type 1 at	   5.000	  86.603
+# Module 158 with 7 pixels of shape type 1 at	  -7.500	  82.272
+# Module 159 with 7 pixels of shape type 1 at	 -20.000	  77.942
+# Module 160 with 7 pixels of shape type 1 at	 -32.500	  73.612
+# Module 161 with 7 pixels of shape type 1 at	 -45.000	  69.282
+# Module 162 with 7 pixels of shape type 1 at	 -57.500	  64.952
+
+Pixel	    0 1	   0.000     0.000	    0   0 0	0x00 1
+Pixel	    1 1	   5.000     0.000	    0   1 0	0x00 1
+Pixel	    2 1	   2.500     4.330	    0   2 0	0x00 1
+Pixel	    3 1	  -2.500     4.330	    0   3 0	0x00 1
+Pixel	    4 1	  -5.000     0.000	    0   4 0	0x00 1
+Pixel	    5 1	  -2.500    -4.330	    0   5 0	0x00 1
+Pixel	    6 1	   2.500    -4.330	    0   6 0	0x00 1
+Pixel	    7 1	 -12.500    -4.330	    1   0 0	0x01 1
+Pixel	    8 1	  -7.500    -4.330	    1   1 0	0x01 1
+Pixel	    9 1	 -10.000     0.000	    1   2 0	0x01 1
+Pixel	   10 1	 -15.000     0.000	    1   3 0	0x01 1
+Pixel	   11 1	 -17.500    -4.330	    1   4 0	0x01 1
+Pixel	   12 1	 -15.000    -8.660	    1   5 0	0x01 1
+Pixel	   13 1	 -10.000    -8.660	    1   6 0	0x01 1
+Pixel	   14 1	  12.500     4.330	    2   0 0	0x02 1
+Pixel	   15 1	  17.500     4.330	    2   1 0	0x02 1
+Pixel	   16 1	  15.000     8.660	    2   2 0	0x02 1
+Pixel	   17 1	  10.000     8.660	    2   3 0	0x02 1
+Pixel	   18 1	   7.500     4.330	    2   4 0	0x02 1
+Pixel	   19 1	  10.000     0.000	    2   5 0	0x02 1
+Pixel	   20 1	  15.000     0.000	    2   6 0	0x02 1
+Pixel	   21 1	 -25.000    -8.660	    3   0 0	0x03 1
+Pixel	   22 1	 -20.000    -8.660	    3   1 0	0x03 1
+Pixel	   23 1	 -22.500    -4.330	    3   2 0	0x03 1
+Pixel	   24 1	 -27.500    -4.330	    3   3 0	0x03 1
+Pixel	   25 1	 -30.000    -8.660	    3   4 0	0x03 1
+Pixel	   26 1	 -27.500   -12.990	    3   5 0	0x03 1
+Pixel	   27 1	 -22.500   -12.990	    3   6 0	0x03 1
+Pixel	   28 1	  25.000     8.660	    4   0 0	0x04 1
+Pixel	   29 1	  30.000     8.660	    4   1 0	0x04 1
+Pixel	   30 1	  27.500    12.990	    4   2 0	0x04 1
+Pixel	   31 1	  22.500    12.990	    4   3 0	0x04 1
+Pixel	   32 1	  20.000     8.660	    4   4 0	0x04 1
+Pixel	   33 1	  22.500     4.330	    4   5 0	0x04 1
+Pixel	   34 1	  27.500     4.330	    4   6 0	0x04 1
+Pixel	   35 1	 -37.500   -12.990	    5   0 0	0x05 1
+Pixel	   36 1	 -32.500   -12.990	    5   1 0	0x05 1
+Pixel	   37 1	 -35.000    -8.660	    5   2 0	0x05 1
+Pixel	   38 1	 -40.000    -8.660	    5   3 0	0x05 1
+Pixel	   39 1	 -42.500   -12.990	    5   4 0	0x05 1
+Pixel	   40 1	 -40.000   -17.321	    5   5 0	0x05 1
+Pixel	   41 1	 -35.000   -17.321	    5   6 0	0x05 1
+Pixel	   42 1	  37.500    12.990	    6   0 0	0x06 1
+Pixel	   43 1	  42.500    12.990	    6   1 0	0x06 1
+Pixel	   44 1	  40.000    17.321	    6   2 0	0x06 1
+Pixel	   45 1	  35.000    17.321	    6   3 0	0x06 1
+Pixel	   46 1	  32.500    12.990	    6   4 0	0x06 1
+Pixel	   47 1	  35.000     8.660	    6   5 0	0x06 1
+Pixel	   48 1	  40.000     8.660	    6   6 0	0x06 1
+Pixel	   49 1	 -50.000   -17.321	    7   0 0	0x07 1
+Pixel	   50 1	 -45.000   -17.321	    7   1 0	0x07 1
+Pixel	   51 1	 -47.500   -12.990	    7   2 0	0x07 1
+Pixel	   52 1	 -52.500   -12.990	    7   3 0	0x07 1
+Pixel	   53 1	 -55.000   -17.321	    7   4 0	0x07 1
+Pixel	   54 1	 -52.500   -21.651	    7   5 0	0x07 1
+Pixel	   55 1	 -47.500   -21.651	    7   6 0	0x07 1
+Pixel	   56 1	  50.000    17.321	    8   0 0	0x08 1
+Pixel	   57 1	  55.000    17.321	    8   1 0	0x08 1
+Pixel	   58 1	  52.500    21.651	    8   2 0	0x08 1
+Pixel	   59 1	  47.500    21.651	    8   3 0	0x08 1
+Pixel	   60 1	  45.000    17.321	    8   4 0	0x08 1
+Pixel	   61 1	  47.500    12.990	    8   5 0	0x08 1
+Pixel	   62 1	  52.500    12.990	    8   6 0	0x08 1
+Pixel	   63 1	 -62.500   -21.651	    9   0 0	0x09 1
+Pixel	   64 1	 -57.500   -21.651	    9   1 0	0x09 1
+Pixel	   65 1	 -60.000   -17.321	    9   2 0	0x09 1
+Pixel	   66 1	 -65.000   -17.321	    9   3 0	0x09 1
+Pixel	   67 1	 -67.500   -21.651	    9   4 0	0x09 1
+Pixel	   68 1	 -65.000   -25.981	    9   5 0	0x09 1
+Pixel	   69 1	 -60.000   -25.981	    9   6 0	0x09 1
+Pixel	   70 1	  62.500    21.651	   10   0 0	0x0a 1
+Pixel	   71 1	  67.500    21.651	   10   1 0	0x0a 1
+Pixel	   72 1	  65.000    25.981	   10   2 0	0x0a 1
+Pixel	   73 1	  60.000    25.981	   10   3 0	0x0a 1
+Pixel	   74 1	  57.500    21.651	   10   4 0	0x0a 1
+Pixel	   75 1	  60.000    17.321	   10   5 0	0x0a 1
+Pixel	   76 1	  65.000    17.321	   10   6 0	0x0a 1
+Pixel	   77 1	 -75.000   -25.981	   11   0 0	0x0b 1
+Pixel	   78 1	 -70.000   -25.981	   11   1 0	0x0b 1
+Pixel	   79 1	 -72.500   -21.651	   11   2 0	0x0b 1
+Pixel	   80 1	 -77.500   -21.651	   11   3 0	0x0b 1
+Pixel	   81 1	 -80.000   -25.981	   11   4 0	0x0b 1
+Pixel	   82 1	 -77.500   -30.311	   11   5 0	0x0b 1
+Pixel	   83 1	 -72.500   -30.311	   11   6 0	0x0b 1
+Pixel	   84 1	  75.000    25.981	   12   0 0	0x0c 1
+Pixel	   85 1	  80.000    25.981	   12   1 0	0x0c 1
+Pixel	   86 1	  77.500    30.311	   12   2 0	0x0c 1
+Pixel	   87 1	  72.500    30.311	   12   3 0	0x0c 1
+Pixel	   88 1	  70.000    25.981	   12   4 0	0x0c 1
+Pixel	   89 1	  72.500    21.651	   12   5 0	0x0c 1
+Pixel	   90 1	  77.500    21.651	   12   6 0	0x0c 1
+Pixel	   91 1	  -2.500   -12.990	   13   0 0	0x0d 1
+Pixel	   92 1	   2.500   -12.990	   13   1 0	0x0d 1
+Pixel	   93 1	   0.000    -8.660	   13   2 0	0x0d 1
+Pixel	   94 1	  -5.000    -8.660	   13   3 0	0x0d 1
+Pixel	   95 1	  -7.500   -12.990	   13   4 0	0x0d 1
+Pixel	   96 1	  -5.000   -17.321	   13   5 0	0x0d 1
+Pixel	   97 1	   0.000   -17.321	   13   6 0	0x0d 1
+Pixel	   98 1	 -15.000   -17.321	   14   0 0	0x0e 1
+Pixel	   99 1	 -10.000   -17.321	   14   1 0	0x0e 1
+Pixel	  100 1	 -12.500   -12.990	   14   2 0	0x0e 1
+Pixel	  101 1	 -17.500   -12.990	   14   3 0	0x0e 1
+Pixel	  102 1	 -20.000   -17.321	   14   4 0	0x0e 1
+Pixel	  103 1	 -17.500   -21.651	   14   5 0	0x0e 1
+Pixel	  104 1	 -12.500   -21.651	   14   6 0	0x0e 1
+Pixel	  105 1	  10.000    -8.660	   15   0 0	0x0f 1
+Pixel	  106 1	  15.000    -8.660	   15   1 0	0x0f 1
+Pixel	  107 1	  12.500    -4.330	   15   2 0	0x0f 1
+Pixel	  108 1	   7.500    -4.330	   15   3 0	0x0f 1
+Pixel	  109 1	   5.000    -8.660	   15   4 0	0x0f 1
+Pixel	  110 1	   7.500   -12.990	   15   5 0	0x0f 1
+Pixel	  111 1	  12.500   -12.990	   15   6 0	0x0f 1
+Pixel	  112 1	 -27.500   -21.651	   16   0 0	0x10 1
+Pixel	  113 1	 -22.500   -21.651	   16   1 0	0x10 1
+Pixel	  114 1	 -25.000   -17.321	   16   2 0	0x10 1
+Pixel	  115 1	 -30.000   -17.321	   16   3 0	0x10 1
+Pixel	  116 1	 -32.500   -21.651	   16   4 0	0x10 1
+Pixel	  117 1	 -30.000   -25.981	   16   5 0	0x10 1
+Pixel	  118 1	 -25.000   -25.981	   16   6 0	0x10 1
+Pixel	  119 1	  22.500    -4.330	   17   0 0	0x11 1
+Pixel	  120 1	  27.500    -4.330	   17   1 0	0x11 1
+Pixel	  121 1	  25.000    -0.000	   17   2 0	0x11 1
+Pixel	  122 1	  20.000    -0.000	   17   3 0	0x11 1
+Pixel	  123 1	  17.500    -4.330	   17   4 0	0x11 1
+Pixel	  124 1	  20.000    -8.660	   17   5 0	0x11 1
+Pixel	  125 1	  25.000    -8.660	   17   6 0	0x11 1
+Pixel	  126 1	 -40.000   -25.981	   18   0 0	0x12 1
+Pixel	  127 1	 -35.000   -25.981	   18   1 0	0x12 1
+Pixel	  128 1	 -37.500   -21.651	   18   2 0	0x12 1
+Pixel	  129 1	 -42.500   -21.651	   18   3 0	0x12 1
+Pixel	  130 1	 -45.000   -25.981	   18   4 0	0x12 1
+Pixel	  131 1	 -42.500   -30.311	   18   5 0	0x12 1
+Pixel	  132 1	 -37.500   -30.311	   18   6 0	0x12 1
+Pixel	  133 1	  35.000    -0.000	   19   0 0	0x13 1
+Pixel	  134 1	  40.000    -0.000	   19   1 0	0x13 1
+Pixel	  135 1	  37.500     4.330	   19   2 0	0x13 1
+Pixel	  136 1	  32.500     4.330	   19   3 0	0x13 1
+Pixel	  137 1	  30.000    -0.000	   19   4 0	0x13 1
+Pixel	  138 1	  32.500    -4.330	   19   5 0	0x13 1
+Pixel	  139 1	  37.500    -4.330	   19   6 0	0x13 1
+Pixel	  140 1	 -52.500   -30.311	   20   0 0	0x14 1
+Pixel	  141 1	 -47.500   -30.311	   20   1 0	0x14 1
+Pixel	  142 1	 -50.000   -25.981	   20   2 0	0x14 1
+Pixel	  143 1	 -55.000   -25.981	   20   3 0	0x14 1
+Pixel	  144 1	 -57.500   -30.311	   20   4 0	0x14 1
+Pixel	  145 1	 -55.000   -34.641	   20   5 0	0x14 1
+Pixel	  146 1	 -50.000   -34.641	   20   6 0	0x14 1
+Pixel	  147 1	  47.500     4.330	   21   0 0	0x15 1
+Pixel	  148 1	  52.500     4.330	   21   1 0	0x15 1
+Pixel	  149 1	  50.000     8.660	   21   2 0	0x15 1
+Pixel	  150 1	  45.000     8.660	   21   3 0	0x15 1
+Pixel	  151 1	  42.500     4.330	   21   4 0	0x15 1
+Pixel	  152 1	  45.000    -0.000	   21   5 0	0x15 1
+Pixel	  153 1	  50.000    -0.000	   21   6 0	0x15 1
+Pixel	  154 1	 -65.000   -34.641	   22   0 0	0x16 1
+Pixel	  155 1	 -60.000   -34.641	   22   1 0	0x16 1
+Pixel	  156 1	 -62.500   -30.311	   22   2 0	0x16 1
+Pixel	  157 1	 -67.500   -30.311	   22   3 0	0x16 1
+Pixel	  158 1	 -70.000   -34.641	   22   4 0	0x16 1
+Pixel	  159 1	 -67.500   -38.971	   22   5 0	0x16 1
+Pixel	  160 1	 -62.500   -38.971	   22   6 0	0x16 1
+Pixel	  161 1	  60.000     8.660	   23   0 0	0x17 1
+Pixel	  162 1	  65.000     8.660	   23   1 0	0x17 1
+Pixel	  163 1	  62.500    12.990	   23   2 0	0x17 1
+Pixel	  164 1	  57.500    12.990	   23   3 0	0x17 1
+Pixel	  165 1	  55.000     8.660	   23   4 0	0x17 1
+Pixel	  166 1	  57.500     4.330	   23   5 0	0x17 1
+Pixel	  167 1	  62.500     4.330	   23   6 0	0x17 1
+Pixel	  168 1	 -77.500   -38.971	   24   0 0	0x18 1
+Pixel	  169 1	 -72.500   -38.971	   24   1 0	0x18 1
+Pixel	  170 1	 -75.000   -34.641	   24   2 0	0x18 1
+Pixel	  171 1	 -80.000   -34.641	   24   3 0	0x18 1
+Pixel	  172 1	 -82.500   -38.971	   24   4 0	0x18 1
+Pixel	  173 1	 -80.000   -43.301	   24   5 0	0x18 1
+Pixel	  174 1	 -75.000   -43.301	   24   6 0	0x18 1
+Pixel	  175 1	  72.500    12.990	   25   0 0	0x19 1
+Pixel	  176 1	  77.500    12.990	   25   1 0	0x19 1
+Pixel	  177 1	  75.000    17.321	   25   2 0	0x19 1
+Pixel	  178 1	  70.000    17.321	   25   3 0	0x19 1
+Pixel	  179 1	  67.500    12.990	   25   4 0	0x19 1
+Pixel	  180 1	  70.000     8.660	   25   5 0	0x19 1
+Pixel	  181 1	  75.000     8.660	   25   6 0	0x19 1
+Pixel	  182 1	  85.000    17.321	   26   0 0	0x1a 1
+Pixel	  183 1	  90.000    17.321	   26   1 0	0x1a 1
+Pixel	  184 1	  87.500    21.651	   26   2 0	0x1a 1
+Pixel	  185 1	  82.500    21.651	   26   3 0	0x1a 1
+Pixel	  186 1	  80.000    17.321	   26   4 0	0x1a 1
+Pixel	  187 1	  82.500    12.990	   26   5 0	0x1a 1
+Pixel	  188 1	  87.500    12.990	   26   6 0	0x1a 1
+Pixel	  189 1	   2.500    12.990	   27   0 0	0x1b 1
+Pixel	  190 1	   7.500    12.990	   27   1 0	0x1b 1
+Pixel	  191 1	   5.000    17.321	   27   2 0	0x1b 1
+Pixel	  192 1	   0.000    17.321	   27   3 0	0x1b 1
+Pixel	  193 1	  -2.500    12.990	   27   4 0	0x1b 1
+Pixel	  194 1	   0.000     8.660	   27   5 0	0x1b 1
+Pixel	  195 1	   5.000     8.660	   27   6 0	0x1b 1
+Pixel	  196 1	 -10.000     8.660	   28   0 0	0x1c 1
+Pixel	  197 1	  -5.000     8.660	   28   1 0	0x1c 1
+Pixel	  198 1	  -7.500    12.990	   28   2 0	0x1c 1
+Pixel	  199 1	 -12.500    12.990	   28   3 0	0x1c 1
+Pixel	  200 1	 -15.000     8.660	   28   4 0	0x1c 1
+Pixel	  201 1	 -12.500     4.330	   28   5 0	0x1c 1
+Pixel	  202 1	  -7.500     4.330	   28   6 0	0x1c 1
+Pixel	  203 1	  15.000    17.321	   29   0 0	0x1d 1
+Pixel	  204 1	  20.000    17.321	   29   1 0	0x1d 1
+Pixel	  205 1	  17.500    21.651	   29   2 0	0x1d 1
+Pixel	  206 1	  12.500    21.651	   29   3 0	0x1d 1
+Pixel	  207 1	  10.000    17.321	   29   4 0	0x1d 1
+Pixel	  208 1	  12.500    12.990	   29   5 0	0x1d 1
+Pixel	  209 1	  17.500    12.990	   29   6 0	0x1d 1
+Pixel	  210 1	 -22.500     4.330	   30   0 0	0x1e 1
+Pixel	  211 1	 -17.500     4.330	   30   1 0	0x1e 1
+Pixel	  212 1	 -20.000     8.660	   30   2 0	0x1e 1
+Pixel	  213 1	 -25.000     8.660	   30   3 0	0x1e 1
+Pixel	  214 1	 -27.500     4.330	   30   4 0	0x1e 1
+Pixel	  215 1	 -25.000     0.000	   30   5 0	0x1e 1
+Pixel	  216 1	 -20.000     0.000	   30   6 0	0x1e 1
+Pixel	  217 1	  27.500    21.651	   31   0 0	0x1f 1
+Pixel	  218 1	  32.500    21.651	   31   1 0	0x1f 1
+Pixel	  219 1	  30.000    25.981	   31   2 0	0x1f 1
+Pixel	  220 1	  25.000    25.981	   31   3 0	0x1f 1
+Pixel	  221 1	  22.500    21.651	   31   4 0	0x1f 1
+Pixel	  222 1	  25.000    17.321	   31   5 0	0x1f 1
+Pixel	  223 1	  30.000    17.321	   31   6 0	0x1f 1
+Pixel	  224 1	 -35.000     0.000	   32   0 0	0x20 1
+Pixel	  225 1	 -30.000     0.000	   32   1 0	0x20 1
+Pixel	  226 1	 -32.500     4.330	   32   2 0	0x20 1
+Pixel	  227 1	 -37.500     4.330	   32   3 0	0x20 1
+Pixel	  228 1	 -40.000     0.000	   32   4 0	0x20 1
+Pixel	  229 1	 -37.500    -4.330	   32   5 0	0x20 1
+Pixel	  230 1	 -32.500    -4.330	   32   6 0	0x20 1
+Pixel	  231 1	  40.000    25.981	   33   0 0	0x21 1
+Pixel	  232 1	  45.000    25.981	   33   1 0	0x21 1
+Pixel	  233 1	  42.500    30.311	   33   2 0	0x21 1
+Pixel	  234 1	  37.500    30.311	   33   3 0	0x21 1
+Pixel	  235 1	  35.000    25.981	   33   4 0	0x21 1
+Pixel	  236 1	  37.500    21.651	   33   5 0	0x21 1
+Pixel	  237 1	  42.500    21.651	   33   6 0	0x21 1
+Pixel	  238 1	 -47.500    -4.330	   34   0 0	0x22 1
+Pixel	  239 1	 -42.500    -4.330	   34   1 0	0x22 1
+Pixel	  240 1	 -45.000     0.000	   34   2 0	0x22 1
+Pixel	  241 1	 -50.000     0.000	   34   3 0	0x22 1
+Pixel	  242 1	 -52.500    -4.330	   34   4 0	0x22 1
+Pixel	  243 1	 -50.000    -8.660	   34   5 0	0x22 1
+Pixel	  244 1	 -45.000    -8.660	   34   6 0	0x22 1
+Pixel	  245 1	  52.500    30.311	   35   0 0	0x23 1
+Pixel	  246 1	  57.500    30.311	   35   1 0	0x23 1
+Pixel	  247 1	  55.000    34.641	   35   2 0	0x23 1
+Pixel	  248 1	  50.000    34.641	   35   3 0	0x23 1
+Pixel	  249 1	  47.500    30.311	   35   4 0	0x23 1
+Pixel	  250 1	  50.000    25.981	   35   5 0	0x23 1
+Pixel	  251 1	  55.000    25.981	   35   6 0	0x23 1
+Pixel	  252 1	 -60.000    -8.660	   36   0 0	0x24 1
+Pixel	  253 1	 -55.000    -8.660	   36   1 0	0x24 1
+Pixel	  254 1	 -57.500    -4.330	   36   2 0	0x24 1
+Pixel	  255 1	 -62.500    -4.330	   36   3 0	0x24 1
+Pixel	  256 1	 -65.000    -8.660	   36   4 0	0x24 1
+Pixel	  257 1	 -62.500   -12.990	   36   5 0	0x24 1
+Pixel	  258 1	 -57.500   -12.990	   36   6 0	0x24 1
+Pixel	  259 1	  65.000    34.641	   37   0 0	0x25 1
+Pixel	  260 1	  70.000    34.641	   37   1 0	0x25 1
+Pixel	  261 1	  67.500    38.971	   37   2 0	0x25 1
+Pixel	  262 1	  62.500    38.971	   37   3 0	0x25 1
+Pixel	  263 1	  60.000    34.641	   37   4 0	0x25 1
+Pixel	  264 1	  62.500    30.311	   37   5 0	0x25 1
+Pixel	  265 1	  67.500    30.311	   37   6 0	0x25 1
+Pixel	  266 1	 -72.500   -12.990	   38   0 0	0x26 1
+Pixel	  267 1	 -67.500   -12.990	   38   1 0	0x26 1
+Pixel	  268 1	 -70.000    -8.660	   38   2 0	0x26 1
+Pixel	  269 1	 -75.000    -8.660	   38   3 0	0x26 1
+Pixel	  270 1	 -77.500   -12.990	   38   4 0	0x26 1
+Pixel	  271 1	 -75.000   -17.321	   38   5 0	0x26 1
+Pixel	  272 1	 -70.000   -17.321	   38   6 0	0x26 1
+Pixel	  273 1	  77.500    38.971	   39   0 0	0x27 1
+Pixel	  274 1	  82.500    38.971	   39   1 0	0x27 1
+Pixel	  275 1	  80.000    43.301	   39   2 0	0x27 1
+Pixel	  276 1	  75.000    43.301	   39   3 0	0x27 1
+Pixel	  277 1	  72.500    38.971	   39   4 0	0x27 1
+Pixel	  278 1	  75.000    34.641	   39   5 0	0x27 1
+Pixel	  279 1	  80.000    34.641	   39   6 0	0x27 1
+Pixel	  280 1	 -85.000   -17.321	   40   0 0	0x28 1
+Pixel	  281 1	 -80.000   -17.321	   40   1 0	0x28 1
+Pixel	  282 1	 -82.500   -12.990	   40   2 0	0x28 1
+Pixel	  283 1	 -87.500   -12.990	   40   3 0	0x28 1
+Pixel	  284 1	 -90.000   -17.321	   40   4 0	0x28 1
+Pixel	  285 1	 -87.500   -21.651	   40   5 0	0x28 1
+Pixel	  286 1	 -82.500   -21.651	   40   6 0	0x28 1
+Pixel	  287 1	  -5.000   -25.981	   41   0 0	0x29 1
+Pixel	  288 1	   0.000   -25.981	   41   1 0	0x29 1
+Pixel	  289 1	  -2.500   -21.651	   41   2 0	0x29 1
+Pixel	  290 1	  -7.500   -21.651	   41   3 0	0x29 1
+Pixel	  291 1	 -10.000   -25.981	   41   4 0	0x29 1
+Pixel	  292 1	  -7.500   -30.311	   41   5 0	0x29 1
+Pixel	  293 1	  -2.500   -30.311	   41   6 0	0x29 1
+Pixel	  294 1	 -17.500   -30.311	   42   0 0	0x2a 1
+Pixel	  295 1	 -12.500   -30.311	   42   1 0	0x2a 1
+Pixel	  296 1	 -15.000   -25.981	   42   2 0	0x2a 1
+Pixel	  297 1	 -20.000   -25.981	   42   3 0	0x2a 1
+Pixel	  298 1	 -22.500   -30.311	   42   4 0	0x2a 1
+Pixel	  299 1	 -20.000   -34.641	   42   5 0	0x2a 1
+Pixel	  300 1	 -15.000   -34.641	   42   6 0	0x2a 1
+Pixel	  301 1	   7.500   -21.651	   43   0 0	0x2b 1
+Pixel	  302 1	  12.500   -21.651	   43   1 0	0x2b 1
+Pixel	  303 1	  10.000   -17.321	   43   2 0	0x2b 1
+Pixel	  304 1	   5.000   -17.321	   43   3 0	0x2b 1
+Pixel	  305 1	   2.500   -21.651	   43   4 0	0x2b 1
+Pixel	  306 1	   5.000   -25.981	   43   5 0	0x2b 1
+Pixel	  307 1	  10.000   -25.981	   43   6 0	0x2b 1
+Pixel	  308 1	 -30.000   -34.641	   44   0 0	0x2c 1
+Pixel	  309 1	 -25.000   -34.641	   44   1 0	0x2c 1
+Pixel	  310 1	 -27.500   -30.311	   44   2 0	0x2c 1
+Pixel	  311 1	 -32.500   -30.311	   44   3 0	0x2c 1
+Pixel	  312 1	 -35.000   -34.641	   44   4 0	0x2c 1
+Pixel	  313 1	 -32.500   -38.971	   44   5 0	0x2c 1
+Pixel	  314 1	 -27.500   -38.971	   44   6 0	0x2c 1
+Pixel	  315 1	  20.000   -17.321	   45   0 0	0x2d 1
+Pixel	  316 1	  25.000   -17.321	   45   1 0	0x2d 1
+Pixel	  317 1	  22.500   -12.990	   45   2 0	0x2d 1
+Pixel	  318 1	  17.500   -12.990	   45   3 0	0x2d 1
+Pixel	  319 1	  15.000   -17.321	   45   4 0	0x2d 1
+Pixel	  320 1	  17.500   -21.651	   45   5 0	0x2d 1
+Pixel	  321 1	  22.500   -21.651	   45   6 0	0x2d 1
+Pixel	  322 1	 -42.500   -38.971	   46   0 0	0x2e 1
+Pixel	  323 1	 -37.500   -38.971	   46   1 0	0x2e 1
+Pixel	  324 1	 -40.000   -34.641	   46   2 0	0x2e 1
+Pixel	  325 1	 -45.000   -34.641	   46   3 0	0x2e 1
+Pixel	  326 1	 -47.500   -38.971	   46   4 0	0x2e 1
+Pixel	  327 1	 -45.000   -43.301	   46   5 0	0x2e 1
+Pixel	  328 1	 -40.000   -43.301	   46   6 0	0x2e 1
+Pixel	  329 1	  32.500   -12.990	   47   0 0	0x2f 1
+Pixel	  330 1	  37.500   -12.990	   47   1 0	0x2f 1
+Pixel	  331 1	  35.000    -8.660	   47   2 0	0x2f 1
+Pixel	  332 1	  30.000    -8.660	   47   3 0	0x2f 1
+Pixel	  333 1	  27.500   -12.990	   47   4 0	0x2f 1
+Pixel	  334 1	  30.000   -17.321	   47   5 0	0x2f 1
+Pixel	  335 1	  35.000   -17.321	   47   6 0	0x2f 1
+Pixel	  336 1	 -55.000   -43.301	   48   0 0	0x30 1
+Pixel	  337 1	 -50.000   -43.301	   48   1 0	0x30 1
+Pixel	  338 1	 -52.500   -38.971	   48   2 0	0x30 1
+Pixel	  339 1	 -57.500   -38.971	   48   3 0	0x30 1
+Pixel	  340 1	 -60.000   -43.301	   48   4 0	0x30 1
+Pixel	  341 1	 -57.500   -47.631	   48   5 0	0x30 1
+Pixel	  342 1	 -52.500   -47.631	   48   6 0	0x30 1
+Pixel	  343 1	  45.000    -8.660	   49   0 0	0x31 1
+Pixel	  344 1	  50.000    -8.660	   49   1 0	0x31 1
+Pixel	  345 1	  47.500    -4.330	   49   2 0	0x31 1
+Pixel	  346 1	  42.500    -4.330	   49   3 0	0x31 1
+Pixel	  347 1	  40.000    -8.660	   49   4 0	0x31 1
+Pixel	  348 1	  42.500   -12.990	   49   5 0	0x31 1
+Pixel	  349 1	  47.500   -12.990	   49   6 0	0x31 1
+Pixel	  350 1	 -67.500   -47.631	   50   0 0	0x32 1
+Pixel	  351 1	 -62.500   -47.631	   50   1 0	0x32 1
+Pixel	  352 1	 -65.000   -43.301	   50   2 0	0x32 1
+Pixel	  353 1	 -70.000   -43.301	   50   3 0	0x32 1
+Pixel	  354 1	 -72.500   -47.631	   50   4 0	0x32 1
+Pixel	  355 1	 -70.000   -51.962	   50   5 0	0x32 1
+Pixel	  356 1	 -65.000   -51.962	   50   6 0	0x32 1
+Pixel	  357 1	  57.500    -4.330	   51   0 0	0x33 1
+Pixel	  358 1	  62.500    -4.330	   51   1 0	0x33 1
+Pixel	  359 1	  60.000    -0.000	   51   2 0	0x33 1
+Pixel	  360 1	  55.000    -0.000	   51   3 0	0x33 1
+Pixel	  361 1	  52.500    -4.330	   51   4 0	0x33 1
+Pixel	  362 1	  55.000    -8.660	   51   5 0	0x33 1
+Pixel	  363 1	  60.000    -8.660	   51   6 0	0x33 1
+Pixel	  364 1	  70.000    -0.000	   52   0 0	0x34 1
+Pixel	  365 1	  75.000    -0.000	   52   1 0	0x34 1
+Pixel	  366 1	  72.500     4.330	   52   2 0	0x34 1
+Pixel	  367 1	  67.500     4.330	   52   3 0	0x34 1
+Pixel	  368 1	  65.000    -0.000	   52   4 0	0x34 1
+Pixel	  369 1	  67.500    -4.330	   52   5 0	0x34 1
+Pixel	  370 1	  72.500    -4.330	   52   6 0	0x34 1
+Pixel	  371 1	  82.500     4.330	   53   0 0	0x35 1
+Pixel	  372 1	  87.500     4.330	   53   1 0	0x35 1
+Pixel	  373 1	  85.000     8.660	   53   2 0	0x35 1
+Pixel	  374 1	  80.000     8.660	   53   3 0	0x35 1
+Pixel	  375 1	  77.500     4.330	   53   4 0	0x35 1
+Pixel	  376 1	  80.000    -0.000	   53   5 0	0x35 1
+Pixel	  377 1	  85.000    -0.000	   53   6 0	0x35 1
+Pixel	  378 1	   5.000    25.981	   54   0 0	0x36 1
+Pixel	  379 1	  10.000    25.981	   54   1 0	0x36 1
+Pixel	  380 1	   7.500    30.311	   54   2 0	0x36 1
+Pixel	  381 1	   2.500    30.311	   54   3 0	0x36 1
+Pixel	  382 1	   0.000    25.981	   54   4 0	0x36 1
+Pixel	  383 1	   2.500    21.651	   54   5 0	0x36 1
+Pixel	  384 1	   7.500    21.651	   54   6 0	0x36 1
+Pixel	  385 1	  -7.500    21.651	   55   0 0	0x37 1
+Pixel	  386 1	  -2.500    21.651	   55   1 0	0x37 1
+Pixel	  387 1	  -5.000    25.981	   55   2 0	0x37 1
+Pixel	  388 1	 -10.000    25.981	   55   3 0	0x37 1
+Pixel	  389 1	 -12.500    21.651	   55   4 0	0x37 1
+Pixel	  390 1	 -10.000    17.321	   55   5 0	0x37 1
+Pixel	  391 1	  -5.000    17.321	   55   6 0	0x37 1
+Pixel	  392 1	  17.500    30.311	   56   0 0	0x38 1
+Pixel	  393 1	  22.500    30.311	   56   1 0	0x38 1
+Pixel	  394 1	  20.000    34.641	   56   2 0	0x38 1
+Pixel	  395 1	  15.000    34.641	   56   3 0	0x38 1
+Pixel	  396 1	  12.500    30.311	   56   4 0	0x38 1
+Pixel	  397 1	  15.000    25.981	   56   5 0	0x38 1
+Pixel	  398 1	  20.000    25.981	   56   6 0	0x38 1
+Pixel	  399 1	 -20.000    17.321	   57   0 0	0x39 1
+Pixel	  400 1	 -15.000    17.321	   57   1 0	0x39 1
+Pixel	  401 1	 -17.500    21.651	   57   2 0	0x39 1
+Pixel	  402 1	 -22.500    21.651	   57   3 0	0x39 1
+Pixel	  403 1	 -25.000    17.321	   57   4 0	0x39 1
+Pixel	  404 1	 -22.500    12.990	   57   5 0	0x39 1
+Pixel	  405 1	 -17.500    12.990	   57   6 0	0x39 1
+Pixel	  406 1	  30.000    34.641	   58   0 0	0x3a 1
+Pixel	  407 1	  35.000    34.641	   58   1 0	0x3a 1
+Pixel	  408 1	  32.500    38.971	   58   2 0	0x3a 1
+Pixel	  409 1	  27.500    38.971	   58   3 0	0x3a 1
+Pixel	  410 1	  25.000    34.641	   58   4 0	0x3a 1
+Pixel	  411 1	  27.500    30.311	   58   5 0	0x3a 1
+Pixel	  412 1	  32.500    30.311	   58   6 0	0x3a 1
+Pixel	  413 1	 -32.500    12.990	   59   0 0	0x3b 1
+Pixel	  414 1	 -27.500    12.990	   59   1 0	0x3b 1
+Pixel	  415 1	 -30.000    17.321	   59   2 0	0x3b 1
+Pixel	  416 1	 -35.000    17.321	   59   3 0	0x3b 1
+Pixel	  417 1	 -37.500    12.990	   59   4 0	0x3b 1
+Pixel	  418 1	 -35.000     8.660	   59   5 0	0x3b 1
+Pixel	  419 1	 -30.000     8.660	   59   6 0	0x3b 1
+Pixel	  420 1	  42.500    38.971	   60   0 0	0x3c 1
+Pixel	  421 1	  47.500    38.971	   60   1 0	0x3c 1
+Pixel	  422 1	  45.000    43.301	   60   2 0	0x3c 1
+Pixel	  423 1	  40.000    43.301	   60   3 0	0x3c 1
+Pixel	  424 1	  37.500    38.971	   60   4 0	0x3c 1
+Pixel	  425 1	  40.000    34.641	   60   5 0	0x3c 1
+Pixel	  426 1	  45.000    34.641	   60   6 0	0x3c 1
+Pixel	  427 1	 -45.000     8.660	   61   0 0	0x3d 1
+Pixel	  428 1	 -40.000     8.660	   61   1 0	0x3d 1
+Pixel	  429 1	 -42.500    12.990	   61   2 0	0x3d 1
+Pixel	  430 1	 -47.500    12.990	   61   3 0	0x3d 1
+Pixel	  431 1	 -50.000     8.660	   61   4 0	0x3d 1
+Pixel	  432 1	 -47.500     4.330	   61   5 0	0x3d 1
+Pixel	  433 1	 -42.500     4.330	   61   6 0	0x3d 1
+Pixel	  434 1	  55.000    43.301	   62   0 0	0x3e 1
+Pixel	  435 1	  60.000    43.301	   62   1 0	0x3e 1
+Pixel	  436 1	  57.500    47.631	   62   2 0	0x3e 1
+Pixel	  437 1	  52.500    47.631	   62   3 0	0x3e 1
+Pixel	  438 1	  50.000    43.301	   62   4 0	0x3e 1
+Pixel	  439 1	  52.500    38.971	   62   5 0	0x3e 1
+Pixel	  440 1	  57.500    38.971	   62   6 0	0x3e 1
+Pixel	  441 1	 -57.500     4.330	   63   0 0	0x3f 1
+Pixel	  442 1	 -52.500     4.330	   63   1 0	0x3f 1
+Pixel	  443 1	 -55.000     8.660	   63   2 0	0x3f 1
+Pixel	  444 1	 -60.000     8.660	   63   3 0	0x3f 1
+Pixel	  445 1	 -62.500     4.330	   63   4 0	0x3f 1
+Pixel	  446 1	 -60.000     0.000	   63   5 0	0x3f 1
+Pixel	  447 1	 -55.000     0.000	   63   6 0	0x3f 1
+Pixel	  448 1	  67.500    47.631	   64   0 0	0x40 1
+Pixel	  449 1	  72.500    47.631	   64   1 0	0x40 1
+Pixel	  450 1	  70.000    51.962	   64   2 0	0x40 1
+Pixel	  451 1	  65.000    51.962	   64   3 0	0x40 1
+Pixel	  452 1	  62.500    47.631	   64   4 0	0x40 1
+Pixel	  453 1	  65.000    43.301	   64   5 0	0x40 1
+Pixel	  454 1	  70.000    43.301	   64   6 0	0x40 1
+Pixel	  455 1	 -70.000     0.000	   65   0 0	0x41 1
+Pixel	  456 1	 -65.000     0.000	   65   1 0	0x41 1
+Pixel	  457 1	 -67.500     4.330	   65   2 0	0x41 1
+Pixel	  458 1	 -72.500     4.330	   65   3 0	0x41 1
+Pixel	  459 1	 -75.000     0.000	   65   4 0	0x41 1
+Pixel	  460 1	 -72.500    -4.330	   65   5 0	0x41 1
+Pixel	  461 1	 -67.500    -4.330	   65   6 0	0x41 1
+Pixel	  462 1	 -82.500    -4.330	   66   0 0	0x42 1
+Pixel	  463 1	 -77.500    -4.330	   66   1 0	0x42 1
+Pixel	  464 1	 -80.000     0.000	   66   2 0	0x42 1
+Pixel	  465 1	 -85.000     0.000	   66   3 0	0x42 1
+Pixel	  466 1	 -87.500    -4.330	   66   4 0	0x42 1
+Pixel	  467 1	 -85.000    -8.660	   66   5 0	0x42 1
+Pixel	  468 1	 -80.000    -8.660	   66   6 0	0x42 1
+Pixel	  469 1	  -7.500   -38.971	   67   0 0	0x43 1
+Pixel	  470 1	  -2.500   -38.971	   67   1 0	0x43 1
+Pixel	  471 1	  -5.000   -34.641	   67   2 0	0x43 1
+Pixel	  472 1	 -10.000   -34.641	   67   3 0	0x43 1
+Pixel	  473 1	 -12.500   -38.971	   67   4 0	0x43 1
+Pixel	  474 1	 -10.000   -43.301	   67   5 0	0x43 1
+Pixel	  475 1	  -5.000   -43.301	   67   6 0	0x43 1
+Pixel	  476 1	 -20.000   -43.301	   68   0 0	0x44 1
+Pixel	  477 1	 -15.000   -43.301	   68   1 0	0x44 1
+Pixel	  478 1	 -17.500   -38.971	   68   2 0	0x44 1
+Pixel	  479 1	 -22.500   -38.971	   68   3 0	0x44 1
+Pixel	  480 1	 -25.000   -43.301	   68   4 0	0x44 1
+Pixel	  481 1	 -22.500   -47.631	   68   5 0	0x44 1
+Pixel	  482 1	 -17.500   -47.631	   68   6 0	0x44 1
+Pixel	  483 1	   5.000   -34.641	   69   0 0	0x45 1
+Pixel	  484 1	  10.000   -34.641	   69   1 0	0x45 1
+Pixel	  485 1	   7.500   -30.311	   69   2 0	0x45 1
+Pixel	  486 1	   2.500   -30.311	   69   3 0	0x45 1
+Pixel	  487 1	   0.000   -34.641	   69   4 0	0x45 1
+Pixel	  488 1	   2.500   -38.971	   69   5 0	0x45 1
+Pixel	  489 1	   7.500   -38.971	   69   6 0	0x45 1
+Pixel	  490 1	 -32.500   -47.631	   70   0 0	0x46 1
+Pixel	  491 1	 -27.500   -47.631	   70   1 0	0x46 1
+Pixel	  492 1	 -30.000   -43.301	   70   2 0	0x46 1
+Pixel	  493 1	 -35.000   -43.301	   70   3 0	0x46 1
+Pixel	  494 1	 -37.500   -47.631	   70   4 0	0x46 1
+Pixel	  495 1	 -35.000   -51.962	   70   5 0	0x46 1
+Pixel	  496 1	 -30.000   -51.962	   70   6 0	0x46 1
+Pixel	  497 1	  17.500   -30.311	   71   0 0	0x47 1
+Pixel	  498 1	  22.500   -30.311	   71   1 0	0x47 1
+Pixel	  499 1	  20.000   -25.981	   71   2 0	0x47 1
+Pixel	  500 1	  15.000   -25.981	   71   3 0	0x47 1
+Pixel	  501 1	  12.500   -30.311	   71   4 0	0x47 1
+Pixel	  502 1	  15.000   -34.641	   71   5 0	0x47 1
+Pixel	  503 1	  20.000   -34.641	   71   6 0	0x47 1
+Pixel	  504 1	 -45.000   -51.962	   72   0 0	0x48 1
+Pixel	  505 1	 -40.000   -51.962	   72   1 0	0x48 1
+Pixel	  506 1	 -42.500   -47.631	   72   2 0	0x48 1
+Pixel	  507 1	 -47.500   -47.631	   72   3 0	0x48 1
+Pixel	  508 1	 -50.000   -51.962	   72   4 0	0x48 1
+Pixel	  509 1	 -47.500   -56.292	   72   5 0	0x48 1
+Pixel	  510 1	 -42.500   -56.292	   72   6 0	0x48 1
+Pixel	  511 1	  30.000   -25.981	   73   0 0	0x49 1
+Pixel	  512 1	  35.000   -25.981	   73   1 0	0x49 1
+Pixel	  513 1	  32.500   -21.651	   73   2 0	0x49 1
+Pixel	  514 1	  27.500   -21.651	   73   3 0	0x49 1
+Pixel	  515 1	  25.000   -25.981	   73   4 0	0x49 1
+Pixel	  516 1	  27.500   -30.311	   73   5 0	0x49 1
+Pixel	  517 1	  32.500   -30.311	   73   6 0	0x49 1
+Pixel	  518 1	 -57.500   -56.292	   74   0 0	0x4a 1
+Pixel	  519 1	 -52.500   -56.292	   74   1 0	0x4a 1
+Pixel	  520 1	 -55.000   -51.962	   74   2 0	0x4a 1
+Pixel	  521 1	 -60.000   -51.962	   74   3 0	0x4a 1
+Pixel	  522 1	 -62.500   -56.292	   74   4 0	0x4a 1
+Pixel	  523 1	 -60.000   -60.622	   74   5 0	0x4a 1
+Pixel	  524 1	 -55.000   -60.622	   74   6 0	0x4a 1
+Pixel	  525 1	  42.500   -21.651	   75   0 0	0x4b 1
+Pixel	  526 1	  47.500   -21.651	   75   1 0	0x4b 1
+Pixel	  527 1	  45.000   -17.321	   75   2 0	0x4b 1
+Pixel	  528 1	  40.000   -17.321	   75   3 0	0x4b 1
+Pixel	  529 1	  37.500   -21.651	   75   4 0	0x4b 1
+Pixel	  530 1	  40.000   -25.981	   75   5 0	0x4b 1
+Pixel	  531 1	  45.000   -25.981	   75   6 0	0x4b 1
+Pixel	  532 1	  55.000   -17.321	   76   0 0	0x4c 1
+Pixel	  533 1	  60.000   -17.321	   76   1 0	0x4c 1
+Pixel	  534 1	  57.500   -12.990	   76   2 0	0x4c 1
+Pixel	  535 1	  52.500   -12.990	   76   3 0	0x4c 1
+Pixel	  536 1	  50.000   -17.321	   76   4 0	0x4c 1
+Pixel	  537 1	  52.500   -21.651	   76   5 0	0x4c 1
+Pixel	  538 1	  57.500   -21.651	   76   6 0	0x4c 1
+Pixel	  539 1	  67.500   -12.990	   77   0 0	0x4d 1
+Pixel	  540 1	  72.500   -12.990	   77   1 0	0x4d 1
+Pixel	  541 1	  70.000    -8.660	   77   2 0	0x4d 1
+Pixel	  542 1	  65.000    -8.660	   77   3 0	0x4d 1
+Pixel	  543 1	  62.500   -12.990	   77   4 0	0x4d 1
+Pixel	  544 1	  65.000   -17.321	   77   5 0	0x4d 1
+Pixel	  545 1	  70.000   -17.321	   77   6 0	0x4d 1
+Pixel	  546 1	  80.000    -8.660	   78   0 0	0x4e 1
+Pixel	  547 1	  85.000    -8.660	   78   1 0	0x4e 1
+Pixel	  548 1	  82.500    -4.330	   78   2 0	0x4e 1
+Pixel	  549 1	  77.500    -4.330	   78   3 0	0x4e 1
+Pixel	  550 1	  75.000    -8.660	   78   4 0	0x4e 1
+Pixel	  551 1	  77.500   -12.990	   78   5 0	0x4e 1
+Pixel	  552 1	  82.500   -12.990	   78   6 0	0x4e 1
+Pixel	  553 1	   7.500    38.971	   79   0 0	0x4f 1
+Pixel	  554 1	  12.500    38.971	   79   1 0	0x4f 1
+Pixel	  555 1	  10.000    43.301	   79   2 0	0x4f 1
+Pixel	  556 1	   5.000    43.301	   79   3 0	0x4f 1
+Pixel	  557 1	   2.500    38.971	   79   4 0	0x4f 1
+Pixel	  558 1	   5.000    34.641	   79   5 0	0x4f 1
+Pixel	  559 1	  10.000    34.641	   79   6 0	0x4f 1
+Pixel	  560 1	  -5.000    34.641	   80   0 0	0x50 1
+Pixel	  561 1	   0.000    34.641	   80   1 0	0x50 1
+Pixel	  562 1	  -2.500    38.971	   80   2 0	0x50 1
+Pixel	  563 1	  -7.500    38.971	   80   3 0	0x50 1
+Pixel	  564 1	 -10.000    34.641	   80   4 0	0x50 1
+Pixel	  565 1	  -7.500    30.311	   80   5 0	0x50 1
+Pixel	  566 1	  -2.500    30.311	   80   6 0	0x50 1
+Pixel	  567 1	  20.000    43.301	   81   0 0	0x51 1
+Pixel	  568 1	  25.000    43.301	   81   1 0	0x51 1
+Pixel	  569 1	  22.500    47.631	   81   2 0	0x51 1
+Pixel	  570 1	  17.500    47.631	   81   3 0	0x51 1
+Pixel	  571 1	  15.000    43.301	   81   4 0	0x51 1
+Pixel	  572 1	  17.500    38.971	   81   5 0	0x51 1
+Pixel	  573 1	  22.500    38.971	   81   6 0	0x51 1
+Pixel	  574 1	 -17.500    30.311	   82   0 0	0x52 1
+Pixel	  575 1	 -12.500    30.311	   82   1 0	0x52 1
+Pixel	  576 1	 -15.000    34.641	   82   2 0	0x52 1
+Pixel	  577 1	 -20.000    34.641	   82   3 0	0x52 1
+Pixel	  578 1	 -22.500    30.311	   82   4 0	0x52 1
+Pixel	  579 1	 -20.000    25.981	   82   5 0	0x52 1
+Pixel	  580 1	 -15.000    25.981	   82   6 0	0x52 1
+Pixel	  581 1	  32.500    47.631	   83   0 0	0x53 1
+Pixel	  582 1	  37.500    47.631	   83   1 0	0x53 1
+Pixel	  583 1	  35.000    51.962	   83   2 0	0x53 1
+Pixel	  584 1	  30.000    51.962	   83   3 0	0x53 1
+Pixel	  585 1	  27.500    47.631	   83   4 0	0x53 1
+Pixel	  586 1	  30.000    43.301	   83   5 0	0x53 1
+Pixel	  587 1	  35.000    43.301	   83   6 0	0x53 1
+Pixel	  588 1	 -30.000    25.981	   84   0 0	0x54 1
+Pixel	  589 1	 -25.000    25.981	   84   1 0	0x54 1
+Pixel	  590 1	 -27.500    30.311	   84   2 0	0x54 1
+Pixel	  591 1	 -32.500    30.311	   84   3 0	0x54 1
+Pixel	  592 1	 -35.000    25.981	   84   4 0	0x54 1
+Pixel	  593 1	 -32.500    21.651	   84   5 0	0x54 1
+Pixel	  594 1	 -27.500    21.651	   84   6 0	0x54 1
+Pixel	  595 1	  45.000    51.962	   85   0 0	0x55 1
+Pixel	  596 1	  50.000    51.962	   85   1 0	0x55 1
+Pixel	  597 1	  47.500    56.292	   85   2 0	0x55 1
+Pixel	  598 1	  42.500    56.292	   85   3 0	0x55 1
+Pixel	  599 1	  40.000    51.962	   85   4 0	0x55 1
+Pixel	  600 1	  42.500    47.631	   85   5 0	0x55 1
+Pixel	  601 1	  47.500    47.631	   85   6 0	0x55 1
+Pixel	  602 1	 -42.500    21.651	   86   0 0	0x56 1
+Pixel	  603 1	 -37.500    21.651	   86   1 0	0x56 1
+Pixel	  604 1	 -40.000    25.981	   86   2 0	0x56 1
+Pixel	  605 1	 -45.000    25.981	   86   3 0	0x56 1
+Pixel	  606 1	 -47.500    21.651	   86   4 0	0x56 1
+Pixel	  607 1	 -45.000    17.321	   86   5 0	0x56 1
+Pixel	  608 1	 -40.000    17.321	   86   6 0	0x56 1
+Pixel	  609 1	  57.500    56.292	   87   0 0	0x57 1
+Pixel	  610 1	  62.500    56.292	   87   1 0	0x57 1
+Pixel	  611 1	  60.000    60.622	   87   2 0	0x57 1
+Pixel	  612 1	  55.000    60.622	   87   3 0	0x57 1
+Pixel	  613 1	  52.500    56.292	   87   4 0	0x57 1
+Pixel	  614 1	  55.000    51.962	   87   5 0	0x57 1
+Pixel	  615 1	  60.000    51.962	   87   6 0	0x57 1
+Pixel	  616 1	 -55.000    17.321	   88   0 0	0x58 1
+Pixel	  617 1	 -50.000    17.321	   88   1 0	0x58 1
+Pixel	  618 1	 -52.500    21.651	   88   2 0	0x58 1
+Pixel	  619 1	 -57.500    21.651	   88   3 0	0x58 1
+Pixel	  620 1	 -60.000    17.321	   88   4 0	0x58 1
+Pixel	  621 1	 -57.500    12.990	   88   5 0	0x58 1
+Pixel	  622 1	 -52.500    12.990	   88   6 0	0x58 1
+Pixel	  623 1	 -67.500    12.990	   89   0 0	0x59 1
+Pixel	  624 1	 -62.500    12.990	   89   1 0	0x59 1
+Pixel	  625 1	 -65.000    17.321	   89   2 0	0x59 1
+Pixel	  626 1	 -70.000    17.321	   89   3 0	0x59 1
+Pixel	  627 1	 -72.500    12.990	   89   4 0	0x59 1
+Pixel	  628 1	 -70.000     8.660	   89   5 0	0x59 1
+Pixel	  629 1	 -65.000     8.660	   89   6 0	0x59 1
+Pixel	  630 1	 -80.000     8.660	   90   0 0	0x5a 1
+Pixel	  631 1	 -75.000     8.660	   90   1 0	0x5a 1
+Pixel	  632 1	 -77.500    12.990	   90   2 0	0x5a 1
+Pixel	  633 1	 -82.500    12.990	   90   3 0	0x5a 1
+Pixel	  634 1	 -85.000     8.660	   90   4 0	0x5a 1
+Pixel	  635 1	 -82.500     4.330	   90   5 0	0x5a 1
+Pixel	  636 1	 -77.500     4.330	   90   6 0	0x5a 1
+Pixel	  637 1	 -10.000   -51.962	   91   0 0	0x5b 1
+Pixel	  638 1	  -5.000   -51.962	   91   1 0	0x5b 1
+Pixel	  639 1	  -7.500   -47.631	   91   2 0	0x5b 1
+Pixel	  640 1	 -12.500   -47.631	   91   3 0	0x5b 1
+Pixel	  641 1	 -15.000   -51.962	   91   4 0	0x5b 1
+Pixel	  642 1	 -12.500   -56.292	   91   5 0	0x5b 1
+Pixel	  643 1	  -7.500   -56.292	   91   6 0	0x5b 1
+Pixel	  644 1	 -22.500   -56.292	   92   0 0	0x5c 1
+Pixel	  645 1	 -17.500   -56.292	   92   1 0	0x5c 1
+Pixel	  646 1	 -20.000   -51.962	   92   2 0	0x5c 1
+Pixel	  647 1	 -25.000   -51.962	   92   3 0	0x5c 1
+Pixel	  648 1	 -27.500   -56.292	   92   4 0	0x5c 1
+Pixel	  649 1	 -25.000   -60.622	   92   5 0	0x5c 1
+Pixel	  650 1	 -20.000   -60.622	   92   6 0	0x5c 1
+Pixel	  651 1	   2.500   -47.631	   93   0 0	0x5d 1
+Pixel	  652 1	   7.500   -47.631	   93   1 0	0x5d 1
+Pixel	  653 1	   5.000   -43.301	   93   2 0	0x5d 1
+Pixel	  654 1	   0.000   -43.301	   93   3 0	0x5d 1
+Pixel	  655 1	  -2.500   -47.631	   93   4 0	0x5d 1
+Pixel	  656 1	   0.000   -51.962	   93   5 0	0x5d 1
+Pixel	  657 1	   5.000   -51.962	   93   6 0	0x5d 1
+Pixel	  658 1	 -35.000   -60.622	   94   0 0	0x5e 1
+Pixel	  659 1	 -30.000   -60.622	   94   1 0	0x5e 1
+Pixel	  660 1	 -32.500   -56.292	   94   2 0	0x5e 1
+Pixel	  661 1	 -37.500   -56.292	   94   3 0	0x5e 1
+Pixel	  662 1	 -40.000   -60.622	   94   4 0	0x5e 1
+Pixel	  663 1	 -37.500   -64.952	   94   5 0	0x5e 1
+Pixel	  664 1	 -32.500   -64.952	   94   6 0	0x5e 1
+Pixel	  665 1	  15.000   -43.301	   95   0 0	0x5f 1
+Pixel	  666 1	  20.000   -43.301	   95   1 0	0x5f 1
+Pixel	  667 1	  17.500   -38.971	   95   2 0	0x5f 1
+Pixel	  668 1	  12.500   -38.971	   95   3 0	0x5f 1
+Pixel	  669 1	  10.000   -43.301	   95   4 0	0x5f 1
+Pixel	  670 1	  12.500   -47.631	   95   5 0	0x5f 1
+Pixel	  671 1	  17.500   -47.631	   95   6 0	0x5f 1
+Pixel	  672 1	 -47.500   -64.952	   96   0 0	0x60 1
+Pixel	  673 1	 -42.500   -64.952	   96   1 0	0x60 1
+Pixel	  674 1	 -45.000   -60.622	   96   2 0	0x60 1
+Pixel	  675 1	 -50.000   -60.622	   96   3 0	0x60 1
+Pixel	  676 1	 -52.500   -64.952	   96   4 0	0x60 1
+Pixel	  677 1	 -50.000   -69.282	   96   5 0	0x60 1
+Pixel	  678 1	 -45.000   -69.282	   96   6 0	0x60 1
+Pixel	  679 1	  27.500   -38.971	   97   0 0	0x61 1
+Pixel	  680 1	  32.500   -38.971	   97   1 0	0x61 1
+Pixel	  681 1	  30.000   -34.641	   97   2 0	0x61 1
+Pixel	  682 1	  25.000   -34.641	   97   3 0	0x61 1
+Pixel	  683 1	  22.500   -38.971	   97   4 0	0x61 1
+Pixel	  684 1	  25.000   -43.301	   97   5 0	0x61 1
+Pixel	  685 1	  30.000   -43.301	   97   6 0	0x61 1
+Pixel	  686 1	  40.000   -34.641	   98   0 0	0x62 1
+Pixel	  687 1	  45.000   -34.641	   98   1 0	0x62 1
+Pixel	  688 1	  42.500   -30.311	   98   2 0	0x62 1
+Pixel	  689 1	  37.500   -30.311	   98   3 0	0x62 1
+Pixel	  690 1	  35.000   -34.641	   98   4 0	0x62 1
+Pixel	  691 1	  37.500   -38.971	   98   5 0	0x62 1
+Pixel	  692 1	  42.500   -38.971	   98   6 0	0x62 1
+Pixel	  693 1	  52.500   -30.311	   99   0 0	0x63 1
+Pixel	  694 1	  57.500   -30.311	   99   1 0	0x63 1
+Pixel	  695 1	  55.000   -25.981	   99   2 0	0x63 1
+Pixel	  696 1	  50.000   -25.981	   99   3 0	0x63 1
+Pixel	  697 1	  47.500   -30.311	   99   4 0	0x63 1
+Pixel	  698 1	  50.000   -34.641	   99   5 0	0x63 1
+Pixel	  699 1	  55.000   -34.641	   99   6 0	0x63 1
+Pixel	  700 1	  65.000   -25.981	  100   0 0	0x64 1
+Pixel	  701 1	  70.000   -25.981	  100   1 0	0x64 1
+Pixel	  702 1	  67.500   -21.651	  100   2 0	0x64 1
+Pixel	  703 1	  62.500   -21.651	  100   3 0	0x64 1
+Pixel	  704 1	  60.000   -25.981	  100   4 0	0x64 1
+Pixel	  705 1	  62.500   -30.311	  100   5 0	0x64 1
+Pixel	  706 1	  67.500   -30.311	  100   6 0	0x64 1
+Pixel	  707 1	  77.500   -21.651	  101   0 0	0x65 1
+Pixel	  708 1	  82.500   -21.651	  101   1 0	0x65 1
+Pixel	  709 1	  80.000   -17.321	  101   2 0	0x65 1
+Pixel	  710 1	  75.000   -17.321	  101   3 0	0x65 1
+Pixel	  711 1	  72.500   -21.651	  101   4 0	0x65 1
+Pixel	  712 1	  75.000   -25.981	  101   5 0	0x65 1
+Pixel	  713 1	  80.000   -25.981	  101   6 0	0x65 1
+Pixel	  714 1	  10.000    51.962	  102   0 0	0x66 1
+Pixel	  715 1	  15.000    51.962	  102   1 0	0x66 1
+Pixel	  716 1	  12.500    56.292	  102   2 0	0x66 1
+Pixel	  717 1	   7.500    56.292	  102   3 0	0x66 1
+Pixel	  718 1	   5.000    51.962	  102   4 0	0x66 1
+Pixel	  719 1	   7.500    47.631	  102   5 0	0x66 1
+Pixel	  720 1	  12.500    47.631	  102   6 0	0x66 1
+Pixel	  721 1	  -2.500    47.631	  103   0 0	0x67 1
+Pixel	  722 1	   2.500    47.631	  103   1 0	0x67 1
+Pixel	  723 1	   0.000    51.962	  103   2 0	0x67 1
+Pixel	  724 1	  -5.000    51.962	  103   3 0	0x67 1
+Pixel	  725 1	  -7.500    47.631	  103   4 0	0x67 1
+Pixel	  726 1	  -5.000    43.301	  103   5 0	0x67 1
+Pixel	  727 1	   0.000    43.301	  103   6 0	0x67 1
+Pixel	  728 1	  22.500    56.292	  104   0 0	0x68 1
+Pixel	  729 1	  27.500    56.292	  104   1 0	0x68 1
+Pixel	  730 1	  25.000    60.622	  104   2 0	0x68 1
+Pixel	  731 1	  20.000    60.622	  104   3 0	0x68 1
+Pixel	  732 1	  17.500    56.292	  104   4 0	0x68 1
+Pixel	  733 1	  20.000    51.962	  104   5 0	0x68 1
+Pixel	  734 1	  25.000    51.962	  104   6 0	0x68 1
+Pixel	  735 1	 -15.000    43.301	  105   0 0	0x69 1
+Pixel	  736 1	 -10.000    43.301	  105   1 0	0x69 1
+Pixel	  737 1	 -12.500    47.631	  105   2 0	0x69 1
+Pixel	  738 1	 -17.500    47.631	  105   3 0	0x69 1
+Pixel	  739 1	 -20.000    43.301	  105   4 0	0x69 1
+Pixel	  740 1	 -17.500    38.971	  105   5 0	0x69 1
+Pixel	  741 1	 -12.500    38.971	  105   6 0	0x69 1
+Pixel	  742 1	  35.000    60.622	  106   0 0	0x6a 1
+Pixel	  743 1	  40.000    60.622	  106   1 0	0x6a 1
+Pixel	  744 1	  37.500    64.952	  106   2 0	0x6a 1
+Pixel	  745 1	  32.500    64.952	  106   3 0	0x6a 1
+Pixel	  746 1	  30.000    60.622	  106   4 0	0x6a 1
+Pixel	  747 1	  32.500    56.292	  106   5 0	0x6a 1
+Pixel	  748 1	  37.500    56.292	  106   6 0	0x6a 1
+Pixel	  749 1	 -27.500    38.971	  107   0 0	0x6b 1
+Pixel	  750 1	 -22.500    38.971	  107   1 0	0x6b 1
+Pixel	  751 1	 -25.000    43.301	  107   2 0	0x6b 1
+Pixel	  752 1	 -30.000    43.301	  107   3 0	0x6b 1
+Pixel	  753 1	 -32.500    38.971	  107   4 0	0x6b 1
+Pixel	  754 1	 -30.000    34.641	  107   5 0	0x6b 1
+Pixel	  755 1	 -25.000    34.641	  107   6 0	0x6b 1
+Pixel	  756 1	  47.500    64.952	  108   0 0	0x6c 1
+Pixel	  757 1	  52.500    64.952	  108   1 0	0x6c 1
+Pixel	  758 1	  50.000    69.282	  108   2 0	0x6c 1
+Pixel	  759 1	  45.000    69.282	  108   3 0	0x6c 1
+Pixel	  760 1	  42.500    64.952	  108   4 0	0x6c 1
+Pixel	  761 1	  45.000    60.622	  108   5 0	0x6c 1
+Pixel	  762 1	  50.000    60.622	  108   6 0	0x6c 1
+Pixel	  763 1	 -40.000    34.641	  109   0 0	0x6d 1
+Pixel	  764 1	 -35.000    34.641	  109   1 0	0x6d 1
+Pixel	  765 1	 -37.500    38.971	  109   2 0	0x6d 1
+Pixel	  766 1	 -42.500    38.971	  109   3 0	0x6d 1
+Pixel	  767 1	 -45.000    34.641	  109   4 0	0x6d 1
+Pixel	  768 1	 -42.500    30.311	  109   5 0	0x6d 1
+Pixel	  769 1	 -37.500    30.311	  109   6 0	0x6d 1
+Pixel	  770 1	 -52.500    30.311	  110   0 0	0x6e 1
+Pixel	  771 1	 -47.500    30.311	  110   1 0	0x6e 1
+Pixel	  772 1	 -50.000    34.641	  110   2 0	0x6e 1
+Pixel	  773 1	 -55.000    34.641	  110   3 0	0x6e 1
+Pixel	  774 1	 -57.500    30.311	  110   4 0	0x6e 1
+Pixel	  775 1	 -55.000    25.981	  110   5 0	0x6e 1
+Pixel	  776 1	 -50.000    25.981	  110   6 0	0x6e 1
+Pixel	  777 1	 -65.000    25.981	  111   0 0	0x6f 1
+Pixel	  778 1	 -60.000    25.981	  111   1 0	0x6f 1
+Pixel	  779 1	 -62.500    30.311	  111   2 0	0x6f 1
+Pixel	  780 1	 -67.500    30.311	  111   3 0	0x6f 1
+Pixel	  781 1	 -70.000    25.981	  111   4 0	0x6f 1
+Pixel	  782 1	 -67.500    21.651	  111   5 0	0x6f 1
+Pixel	  783 1	 -62.500    21.651	  111   6 0	0x6f 1
+Pixel	  784 1	 -77.500    21.651	  112   0 0	0x70 1
+Pixel	  785 1	 -72.500    21.651	  112   1 0	0x70 1
+Pixel	  786 1	 -75.000    25.981	  112   2 0	0x70 1
+Pixel	  787 1	 -80.000    25.981	  112   3 0	0x70 1
+Pixel	  788 1	 -82.500    21.651	  112   4 0	0x70 1
+Pixel	  789 1	 -80.000    17.321	  112   5 0	0x70 1
+Pixel	  790 1	 -75.000    17.321	  112   6 0	0x70 1
+Pixel	  791 1	 -12.500   -64.952	  113   0 0	0x71 1
+Pixel	  792 1	  -7.500   -64.952	  113   1 0	0x71 1
+Pixel	  793 1	 -10.000   -60.622	  113   2 0	0x71 1
+Pixel	  794 1	 -15.000   -60.622	  113   3 0	0x71 1
+Pixel	  795 1	 -17.500   -64.952	  113   4 0	0x71 1
+Pixel	  796 1	 -15.000   -69.282	  113   5 0	0x71 1
+Pixel	  797 1	 -10.000   -69.282	  113   6 0	0x71 1
+Pixel	  798 1	 -25.000   -69.282	  114   0 0	0x72 1
+Pixel	  799 1	 -20.000   -69.282	  114   1 0	0x72 1
+Pixel	  800 1	 -22.500   -64.952	  114   2 0	0x72 1
+Pixel	  801 1	 -27.500   -64.952	  114   3 0	0x72 1
+Pixel	  802 1	 -30.000   -69.282	  114   4 0	0x72 1
+Pixel	  803 1	 -27.500   -73.612	  114   5 0	0x72 1
+Pixel	  804 1	 -22.500   -73.612	  114   6 0	0x72 1
+Pixel	  805 1	   0.000   -60.622	  115   0 0	0x73 1
+Pixel	  806 1	   5.000   -60.622	  115   1 0	0x73 1
+Pixel	  807 1	   2.500   -56.292	  115   2 0	0x73 1
+Pixel	  808 1	  -2.500   -56.292	  115   3 0	0x73 1
+Pixel	  809 1	  -5.000   -60.622	  115   4 0	0x73 1
+Pixel	  810 1	  -2.500   -64.952	  115   5 0	0x73 1
+Pixel	  811 1	   2.500   -64.952	  115   6 0	0x73 1
+Pixel	  812 1	 -37.500   -73.612	  116   0 0	0x74 1
+Pixel	  813 1	 -32.500   -73.612	  116   1 0	0x74 1
+Pixel	  814 1	 -35.000   -69.282	  116   2 0	0x74 1
+Pixel	  815 1	 -40.000   -69.282	  116   3 0	0x74 1
+Pixel	  816 1	 -42.500   -73.612	  116   4 0	0x74 1
+Pixel	  817 1	 -40.000   -77.942	  116   5 0	0x74 1
+Pixel	  818 1	 -35.000   -77.942	  116   6 0	0x74 1
+Pixel	  819 1	  12.500   -56.292	  117   0 0	0x75 1
+Pixel	  820 1	  17.500   -56.292	  117   1 0	0x75 1
+Pixel	  821 1	  15.000   -51.962	  117   2 0	0x75 1
+Pixel	  822 1	  10.000   -51.962	  117   3 0	0x75 1
+Pixel	  823 1	   7.500   -56.292	  117   4 0	0x75 1
+Pixel	  824 1	  10.000   -60.622	  117   5 0	0x75 1
+Pixel	  825 1	  15.000   -60.622	  117   6 0	0x75 1
+Pixel	  826 1	  25.000   -51.962	  118   0 0	0x76 1
+Pixel	  827 1	  30.000   -51.962	  118   1 0	0x76 1
+Pixel	  828 1	  27.500   -47.631	  118   2 0	0x76 1
+Pixel	  829 1	  22.500   -47.631	  118   3 0	0x76 1
+Pixel	  830 1	  20.000   -51.962	  118   4 0	0x76 1
+Pixel	  831 1	  22.500   -56.292	  118   5 0	0x76 1
+Pixel	  832 1	  27.500   -56.292	  118   6 0	0x76 1
+Pixel	  833 1	  37.500   -47.631	  119   0 0	0x77 1
+Pixel	  834 1	  42.500   -47.631	  119   1 0	0x77 1
+Pixel	  835 1	  40.000   -43.301	  119   2 0	0x77 1
+Pixel	  836 1	  35.000   -43.301	  119   3 0	0x77 1
+Pixel	  837 1	  32.500   -47.631	  119   4 0	0x77 1
+Pixel	  838 1	  35.000   -51.962	  119   5 0	0x77 1
+Pixel	  839 1	  40.000   -51.962	  119   6 0	0x77 1
+Pixel	  840 1	  50.000   -43.301	  120   0 0	0x78 1
+Pixel	  841 1	  55.000   -43.301	  120   1 0	0x78 1
+Pixel	  842 1	  52.500   -38.971	  120   2 0	0x78 1
+Pixel	  843 1	  47.500   -38.971	  120   3 0	0x78 1
+Pixel	  844 1	  45.000   -43.301	  120   4 0	0x78 1
+Pixel	  845 1	  47.500   -47.631	  120   5 0	0x78 1
+Pixel	  846 1	  52.500   -47.631	  120   6 0	0x78 1
+Pixel	  847 1	  62.500   -38.971	  121   0 0	0x79 1
+Pixel	  848 1	  67.500   -38.971	  121   1 0	0x79 1
+Pixel	  849 1	  65.000   -34.641	  121   2 0	0x79 1
+Pixel	  850 1	  60.000   -34.641	  121   3 0	0x79 1
+Pixel	  851 1	  57.500   -38.971	  121   4 0	0x79 1
+Pixel	  852 1	  60.000   -43.301	  121   5 0	0x79 1
+Pixel	  853 1	  65.000   -43.301	  121   6 0	0x79 1
+Pixel	  854 1	  75.000   -34.641	  122   0 0	0x7a 1
+Pixel	  855 1	  80.000   -34.641	  122   1 0	0x7a 1
+Pixel	  856 1	  77.500   -30.311	  122   2 0	0x7a 1
+Pixel	  857 1	  72.500   -30.311	  122   3 0	0x7a 1
+Pixel	  858 1	  70.000   -34.641	  122   4 0	0x7a 1
+Pixel	  859 1	  72.500   -38.971	  122   5 0	0x7a 1
+Pixel	  860 1	  77.500   -38.971	  122   6 0	0x7a 1
+Pixel	  861 1	  12.500    64.952	  123   0 0	0x7b 1
+Pixel	  862 1	  17.500    64.952	  123   1 0	0x7b 1
+Pixel	  863 1	  15.000    69.282	  123   2 0	0x7b 1
+Pixel	  864 1	  10.000    69.282	  123   3 0	0x7b 1
+Pixel	  865 1	   7.500    64.952	  123   4 0	0x7b 1
+Pixel	  866 1	  10.000    60.622	  123   5 0	0x7b 1
+Pixel	  867 1	  15.000    60.622	  123   6 0	0x7b 1
+Pixel	  868 1	   0.000    60.622	  124   0 0	0x7c 1
+Pixel	  869 1	   5.000    60.622	  124   1 0	0x7c 1
+Pixel	  870 1	   2.500    64.952	  124   2 0	0x7c 1
+Pixel	  871 1	  -2.500    64.952	  124   3 0	0x7c 1
+Pixel	  872 1	  -5.000    60.622	  124   4 0	0x7c 1
+Pixel	  873 1	  -2.500    56.292	  124   5 0	0x7c 1
+Pixel	  874 1	   2.500    56.292	  124   6 0	0x7c 1
+Pixel	  875 1	  25.000    69.282	  125   0 0	0x7d 1
+Pixel	  876 1	  30.000    69.282	  125   1 0	0x7d 1
+Pixel	  877 1	  27.500    73.612	  125   2 0	0x7d 1
+Pixel	  878 1	  22.500    73.612	  125   3 0	0x7d 1
+Pixel	  879 1	  20.000    69.282	  125   4 0	0x7d 1
+Pixel	  880 1	  22.500    64.952	  125   5 0	0x7d 1
+Pixel	  881 1	  27.500    64.952	  125   6 0	0x7d 1
+Pixel	  882 1	 -12.500    56.292	  126   0 0	0x7e 1
+Pixel	  883 1	  -7.500    56.292	  126   1 0	0x7e 1
+Pixel	  884 1	 -10.000    60.622	  126   2 0	0x7e 1
+Pixel	  885 1	 -15.000    60.622	  126   3 0	0x7e 1
+Pixel	  886 1	 -17.500    56.292	  126   4 0	0x7e 1
+Pixel	  887 1	 -15.000    51.962	  126   5 0	0x7e 1
+Pixel	  888 1	 -10.000    51.962	  126   6 0	0x7e 1
+Pixel	  889 1	  37.500    73.612	  127   0 0	0x7f 1
+Pixel	  890 1	  42.500    73.612	  127   1 0	0x7f 1
+Pixel	  891 1	  40.000    77.942	  127   2 0	0x7f 1
+Pixel	  892 1	  35.000    77.942	  127   3 0	0x7f 1
+Pixel	  893 1	  32.500    73.612	  127   4 0	0x7f 1
+Pixel	  894 1	  35.000    69.282	  127   5 0	0x7f 1
+Pixel	  895 1	  40.000    69.282	  127   6 0	0x7f 1
+Pixel	  896 1	 -25.000    51.962	  128   0 0	0x80 1
+Pixel	  897 1	 -20.000    51.962	  128   1 0	0x80 1
+Pixel	  898 1	 -22.500    56.292	  128   2 0	0x80 1
+Pixel	  899 1	 -27.500    56.292	  128   3 0	0x80 1
+Pixel	  900 1	 -30.000    51.962	  128   4 0	0x80 1
+Pixel	  901 1	 -27.500    47.631	  128   5 0	0x80 1
+Pixel	  902 1	 -22.500    47.631	  128   6 0	0x80 1
+Pixel	  903 1	 -37.500    47.631	  129   0 0	0x81 1
+Pixel	  904 1	 -32.500    47.631	  129   1 0	0x81 1
+Pixel	  905 1	 -35.000    51.962	  129   2 0	0x81 1
+Pixel	  906 1	 -40.000    51.962	  129   3 0	0x81 1
+Pixel	  907 1	 -42.500    47.631	  129   4 0	0x81 1
+Pixel	  908 1	 -40.000    43.301	  129   5 0	0x81 1
+Pixel	  909 1	 -35.000    43.301	  129   6 0	0x81 1
+Pixel	  910 1	 -50.000    43.301	  130   0 0	0x82 1
+Pixel	  911 1	 -45.000    43.301	  130   1 0	0x82 1
+Pixel	  912 1	 -47.500    47.631	  130   2 0	0x82 1
+Pixel	  913 1	 -52.500    47.631	  130   3 0	0x82 1
+Pixel	  914 1	 -55.000    43.301	  130   4 0	0x82 1
+Pixel	  915 1	 -52.500    38.971	  130   5 0	0x82 1
+Pixel	  916 1	 -47.500    38.971	  130   6 0	0x82 1
+Pixel	  917 1	 -62.500    38.971	  131   0 0	0x83 1
+Pixel	  918 1	 -57.500    38.971	  131   1 0	0x83 1
+Pixel	  919 1	 -60.000    43.301	  131   2 0	0x83 1
+Pixel	  920 1	 -65.000    43.301	  131   3 0	0x83 1
+Pixel	  921 1	 -67.500    38.971	  131   4 0	0x83 1
+Pixel	  922 1	 -65.000    34.641	  131   5 0	0x83 1
+Pixel	  923 1	 -60.000    34.641	  131   6 0	0x83 1
+Pixel	  924 1	 -75.000    34.641	  132   0 0	0x84 1
+Pixel	  925 1	 -70.000    34.641	  132   1 0	0x84 1
+Pixel	  926 1	 -72.500    38.971	  132   2 0	0x84 1
+Pixel	  927 1	 -77.500    38.971	  132   3 0	0x84 1
+Pixel	  928 1	 -80.000    34.641	  132   4 0	0x84 1
+Pixel	  929 1	 -77.500    30.311	  132   5 0	0x84 1
+Pixel	  930 1	 -72.500    30.311	  132   6 0	0x84 1
+Pixel	  931 1	 -15.000   -77.942	  133   0 0	0x85 1
+Pixel	  932 1	 -10.000   -77.942	  133   1 0	0x85 1
+Pixel	  933 1	 -12.500   -73.612	  133   2 0	0x85 1
+Pixel	  934 1	 -17.500   -73.612	  133   3 0	0x85 1
+Pixel	  935 1	 -20.000   -77.942	  133   4 0	0x85 1
+Pixel	  936 1	 -17.500   -82.272	  133   5 0	0x85 1
+Pixel	  937 1	 -12.500   -82.272	  133   6 0	0x85 1
+Pixel	  938 1	 -27.500   -82.272	  134   0 0	0x86 1
+Pixel	  939 1	 -22.500   -82.272	  134   1 0	0x86 1
+Pixel	  940 1	 -25.000   -77.942	  134   2 0	0x86 1
+Pixel	  941 1	 -30.000   -77.942	  134   3 0	0x86 1
+Pixel	  942 1	 -32.500   -82.272	  134   4 0	0x86 1
+Pixel	  943 1	 -30.000   -86.603	  134   5 0	0x86 1
+Pixel	  944 1	 -25.000   -86.603	  134   6 0	0x86 1
+Pixel	  945 1	  -2.500   -73.612	  135   0 0	0x87 1
+Pixel	  946 1	   2.500   -73.612	  135   1 0	0x87 1
+Pixel	  947 1	   0.000   -69.282	  135   2 0	0x87 1
+Pixel	  948 1	  -5.000   -69.282	  135   3 0	0x87 1
+Pixel	  949 1	  -7.500   -73.612	  135   4 0	0x87 1
+Pixel	  950 1	  -5.000   -77.942	  135   5 0	0x87 1
+Pixel	  951 1	   0.000   -77.942	  135   6 0	0x87 1
+Pixel	  952 1	  10.000   -69.282	  136   0 0	0x88 1
+Pixel	  953 1	  15.000   -69.282	  136   1 0	0x88 1
+Pixel	  954 1	  12.500   -64.952	  136   2 0	0x88 1
+Pixel	  955 1	   7.500   -64.952	  136   3 0	0x88 1
+Pixel	  956 1	   5.000   -69.282	  136   4 0	0x88 1
+Pixel	  957 1	   7.500   -73.612	  136   5 0	0x88 1
+Pixel	  958 1	  12.500   -73.612	  136   6 0	0x88 1
+Pixel	  959 1	  22.500   -64.952	  137   0 0	0x89 1
+Pixel	  960 1	  27.500   -64.952	  137   1 0	0x89 1
+Pixel	  961 1	  25.000   -60.622	  137   2 0	0x89 1
+Pixel	  962 1	  20.000   -60.622	  137   3 0	0x89 1
+Pixel	  963 1	  17.500   -64.952	  137   4 0	0x89 1
+Pixel	  964 1	  20.000   -69.282	  137   5 0	0x89 1
+Pixel	  965 1	  25.000   -69.282	  137   6 0	0x89 1
+Pixel	  966 1	  35.000   -60.622	  138   0 0	0x8a 1
+Pixel	  967 1	  40.000   -60.622	  138   1 0	0x8a 1
+Pixel	  968 1	  37.500   -56.292	  138   2 0	0x8a 1
+Pixel	  969 1	  32.500   -56.292	  138   3 0	0x8a 1
+Pixel	  970 1	  30.000   -60.622	  138   4 0	0x8a 1
+Pixel	  971 1	  32.500   -64.952	  138   5 0	0x8a 1
+Pixel	  972 1	  37.500   -64.952	  138   6 0	0x8a 1
+Pixel	  973 1	  47.500   -56.292	  139   0 0	0x8b 1
+Pixel	  974 1	  52.500   -56.292	  139   1 0	0x8b 1
+Pixel	  975 1	  50.000   -51.962	  139   2 0	0x8b 1
+Pixel	  976 1	  45.000   -51.962	  139   3 0	0x8b 1
+Pixel	  977 1	  42.500   -56.292	  139   4 0	0x8b 1
+Pixel	  978 1	  45.000   -60.622	  139   5 0	0x8b 1
+Pixel	  979 1	  50.000   -60.622	  139   6 0	0x8b 1
+Pixel	  980 1	  60.000   -51.962	  140   0 0	0x8c 1
+Pixel	  981 1	  65.000   -51.962	  140   1 0	0x8c 1
+Pixel	  982 1	  62.500   -47.631	  140   2 0	0x8c 1
+Pixel	  983 1	  57.500   -47.631	  140   3 0	0x8c 1
+Pixel	  984 1	  55.000   -51.962	  140   4 0	0x8c 1
+Pixel	  985 1	  57.500   -56.292	  140   5 0	0x8c 1
+Pixel	  986 1	  62.500   -56.292	  140   6 0	0x8c 1
+Pixel	  987 1	  72.500   -47.631	  141   0 0	0x8d 1
+Pixel	  988 1	  77.500   -47.631	  141   1 0	0x8d 1
+Pixel	  989 1	  75.000   -43.301	  141   2 0	0x8d 1
+Pixel	  990 1	  70.000   -43.301	  141   3 0	0x8d 1
+Pixel	  991 1	  67.500   -47.631	  141   4 0	0x8d 1
+Pixel	  992 1	  70.000   -51.962	  141   5 0	0x8d 1
+Pixel	  993 1	  75.000   -51.962	  141   6 0	0x8d 1
+Pixel	  994 1	  15.000    77.942	  142   0 0	0x8e 1
+Pixel	  995 1	  20.000    77.942	  142   1 0	0x8e 1
+Pixel	  996 1	  17.500    82.272	  142   2 0	0x8e 1
+Pixel	  997 1	  12.500    82.272	  142   3 0	0x8e 1
+Pixel	  998 1	  10.000    77.942	  142   4 0	0x8e 1
+Pixel	  999 1	  12.500    73.612	  142   5 0	0x8e 1
+Pixel	 1000 1	  17.500    73.612	  142   6 0	0x8e 1
+Pixel	 1001 1	   2.500    73.612	  143   0 0	0x8f 1
+Pixel	 1002 1	   7.500    73.612	  143   1 0	0x8f 1
+Pixel	 1003 1	   5.000    77.942	  143   2 0	0x8f 1
+Pixel	 1004 1	   0.000    77.942	  143   3 0	0x8f 1
+Pixel	 1005 1	  -2.500    73.612	  143   4 0	0x8f 1
+Pixel	 1006 1	   0.000    69.282	  143   5 0	0x8f 1
+Pixel	 1007 1	   5.000    69.282	  143   6 0	0x8f 1
+Pixel	 1008 1	  27.500    82.272	  144   0 0	0x90 1
+Pixel	 1009 1	  32.500    82.272	  144   1 0	0x90 1
+Pixel	 1010 1	  30.000    86.603	  144   2 0	0x90 1
+Pixel	 1011 1	  25.000    86.603	  144   3 0	0x90 1
+Pixel	 1012 1	  22.500    82.272	  144   4 0	0x90 1
+Pixel	 1013 1	  25.000    77.942	  144   5 0	0x90 1
+Pixel	 1014 1	  30.000    77.942	  144   6 0	0x90 1
+Pixel	 1015 1	 -10.000    69.282	  145   0 0	0x91 1
+Pixel	 1016 1	  -5.000    69.282	  145   1 0	0x91 1
+Pixel	 1017 1	  -7.500    73.612	  145   2 0	0x91 1
+Pixel	 1018 1	 -12.500    73.612	  145   3 0	0x91 1
+Pixel	 1019 1	 -15.000    69.282	  145   4 0	0x91 1
+Pixel	 1020 1	 -12.500    64.952	  145   5 0	0x91 1
+Pixel	 1021 1	  -7.500    64.952	  145   6 0	0x91 1
+Pixel	 1022 1	 -22.500    64.952	  146   0 0	0x92 1
+Pixel	 1023 1	 -17.500    64.952	  146   1 0	0x92 1
+Pixel	 1024 1	 -20.000    69.282	  146   2 0	0x92 1
+Pixel	 1025 1	 -25.000    69.282	  146   3 0	0x92 1
+Pixel	 1026 1	 -27.500    64.952	  146   4 0	0x92 1
+Pixel	 1027 1	 -25.000    60.622	  146   5 0	0x92 1
+Pixel	 1028 1	 -20.000    60.622	  146   6 0	0x92 1
+Pixel	 1029 1	 -35.000    60.622	  147   0 0	0x93 1
+Pixel	 1030 1	 -30.000    60.622	  147   1 0	0x93 1
+Pixel	 1031 1	 -32.500    64.952	  147   2 0	0x93 1
+Pixel	 1032 1	 -37.500    64.952	  147   3 0	0x93 1
+Pixel	 1033 1	 -40.000    60.622	  147   4 0	0x93 1
+Pixel	 1034 1	 -37.500    56.292	  147   5 0	0x93 1
+Pixel	 1035 1	 -32.500    56.292	  147   6 0	0x93 1
+Pixel	 1036 1	 -47.500    56.292	  148   0 0	0x94 1
+Pixel	 1037 1	 -42.500    56.292	  148   1 0	0x94 1
+Pixel	 1038 1	 -45.000    60.622	  148   2 0	0x94 1
+Pixel	 1039 1	 -50.000    60.622	  148   3 0	0x94 1
+Pixel	 1040 1	 -52.500    56.292	  148   4 0	0x94 1
+Pixel	 1041 1	 -50.000    51.962	  148   5 0	0x94 1
+Pixel	 1042 1	 -45.000    51.962	  148   6 0	0x94 1
+Pixel	 1043 1	 -60.000    51.962	  149   0 0	0x95 1
+Pixel	 1044 1	 -55.000    51.962	  149   1 0	0x95 1
+Pixel	 1045 1	 -57.500    56.292	  149   2 0	0x95 1
+Pixel	 1046 1	 -62.500    56.292	  149   3 0	0x95 1
+Pixel	 1047 1	 -65.000    51.962	  149   4 0	0x95 1
+Pixel	 1048 1	 -62.500    47.631	  149   5 0	0x95 1
+Pixel	 1049 1	 -57.500    47.631	  149   6 0	0x95 1
+Pixel	 1050 1	 -72.500    47.631	  150   0 0	0x96 1
+Pixel	 1051 1	 -67.500    47.631	  150   1 0	0x96 1
+Pixel	 1052 1	 -70.000    51.962	  150   2 0	0x96 1
+Pixel	 1053 1	 -75.000    51.962	  150   3 0	0x96 1
+Pixel	 1054 1	 -77.500    47.631	  150   4 0	0x96 1
+Pixel	 1055 1	 -75.000    43.301	  150   5 0	0x96 1
+Pixel	 1056 1	 -70.000    43.301	  150   6 0	0x96 1
+Pixel	 1057 1	  -5.000   -86.603	  151   0 0	0x97 1
+Pixel	 1058 1	   0.000   -86.603	  151   1 0	0x97 1
+Pixel	 1059 1	  -2.500   -82.272	  151   2 0	0x97 1
+Pixel	 1060 1	  -7.500   -82.272	  151   3 0	0x97 1
+Pixel	 1061 1	 -10.000   -86.603	  151   4 0	0x97 1
+Pixel	 1062 1	  -7.500   -90.933	  151   5 0	0x97 1
+Pixel	 1063 1	  -2.500   -90.933	  151   6 0	0x97 1
+Pixel	 1064 1	   7.500   -82.272	  152   0 0	0x98 1
+Pixel	 1065 1	  12.500   -82.272	  152   1 0	0x98 1
+Pixel	 1066 1	  10.000   -77.942	  152   2 0	0x98 1
+Pixel	 1067 1	   5.000   -77.942	  152   3 0	0x98 1
+Pixel	 1068 1	   2.500   -82.272	  152   4 0	0x98 1
+Pixel	 1069 1	   5.000   -86.603	  152   5 0	0x98 1
+Pixel	 1070 1	  10.000   -86.603	  152   6 0	0x98 1
+Pixel	 1071 1	  20.000   -77.942	  153   0 0	0x99 1
+Pixel	 1072 1	  25.000   -77.942	  153   1 0	0x99 1
+Pixel	 1073 1	  22.500   -73.612	  153   2 0	0x99 1
+Pixel	 1074 1	  17.500   -73.612	  153   3 0	0x99 1
+Pixel	 1075 1	  15.000   -77.942	  153   4 0	0x99 1
+Pixel	 1076 1	  17.500   -82.272	  153   5 0	0x99 1
+Pixel	 1077 1	  22.500   -82.272	  153   6 0	0x99 1
+Pixel	 1078 1	  32.500   -73.612	  154   0 0	0x9a 1
+Pixel	 1079 1	  37.500   -73.612	  154   1 0	0x9a 1
+Pixel	 1080 1	  35.000   -69.282	  154   2 0	0x9a 1
+Pixel	 1081 1	  30.000   -69.282	  154   3 0	0x9a 1
+Pixel	 1082 1	  27.500   -73.612	  154   4 0	0x9a 1
+Pixel	 1083 1	  30.000   -77.942	  154   5 0	0x9a 1
+Pixel	 1084 1	  35.000   -77.942	  154   6 0	0x9a 1
+Pixel	 1085 1	  45.000   -69.282	  155   0 0	0x9b 1
+Pixel	 1086 1	  50.000   -69.282	  155   1 0	0x9b 1
+Pixel	 1087 1	  47.500   -64.952	  155   2 0	0x9b 1
+Pixel	 1088 1	  42.500   -64.952	  155   3 0	0x9b 1
+Pixel	 1089 1	  40.000   -69.282	  155   4 0	0x9b 1
+Pixel	 1090 1	  42.500   -73.612	  155   5 0	0x9b 1
+Pixel	 1091 1	  47.500   -73.612	  155   6 0	0x9b 1
+Pixel	 1092 1	  57.500   -64.952	  156   0 0	0x9c 1
+Pixel	 1093 1	  62.500   -64.952	  156   1 0	0x9c 1
+Pixel	 1094 1	  60.000   -60.622	  156   2 0	0x9c 1
+Pixel	 1095 1	  55.000   -60.622	  156   3 0	0x9c 1
+Pixel	 1096 1	  52.500   -64.952	  156   4 0	0x9c 1
+Pixel	 1097 1	  55.000   -69.282	  156   5 0	0x9c 1
+Pixel	 1098 1	  60.000   -69.282	  156   6 0	0x9c 1
+Pixel	 1099 1	   5.000    86.603	  157   0 0	0x9d 1
+Pixel	 1100 1	  10.000    86.603	  157   1 0	0x9d 1
+Pixel	 1101 1	   7.500    90.933	  157   2 0	0x9d 1
+Pixel	 1102 1	   2.500    90.933	  157   3 0	0x9d 1
+Pixel	 1103 1	   0.000    86.603	  157   4 0	0x9d 1
+Pixel	 1104 1	   2.500    82.272	  157   5 0	0x9d 1
+Pixel	 1105 1	   7.500    82.272	  157   6 0	0x9d 1
+Pixel	 1106 1	  -7.500    82.272	  158   0 0	0x9e 1
+Pixel	 1107 1	  -2.500    82.272	  158   1 0	0x9e 1
+Pixel	 1108 1	  -5.000    86.603	  158   2 0	0x9e 1
+Pixel	 1109 1	 -10.000    86.603	  158   3 0	0x9e 1
+Pixel	 1110 1	 -12.500    82.272	  158   4 0	0x9e 1
+Pixel	 1111 1	 -10.000    77.942	  158   5 0	0x9e 1
+Pixel	 1112 1	  -5.000    77.942	  158   6 0	0x9e 1
+Pixel	 1113 1	 -20.000    77.942	  159   0 0	0x9f 1
+Pixel	 1114 1	 -15.000    77.942	  159   1 0	0x9f 1
+Pixel	 1115 1	 -17.500    82.272	  159   2 0	0x9f 1
+Pixel	 1116 1	 -22.500    82.272	  159   3 0	0x9f 1
+Pixel	 1117 1	 -25.000    77.942	  159   4 0	0x9f 1
+Pixel	 1118 1	 -22.500    73.612	  159   5 0	0x9f 1
+Pixel	 1119 1	 -17.500    73.612	  159   6 0	0x9f 1
+Pixel	 1120 1	 -32.500    73.612	  160   0 0	0xa0 1
+Pixel	 1121 1	 -27.500    73.612	  160   1 0	0xa0 1
+Pixel	 1122 1	 -30.000    77.942	  160   2 0	0xa0 1
+Pixel	 1123 1	 -35.000    77.942	  160   3 0	0xa0 1
+Pixel	 1124 1	 -37.500    73.612	  160   4 0	0xa0 1
+Pixel	 1125 1	 -35.000    69.282	  160   5 0	0xa0 1
+Pixel	 1126 1	 -30.000    69.282	  160   6 0	0xa0 1
+Pixel	 1127 1	 -45.000    69.282	  161   0 0	0xa1 1
+Pixel	 1128 1	 -40.000    69.282	  161   1 0	0xa1 1
+Pixel	 1129 1	 -42.500    73.612	  161   2 0	0xa1 1
+Pixel	 1130 1	 -47.500    73.612	  161   3 0	0xa1 1
+Pixel	 1131 1	 -50.000    69.282	  161   4 0	0xa1 1
+Pixel	 1132 1	 -47.500    64.952	  161   5 0	0xa1 1
+Pixel	 1133 1	 -42.500    64.952	  161   6 0	0xa1 1
+Pixel	 1134 1	 -57.500    64.952	  162   0 0	0xa2 1
+Pixel	 1135 1	 -52.500    64.952	  162   1 0	0xa2 1
+Pixel	 1136 1	 -55.000    69.282	  162   2 0	0xa2 1
+Pixel	 1137 1	 -60.000    69.282	  162   3 0	0xa2 1
+Pixel	 1138 1	 -62.500    64.952	  162   4 0	0xa2 1
+Pixel	 1139 1	 -60.000    60.622	  162   5 0	0xa2 1
+Pixel	 1140 1	 -55.000    60.622	  162   6 0	0xa2 1
+
+
+# DigitalSumTrigger using all pixels from three adjacent modules:
+DigitalSumTrigger * of 0 1 2 3 4 5 6 7 8 9 10 11 12 13 91 92 93 94 95 96 97
+DigitalSumTrigger * of 7 8 9 10 11 12 13 21 22 23 24 25 26 27 98 99 100 101 102 103 104
+DigitalSumTrigger * of 7 8 9 10 11 12 13 91 92 93 94 95 96 97 98 99 100 101 102 103 104
+DigitalSumTrigger * of 0 1 2 3 4 5 6 14 15 16 17 18 19 20 105 106 107 108 109 110 111
+DigitalSumTrigger * of 0 1 2 3 4 5 6 91 92 93 94 95 96 97 105 106 107 108 109 110 111
+DigitalSumTrigger * of 21 22 23 24 25 26 27 35 36 37 38 39 40 41 112 113 114 115 116 117 118
+DigitalSumTrigger * of 21 22 23 24 25 26 27 98 99 100 101 102 103 104 112 113 114 115 116 117 118
+DigitalSumTrigger * of 14 15 16 17 18 19 20 28 29 30 31 32 33 34 119 120 121 122 123 124 125
+DigitalSumTrigger * of 14 15 16 17 18 19 20 105 106 107 108 109 110 111 119 120 121 122 123 124 125
+DigitalSumTrigger * of 35 36 37 38 39 40 41 49 50 51 52 53 54 55 126 127 128 129 130 131 132
+DigitalSumTrigger * of 35 36 37 38 39 40 41 112 113 114 115 116 117 118 126 127 128 129 130 131 132
+DigitalSumTrigger * of 28 29 30 31 32 33 34 42 43 44 45 46 47 48 133 134 135 136 137 138 139
+DigitalSumTrigger * of 28 29 30 31 32 33 34 119 120 121 122 123 124 125 133 134 135 136 137 138 139
+DigitalSumTrigger * of 49 50 51 52 53 54 55 63 64 65 66 67 68 69 140 141 142 143 144 145 146
+DigitalSumTrigger * of 49 50 51 52 53 54 55 126 127 128 129 130 131 132 140 141 142 143 144 145 146
+DigitalSumTrigger * of 42 43 44 45 46 47 48 56 57 58 59 60 61 62 147 148 149 150 151 152 153
+DigitalSumTrigger * of 42 43 44 45 46 47 48 133 134 135 136 137 138 139 147 148 149 150 151 152 153
+DigitalSumTrigger * of 63 64 65 66 67 68 69 77 78 79 80 81 82 83 154 155 156 157 158 159 160
+DigitalSumTrigger * of 63 64 65 66 67 68 69 140 141 142 143 144 145 146 154 155 156 157 158 159 160
+DigitalSumTrigger * of 56 57 58 59 60 61 62 70 71 72 73 74 75 76 161 162 163 164 165 166 167
+DigitalSumTrigger * of 56 57 58 59 60 61 62 147 148 149 150 151 152 153 161 162 163 164 165 166 167
+DigitalSumTrigger * of 77 78 79 80 81 82 83 154 155 156 157 158 159 160 168 169 170 171 172 173 174
+DigitalSumTrigger * of 70 71 72 73 74 75 76 84 85 86 87 88 89 90 175 176 177 178 179 180 181
+DigitalSumTrigger * of 70 71 72 73 74 75 76 161 162 163 164 165 166 167 175 176 177 178 179 180 181
+DigitalSumTrigger * of 84 85 86 87 88 89 90 175 176 177 178 179 180 181 182 183 184 185 186 187 188
+DigitalSumTrigger * of 0 1 2 3 4 5 6 14 15 16 17 18 19 20 189 190 191 192 193 194 195
+DigitalSumTrigger * of 0 1 2 3 4 5 6 7 8 9 10 11 12 13 196 197 198 199 200 201 202
+DigitalSumTrigger * of 0 1 2 3 4 5 6 189 190 191 192 193 194 195 196 197 198 199 200 201 202
+DigitalSumTrigger * of 14 15 16 17 18 19 20 28 29 30 31 32 33 34 203 204 205 206 207 208 209
+DigitalSumTrigger * of 14 15 16 17 18 19 20 189 190 191 192 193 194 195 203 204 205 206 207 208 209
+DigitalSumTrigger * of 7 8 9 10 11 12 13 21 22 23 24 25 26 27 210 211 212 213 214 215 216
+DigitalSumTrigger * of 7 8 9 10 11 12 13 196 197 198 199 200 201 202 210 211 212 213 214 215 216
+DigitalSumTrigger * of 28 29 30 31 32 33 34 42 43 44 45 46 47 48 217 218 219 220 221 222 223
+DigitalSumTrigger * of 28 29 30 31 32 33 34 203 204 205 206 207 208 209 217 218 219 220 221 222 223
+DigitalSumTrigger * of 21 22 23 24 25 26 27 35 36 37 38 39 40 41 224 225 226 227 228 229 230
+DigitalSumTrigger * of 21 22 23 24 25 26 27 210 211 212 213 214 215 216 224 225 226 227 228 229 230
+DigitalSumTrigger * of 42 43 44 45 46 47 48 56 57 58 59 60 61 62 231 232 233 234 235 236 237
+DigitalSumTrigger * of 42 43 44 45 46 47 48 217 218 219 220 221 222 223 231 232 233 234 235 236 237
+DigitalSumTrigger * of 35 36 37 38 39 40 41 49 50 51 52 53 54 55 238 239 240 241 242 243 244
+DigitalSumTrigger * of 35 36 37 38 39 40 41 224 225 226 227 228 229 230 238 239 240 241 242 243 244
+DigitalSumTrigger * of 56 57 58 59 60 61 62 70 71 72 73 74 75 76 245 246 247 248 249 250 251
+DigitalSumTrigger * of 56 57 58 59 60 61 62 231 232 233 234 235 236 237 245 246 247 248 249 250 251
+DigitalSumTrigger * of 49 50 51 52 53 54 55 63 64 65 66 67 68 69 252 253 254 255 256 257 258
+DigitalSumTrigger * of 49 50 51 52 53 54 55 238 239 240 241 242 243 244 252 253 254 255 256 257 258
+DigitalSumTrigger * of 70 71 72 73 74 75 76 84 85 86 87 88 89 90 259 260 261 262 263 264 265
+DigitalSumTrigger * of 70 71 72 73 74 75 76 245 246 247 248 249 250 251 259 260 261 262 263 264 265
+DigitalSumTrigger * of 63 64 65 66 67 68 69 77 78 79 80 81 82 83 266 267 268 269 270 271 272
+DigitalSumTrigger * of 63 64 65 66 67 68 69 252 253 254 255 256 257 258 266 267 268 269 270 271 272
+DigitalSumTrigger * of 84 85 86 87 88 89 90 259 260 261 262 263 264 265 273 274 275 276 277 278 279
+DigitalSumTrigger * of 77 78 79 80 81 82 83 266 267 268 269 270 271 272 280 281 282 283 284 285 286
+DigitalSumTrigger * of 91 92 93 94 95 96 97 98 99 100 101 102 103 104 287 288 289 290 291 292 293
+DigitalSumTrigger * of 98 99 100 101 102 103 104 112 113 114 115 116 117 118 294 295 296 297 298 299 300
+DigitalSumTrigger * of 98 99 100 101 102 103 104 287 288 289 290 291 292 293 294 295 296 297 298 299 300
+DigitalSumTrigger * of 91 92 93 94 95 96 97 105 106 107 108 109 110 111 301 302 303 304 305 306 307
+DigitalSumTrigger * of 91 92 93 94 95 96 97 287 288 289 290 291 292 293 301 302 303 304 305 306 307
+DigitalSumTrigger * of 112 113 114 115 116 117 118 126 127 128 129 130 131 132 308 309 310 311 312 313 314
+DigitalSumTrigger * of 112 113 114 115 116 117 118 294 295 296 297 298 299 300 308 309 310 311 312 313 314
+DigitalSumTrigger * of 105 106 107 108 109 110 111 119 120 121 122 123 124 125 315 316 317 318 319 320 321
+DigitalSumTrigger * of 105 106 107 108 109 110 111 301 302 303 304 305 306 307 315 316 317 318 319 320 321
+DigitalSumTrigger * of 126 127 128 129 130 131 132 140 141 142 143 144 145 146 322 323 324 325 326 327 328
+DigitalSumTrigger * of 126 127 128 129 130 131 132 308 309 310 311 312 313 314 322 323 324 325 326 327 328
+DigitalSumTrigger * of 119 120 121 122 123 124 125 133 134 135 136 137 138 139 329 330 331 332 333 334 335
+DigitalSumTrigger * of 119 120 121 122 123 124 125 315 316 317 318 319 320 321 329 330 331 332 333 334 335
+DigitalSumTrigger * of 140 141 142 143 144 145 146 154 155 156 157 158 159 160 336 337 338 339 340 341 342
+DigitalSumTrigger * of 140 141 142 143 144 145 146 322 323 324 325 326 327 328 336 337 338 339 340 341 342
+DigitalSumTrigger * of 133 134 135 136 137 138 139 147 148 149 150 151 152 153 343 344 345 346 347 348 349
+DigitalSumTrigger * of 133 134 135 136 137 138 139 329 330 331 332 333 334 335 343 344 345 346 347 348 349
+DigitalSumTrigger * of 154 155 156 157 158 159 160 168 169 170 171 172 173 174 350 351 352 353 354 355 356
+DigitalSumTrigger * of 154 155 156 157 158 159 160 336 337 338 339 340 341 342 350 351 352 353 354 355 356
+DigitalSumTrigger * of 147 148 149 150 151 152 153 161 162 163 164 165 166 167 357 358 359 360 361 362 363
+DigitalSumTrigger * of 147 148 149 150 151 152 153 343 344 345 346 347 348 349 357 358 359 360 361 362 363
+DigitalSumTrigger * of 161 162 163 164 165 166 167 175 176 177 178 179 180 181 364 365 366 367 368 369 370
+DigitalSumTrigger * of 161 162 163 164 165 166 167 357 358 359 360 361 362 363 364 365 366 367 368 369 370
+DigitalSumTrigger * of 175 176 177 178 179 180 181 182 183 184 185 186 187 188 371 372 373 374 375 376 377
+DigitalSumTrigger * of 175 176 177 178 179 180 181 364 365 366 367 368 369 370 371 372 373 374 375 376 377
+DigitalSumTrigger * of 189 190 191 192 193 194 195 203 204 205 206 207 208 209 378 379 380 381 382 383 384
+DigitalSumTrigger * of 189 190 191 192 193 194 195 196 197 198 199 200 201 202 385 386 387 388 389 390 391
+DigitalSumTrigger * of 189 190 191 192 193 194 195 378 379 380 381 382 383 384 385 386 387 388 389 390 391
+DigitalSumTrigger * of 203 204 205 206 207 208 209 217 218 219 220 221 222 223 392 393 394 395 396 397 398
+DigitalSumTrigger * of 203 204 205 206 207 208 209 378 379 380 381 382 383 384 392 393 394 395 396 397 398
+DigitalSumTrigger * of 196 197 198 199 200 201 202 210 211 212 213 214 215 216 399 400 401 402 403 404 405
+DigitalSumTrigger * of 196 197 198 199 200 201 202 385 386 387 388 389 390 391 399 400 401 402 403 404 405
+DigitalSumTrigger * of 217 218 219 220 221 222 223 231 232 233 234 235 236 237 406 407 408 409 410 411 412
+DigitalSumTrigger * of 217 218 219 220 221 222 223 392 393 394 395 396 397 398 406 407 408 409 410 411 412
+DigitalSumTrigger * of 210 211 212 213 214 215 216 224 225 226 227 228 229 230 413 414 415 416 417 418 419
+DigitalSumTrigger * of 210 211 212 213 214 215 216 399 400 401 402 403 404 405 413 414 415 416 417 418 419
+DigitalSumTrigger * of 231 232 233 234 235 236 237 245 246 247 248 249 250 251 420 421 422 423 424 425 426
+DigitalSumTrigger * of 231 232 233 234 235 236 237 406 407 408 409 410 411 412 420 421 422 423 424 425 426
+DigitalSumTrigger * of 224 225 226 227 228 229 230 238 239 240 241 242 243 244 427 428 429 430 431 432 433
+DigitalSumTrigger * of 224 225 226 227 228 229 230 413 414 415 416 417 418 419 427 428 429 430 431 432 433
+DigitalSumTrigger * of 245 246 247 248 249 250 251 259 260 261 262 263 264 265 434 435 436 437 438 439 440
+DigitalSumTrigger * of 245 246 247 248 249 250 251 420 421 422 423 424 425 426 434 435 436 437 438 439 440
+DigitalSumTrigger * of 238 239 240 241 242 243 244 252 253 254 255 256 257 258 441 442 443 444 445 446 447
+DigitalSumTrigger * of 238 239 240 241 242 243 244 427 428 429 430 431 432 433 441 442 443 444 445 446 447
+DigitalSumTrigger * of 259 260 261 262 263 264 265 273 274 275 276 277 278 279 448 449 450 451 452 453 454
+DigitalSumTrigger * of 259 260 261 262 263 264 265 434 435 436 437 438 439 440 448 449 450 451 452 453 454
+DigitalSumTrigger * of 252 253 254 255 256 257 258 266 267 268 269 270 271 272 455 456 457 458 459 460 461
+DigitalSumTrigger * of 252 253 254 255 256 257 258 441 442 443 444 445 446 447 455 456 457 458 459 460 461
+DigitalSumTrigger * of 266 267 268 269 270 271 272 280 281 282 283 284 285 286 462 463 464 465 466 467 468
+DigitalSumTrigger * of 266 267 268 269 270 271 272 455 456 457 458 459 460 461 462 463 464 465 466 467 468
+DigitalSumTrigger * of 287 288 289 290 291 292 293 294 295 296 297 298 299 300 469 470 471 472 473 474 475
+DigitalSumTrigger * of 294 295 296 297 298 299 300 308 309 310 311 312 313 314 476 477 478 479 480 481 482
+DigitalSumTrigger * of 294 295 296 297 298 299 300 469 470 471 472 473 474 475 476 477 478 479 480 481 482
+DigitalSumTrigger * of 287 288 289 290 291 292 293 301 302 303 304 305 306 307 483 484 485 486 487 488 489
+DigitalSumTrigger * of 287 288 289 290 291 292 293 469 470 471 472 473 474 475 483 484 485 486 487 488 489
+DigitalSumTrigger * of 308 309 310 311 312 313 314 322 323 324 325 326 327 328 490 491 492 493 494 495 496
+DigitalSumTrigger * of 308 309 310 311 312 313 314 476 477 478 479 480 481 482 490 491 492 493 494 495 496
+DigitalSumTrigger * of 301 302 303 304 305 306 307 315 316 317 318 319 320 321 497 498 499 500 501 502 503
+DigitalSumTrigger * of 301 302 303 304 305 306 307 483 484 485 486 487 488 489 497 498 499 500 501 502 503
+DigitalSumTrigger * of 322 323 324 325 326 327 328 336 337 338 339 340 341 342 504 505 506 507 508 509 510
+DigitalSumTrigger * of 322 323 324 325 326 327 328 490 491 492 493 494 495 496 504 505 506 507 508 509 510
+DigitalSumTrigger * of 315 316 317 318 319 320 321 329 330 331 332 333 334 335 511 512 513 514 515 516 517
+DigitalSumTrigger * of 315 316 317 318 319 320 321 497 498 499 500 501 502 503 511 512 513 514 515 516 517
+DigitalSumTrigger * of 336 337 338 339 340 341 342 350 351 352 353 354 355 356 518 519 520 521 522 523 524
+DigitalSumTrigger * of 336 337 338 339 340 341 342 504 505 506 507 508 509 510 518 519 520 521 522 523 524
+DigitalSumTrigger * of 329 330 331 332 333 334 335 343 344 345 346 347 348 349 525 526 527 528 529 530 531
+DigitalSumTrigger * of 329 330 331 332 333 334 335 511 512 513 514 515 516 517 525 526 527 528 529 530 531
+DigitalSumTrigger * of 343 344 345 346 347 348 349 357 358 359 360 361 362 363 532 533 534 535 536 537 538
+DigitalSumTrigger * of 343 344 345 346 347 348 349 525 526 527 528 529 530 531 532 533 534 535 536 537 538
+DigitalSumTrigger * of 357 358 359 360 361 362 363 364 365 366 367 368 369 370 539 540 541 542 543 544 545
+DigitalSumTrigger * of 357 358 359 360 361 362 363 532 533 534 535 536 537 538 539 540 541 542 543 544 545
+DigitalSumTrigger * of 364 365 366 367 368 369 370 371 372 373 374 375 376 377 546 547 548 549 550 551 552
+DigitalSumTrigger * of 364 365 366 367 368 369 370 539 540 541 542 543 544 545 546 547 548 549 550 551 552
+DigitalSumTrigger * of 378 379 380 381 382 383 384 392 393 394 395 396 397 398 553 554 555 556 557 558 559
+DigitalSumTrigger * of 378 379 380 381 382 383 384 385 386 387 388 389 390 391 560 561 562 563 564 565 566
+DigitalSumTrigger * of 378 379 380 381 382 383 384 553 554 555 556 557 558 559 560 561 562 563 564 565 566
+DigitalSumTrigger * of 392 393 394 395 396 397 398 406 407 408 409 410 411 412 567 568 569 570 571 572 573
+DigitalSumTrigger * of 392 393 394 395 396 397 398 553 554 555 556 557 558 559 567 568 569 570 571 572 573
+DigitalSumTrigger * of 385 386 387 388 389 390 391 399 400 401 402 403 404 405 574 575 576 577 578 579 580
+DigitalSumTrigger * of 385 386 387 388 389 390 391 560 561 562 563 564 565 566 574 575 576 577 578 579 580
+DigitalSumTrigger * of 406 407 408 409 410 411 412 420 421 422 423 424 425 426 581 582 583 584 585 586 587
+DigitalSumTrigger * of 406 407 408 409 410 411 412 567 568 569 570 571 572 573 581 582 583 584 585 586 587
+DigitalSumTrigger * of 399 400 401 402 403 404 405 413 414 415 416 417 418 419 588 589 590 591 592 593 594
+DigitalSumTrigger * of 399 400 401 402 403 404 405 574 575 576 577 578 579 580 588 589 590 591 592 593 594
+DigitalSumTrigger * of 420 421 422 423 424 425 426 434 435 436 437 438 439 440 595 596 597 598 599 600 601
+DigitalSumTrigger * of 420 421 422 423 424 425 426 581 582 583 584 585 586 587 595 596 597 598 599 600 601
+DigitalSumTrigger * of 413 414 415 416 417 418 419 427 428 429 430 431 432 433 602 603 604 605 606 607 608
+DigitalSumTrigger * of 413 414 415 416 417 418 419 588 589 590 591 592 593 594 602 603 604 605 606 607 608
+DigitalSumTrigger * of 434 435 436 437 438 439 440 448 449 450 451 452 453 454 609 610 611 612 613 614 615
+DigitalSumTrigger * of 434 435 436 437 438 439 440 595 596 597 598 599 600 601 609 610 611 612 613 614 615
+DigitalSumTrigger * of 427 428 429 430 431 432 433 441 442 443 444 445 446 447 616 617 618 619 620 621 622
+DigitalSumTrigger * of 427 428 429 430 431 432 433 602 603 604 605 606 607 608 616 617 618 619 620 621 622
+DigitalSumTrigger * of 441 442 443 444 445 446 447 455 456 457 458 459 460 461 623 624 625 626 627 628 629
+DigitalSumTrigger * of 441 442 443 444 445 446 447 616 617 618 619 620 621 622 623 624 625 626 627 628 629
+DigitalSumTrigger * of 455 456 457 458 459 460 461 462 463 464 465 466 467 468 630 631 632 633 634 635 636
+DigitalSumTrigger * of 455 456 457 458 459 460 461 623 624 625 626 627 628 629 630 631 632 633 634 635 636
+DigitalSumTrigger * of 469 470 471 472 473 474 475 476 477 478 479 480 481 482 637 638 639 640 641 642 643
+DigitalSumTrigger * of 476 477 478 479 480 481 482 490 491 492 493 494 495 496 644 645 646 647 648 649 650
+DigitalSumTrigger * of 476 477 478 479 480 481 482 637 638 639 640 641 642 643 644 645 646 647 648 649 650
+DigitalSumTrigger * of 469 470 471 472 473 474 475 483 484 485 486 487 488 489 651 652 653 654 655 656 657
+DigitalSumTrigger * of 469 470 471 472 473 474 475 637 638 639 640 641 642 643 651 652 653 654 655 656 657
+DigitalSumTrigger * of 490 491 492 493 494 495 496 504 505 506 507 508 509 510 658 659 660 661 662 663 664
+DigitalSumTrigger * of 490 491 492 493 494 495 496 644 645 646 647 648 649 650 658 659 660 661 662 663 664
+DigitalSumTrigger * of 483 484 485 486 487 488 489 497 498 499 500 501 502 503 665 666 667 668 669 670 671
+DigitalSumTrigger * of 483 484 485 486 487 488 489 651 652 653 654 655 656 657 665 666 667 668 669 670 671
+DigitalSumTrigger * of 504 505 506 507 508 509 510 518 519 520 521 522 523 524 672 673 674 675 676 677 678
+DigitalSumTrigger * of 504 505 506 507 508 509 510 658 659 660 661 662 663 664 672 673 674 675 676 677 678
+DigitalSumTrigger * of 497 498 499 500 501 502 503 511 512 513 514 515 516 517 679 680 681 682 683 684 685
+DigitalSumTrigger * of 497 498 499 500 501 502 503 665 666 667 668 669 670 671 679 680 681 682 683 684 685
+DigitalSumTrigger * of 511 512 513 514 515 516 517 525 526 527 528 529 530 531 686 687 688 689 690 691 692
+DigitalSumTrigger * of 511 512 513 514 515 516 517 679 680 681 682 683 684 685 686 687 688 689 690 691 692
+DigitalSumTrigger * of 525 526 527 528 529 530 531 532 533 534 535 536 537 538 693 694 695 696 697 698 699
+DigitalSumTrigger * of 525 526 527 528 529 530 531 686 687 688 689 690 691 692 693 694 695 696 697 698 699
+DigitalSumTrigger * of 532 533 534 535 536 537 538 539 540 541 542 543 544 545 700 701 702 703 704 705 706
+DigitalSumTrigger * of 532 533 534 535 536 537 538 693 694 695 696 697 698 699 700 701 702 703 704 705 706
+DigitalSumTrigger * of 539 540 541 542 543 544 545 546 547 548 549 550 551 552 707 708 709 710 711 712 713
+DigitalSumTrigger * of 539 540 541 542 543 544 545 700 701 702 703 704 705 706 707 708 709 710 711 712 713
+DigitalSumTrigger * of 553 554 555 556 557 558 559 567 568 569 570 571 572 573 714 715 716 717 718 719 720
+DigitalSumTrigger * of 553 554 555 556 557 558 559 560 561 562 563 564 565 566 721 722 723 724 725 726 727
+DigitalSumTrigger * of 553 554 555 556 557 558 559 714 715 716 717 718 719 720 721 722 723 724 725 726 727
+DigitalSumTrigger * of 567 568 569 570 571 572 573 581 582 583 584 585 586 587 728 729 730 731 732 733 734
+DigitalSumTrigger * of 567 568 569 570 571 572 573 714 715 716 717 718 719 720 728 729 730 731 732 733 734
+DigitalSumTrigger * of 560 561 562 563 564 565 566 574 575 576 577 578 579 580 735 736 737 738 739 740 741
+DigitalSumTrigger * of 560 561 562 563 564 565 566 721 722 723 724 725 726 727 735 736 737 738 739 740 741
+DigitalSumTrigger * of 581 582 583 584 585 586 587 595 596 597 598 599 600 601 742 743 744 745 746 747 748
+DigitalSumTrigger * of 581 582 583 584 585 586 587 728 729 730 731 732 733 734 742 743 744 745 746 747 748
+DigitalSumTrigger * of 574 575 576 577 578 579 580 588 589 590 591 592 593 594 749 750 751 752 753 754 755
+DigitalSumTrigger * of 574 575 576 577 578 579 580 735 736 737 738 739 740 741 749 750 751 752 753 754 755
+DigitalSumTrigger * of 595 596 597 598 599 600 601 609 610 611 612 613 614 615 756 757 758 759 760 761 762
+DigitalSumTrigger * of 595 596 597 598 599 600 601 742 743 744 745 746 747 748 756 757 758 759 760 761 762
+DigitalSumTrigger * of 588 589 590 591 592 593 594 602 603 604 605 606 607 608 763 764 765 766 767 768 769
+DigitalSumTrigger * of 588 589 590 591 592 593 594 749 750 751 752 753 754 755 763 764 765 766 767 768 769
+DigitalSumTrigger * of 602 603 604 605 606 607 608 616 617 618 619 620 621 622 770 771 772 773 774 775 776
+DigitalSumTrigger * of 602 603 604 605 606 607 608 763 764 765 766 767 768 769 770 771 772 773 774 775 776
+DigitalSumTrigger * of 616 617 618 619 620 621 622 623 624 625 626 627 628 629 777 778 779 780 781 782 783
+DigitalSumTrigger * of 616 617 618 619 620 621 622 770 771 772 773 774 775 776 777 778 779 780 781 782 783
+DigitalSumTrigger * of 623 624 625 626 627 628 629 630 631 632 633 634 635 636 784 785 786 787 788 789 790
+DigitalSumTrigger * of 623 624 625 626 627 628 629 777 778 779 780 781 782 783 784 785 786 787 788 789 790
+DigitalSumTrigger * of 637 638 639 640 641 642 643 644 645 646 647 648 649 650 791 792 793 794 795 796 797
+DigitalSumTrigger * of 644 645 646 647 648 649 650 658 659 660 661 662 663 664 798 799 800 801 802 803 804
+DigitalSumTrigger * of 644 645 646 647 648 649 650 791 792 793 794 795 796 797 798 799 800 801 802 803 804
+DigitalSumTrigger * of 637 638 639 640 641 642 643 651 652 653 654 655 656 657 805 806 807 808 809 810 811
+DigitalSumTrigger * of 637 638 639 640 641 642 643 791 792 793 794 795 796 797 805 806 807 808 809 810 811
+DigitalSumTrigger * of 658 659 660 661 662 663 664 672 673 674 675 676 677 678 812 813 814 815 816 817 818
+DigitalSumTrigger * of 658 659 660 661 662 663 664 798 799 800 801 802 803 804 812 813 814 815 816 817 818
+DigitalSumTrigger * of 651 652 653 654 655 656 657 665 666 667 668 669 670 671 819 820 821 822 823 824 825
+DigitalSumTrigger * of 651 652 653 654 655 656 657 805 806 807 808 809 810 811 819 820 821 822 823 824 825
+DigitalSumTrigger * of 665 666 667 668 669 670 671 679 680 681 682 683 684 685 826 827 828 829 830 831 832
+DigitalSumTrigger * of 665 666 667 668 669 670 671 819 820 821 822 823 824 825 826 827 828 829 830 831 832
+DigitalSumTrigger * of 679 680 681 682 683 684 685 686 687 688 689 690 691 692 833 834 835 836 837 838 839
+DigitalSumTrigger * of 679 680 681 682 683 684 685 826 827 828 829 830 831 832 833 834 835 836 837 838 839
+DigitalSumTrigger * of 686 687 688 689 690 691 692 693 694 695 696 697 698 699 840 841 842 843 844 845 846
+DigitalSumTrigger * of 686 687 688 689 690 691 692 833 834 835 836 837 838 839 840 841 842 843 844 845 846
+DigitalSumTrigger * of 693 694 695 696 697 698 699 700 701 702 703 704 705 706 847 848 849 850 851 852 853
+DigitalSumTrigger * of 693 694 695 696 697 698 699 840 841 842 843 844 845 846 847 848 849 850 851 852 853
+DigitalSumTrigger * of 700 701 702 703 704 705 706 707 708 709 710 711 712 713 854 855 856 857 858 859 860
+DigitalSumTrigger * of 700 701 702 703 704 705 706 847 848 849 850 851 852 853 854 855 856 857 858 859 860
+DigitalSumTrigger * of 714 715 716 717 718 719 720 728 729 730 731 732 733 734 861 862 863 864 865 866 867
+DigitalSumTrigger * of 714 715 716 717 718 719 720 721 722 723 724 725 726 727 868 869 870 871 872 873 874
+DigitalSumTrigger * of 714 715 716 717 718 719 720 861 862 863 864 865 866 867 868 869 870 871 872 873 874
+DigitalSumTrigger * of 728 729 730 731 732 733 734 742 743 744 745 746 747 748 875 876 877 878 879 880 881
+DigitalSumTrigger * of 728 729 730 731 732 733 734 861 862 863 864 865 866 867 875 876 877 878 879 880 881
+DigitalSumTrigger * of 721 722 723 724 725 726 727 735 736 737 738 739 740 741 882 883 884 885 886 887 888
+DigitalSumTrigger * of 721 722 723 724 725 726 727 868 869 870 871 872 873 874 882 883 884 885 886 887 888
+DigitalSumTrigger * of 742 743 744 745 746 747 748 756 757 758 759 760 761 762 889 890 891 892 893 894 895
+DigitalSumTrigger * of 742 743 744 745 746 747 748 875 876 877 878 879 880 881 889 890 891 892 893 894 895
+DigitalSumTrigger * of 735 736 737 738 739 740 741 749 750 751 752 753 754 755 896 897 898 899 900 901 902
+DigitalSumTrigger * of 735 736 737 738 739 740 741 882 883 884 885 886 887 888 896 897 898 899 900 901 902
+DigitalSumTrigger * of 749 750 751 752 753 754 755 763 764 765 766 767 768 769 903 904 905 906 907 908 909
+DigitalSumTrigger * of 749 750 751 752 753 754 755 896 897 898 899 900 901 902 903 904 905 906 907 908 909
+DigitalSumTrigger * of 763 764 765 766 767 768 769 770 771 772 773 774 775 776 910 911 912 913 914 915 916
+DigitalSumTrigger * of 763 764 765 766 767 768 769 903 904 905 906 907 908 909 910 911 912 913 914 915 916
+DigitalSumTrigger * of 770 771 772 773 774 775 776 777 778 779 780 781 782 783 917 918 919 920 921 922 923
+DigitalSumTrigger * of 770 771 772 773 774 775 776 910 911 912 913 914 915 916 917 918 919 920 921 922 923
+DigitalSumTrigger * of 777 778 779 780 781 782 783 784 785 786 787 788 789 790 924 925 926 927 928 929 930
+DigitalSumTrigger * of 777 778 779 780 781 782 783 917 918 919 920 921 922 923 924 925 926 927 928 929 930
+DigitalSumTrigger * of 791 792 793 794 795 796 797 798 799 800 801 802 803 804 931 932 933 934 935 936 937
+DigitalSumTrigger * of 798 799 800 801 802 803 804 812 813 814 815 816 817 818 938 939 940 941 942 943 944
+DigitalSumTrigger * of 798 799 800 801 802 803 804 931 932 933 934 935 936 937 938 939 940 941 942 943 944
+DigitalSumTrigger * of 791 792 793 794 795 796 797 805 806 807 808 809 810 811 945 946 947 948 949 950 951
+DigitalSumTrigger * of 791 792 793 794 795 796 797 931 932 933 934 935 936 937 945 946 947 948 949 950 951
+DigitalSumTrigger * of 805 806 807 808 809 810 811 819 820 821 822 823 824 825 952 953 954 955 956 957 958
+DigitalSumTrigger * of 805 806 807 808 809 810 811 945 946 947 948 949 950 951 952 953 954 955 956 957 958
+DigitalSumTrigger * of 819 820 821 822 823 824 825 826 827 828 829 830 831 832 959 960 961 962 963 964 965
+DigitalSumTrigger * of 819 820 821 822 823 824 825 952 953 954 955 956 957 958 959 960 961 962 963 964 965
+DigitalSumTrigger * of 826 827 828 829 830 831 832 833 834 835 836 837 838 839 966 967 968 969 970 971 972
+DigitalSumTrigger * of 826 827 828 829 830 831 832 959 960 961 962 963 964 965 966 967 968 969 970 971 972
+DigitalSumTrigger * of 833 834 835 836 837 838 839 840 841 842 843 844 845 846 973 974 975 976 977 978 979
+DigitalSumTrigger * of 833 834 835 836 837 838 839 966 967 968 969 970 971 972 973 974 975 976 977 978 979
+DigitalSumTrigger * of 840 841 842 843 844 845 846 847 848 849 850 851 852 853 980 981 982 983 984 985 986
+DigitalSumTrigger * of 840 841 842 843 844 845 846 973 974 975 976 977 978 979 980 981 982 983 984 985 986
+DigitalSumTrigger * of 847 848 849 850 851 852 853 854 855 856 857 858 859 860 987 988 989 990 991 992 993
+DigitalSumTrigger * of 847 848 849 850 851 852 853 980 981 982 983 984 985 986 987 988 989 990 991 992 993
+DigitalSumTrigger * of 861 862 863 864 865 866 867 875 876 877 878 879 880 881 994 995 996 997 998 999 1000
+DigitalSumTrigger * of 861 862 863 864 865 866 867 868 869 870 871 872 873 874 1001 1002 1003 1004 1005 1006 1007
+DigitalSumTrigger * of 861 862 863 864 865 866 867 994 995 996 997 998 999 1000 1001 1002 1003 1004 1005 1006 1007
+DigitalSumTrigger * of 875 876 877 878 879 880 881 889 890 891 892 893 894 895 1008 1009 1010 1011 1012 1013 1014
+DigitalSumTrigger * of 875 876 877 878 879 880 881 994 995 996 997 998 999 1000 1008 1009 1010 1011 1012 1013 1014
+DigitalSumTrigger * of 868 869 870 871 872 873 874 882 883 884 885 886 887 888 1015 1016 1017 1018 1019 1020 1021
+DigitalSumTrigger * of 868 869 870 871 872 873 874 1001 1002 1003 1004 1005 1006 1007 1015 1016 1017 1018 1019 1020 1021
+DigitalSumTrigger * of 882 883 884 885 886 887 888 896 897 898 899 900 901 902 1022 1023 1024 1025 1026 1027 1028
+DigitalSumTrigger * of 882 883 884 885 886 887 888 1015 1016 1017 1018 1019 1020 1021 1022 1023 1024 1025 1026 1027 1028
+DigitalSumTrigger * of 896 897 898 899 900 901 902 903 904 905 906 907 908 909 1029 1030 1031 1032 1033 1034 1035
+DigitalSumTrigger * of 896 897 898 899 900 901 902 1022 1023 1024 1025 1026 1027 1028 1029 1030 1031 1032 1033 1034 1035
+DigitalSumTrigger * of 903 904 905 906 907 908 909 910 911 912 913 914 915 916 1036 1037 1038 1039 1040 1041 1042
+DigitalSumTrigger * of 903 904 905 906 907 908 909 1029 1030 1031 1032 1033 1034 1035 1036 1037 1038 1039 1040 1041 1042
+DigitalSumTrigger * of 910 911 912 913 914 915 916 917 918 919 920 921 922 923 1043 1044 1045 1046 1047 1048 1049
+DigitalSumTrigger * of 910 911 912 913 914 915 916 1036 1037 1038 1039 1040 1041 1042 1043 1044 1045 1046 1047 1048 1049
+DigitalSumTrigger * of 917 918 919 920 921 922 923 924 925 926 927 928 929 930 1050 1051 1052 1053 1054 1055 1056
+DigitalSumTrigger * of 917 918 919 920 921 922 923 1043 1044 1045 1046 1047 1048 1049 1050 1051 1052 1053 1054 1055 1056
+DigitalSumTrigger * of 931 932 933 934 935 936 937 945 946 947 948 949 950 951 1057 1058 1059 1060 1061 1062 1063
+DigitalSumTrigger * of 945 946 947 948 949 950 951 952 953 954 955 956 957 958 1064 1065 1066 1067 1068 1069 1070
+DigitalSumTrigger * of 945 946 947 948 949 950 951 1057 1058 1059 1060 1061 1062 1063 1064 1065 1066 1067 1068 1069 1070
+DigitalSumTrigger * of 952 953 954 955 956 957 958 959 960 961 962 963 964 965 1071 1072 1073 1074 1075 1076 1077
+DigitalSumTrigger * of 952 953 954 955 956 957 958 1064 1065 1066 1067 1068 1069 1070 1071 1072 1073 1074 1075 1076 1077
+DigitalSumTrigger * of 959 960 961 962 963 964 965 966 967 968 969 970 971 972 1078 1079 1080 1081 1082 1083 1084
+DigitalSumTrigger * of 959 960 961 962 963 964 965 1071 1072 1073 1074 1075 1076 1077 1078 1079 1080 1081 1082 1083 1084
+DigitalSumTrigger * of 966 967 968 969 970 971 972 973 974 975 976 977 978 979 1085 1086 1087 1088 1089 1090 1091
+DigitalSumTrigger * of 966 967 968 969 970 971 972 1078 1079 1080 1081 1082 1083 1084 1085 1086 1087 1088 1089 1090 1091
+DigitalSumTrigger * of 973 974 975 976 977 978 979 980 981 982 983 984 985 986 1092 1093 1094 1095 1096 1097 1098
+DigitalSumTrigger * of 973 974 975 976 977 978 979 1085 1086 1087 1088 1089 1090 1091 1092 1093 1094 1095 1096 1097 1098
+DigitalSumTrigger * of 994 995 996 997 998 999 1000 1001 1002 1003 1004 1005 1006 1007 1099 1100 1101 1102 1103 1104 1105
+DigitalSumTrigger * of 1001 1002 1003 1004 1005 1006 1007 1015 1016 1017 1018 1019 1020 1021 1106 1107 1108 1109 1110 1111 1112
+DigitalSumTrigger * of 1001 1002 1003 1004 1005 1006 1007 1099 1100 1101 1102 1103 1104 1105 1106 1107 1108 1109 1110 1111 1112
+DigitalSumTrigger * of 1015 1016 1017 1018 1019 1020 1021 1022 1023 1024 1025 1026 1027 1028 1113 1114 1115 1116 1117 1118 1119
+DigitalSumTrigger * of 1015 1016 1017 1018 1019 1020 1021 1106 1107 1108 1109 1110 1111 1112 1113 1114 1115 1116 1117 1118 1119
+DigitalSumTrigger * of 1022 1023 1024 1025 1026 1027 1028 1029 1030 1031 1032 1033 1034 1035 1120 1121 1122 1123 1124 1125 1126
+DigitalSumTrigger * of 1022 1023 1024 1025 1026 1027 1028 1113 1114 1115 1116 1117 1118 1119 1120 1121 1122 1123 1124 1125 1126
+DigitalSumTrigger * of 1029 1030 1031 1032 1033 1034 1035 1036 1037 1038 1039 1040 1041 1042 1127 1128 1129 1130 1131 1132 1133
+DigitalSumTrigger * of 1029 1030 1031 1032 1033 1034 1035 1120 1121 1122 1123 1124 1125 1126 1127 1128 1129 1130 1131 1132 1133
+DigitalSumTrigger * of 1036 1037 1038 1039 1040 1041 1042 1043 1044 1045 1046 1047 1048 1049 1134 1135 1136 1137 1138 1139 1140
+DigitalSumTrigger * of 1036 1037 1038 1039 1040 1041 1042 1127 1128 1129 1130 1131 1132 1133 1134 1135 1136 1137 1138 1139 1140
+
+# End of generated file

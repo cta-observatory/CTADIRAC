@@ -1,0 +1,378 @@
+* CORSIKA inputs file template for CTA prod-2 simulations at 40 deg zenith angle.
+* Includes alternatives for different primaries (selected by pre-processor),
+* for PRMPAR, ERANGE, VIEWCONE, CSCAT parameters.
+* Includes site definitions for El Leoncito, Aar, SAC and other site candidates (selected by pre-processor),
+* for OBSLEV, ATMOSPHERE, and MAGNET parameters.
+* Showers can come from North (default), South, East, or West.
+* Number of showers to be simulated needs to be adapted to run duration for each primary type.
+* SEEDs need to be re-generated for each simulation run separately!!!
+*
+* =============== Corsika INPUTS =======================
+*
+* [ Job parameters ]
+*
+RUNNR   1                               // Number of run, to be auto-numbered by job submission
+EVTNR   1                               // Number of first shower event (usually 1)
+* NSHOW   10                            // for test only
+* CSCAT  1  400e2  0.                   // for test only
+* ERANGE  0.3E3 3E3                     // for test only
+ESLOPE  -2.0          // Slope of primary energy spectrum (-2.0 is equal CPU time per decade)
+*
+* [ Random number generator: 4 sequences used in IACT mode ]
+*
+SEED   385928125   401   0              // Seed for 1st random number sequence, to be re-generated
+SEED   827619802   859   0              // Seed for 2nd random number sequence, to be re-generated
+SEED   195989238   390   0              // Seed for 3rd random number sequence, to be re-generated
+SEED   539053819   323   0              // Seed for 4th random number sequence, to be re-generated
+*
+* [ Primary particle options ]
+*
+PRMPAR  14            // Particle type of prim. particle (14: proton)
+ERANGE  8.0 1200E3     // Energy range of primary particle (in GeV): protons
+NSHOW   25000                          // number of showers to generate
+*
+THETAP  40.  40.      // Range of zenith angles (degree)
+PHIP   180. 180.      // Range of azimuth angles (degree): primaries coming from North
+VIEWCONE 0. 10.     // Diffuse components (gammas, electrons, protons & nuclei)
+*
+* [ Site specific options ]
+*
+* The geographical coordinates of the Leoncito site candidate are:
+* 31:43:33 (d:m:s) South - 69:15:93 (d:m:s) West (WGS84, position of the meteorological station - June 2011)
+* Altitude: 2662 m a.s.l.
+* Atmosphere 22 at altitude 2662.0 m:
+*   Atmospheric depth at ground level: 749.716 g/cm^2
+*   Density at ground level: 0.00090638 g/cm^3
+*   Refractivity at ground level: 0.000209475
+*   Maximum Cherenkov angle at ground level: 1.1726 deg.
+OBSLEV  2662.E2       // Observation level (in cm) for El Leoncito
+ATMOSPHERE 22 Y       // Should be slightly better for El Leoncito than profile 1 (tropical)
+MAGNET  19.9  -12.6   // Magnetic field at assumed site [H, Z] (muT) (for El Leoncito site)
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+ARRANG  0.            // Rotation of array to north [D] (degree); use zero here for any site for now
+*
+* [ Core range ]
+*
+CSCAT  20  3300e2  0. // Use shower several times (protons+electrons+..., larger area for diffuse origin)
+*
+* [ Telescope positions, for IACT option ] 
+*
+* Note: all telescope marked by '(S)' would in normal simulation have data stored with mono trigger.
+*
+* Sub-array indicator comments:
+*   [A] [B] [C] [D] [E] [AR1] [BR1] [CR1] [DR1] [ER1] [N1] [N2] [N3] [N4] [N5] [N6]: Part of sub-array 2A, 2B, ...
+*   [X] [Y] [Z]: part of sub-array 2X, 2Y, 2Z with telescopes from standard simulation (MSTs in MST section).
+*   [x] [y] [z]: part of sub-array 2X, 2Y, 2Z with telescopes from extra SC-SST simulation.
+*   [North]: part of the prod-2n simulation layout.
+*   [S]: MSTs which are part of the special SC-SST/ASTRI/4m-DC simulations. [!S]: not in SST simulations
+*
+* 9 LSTs: 3 traingle plus 3 squares (square(+) 1: 100 m, square 2: 70 m, square(+) 3: 140 m)
+* Triggers: (2,3,5); (1,2,4,5,173); (4,5,170,173), (1,2,4,171,172)
+*
+TELESCOPE    50.0E2    50.0E2  16.00E2    12.50E2  # Telescope    1 (type 1)  LST square 1 or square 3 center [A]  [D] [N1] [North] [E] [X] [N2] [N3]
+TELESCOPE   -50.0E2    50.0E2  16.00E2    12.50E2  # Telescope    2 (type 1)  LST square 1 or triangle or square 3 [A]  [D] [N1] [North]  [B] [C] [E] [X] [N2] [N3] [AR1] [BR1] [CR1] [DR1] [ER1] [N4] [N5] [N6]
+TELESCOPE    36.6E2     0.0E2  16.00E2    12.50E2  # Telescope    3 (type 1)  LST triangle [SST] [North]  [B] [C] [AR1] [DR1] [ER1] [N4] [N5] [N6]
+TELESCOPE    50.0E2   -50.0E2  16.00E2    12.50E2  # Telescope    4 (type 1)  LST square 1 or square 2 or square 3 [A] [D] [N1] [North]  [E] [X] [N2] [N3]
+TELESCOPE   -50.0E2   -50.0E2  16.00E2    12.50E2  # Telescope    5 (type 1)  LST square 1 or triangle or square 2 [A] [D] [N1] [North]  [B] [C] [E] [X] [N2] [N3] [AR1] [BR1] [CR1] [DR1] [ER1] [N4] [N5] [N6]
+* TELESCOPE     0.0E2  -100.0E2  16.00E2    12.50E2  # Telescope  170 (type 1)  LST square 2
+* TELESCOPE    50.0E2   150.0E2  16.00E2    12.50E2  # Telescope  171 (type 1)  LST square 3
+* TELESCOPE   150.0E2    50.0E2  16.00E2    12.50E2  # Telescope  172 (type 1)  LST square 3
+* TELESCOPE     0.0E2     0.0E2  16.00E2    12.50E2  # Telescope  173 (type 1)  LST square 1 center or square 2
+*
+* 54 MSTs (may get re-used later for SCT simulations):
+*
+TELESCOPE   100.0E2     0.0E2  10.00E2     7.00E2  # Telescope    6 (type 2) [A] [!S] [North]  [B] [C] [x] [Y] [Z] [AR1] [BR1] [CR1]
+TELESCOPE   141.1E2     0.0E2  10.00E2     7.00E2  # Telescope    7 (type 2) [D] [N1] [North]  [E] [X] [N2] [N3] [S] [y] [z] [DR1] [ER1] [N4] [N5] [N6]
+TELESCOPE   384.4E2     0.0E2  10.00E2     7.00E2  # Telescope    8 (type 2) [D] [A] [North]  [B] [C] [x] [S] [y] [z] [CR1]
+TELESCOPE   679.9E2     0.0E2  10.00E2     7.00E2  # Telescope    9 (type 2) [C] [x] [S] [y] [z] [CR1]
+TELESCOPE  -100.0E2     0.0E2  10.00E2     7.00E2  # Telescope   10 (type 2) [A] [!S] [North]  [B] [C] [x] [Y] [Z] [AR1] [BR1] [CR1]
+TELESCOPE  -141.1E2     0.0E2  10.00E2     7.00E2  # Telescope   11 (type 2) [D] [N1] [North]  [E] [X] [N2] [N3] [S] [y] [z] [DR1] [ER1] [N4] [N5] [N6]
+TELESCOPE  -384.4E2    -0.0E2  10.00E2     7.00E2  # Telescope   12 (type 2) [D] [A] [North]  [B] [C] [x] [S] [y] [z] [CR1]
+TELESCOPE  -679.9E2    -0.0E2  10.00E2     7.00E2  # Telescope   13 (type 2) [C] [x] [S] [y] [z] [CR1]
+TELESCOPE     0.0E2    55.4E2  10.00E2     7.00E2  # Telescope   14 (type 2) [A] [!S] [North]  [E] [X] [N2] [N3] [Y] [Z] [AR1] [ER1] [N6]
+TELESCOPE   298.4E2    66.9E2  10.00E2     7.00E2  # Telescope   15 (type 2) [A] [!S] [North]  [E] [X] [N2] [Y] [Z] [AR1] [ER1]
+TELESCOPE  -298.4E2    66.9E2  10.00E2     7.00E2  # Telescope   16 (type 2) [A] [!S] [North]  [E] [X] [N2] [Y] [Z] [AR1] [ER1]
+TELESCOPE    -0.0E2   -55.4E2  10.00E2     7.00E2  # Telescope   17 (type 2) [A] [!S] [North]  [E] [X] [N2] [N3] [Y] [Z] [AR1] [ER1] [N6]
+TELESCOPE   298.4E2   -66.9E2  10.00E2     7.00E2  # Telescope   18 (type 2) [A] [!S] [North]  [E] [X] [N2] [Y] [Z] [AR1] [ER1]
+TELESCOPE  -298.4E2   -66.9E2  10.00E2     7.00E2  # Telescope   19 (type 2) [A] [!S] [North]  [E] [X] [N2] [Y] [Z] [AR1] [ER1]
+TELESCOPE   130.3E2   126.3E2  10.00E2     7.00E2  # Telescope   20 (type 2) (S) [D] [N1] [A] [!S] [North]  [E] [X] [N2] [N3] [Y] [Z] [AR1] [DR1] [ER1] [N6]
+TELESCOPE  -130.3E2   126.3E2  10.00E2     7.00E2  # Telescope   21 (type 2) (S) [D] [N1] [A] [!S] [North]  [E] [X] [N2] [N3] [Y] [Z] [AR1] [DR1] [ER1] [N6]
+TELESCOPE    -0.0E2   186.5E2  10.00E2     7.00E2  # Telescope   22 (type 2) [D] [N1] [A] [!S] [North]  [E] [X] [N2] [N3] [Y] [Z] [AR1] [DR1] [ER1] [N6]
+TELESCOPE   100.3E2   198.9E2  10.00E2     7.00E2  # Telescope   23 (type 2) [!S] [North]  [B] [C] [x] [Y] [BR1] [CR1] [N4] [N5]
+TELESCOPE  -100.2E2   198.9E2  10.00E2     7.00E2  # Telescope   24 (type 2) [!S] [North]  [B] [C] [x] [Y] [BR1] [CR1] [N4] [N5]
+TELESCOPE   270.0E2   206.9E2  10.00E2     7.00E2  # Telescope   25 (type 2) [D] [N1] [!S] [North]  [B] [C] [E] [X] [Y] [Z] [BR1] [CR1] [DR1] [N4] [N5]
+TELESCOPE  -270.0E2   206.9E2  10.00E2     7.00E2  # Telescope   26 (type 2) [D] [N1] [!S] [North]  [B] [C] [E] [X] [Y] [Z] [BR1] [CR1] [DR1] [N4] [N5]
+TELESCOPE   711.2E2   273.6E2  10.00E2     7.00E2  # Telescope   27 (type 2) [C] [x] [S] [y] [z]
+TELESCOPE  -711.2E2   273.6E2  10.00E2     7.00E2  # Telescope   28 (type 2) [C] [x] [S] [y] [z]
+TELESCOPE   139.9E2   283.7E2  10.00E2     7.00E2  # Telescope   29 (type 2) [A] [North]  [E] [X] [S] [y] [Z] [AR1] [ER1]
+TELESCOPE  -139.9E2   283.7E2  10.00E2     7.00E2  # Telescope   30 (type 2) [A] [North]  [E] [X] [S] [y] [Z] [AR1] [ER1]
+TELESCOPE   396.7E2   299.2E2  10.00E2     7.00E2  # Telescope   31 (type 2) [D] [A] [North]  [B] [C] [x] [S] [y] [z] [CR1]
+TELESCOPE  -396.7E2   299.2E2  10.00E2     7.00E2  # Telescope   32 (type 2) [D] [A] [North]  [B] [C] [x] [S] [y] [z] [CR1]
+TELESCOPE    -0.0E2   340.7E2  10.00E2     7.00E2  # Telescope   33 (type 2) [D] [N1] [!S] [North]  [B] [C] [E] [X] [Y] [Z] [BR1] [CR1] [DR1] [N4] [N5]
+TELESCOPE   655.5E2   562.6E2  10.00E2     7.00E2  # Telescope   34 (type 2) [x] [S] [y] [z]
+TELESCOPE  -655.5E2   562.6E2  10.00E2     7.00E2  # Telescope   35 (type 2) [x] [S] [y] [z]
+TELESCOPE   126.2E2   607.3E2  10.00E2     7.00E2  # Telescope   36 (type 2) [C] [x] [S] [y] [z] [CR1]
+TELESCOPE  -126.2E2   607.3E2  10.00E2     7.00E2  # Telescope   37 (type 2) [C] [x] [S] [y] [z] [CR1]
+TELESCOPE   380.2E2   647.0E2  10.00E2     7.00E2  # Telescope   38 (type 2) [C] [x] [S] [y] [z]
+TELESCOPE  -380.2E2   647.0E2  10.00E2     7.00E2  # Telescope   39 (type 2) [C] [x] [S] [y] [z]
+TELESCOPE   130.3E2  -126.3E2  10.00E2     7.00E2  # Telescope   40 (type 2) (S) [D] [N1] [A] [!S] [North]  [E] [X] [N2] [N3] [Y] [Z] [AR1] [DR1] [ER1] [N6]
+TELESCOPE  -130.3E2  -126.3E2  10.00E2     7.00E2  # Telescope   41 (type 2) (S) [D] [N1] [A] [!S] [North]  [E] [X] [N2] [N3] [Y] [Z] [AR1] [DR1] [ER1] [N6]
+TELESCOPE    -0.0E2  -186.5E2  10.00E2     7.00E2  # Telescope   42 (type 2) [D] [N1] [A] [!S] [North]  [E] [X] [N2] [N3] [Y] [Z] [AR1] [DR1] [ER1] [N6]
+TELESCOPE   -99.8E2  -198.7E2  10.00E2     7.00E2  # Telescope   43 (type 2) [!S] [North]  [B] [C] [x] [Y] [BR1] [CR1] [N4] [N5]
+TELESCOPE   100.5E2  -199.0E2  10.00E2     7.00E2  # Telescope   44 (type 2) [!S] [North]  [B] [C] [x] [Y] [BR1] [CR1] [N4] [N5]
+TELESCOPE   270.0E2  -206.9E2  10.00E2     7.00E2  # Telescope   45 (type 2) [D] [N1] [!S] [North]  [B] [C] [E] [X] [Y] [Z] [BR1] [CR1] [DR1] [N4] [N5]
+TELESCOPE  -270.0E2  -206.9E2  10.00E2     7.00E2  # Telescope   46 (type 2) [D] [N1] [!S] [North] [B] [C] [E] [X] [Y] [Z] [BR1] [CR1] [DR1] [N4] [N5]
+TELESCOPE   711.2E2  -273.6E2  10.00E2     7.00E2  # Telescope   47 (type 2) [C] [x] [S] [y] [z]
+TELESCOPE  -711.2E2  -273.6E2  10.00E2     7.00E2  # Telescope   48 (type 2) [C] [x] [S] [y] [z]
+TELESCOPE   139.9E2  -283.7E2  10.00E2     7.00E2  # Telescope   49 (type 2) [A] [North] [E] [X] [S] [y] [Z] [AR1] [ER1]
+TELESCOPE  -139.9E2  -283.7E2  10.00E2     7.00E2  # Telescope   50 (type 2) [A] [North] [E] [X] [S] [y] [Z] [AR1] [ER1]
+TELESCOPE   396.7E2  -299.2E2  10.00E2     7.00E2  # Telescope   51 (type 2) [D] [A] [North] [B] [C] [x] [S] [y] [z] [CR1]
+TELESCOPE  -396.7E2  -299.2E2  10.00E2     7.00E2  # Telescope   52 (type 2) [D] [A] [North] [B] [C] [x] [S] [y] [z] [CR1]
+TELESCOPE     0.0E2  -340.7E2  10.00E2     7.00E2  # Telescope   53 (type 2) [D] [N1] [!S] [North] [B] [C] [E] [X] [Y] [Z] [BR1] [CR1] [DR1] [N4] [N5]
+TELESCOPE   655.5E2  -562.6E2  10.00E2     7.00E2  # Telescope   54 (type 2) [x] [S] [y] [z]
+TELESCOPE  -655.5E2  -562.6E2  10.00E2     7.00E2  # Telescope   55 (type 2) [x] [S] [y] [z]
+TELESCOPE   126.2E2  -607.3E2  10.00E2     7.00E2  # Telescope   56 (type 2) [C] [x] [S] [y] [z] [CR1]
+TELESCOPE  -126.2E2  -607.3E2  10.00E2     7.00E2  # Telescope   57 (type 2) [C] [x] [S] [y] [z] [CR1]
+TELESCOPE   380.2E2  -647.0E2  10.00E2     7.00E2  # Telescope   58 (type 2) [C] [x] [S] [y] [z]
+TELESCOPE  -380.2E2  -647.0E2  10.00E2     7.00E2  # Telescope   59 (type 2) [C] [x] [S] [y] [z]
+*
+* 37 DC-SSTs:
+*
+TELESCOPE    -0.0E2     0.0E2   7.00E2     4.35E2  # Telescope   60 (type 3) [A] [North] [AR1]
+TELESCOPE   260.3E2     0.0E2   7.00E2     4.35E2  # Telescope   61 (type 3) [D] [North] [DR1]
+TELESCOPE   550.7E2     0.0E2   7.00E2     4.35E2  # Telescope   62 (type 3) [D] [A] [North] [AR1] [DR1]
+TELESCOPE  -875.2E2     0.0E2   7.00E2     4.35E2  # Telescope   63 (type 3) [D] [A]
+TELESCOPE   875.2E2    -0.0E2   7.00E2     4.35E2  # Telescope   64 (type 3) [D] [A]
+TELESCOPE  -260.3E2    -0.0E2   7.00E2     4.35E2  # Telescope   65 (type 3) [D] [North] [DR1]
+TELESCOPE  -550.7E2    -0.0E2   7.00E2     4.35E2  # Telescope   66 (type 3) [D] [A] [North] [AR1] [DR1]
+TELESCOPE   130.1E2   225.4E2   7.00E2     4.35E2  # Telescope   67 (type 3) [D] [A] [North] [AR1] [DR1]
+TELESCOPE  -130.1E2   225.4E2   7.00E2     4.35E2  # Telescope   68 (type 3) [D] [A] [North] [AR1] [DR1]
+TELESCOPE   419.0E2   241.9E2   7.00E2     4.35E2  # Telescope   69 (type 3) [A] [North] [AR1]
+TELESCOPE  -419.0E2   241.9E2   7.00E2     4.35E2  # Telescope   70 (type 3) [A] [North] [AR1]
+TELESCOPE   756.2E2   274.8E2   7.00E2     4.35E2  # Telescope   71 (type 3) [D] [A] [AR1] [DR1]
+TELESCOPE  -756.2E2   274.8E2   7.00E2     4.35E2  # Telescope   72 (type 3) [D] [A] [AR1] [DR1]
+TELESCOPE   275.4E2   476.9E2   7.00E2     4.35E2  # Telescope   73 (type 3) [D] [A] [North] [AR1] [DR1]
+TELESCOPE  -275.4E2   476.9E2   7.00E2     4.35E2  # Telescope   74 (type 3) [D] [A] [North] [AR1] [DR1]
+TELESCOPE     0.0E2   483.8E2   7.00E2     4.35E2  # Telescope   75 (type 3) [D] [A] [North] [AR1] [DR1]
+TELESCOPE   616.1E2   517.5E2   7.00E2     4.35E2  # Telescope   76 (type 3) [D] [A] [AR1] [DR1]
+TELESCOPE  -616.1E2   517.5E2   7.00E2     4.35E2  # Telescope   77 (type 3) [D] [A] [AR1] [DR1]
+TELESCOPE   437.6E2   758.0E2   7.00E2     4.35E2  # Telescope   78 (type 3) [D] [A]
+TELESCOPE  -437.6E2   758.0E2   7.00E2     4.35E2  # Telescope   79 (type 3) [D] [A]
+TELESCOPE   140.1E2   792.3E2   7.00E2     4.35E2  # Telescope   80 (type 3) [D] [A]
+TELESCOPE  -140.1E2   792.3E2   7.00E2     4.35E2  # Telescope   81 (type 3) [D] [A]
+TELESCOPE   130.1E2  -225.4E2   7.00E2     4.35E2  # Telescope   82 (type 3) [D] [A] [North] [AR1] [DR1]
+TELESCOPE  -130.1E2  -225.4E2   7.00E2     4.35E2  # Telescope   83 (type 3) [D] [A] [North] [AR1] [DR1]
+TELESCOPE   419.0E2  -241.9E2   7.00E2     4.35E2  # Telescope   84 (type 3) [A] [North] [AR1]
+TELESCOPE  -419.0E2  -241.9E2   7.00E2     4.35E2  # Telescope   85 (type 3) [A] [North] [AR1]
+TELESCOPE   756.2E2  -274.8E2   7.00E2     4.35E2  # Telescope   86 (type 3) [D] [A] [AR1] [DR1]
+TELESCOPE  -756.2E2  -274.8E2   7.00E2     4.35E2  # Telescope   87 (type 3) [D] [A] [AR1] [DR1]
+TELESCOPE   275.4E2  -476.9E2   7.00E2     4.35E2  # Telescope   88 (type 3) [D] [A] [North] [AR1] [DR1]
+TELESCOPE  -275.4E2  -476.9E2   7.00E2     4.35E2  # Telescope   89 (type 3) [D] [A] [North] [AR1] [DR1]
+TELESCOPE    -0.0E2  -483.8E2   7.00E2     4.35E2  # Telescope   90 (type 3) [D] [A] [North] [AR1] [DR1]
+TELESCOPE   616.1E2  -517.5E2   7.00E2     4.35E2  # Telescope   91 (type 3) [D] [A] [AR1] [DR1]
+TELESCOPE  -616.1E2  -517.5E2   7.00E2     4.35E2  # Telescope   92 (type 3) [D] [A] [AR1] [DR1]
+TELESCOPE   437.6E2  -758.0E2   7.00E2     4.35E2  # Telescope   93 (type 3) [D] [A]
+TELESCOPE  -437.6E2  -758.0E2   7.00E2     4.35E2  # Telescope   94 (type 3) [D] [A]
+TELESCOPE   140.1E2  -792.3E2   7.00E2     4.35E2  # Telescope   95 (type 3) [D] [A]
+TELESCOPE  -140.1E2  -792.3E2   7.00E2     4.35E2  # Telescope   96 (type 3) [D] [A]
+*
+* 72 SC-SSTs:
+* (no triggers of one DC-SST + one SC-SST needed but likely irrelevant for data rate)
+*
+TELESCOPE    -0.0E2   128.3E2   5.00E2     2.80E2  # Telescope   97 (type 4) [B] [C] [E] [X] [BR1] [CR1] [ER1] [M]
+TELESCOPE  1288.4E2   134.6E2   5.00E2     2.80E2  # Telescope   98 (type 4) [B] [E] [BR1] [ER1]
+TELESCOPE -1288.4E2   134.6E2   5.00E2     2.80E2  # Telescope   99 (type 4) [B] [E] [BR1] [ER1]
+TELESCOPE   869.5E2   139.1E2   5.00E2     2.80E2  # Telescope  100 (type 4) [B] [C] [E] [X] [BR1] [CR1] [ER1]
+TELESCOPE  -869.5E2   139.1E2   5.00E2     2.80E2  # Telescope  101 (type 4) [B] [C] [E] [X] [BR1] [CR1] [ER1]
+TELESCOPE   539.9E2   142.8E2   5.00E2     2.80E2  # Telescope  102 (type 4) [B] [C] [E] [X] [BR1] [CR1] [ER1]
+TELESCOPE  -539.9E2   142.8E2   5.00E2     2.80E2  # Telescope  103 (type 4) [B] [C] [E] [X] [BR1] [CR1] [ER1]
+TELESCOPE   257.0E2   143.1E2   5.00E2     2.80E2  # Telescope  104 (type 4) [B] [E] [N3] [X] [BR1] [ER1]
+TELESCOPE  -257.0E2   143.1E2   5.00E2     2.80E2  # Telescope  105 (type 4) [B] [E] [N3] [X] [BR1] [ER1]
+TELESCOPE  1274.9E2   410.2E2   5.00E2     2.80E2  # Telescope  106 (type 4) [B] [C] [E] [BR1] [ER1]
+TELESCOPE -1274.9E2   410.2E2   5.00E2     2.80E2  # Telescope  107 (type 4) [B] [C] [E] [BR1] [ER1]
+TELESCOPE     0.0E2   424.6E2   5.00E2     2.80E2  # Telescope  108 (type 4) [B] [E] [N3] [X] [BR1] [ER1]
+TELESCOPE   864.0E2   425.5E2   5.00E2     2.80E2  # Telescope  109 (type 4) [B] [E] [X] [BR1] [ER1]
+TELESCOPE  -864.0E2   425.5E2   5.00E2     2.80E2  # Telescope  110 (type 4) [B] [E] [X] [BR1] [ER1]
+TELESCOPE   541.3E2   439.9E2   5.00E2     2.80E2  # Telescope  111 (type 4) [B] [E] [X] [BR1] [CR1] [ER1]
+TELESCOPE  -541.3E2   439.9E2   5.00E2     2.80E2  # Telescope  112 (type 4) [B] [E] [X] [BR1] [CR1] [ER1]
+TELESCOPE   261.2E2   444.9E2   5.00E2     2.80E2  # Telescope  113 (type 4) [B] [C] [E] [N3] [X] [BR1] [CR1] [ER1]
+TELESCOPE  -261.2E2   444.9E2   5.00E2     2.80E2  # Telescope  114 (type 4) [B] [C] [E] [N3] [X] [BR1] [CR1] [ER1]
+TELESCOPE  1223.8E2   704.1E2   5.00E2     2.80E2  # Telescope  115 (type 4) [B] [E] [BR1] [ER1]
+TELESCOPE -1223.8E2   704.1E2   5.00E2     2.80E2  # Telescope  116 (type 4) [B] [E] [BR1] [ER1]
+TELESCOPE   830.6E2   739.9E2   5.00E2     2.80E2  # Telescope  117 (type 4) [B] [C] [E] [X] [BR1] [CR1] [ER1]
+TELESCOPE  -830.6E2   739.9E2   5.00E2     2.80E2  # Telescope  118 (type 4) [B] [C] [E] [X] [BR1] [CR1] [ER1]
+TELESCOPE     0.0E2   770.8E2   5.00E2     2.80E2  # Telescope  119 (type 4) [B] [C] [E] [X] [BR1] [CR1] [ER1]
+TELESCOPE   528.8E2   777.4E2   5.00E2     2.80E2  # Telescope  120 (type 4) [B] [C] [E] [X] [BR1] [CR1] [ER1]
+TELESCOPE  -528.8E2   777.4E2   5.00E2     2.80E2  # Telescope  121 (type 4) [B] [C] [E] [X] [BR1] [CR1] [ER1]
+TELESCOPE   257.3E2   790.8E2   5.00E2     2.80E2  # Telescope  122 (type 4) [B] [E] [X] [BR1] [ER1]
+TELESCOPE  -257.3E2   790.8E2   5.00E2     2.80E2  # Telescope  123 (type 4) [B] [E] [X] [BR1] [ER1]
+TELESCOPE     0.0E2  -128.3E2   5.00E2     2.80E2  # Telescope  124 (type 4) [B] [C] [E] [X] [BR1] [CR1] [ER1] [M]
+TELESCOPE  1288.4E2  -134.6E2   5.00E2     2.80E2  # Telescope  125 (type 4) [B] [E] [BR1] [ER1]
+TELESCOPE -1288.4E2  -134.6E2   5.00E2     2.80E2  # Telescope  126 (type 4) [B] [E] [BR1] [ER1]
+TELESCOPE   869.5E2  -139.1E2   5.00E2     2.80E2  # Telescope  127 (type 4) [B] [C] [E] [X] [BR1] [CR1] [ER1]
+TELESCOPE  -869.5E2  -139.1E2   5.00E2     2.80E2  # Telescope  128 (type 4) [B] [C] [E] [X] [BR1] [CR1] [ER1]
+TELESCOPE   539.9E2  -142.8E2   5.00E2     2.80E2  # Telescope  129 (type 4) [B] [C] [E] [X] [BR1] [CR1] [ER1]
+TELESCOPE  -539.9E2  -142.8E2   5.00E2     2.80E2  # Telescope  130 (type 4) [B] [C] [E] [X] [BR1] [CR1] [ER1]
+TELESCOPE   257.0E2  -143.1E2   5.00E2     2.80E2  # Telescope  131 (type 4) [B] [E] [N3] [X] [BR1] [ER1] [M]
+TELESCOPE  -257.0E2  -143.1E2   5.00E2     2.80E2  # Telescope  132 (type 4) [B] [E] [N3] [X] [BR1] [ER1] [M]
+TELESCOPE  1274.9E2  -410.2E2   5.00E2     2.80E2  # Telescope  133 (type 4) [B] [C] [E] [BR1] [ER1]
+TELESCOPE -1274.9E2  -410.2E2   5.00E2     2.80E2  # Telescope  134 (type 4) [B] [C] [E] [BR1] [ER1]
+TELESCOPE    -0.0E2  -424.6E2   5.00E2     2.80E2  # Telescope  135 (type 4) [B] [E] [N3] [X] [BR1] [ER1] [M]
+TELESCOPE   864.0E2  -425.5E2   5.00E2     2.80E2  # Telescope  136 (type 4) [B] [E] [X] [BR1] [ER1]
+TELESCOPE  -864.0E2  -425.5E2   5.00E2     2.80E2  # Telescope  137 (type 4) [B] [E] [X] [BR1] [ER1]
+TELESCOPE   541.3E2  -439.9E2   5.00E2     2.80E2  # Telescope  138 (type 4) [B] [E] [X] [BR1] [CR1] [ER1]
+TELESCOPE  -541.3E2  -439.9E2   5.00E2     2.80E2  # Telescope  139 (type 4) [B] [E] [X] [BR1] [CR1] [ER1]
+TELESCOPE   261.2E2  -444.9E2   5.00E2     2.80E2  # Telescope  140 (type 4) [B] [C] [E] [N3] [X] [BR1] [CR1] [ER1]
+TELESCOPE  -261.2E2  -444.9E2   5.00E2     2.80E2  # Telescope  141 (type 4) [B] [C] [E] [N3] [X] [BR1] [CR1] [ER1]
+TELESCOPE  1223.8E2  -704.1E2   5.00E2     2.80E2  # Telescope  142 (type 4) [B] [E] [BR1] [ER1]
+TELESCOPE -1223.8E2  -704.1E2   5.00E2     2.80E2  # Telescope  143 (type 4) [B] [E] [BR1] [ER1]
+TELESCOPE   830.6E2  -739.9E2   5.00E2     2.80E2  # Telescope  144 (type 4) [B] [C] [E] [X] [BR1] [CR1] [ER1]
+TELESCOPE  -830.6E2  -739.9E2   5.00E2     2.80E2  # Telescope  145 (type 4) [B] [C] [E] [X] [BR1] [CR1] [ER1]
+TELESCOPE     0.0E2  -770.8E2   5.00E2     2.80E2  # Telescope  146 (type 4) [B] [C] [E] [X] [BR1] [CR1] [ER1]
+TELESCOPE   528.8E2  -777.4E2   5.00E2     2.80E2  # Telescope  147 (type 4) [B] [C] [E] [X] [BR1] [CR1] [ER1]
+TELESCOPE  -528.8E2  -777.4E2   5.00E2     2.80E2  # Telescope  148 (type 4) [B] [C] [E] [X] [BR1] [CR1] [ER1]
+TELESCOPE   257.3E2  -790.8E2   5.00E2     2.80E2  # Telescope  149 (type 4) [B] [E] [X] [BR1] [ER1]
+TELESCOPE  -257.3E2  -790.8E2   5.00E2     2.80E2  # Telescope  150 (type 4) [B] [E] [X] [BR1] [ER1]
+TELESCOPE  1118.8E2  1037.9E2   5.00E2     2.80E2  # Telescope  151 (type 4) [B] [C] [E]
+TELESCOPE -1118.8E2  1037.9E2   5.00E2     2.80E2  # Telescope  152 (type 4) [B] [C] [E]
+TELESCOPE   794.9E2  1146.5E2   5.00E2     2.80E2  # Telescope  153 (type 4) [B] [E]
+TELESCOPE  -794.9E2  1146.5E2   5.00E2     2.80E2  # Telescope  154 (type 4) [B] [E]
+TELESCOPE   512.9E2  1202.9E2   5.00E2     2.80E2  # Telescope  155 (type 4) [B] [C] [E]
+TELESCOPE  -512.9E2  1202.9E2   5.00E2     2.80E2  # Telescope  156 (type 4) [B] [C] [E]
+TELESCOPE     0.0E2  1208.0E2   5.00E2     2.80E2  # Telescope  157 (type 4) [B] [C] [E]
+TELESCOPE   251.1E2  1226.6E2   5.00E2     2.80E2  # Telescope  158 (type 4) [B] [E]
+TELESCOPE  -251.1E2  1226.6E2   5.00E2     2.80E2  # Telescope  159 (type 4) [B] [E]
+TELESCOPE  1118.8E2 -1037.9E2   5.00E2     2.80E2  # Telescope  160 (type 4) [B] [C] [E]
+TELESCOPE -1118.8E2 -1037.9E2   5.00E2     2.80E2  # Telescope  161 (type 4) [B] [C] [E]
+TELESCOPE   794.9E2 -1146.5E2   5.00E2     2.80E2  # Telescope  162 (type 4) [B] [E]
+TELESCOPE  -794.9E2 -1146.5E2   5.00E2     2.80E2  # Telescope  163 (type 4) [B] [E]
+TELESCOPE   512.9E2 -1202.9E2   5.00E2     2.80E2  # Telescope  164 (type 4) [B] [C] [E]
+TELESCOPE  -512.9E2 -1202.9E2   5.00E2     2.80E2  # Telescope  165 (type 4) [B] [C] [E]
+TELESCOPE     0.0E2 -1208.0E2   5.00E2     2.80E2  # Telescope  166 (type 4) [B] [C] [E]
+TELESCOPE   251.1E2 -1226.6E2   5.00E2     2.80E2  # Telescope  167 (type 4) [B] [E]
+TELESCOPE  -251.1E2 -1226.6E2   5.00E2     2.80E2  # Telescope  168 (type 4) [B] [E]
+*
+* Central position might also be used for an MST or SCT instead of a DC-SST (tel. 60):
+* (avoid 'stereo' trigger of #60 + #169 + #9, perhaps also of #3 + any of #60/#169)
+*
+TELESCOPE     0.0E2     0.0E2    10.00E2     7.00E2  # Telescope 169 (type 2) SCT or MST (S) [D] [N1] [North] [DR1] [N5]
+*
+* Extra LSTs (see above at normal LSTs)
+*
+TELESCOPE     0.0E2  -100.0E2  16.00E2    12.50E2  # Telescope  170 (type 1)  LST square 2
+TELESCOPE    50.0E2   150.0E2  16.00E2    12.50E2  # Telescope  171 (type 1)  LST square 3
+TELESCOPE   150.0E2    50.0E2  16.00E2    12.50E2  # Telescope  172 (type 1)  LST square 3
+TELESCOPE     0.0E2     0.0E2  16.00E2    12.50E2  # Telescope  173 (type 1)  LST square 1 center or square 2
+*
+* Latest list from SCT group, resorted to have possible MSTs first, SCT-only position later.
+*
+TELESCOPE       239.E2  239.E2  10.00E2 7.00E2  # Telescope 174 (type 5) + MST (S)  was # 183
+TELESCOPE       -239.E2 239.E2  10.00E2 7.00E2  # Telescope 175 (type 5) + MST (S)  was # 184
+TELESCOPE       -239.E2 -239.E2 10.00E2 7.00E2  # Telescope 176 (type 5) + MST (S)  was # 185
+TELESCOPE       239.E2  -239.E2 10.00E2 7.00E2  # Telescope 177 (type 5) + MST (S)  was # 186
+TELESCOPE       331.E2  -104.E2 10.00E2 7.00E2  # Telescope 178 (type 5) + MST (S)  was # 187
+TELESCOPE       104.E2  -331.E2 10.00E2 7.00E2  # Telescope 179 (type 5) + MST (S)  was # 188
+TELESCOPE       331.E2  104.E2  10.00E2 7.00E2  # Telescope 180 (type 5) + MST (S)  was # 189
+TELESCOPE       104.E2  331.E2  10.00E2 7.00E2  # Telescope 181 (type 5) + MST (S)  was # 190
+TELESCOPE       -104.E2 331.E2  10.00E2 7.00E2  # Telescope 182 (type 5) + MST (S)  was # 191
+TELESCOPE       -331.E2 104.E2  10.00E2 7.00E2  # Telescope 183 (type 5) + MST (S)  was # 192
+TELESCOPE       -104.E2 -331.E2 10.00E2 7.00E2  # Telescope 184 (type 5) + MST (S)  was # 193
+TELESCOPE       -331.E2 -104.E2 10.00E2 7.00E2  # Telescope 185 (type 5) + MST (S)  was # 194
+
+TELESCOPE       350.E2  350.E2  10.00E2 7.00E2  # Telescope 186 (type 5) + MST (S)  was # 207
+TELESCOPE       -350.E2 350.E2  10.00E2 7.00E2  # Telescope 187 (type 5) + MST (S)  was # 208
+TELESCOPE       -350.E2 -350.E2 10.00E2 7.00E2  # Telescope 188 (type 5) + MST (S)  was # 209
+TELESCOPE       350.E2  -350.E2 10.00E2 7.00E2  # Telescope 189 (type 5) + MST (S)  was # 210
+TELESCOPE       550.E2  -150.E2 10.00E2 7.00E2  # Telescope 190 (type 5) + MST (S)  was # 211
+TELESCOPE       150.E2  -550.E2 10.00E2 7.00E2  # Telescope 191 (type 5) + MST (S)  was # 212
+TELESCOPE       550.E2  150.E2  10.00E2 7.00E2  # Telescope 192 (type 5) + MST (S)  was # 213
+TELESCOPE       150.E2  550.E2  10.00E2 7.00E2  # Telescope 193 (type 5) + MST (S)  was # 214
+TELESCOPE       -150.E2 550.E2  10.00E2 7.00E2  # Telescope 194 (type 5) + MST (S)  was # 215
+TELESCOPE       -550.E2 150.E2  10.00E2 7.00E2  # Telescope 195 (type 5) + MST (S)  was # 216
+TELESCOPE       -150.E2 -550.E2 10.00E2 7.00E2  # Telescope 196 (type 5) + MST (S)  was # 217
+TELESCOPE       -550.E2 -150.E2 10.00E2 7.00E2  # Telescope 197 (type 5) + MST (S)  was # 218
+
+* TELESCOPE     0.E2    0.E2    10.00E2 5.50E2  # Telescope ... (type 5) (SCT only) was # 170, duplicate with # 169
+TELESCOPE       116.E2  0.E2    10.00E2 5.50E2  # Telescope 198 (type 5) (SCT only) was # 171
+TELESCOPE       0.E2    116.E2  10.00E2 5.50E2  # Telescope 199 (type 5) (SCT only) was # 172
+TELESCOPE       -116.E2 0.E2    10.00E2 5.50E2  # Telescope 200 (type 5) (SCT only) was # 173
+TELESCOPE       0.E2    -116.E2 10.00E2 5.50E2  # Telescope 201 (type 5) (SCT only) was # 174
+TELESCOPE       238.E2  0.E2    10.00E2 5.50E2  # Telescope 202 (type 5) (SCT only) was # 175
+TELESCOPE       0.E2    238.E2  10.00E2 5.50E2  # Telescope 203 (type 5) (SCT only) was # 176
+TELESCOPE       -238.E2 0.E2    10.00E2 5.50E2  # Telescope 204 (type 5) (SCT only) was # 177
+TELESCOPE       0.E2    -238.E2 10.00E2 5.50E2  # Telescope 205 (type 5) (SCT only) was # 178
+* TELESCOPE     138.E2  138.E2  10.00E2 5.50E2  # Telescope ... (type 5) (SCT only) was # 179, almost on top of  # 20
+* TELESCOPE     -138.E2 138.E2  10.00E2 5.50E2  # Telescope ... (type 5) (SCT only) was # 180, almost on top of  # 21
+* TELESCOPE     -138.E2 -138.E2 10.00E2 5.50E2  # Telescope ... (type 5) (SCT only) was # 181, almost on top of  # 40
+* TELESCOPE     138.E2  -138.E2 10.00E2 5.50E2  # Telescope ... (type 5) (SCT only) was # 182, almost on top of  # 41
+TELESCOPE       400.E2  -200.E2 10.00E2 5.50E2  # Telescope 206 (type 5) (SCT only) was # 195
+TELESCOPE       200.E2  -400.E2 10.00E2 5.50E2  # Telescope 207 (type 5) (SCT only) was # 196
+TELESCOPE       400.E2  200.E2  10.00E2 5.50E2  # Telescope 208 (type 5) (SCT only) was # 197
+TELESCOPE       200.E2  400.E2  10.00E2 5.50E2  # Telescope 209 (type 5) (SCT only) was # 198
+TELESCOPE       -200.E2 400.E2  10.00E2 5.50E2  # Telescope 210 (type 5) (SCT only) was # 199
+TELESCOPE       -400.E2 200.E2  10.00E2 5.50E2  # Telescope 211 (type 5) (SCT only) was # 200
+TELESCOPE       -200.E2 -400.E2 10.00E2 5.50E2  # Telescope 212 (type 5) (SCT only) was # 201
+TELESCOPE       -400.E2 -200.E2 10.00E2 5.50E2  # Telescope 213 (type 5) (SCT only) was # 202
+TELESCOPE       430.E2  0.E2    10.00E2 5.50E2  # Telescope 214 (type 5) (SCT only) was # 203
+TELESCOPE       0.E2    430.E2  10.00E2 5.50E2  # Telescope 215 (type 5) (SCT only) was # 204
+TELESCOPE       -430.E2 0.E2    10.00E2 5.50E2  # Telescope 216 (type 5) (SCT only) was # 205
+TELESCOPE       0.E2    -430.E2 10.00E2 5.50E2  # Telescope 217 (type 5) (SCT only) was # 206
+TELESCOPE       500.E2  300.E2  10.00E2 5.50E2  # Telescope 218 (type 5) (SCT only) was # 219
+TELESCOPE       300.E2  500.E2  10.00E2 5.50E2  # Telescope 218 (type 5) (SCT only) was # 220
+TELESCOPE       -300.E2 500.E2  10.00E2 5.50E2  # Telescope 220 (type 5) (SCT only) was # 221
+TELESCOPE       -500.E2 300.E2  10.00E2 5.50E2  # Telescope 221 (type 5) (SCT only) was # 222
+TELESCOPE       -300.E2 -500.E2 10.00E2 5.50E2  # Telescope 222 (type 5) (SCT only) was # 223
+TELESCOPE       -500.E2 -300.E2 10.00E2 5.50E2  # Telescope 223 (type 5) (SCT only) was # 224
+TELESCOPE       500.E2  -300.E2 10.00E2 5.50E2  # Telescope 224 (type 5) (SCT only) was # 225
+TELESCOPE       300.E2  -500.E2 10.00E2 5.50E2  # Telescope 225 (type 5) (SCT only) was # 226
+TELESCOPE       600.E2  0.E2    10.00E2 5.50E2  # Telescope 226 (type 5) (SCT only) was # 227
+TELESCOPE       0.E2    600.E2  10.00E2 5.50E2  # Telescope 227 (type 5) (SCT only) was # 228
+TELESCOPE       -600.E2 0.E2    10.00E2 5.50E2  # Telescope 228 (type 5) (SCT only) was # 229
+TELESCOPE       0.E2    -600.E2 10.00E2 5.50E2  # Telescope 229 (type 5) (SCT only) was # 230
+*
+* [Interaction flags]
+*
+FIXHEI  0.  0          // First interaction height & target (0. 0 for random)
+FIXCHI  0.             // Starting altitude (g/cm**2). 0. is at boundary to space.
+TSTART  T              // Needed for emission and scattering of primary
+ECUTS   0.3  0.1  0.020  0.020         // Energy cuts for particles
+MUADDI  F                              // Additional info for muons not needed
+MUMULT  T                              // Muon multiple scattering angle
+LONGI   T  20.  F  F                   // Longit.distr. & step size & fit
+MAXPRT  0                              // Max. number of printed events
+ECTMAP  1.E6                           // Cut on gamma factor for printout
+STEPFC  1.0                            // Mult. scattering step length factor
+*
+* [ Cherenkov emission parameters ]
+*
+CERSIZ  5.         // Not above 10 for super/ultra-bialkali QE; 7 is fairly OK; 5 should be safe.
+CERFIL  F                              // No old-style Cherenkov output to extra file
+CWAVLG  250.  700.                     // Cherenkov wavelength band
+*
+* [ Debugging and output options ]
+*
+DEBUG   F  6  F  1000000               // Debug flag and logical unit for output
+DATBAS yes                             // Write a file with parameters used
+DIRECT  /dev/null                      // /dev/null means no normal CORSIKA data written
+* TELFIL |${SIM_TELARRAY_PATH}/run_sim_cta-ultra5:100:100:1     // Telescope photon bunch output (eventio format)
+TELFIL cta-prod2-test.corsika.gz       // If telescope simulation not done directly in pipe
+*
+* [ IACT tuning parameters ]
+*
+IACT SPLIT_AUTO 8M                    // Split data with more than 15 million bunches
+IACT IO_BUFFER 800MB                   // At 32 bytes per bunch this could be up to 500 MB
+IACT MAX_BUNCHES 1000000               // Let photon bunch thinning set in earlier.
+*
+* [ This is the end, my friend ]
+*
+EXIT                                   // terminates input
+* ========================================================
