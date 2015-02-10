@@ -173,3 +173,7 @@ CHANGE: modify output file name in cta-evndisp.py
 [v1r26p11]
 *LA
 CHANGE: Replace ReplicaManager with DataManager everywhere
+
+[v1r26p12]
+*LA
+CHANGE: Simple renaming of some Interfaces/test files using the TS
