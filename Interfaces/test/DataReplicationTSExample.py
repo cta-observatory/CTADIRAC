@@ -59,7 +59,7 @@ if __name__ == '__main__':
   args = Script.getPositionalArgs()
 
   try:
-    DataReplication_TS_Example( args )
+    DataReplicationTSExample( args )
   except Exception:
     Script.gLogger.exception()
 

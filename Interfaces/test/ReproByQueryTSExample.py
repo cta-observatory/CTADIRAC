@@ -62,7 +62,7 @@ if __name__ == '__main__':
   args = Script.getPositionalArgs()
 
   try:
-    ReproByQuery_TS_Example( args )
+    ReproByQueryTSExample( args )
   except Exception:
     Script.gLogger.exception()
 

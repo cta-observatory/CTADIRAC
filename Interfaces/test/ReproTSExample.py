@@ -73,7 +73,7 @@ if __name__ == '__main__':
   args = Script.getPositionalArgs()
 
   try:
-    Repro_TS_Example( args )
+    ReproTSExample( args )
   except Exception:
     Script.gLogger.exception()
 

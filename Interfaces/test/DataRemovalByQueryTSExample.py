@@ -45,7 +45,7 @@ if __name__ == '__main__':
   args = Script.getPositionalArgs()
 
   try:
-    DataRemovalByQuery_TS_Example( args )
+    DataRemovalByQueryTSExample( args )
   except Exception:
     Script.gLogger.exception()
 
