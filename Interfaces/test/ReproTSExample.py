@@ -1,33 +1,43 @@
 #!/usr/bin/env python
 """
-  Create a Transformation for Reprocessing Production Jobs based on Catalog Query
+  Create a Transformation for Reprocessing Production Jobs 
 """
 import DIRAC
 from DIRAC.Core.Base import Script
 
 Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      'Usage:',
-                                     '  %s [option|cfgfile] ...' % Script.scriptName,
+                                     '  %s [option|cfgfile] ... [inputfilelist] ...' % Script.scriptName,
                                      'Arguments:',
+                                     '  inputfilelist: Input File List',
                                      '  reprocessing configuration: STD/NSBX3/4MSST/SCSST/ASTRI/NORTH'] ) )
 
 Script.parseCommandLine()
 
-def ReproByQuery_TS_Example( args = None ) :
+def ReproTSExample( args = None ) :
 
   from DIRAC.TransformationSystem.Client.Transformation import Transformation
   from DIRAC.TransformationSystem.Client.TransformationClient import TransformationClient
   from CTADIRAC.Interfaces.API.ReproTSJob import ReproTSJob
 
-  if (len(args) != 1):
+  if (len(args) != 2):
     Script.gLogger.notice('Wrong number of arguments')
     Script.showHelp()
 
-  if args[0] not in ['STD','NSBX3','SCMST','SCSST','4MSST','ASTRI','NORTH']:
-    Script.gLogger.notice('reprocessing configuration incorrect:',args[0])
+  infile = args[0]
+  f = open(infile,'r')
+
+  infileList = []
+  for line in f:
+    infile = line.strip()
+    if line!="\n":
+      infileList.append(infile)
+
+  if args[1] not in ['STD','NSBX3','SCMST','SCSST','4MSST','ASTRI','NORTH']:
+    Script.gLogger.notice('reprocessing configuration incorrect:',args[1])
     Script.showHelp()
 
-  simtelArrayConfig = args[0]
+  simtelArrayConfig = args[1]
 
   j = ReproTSJob()
 
@@ -44,7 +54,8 @@ def ReproByQuery_TS_Example( args = None ) :
   t = Transformation( )
   tc = TransformationClient( )
 
-  t.setTransformationName("ReprobyQuery1") # This must vary 
+  t.setTransformationName("Reprotest1") # This must vary 
+  #t.setTransformationGroup("Group1")
   t.setType("DataReprocessing")
 
   t.setDescription("simtel repro example")
@@ -55,14 +66,14 @@ def ReproByQuery_TS_Example( args = None ) :
   t.setStatus("Active")
   t.setAgentType("Automatic")
   transID = t.getTransformationID()
-  tc.createTransformationInputDataQuery(transID['Value'], {'particle': 'proton','prodName':'ConfigtestCorsika','outputType':'corsikaData'}) # Files are added here. Note that the corsikaData meta-data exists only for this test directory
- 
+  tc.addFilesToTransformation(transID['Value'],infileList) # Files added here
+
 if __name__ == '__main__':
 
   args = Script.getPositionalArgs()
 
   try:
-    ReproByQuery_TS_Example( args )
+    ReproTSExample( args )
   except Exception:
     Script.gLogger.exception()
 

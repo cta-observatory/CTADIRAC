@@ -14,7 +14,7 @@ Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
 
 Script.parseCommandLine()
 
-def DataReplicationByQuery_TS_Example( args = None ) :
+def DataReplicationByQueryTSExample( args = None ) :
 
   from DIRAC.TransformationSystem.Client.Transformation import Transformation
   from DIRAC.TransformationSystem.Client.TransformationClient import TransformationClient
@@ -47,7 +47,7 @@ if __name__ == '__main__':
   args = Script.getPositionalArgs()
 
   try:
-    DataReplicationByQuery_TS_Example( args )
+    DataReplicationByQueryTSExample( args )
   except Exception:
     Script.gLogger.exception()
 
