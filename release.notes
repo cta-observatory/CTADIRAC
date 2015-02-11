@@ -177,3 +177,7 @@ CHANGE: Replace ReplicaManager with DataManager everywhere
 [v1r26p12]
 *LA
 CHANGE: Simple renaming of some Interfaces/test files using the TS
+
+[v1r26p13]
+*LA
+CHANGE: Simple renaming of some Interfaces/test files using the TS
