@@ -45,7 +45,7 @@ def MCProdTSExample( args = None ) :
 
   start_run_number = 0 
 
-  j.setParameters(['fileCatalog.cfg','--template',cfgfile,'--mode',mode,'-i', start_run_number,'--run_number', '@{JOB_ID}','-N', '25000', '-S',simtelArrayConfig,'--savecorsika','False'])
+  j.setParameters( ['fileCatalog.cfg', '--template', cfgfile, '--mode', mode, '-i', str( start_run_number ), '--run_number', '@{JOB_ID}', '-N', '25000', '-S', simtelArrayConfig, '--savecorsika', 'False'] )
 
   j.setInputSandbox( ['LFN:/vo.cta.in2p3.fr/MC/PROD2/Armazones2K/prod2_cfg.tar.gz'])
 
