@@ -81,55 +81,55 @@ def main():
     args = []
 ########## download trg mask file #######################
     if usetrgfile == 'True':
-      trgmaskFileLFN=simtelFileLFN.replace('simtel.gz','trgmask.gz')
-      DIRAC.gLogger.notice( 'Trying to download the trgmask File', trgmaskFileLFN)
+      trgmaskFileLFN = simtelFileLFN.replace( 'simtel.gz', 'trgmask.gz' )
+      DIRAC.gLogger.notice( 'Trying to download the trgmask File', trgmaskFileLFN )
       result = DataManager().getFile( trgmaskFileLFN )
       if not result['OK']:
         DIRAC.gLogger.error( 'Failed to download trgmakfile:', result )
-        jobReport.setApplicationStatus('Trgmakfile download Error')
-        DIRAC.exit( -1 )    
-      args.extend(['-t',os.path.basename(trgmaskFileLFN)])
+        jobReport.setApplicationStatus( 'Trgmakfile download Error' )
+        DIRAC.exit( -1 )
+      args.extend( ['-t', os.path.basename( trgmaskFileLFN )] )
 ############################################################
 ###### execute evndisplay converter ##################
     executable = sys.argv[5]
 
 ############ dst file Name ############################
-    run_number = simtelFileList[-1].split('run')[1].split('.simtel.gz')[0]
-    runNum = int(run_number)
-    subRunNumber = '%06d'%runNum
-    particle = simtelFileList[-1].split('_')[0]
-    if 'ptsrc' in simtelFileList[-1]: 
+    run_number = simtelFileList[-1].split( 'run' )[1].split( '.simtel.gz' )[0]
+    runNum = int( run_number )
+    subRunNumber = '%06d' % runNum
+    particle = simtelFileList[-1].split( '_' )[0]
+    if 'ptsrc' in simtelFileList[-1]:
       particle = particle + '_' + 'ptsrc'
-    dstfile = particle + '_run' + subRunNumber + '_' + str(jobID) + '_' + os.path.basename(layout) + '_dst.root'
+    dstfile = particle + '_run' + subRunNumber + '_' + str( jobID ) + '_' + os.path.basename( layout ) + '_dst.root'
 ###########################################
 
-    logfileName =  executable + '_' + layout + '.log'
-    layout = os.path.join('EVNDISP.CTA.runparameter/DetectorGeometry',layout)
-    DIRAC.gLogger.notice( 'Layout is:', layout)
+    logfileName = executable + '_' + layout + '.log'
+    layout = os.path.join( 'EVNDISP.CTA.runparameter/DetectorGeometry', layout )
+    DIRAC.gLogger.notice( 'Layout is:', layout )
 
   # add other arguments for evndisplay converter specified by user ######
-    converterparfile = open('converter.par', 'r').readlines()  
+    converterparfile = open( 'converter.par', 'r' ).readlines()
     for line in converterparfile:
       for word in line.split():
-        args.append(word) 
+        args.append( word )
 #########################################################
-    args.extend(['-a',layout])
-    args.extend(['-o',dstfile])
-    args.extend(simtelFileList)
-    execute_module(ed,executable,args)
+    args.extend( ['-a', layout] )
+    args.extend( ['-o', dstfile] )
+    args.extend( simtelFileList )
+    execute_module( ed, executable, args )
 ########### check existence of DST file ###############
-    if not os.path.isfile(dstfile):
+    if not os.path.isfile( dstfile ):
       DIRAC.gLogger.error( 'DST file Missing:', dstfile )
-      jobReport.setApplicationStatus('DST file Missing')
+      jobReport.setApplicationStatus( 'DST file Missing' )
       DIRAC.exit( -1 )
 
 ########### quality check on Log #############################################
-    cmd = 'mv ' + executable + '.log' + ' ' + logfileName 
-    if(os.system(cmd)):
+    cmd = 'mv ' + executable + '.log' + ' ' + logfileName
+    if( os.system( cmd ) ):
       DIRAC.exit( -1 )
 
-    fd = open('check_log.sh', 'w' )
-    fd.write( """#! /bin/sh  
+    fd = open( 'check_log.sh', 'w' )
+    fd.write( """#! /bin/sh
 MCevts=$(grep writing  %s | grep "MC events" | awk '{print $2}')
 if [ $MCevts -gt 0 ]; then
     exit 0
@@ -140,44 +140,44 @@ fi
 """ % (logfileName))
     fd.close()
 
-    os.system('chmod u+x check_log.sh')
+    os.system( 'chmod u+x check_log.sh' )
     cmd = './check_log.sh'
     DIRAC.gLogger.notice( 'Executing system call:', cmd )
-    if(os.system(cmd)):
-      jobReport.setApplicationStatus('Converter Log Check Failed')
+    if( os.system( cmd ) ):
+      jobReport.setApplicationStatus( 'Converter Log Check Failed' )
       DIRAC.exit( -1 )
 
    ####  Check the mode #################
     mode = sys.argv[11]
-    if(mode=='convert_standalone'):
+    if( mode == 'convert_standalone' ):
       #DIRAC.exit()
       continue
 
 ###### execute evndisplay stage1 ###############
     executable = 'evndisp'
-    logfileName =  executable + '_' + os.path.basename(layout) + '.log'
+    logfileName = executable + '_' + os.path.basename( layout ) + '.log'
 
-    args = ['-sourcefile',dstfile,'-outputdirectory','outdir']
+    args = ['-sourcefile', dstfile, '-outputdirectory', 'outdir']
   # add other arguments for evndisp specified by user ######
-    evndispparfile = open('evndisp.par', 'r').readlines()  
+    evndispparfile = open( 'evndisp.par', 'r' ).readlines()
     for line in evndispparfile:
       for word in line.split():
-        args.append(word) 
+        args.append( word )
 
-    execute_module(ed,executable,args)
+    execute_module( ed, executable, args )
 
-    for name in glob.glob('outdir/*.root'):
-      evndispOutFile = name.split('.root')[0] + '_' + str(jobID) + '_' + os.path.basename(layout) + '_evndisp.root'
-      cmd = 'mv ' +  name + ' ' + os.path.basename(evndispOutFile)
-      if(os.system(cmd)):
+    for name in glob.glob( 'outdir/*.root' ):
+      evndispOutFile = name.split( '.root' )[0] + '_' + str( jobID ) + '_' + os.path.basename( layout ) + '_evndisp.root'
+      cmd = 'mv ' + name + ' ' + os.path.basename( evndispOutFile )
+      if( os.system( cmd ) ):
         DIRAC.exit( -1 )
 
 ########### quality check on Log #############################################
-    cmd = 'mv ' + executable + '.log' + ' ' + logfileName 
-    if(os.system(cmd)):
+    cmd = 'mv ' + executable + '.log' + ' ' + logfileName
+    if( os.system( cmd ) ):
       DIRAC.exit( -1 )
-    fd = open('check_log.sh', 'w' )
-    fd.write( """#! /bin/sh  
+    fd = open( 'check_log.sh', 'w' )
+    fd.write( """#! /bin/sh
 if grep -i "error" %s; then
 exit 1
 fi
@@ -189,16 +189,16 @@ fi
 """ % (logfileName,logfileName))
     fd.close()
 
-    os.system('chmod u+x check_log.sh')
+    os.system( 'chmod u+x check_log.sh' )
     cmd = './check_log.sh'
     DIRAC.gLogger.notice( 'Executing system call:', cmd )
-    if(os.system(cmd)):
-      jobReport.setApplicationStatus('EvnDisp Log Check Failed')
+    if( os.system( cmd ) ):
+      jobReport.setApplicationStatus( 'EvnDisp Log Check Failed' )
       DIRAC.exit( -1 )
 ##################################################################
 ########### remove the converted dst file #############################################
-    cmd = 'rm ' + dstfile 
-    if(os.system(cmd)):
+    cmd = 'rm ' + dstfile
+    if( os.system( cmd ) ):
       DIRAC.exit( -1 )
  
   DIRAC.exit()
