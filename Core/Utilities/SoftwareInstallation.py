@@ -287,6 +287,7 @@ export LD_LIBRARY_PATH=${ROOTSYS}/lib:${HESSIOSYS}/lib:${LD_LIBRARY_PATH}
 export PATH=${ROOTSYS}/bin:${HESSIOSYS}/bin:${EVNDISPSYS}/bin:${PATH}
 export OBS_EVNDISP_ANA_DIR=$PWD/EVNDISP.CTA.runparameter
 export OBS_USER_DATA_DIR=$PWD
+export OBS_EVNDISP_AUX_DIR=$PWD/EVNDISP.CTA.runparameter
 """ % (packagedir,packagedir,packagedir))
       fd.close()
       return DIRAC.S_OK()      
