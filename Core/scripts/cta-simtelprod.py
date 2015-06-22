@@ -382,7 +382,9 @@ def createGlobalsFromConfigFiles(current_version):
 
 ########################################################################
   corsikaDirPath = os.path.dirname(corsikaFileLFN)
-  corsikaDirPathMD = fcc.getDirectoryMetadata(corsikaDirPath)
+  #### Change for v6r13 #######################
+  # corsikaDirPathMD = fcc.getDirectoryMetadata(corsikaDirPath)
+  corsikaDirPathMD = fcc.getDirectoryUserMetadata( corsikaDirPath )
 
   if not corsikaDirPathMD['OK']:
     print corsikaDirPathMD['Message']
@@ -455,8 +457,9 @@ def createDirAndInsertMD(dirPath, requiredDirMD):
   print 'dirExist result',dirExists
   if (dirExists):
     print 'Directory already exists'
-################# ricardo #################################
-    dirMD = fcc.getDirectoryMetadata(dirPath)
+    ##### change for v6r13 ##################
+    # dirMD = fcc.getDirectoryMetadata(dirPath)
+    dirMD = fcc.getDirectoryUserMetadata( dirPath )
     if not dirMD['OK']:
       print dirMD['Message']
       return dirMD
