@@ -193,3 +193,7 @@ CHANGE: Change DIRAC version from v6r12p3 to v6r13p2
 [v1r27p1]
 *LA
 CHANGE: Change DIRAC version to v6r13p3
+
+[v1r27p2]
+*LA
+CHANGE: Change getDirectoryMetadata in getDirectoryUserMetadata for v6r13p3
