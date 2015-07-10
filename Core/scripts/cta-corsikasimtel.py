@@ -112,7 +112,7 @@ def main():
 ############ Producing SimTel File
  ######################Building simtel Directory Metadata #######################
 
-  cfg_dict = {"4MSST":'cta-prod2-4m-dc',"SCSST":'cta-prod2-sc-sst',"STD":'cta-prod2',"NSBX3":'cta-prod2',"ASTRI":'cta-prod2-astri',"NORTH":'cta-prod2n'}
+  cfg_dict = {"4MSST":'cta-prod2-4m-dc', "SCSST":'cta-prod2-sc-sst', "STD":'cta-prod2', "NSBX3":'cta-prod2', "ASTRI":'cta-prod2-astri', "NORTH":'cta-prod2n', "SCMST":'cta-prod2-sc3'}
 
   #if simtelConfig=="6INROW":
   #  all_configs=["4MSST","SCSST","ASTRI","NSBX3","STD","SCMST"]
