@@ -28,10 +28,9 @@ def CorsikaSimtelExample( args = None ) :
   j.setExecutable('corsika_autoinputs')
 
   if len(args) != 4:
-    Script.gLogger.notice('Wrong number of arguments')
-    DIRAC.exit( -1 )
+    Script.showHelp()
 
-  if args[3] not in ['STD','4MSST', 'SCSST', 'ASTRI', 'NSBX3', 'NORTH']:
+  if args[3] not in ['STD', '4MSST', 'SCSST', 'ASTRI', 'NSBX3', 'NORTH', 'SCMST']:
     Script.gLogger.notice("reprocessing configuration is incorrect:",args[3])
     DIRAC.exit( -1 )
   
