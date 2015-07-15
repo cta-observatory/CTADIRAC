@@ -171,17 +171,17 @@ def main():
 ##   check simtel data/log/histo Output File exist
     cfg = cfg_dict[current_conf]
     simtelFileName = particle + '_' + str(thetaP) + '_' + str(phiP) + '_alt' + str(obslev) + '_' + 'run' + run_number + '.simtel.gz'
-    cmd = 'mv Data/sim_telarray/' + cfg + '/0.0deg/Data/*.simtel.gz ' + simtelFileName
+    cmd = 'mv Data/sim_telarray/' + cfg + '/*/Data/*.simtel.gz ' + simtelFileName
     if(os.system(cmd)):
       DIRAC.exit( -1 )
 
     simtelLogFileName = particle + '_' + str(thetaP) + '_' + str(phiP) + '_alt' + str(obslev) + '_' + 'run' + run_number + '.log.gz'
-    cmd = 'mv Data/sim_telarray/' + cfg + '/0.0deg/Log/*.log.gz ' + simtelLogFileName
+    cmd = 'mv Data/sim_telarray/' + cfg + '/*/Log/*.log.gz ' + simtelLogFileName
     if(os.system(cmd)):
       DIRAC.exit( -1 )
 
     simtelHistFileName = particle + '_' + str(thetaP) + '_' + str(phiP) + '_alt' + str(obslev) + '_' + 'run' + run_number + '.hdata.gz'
-    cmd = 'mv Data/sim_telarray/' + cfg + '/0.0deg/Histograms/*.hdata.gz ' + simtelHistFileName
+    cmd = 'mv Data/sim_telarray/' + cfg + '/*/Histograms/*.hdata.gz ' + simtelHistFileName
     if(os.system(cmd)):
       DIRAC.exit( -1 )
 
