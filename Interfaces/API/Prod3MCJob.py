@@ -5,7 +5,7 @@
 __RCSID__ = "$Id$"
 
 # generic imports
-import json, collections
+import os, json, collections
 # DIRAC imports
 import DIRAC
 from DIRAC.Interfaces.API.Job import Job
@@ -226,7 +226,9 @@ class Prod3MCJob( Job ) :
 
     fmdjson = json.dumps( filemetadata )
 
-    dmStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-managedata',
+    ### Temporary fix: since the deployed script does not have the correct format for arguments
+    # dmStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-managedata',
+    dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-prod3-managedata.py',
                               arguments = "'%s' '%s' '%s' %s %s" % ( mdjson, mdfieldjson, fmdjson, self.inputpath, self.basepath ),
                               logFile = 'DataManagement_Log.txt' )
     dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
