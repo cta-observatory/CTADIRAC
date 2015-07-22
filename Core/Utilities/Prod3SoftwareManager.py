@@ -19,7 +19,7 @@ class Prod3SoftwareManager(object) :
     """ Constructor
     """
     self.SW_SHARED_DIR = 'VO_VO_CTA_IN2P3_FR_SW_DIR'
-    self.CVMFS_DIR = '/home/arrabito/cvmfs/cta.in2p3.fr/software'
+    self.CVMFS_DIR = '/cvmfs/cta.in2p3.fr/software'
     self.LFN_ROOT = '/vo.cta.in2p3.fr/software'
     self.SOFT_CATEGORY_DICT = {"corsika_simhessarray":"simulations"}
     self.dm = DataManager()
