@@ -197,3 +197,16 @@ CHANGE: Change DIRAC version to v6r13p3
 [v1r27p2]
 *LA
 CHANGE: Change getDirectoryMetadata in getDirectoryUserMetadata for v6r13p3
+
+[v1r27p3]
+*LA
+CHANGE: Change DIRAC version to v6r13p4
+
+[v1r27p4]
+*LA
+BUGFIX: Enable SCMST in corsikasimtel user script
+
+[v1r27p5]
+*LA
+BUGFIX: Generalize corsikasimtel user script to offset value not 0.0deg
+
