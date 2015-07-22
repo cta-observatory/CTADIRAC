@@ -210,3 +210,10 @@ BUGFIX: Enable SCMST in corsikasimtel user script
 *LA
 BUGFIX: Generalize corsikasimtel user script to offset value not 0.0deg
 
+[v1r28]
+*LA
+NEW: Add modules for Prod3
+
+[v1r28p1]
+*LA
+BUGFIX: in cvmfs path
