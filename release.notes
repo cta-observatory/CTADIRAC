@@ -217,3 +217,7 @@ NEW: Add modules for Prod3
 [v1r28p1]
 *LA
 BUGFIX: in cvmfs path
+
+[v1r28p2]
+*LA
+BUGFIX: in MC PROD3 API

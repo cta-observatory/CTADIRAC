@@ -103,26 +103,26 @@ def runProd3( args = None ):
   # 5 is enough for testing
   job.setNShower(nShower)
 
-  # set run number:
-  job.setRunNumber( 00000003 )
+  # set run number for TS submission: JOB_ID variable left for dynamic resolution during the Job. It corresponds to the Task_ID
+  job.setRunNumber( '@{JOB_ID}' )
+  # # for WMS submission:
+  #job.setRunNumber( '00000009' )
 
   job.setOutputSandbox( ['*Log.txt'] )
 
   # add the sequence of executables
   job.setupWorkflow()
 
-  # debug
-  Script.gLogger.info( job.workflow )
-  
   if mode == 'TS':
-    # set run number: JOB_ID variable left for dynamic resolution during the Job. It corresponds to the Task_ID
-    job.setRunNumber( '@{JOB_ID}' )
     res = submitTS( job )
   elif mode == 'WMS':
     res = submitWMS( job )
   else:
     Script.showHelp()
     
+  # debug
+  Script.gLogger.info( job.workflow )
+
   return res
 
 #########################################################
