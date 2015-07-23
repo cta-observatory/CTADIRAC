@@ -101,18 +101,21 @@ class Prod3DataManager(object) :
     return str( path )
 
   def createTarLogFiles ( self, inputpath, tarname ):
-    """ create tar of log files. Fix needed: we don't want to keep the directory structure in the final archive
+    """ create tar of log and histogram files
     """
     tarmode = 'w:gz'
     tar = tarfile.open( tarname, tarmode )
-    logdir = os.path.join( inputpath, 'Log/*' )
 
-    res = self._checkemptydir( logdir )
-    if not res['OK']:
-      return res
+    for subdir in ['Log/*', 'Histograms/*']:
+      logdir = os.path.join( inputpath, subdir )
 
-    for localfile in glob.glob( logdir ):
-      tar.add( localfile )
+      res = self._checkemptydir( logdir )
+      if not res['OK']:
+        return res
+
+      for localfile in glob.glob( logdir ):
+        tar.add( localfile, arcname = localfile.split( '/' )[-1] )
+
     tar.close()
 
     return DIRAC.S_OK()
