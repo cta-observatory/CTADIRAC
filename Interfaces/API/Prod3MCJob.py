@@ -182,7 +182,15 @@ class Prod3MCJob( Job ) :
     stvStep['Value']['descr_short']='Verify the 31 Simtel runs'
     iStep += 1
 
-    # step 7  
+    # step 7
+    cleanStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-cleandata.py',
+                              arguments = "%s %s" % ( 'Data/corsika' , '*/*.corsika.gz' ),
+                              logFile = 'CleanData_Log.txt' )
+    cleanStep['Value']['name'] = 'Step%i_CleanData' % iStep
+    cleanStep['Value']['descr_short'] = 'Remove corsika files'
+    iStep += 1
+
+    # step 8
     mgStep=self.setExecutable('./dirac_prod3_merge',\
                               arguments='--run %s %s'%(self.run_number, self.array_layout),\
                               logFile='Merging_Log.txt')
@@ -190,7 +198,7 @@ class Prod3MCJob( Job ) :
     mgStep['Value']['descr_short']='Merge 31 simtel output into 5 data files and 3 tar balls for log files'
     iStep+=1
 
-    # step 8  
+    # step 9
     mgvStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-verifysteps', \
                               arguments='merging',\
                               logFile='Verify_Merging_Log.txt')
@@ -198,14 +206,14 @@ class Prod3MCJob( Job ) :
     mgvStep['Value']['descr_short']='Verify the merging of Simtel files'
     iStep += 1
 
-    # step 9  - to be removed - debug only
+    # step 10  - to be removed - debug only
     if debug:
         lsStep=self.setExecutable('/bin/ls -alhtr Data/sim_telarray/cta-prod3/*/*',logFile='LS_End_Log.txt')
         lsStep['Value']['name']='Step%i_LS_End'%iStep
         lsStep['Value']['descr_short']='list files in working directory and sub-directory'
         iStep += 1
     
-    # step 10
+    # step 11
     # ## the order of the metadata dictionary is important, since it's used to build the directory structure
     metadata = collections.OrderedDict()
     metadata['array_layout'] = self.array_layout
