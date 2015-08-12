@@ -227,7 +227,7 @@ class Prod3DataManager(object) :
     error = 'Failed to upload file to any SE:  %s' % SEList
     return DIRAC.S_ERROR( error )
 
-  def cleanLocalFiles ( self, datadir, pattern ):
+  def cleanLocalFiles ( self, datadir, pattern = '*' ):
     """ remove files matching pattern in datadir
     """
 
