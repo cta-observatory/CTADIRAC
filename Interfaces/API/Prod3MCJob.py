@@ -219,7 +219,10 @@ class Prod3MCJob( Job ) :
     metadata['array_layout'] = self.array_layout
     metadata['site'] = self.cta_site
     metadata['particle'] = self.particle
-    metadata['phiP'] = self.pointing_dir
+    if self.pointing_dir == 'North':
+      metadata['phiP'] = 180
+    if self.pointing_dir == 'South':
+      metadata['phiP'] = 0
     metadata['thetaP'] = float( self.zenith_angle )
     metadata['process_program'] = 'simtel' + '_' + self.version
 
