@@ -16,7 +16,7 @@ Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
 Script.registerSwitch( "", "site=", "e.g. Paranal" )
 Script.registerSwitch( "", "particle=", "e.g. gamma,gamma-diffuse,electron,proton" )
 Script.registerSwitch( "", "process_program=", "e.g. simtel_2015-07-21" )
-Script.registerSwitch( "", "array_layout", "e.g. hex,square" )
+Script.registerSwitch( "", "array_layout=", "e.g. hex,square" )
 Script.registerSwitch( "", "thetaP=", "e.g. 20" )
 Script.registerSwitch( "", "phiP=", "e.g. 0,180" )
 Script.registerSwitch( "", "outputType=", "e.g. Data,Log" )
