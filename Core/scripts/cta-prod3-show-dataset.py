@@ -37,41 +37,40 @@ if len( argss ) == 0:
   print '\nAvailable datasets are:\n'
   for dName in datasetDict.keys():
     print dName
+  print '\n'
   DIRAC.exit()
 
 fields = ['Key', 'Value']
-datasets = datasetDict.keys()
 
-for dName in datasets:
-  records = []
-  print '\n' + dName + ":"
-  print '=' * ( len( dName ) + 1 )
+eventsPerRun = raw_input( '\nEnter eventsPerRun (default 20000):' )
+# ## default
+if not eventsPerRun:
+  eventsPerRun = 20000
 
-  numberOfFiles = datasetDict[dName]['NumberOfFiles']
+records = []
+print '\n' + datasetName + ":"
+print '=' * ( len( datasetName ) + 1 )
 
-  # ## default for prod3
-  numberOfFilesperRun = 10
+numberOfFiles = datasetDict[datasetName]['NumberOfFiles']
 
-  eventsPerRun = raw_input( 'eventsPerRun (default 20000):' )
-  # ## default
-  if not eventsPerRun:
-    eventsPerRun = 20000
+# ## default for prod3
+numberOfFilesperRun = 10
 
-  records.append( ['MetaQuery', str( datasetDict[dName]['MetaQuery'] )] )
+records.append( ['MetaQuery', str( datasetDict[datasetName]['MetaQuery'] )] )
 
-  # # calculate total numberOfEvents
-  TotalNumberOfEvents = numberOfFiles * int( eventsPerRun ) / numberOfFilesperRun / 1e9
-  TotalNumberOfEvents = '%.2fe9' % TotalNumberOfEvents
+# # calculate total numberOfEvents
+TotalNumberOfEvents = numberOfFiles * int( eventsPerRun ) / numberOfFilesperRun / 1e9
+TotalNumberOfEvents = '%.2fe9' % TotalNumberOfEvents
 
-  records.append( ['EventsPerRun', str( eventsPerRun )] )
-  records.append( ['TotalNumberOfEvents', str( TotalNumberOfEvents )] )
+records.append( ['EventsPerRun', str( eventsPerRun )] )
+records.append( ['TotalNumberOfEvents', str( TotalNumberOfEvents )] )
 
-  records.append( ['NumberOfFiles', str( datasetDict[dName]['NumberOfFiles'] )] )
+records.append( ['NumberOfFiles', str( datasetDict[datasetName]['NumberOfFiles'] )] )
 
-    # # convert total size in TB
-  totalsize = datasetDict[dName]['TotalSize'] / 1e12
-  totalsize = '%.1f TB' % totalsize
-  records.append( ['TotalSize', totalsize] )
+  # # convert total size in TB
+totalsize = datasetDict[datasetName]['TotalSize'] / 1e12
+totalsize = '%.1f TB' % totalsize
+records.append( ['TotalSize', totalsize] )
 
 
-  printTable( fields, records )
+printTable( fields, records )
