@@ -78,7 +78,6 @@ def putAndRegisterPROD3(args):
 if __name__ == '__main__':
   
   DIRAC.gLogger.setLevel('VERBOSE')
-  print 'here'
   args = Script.getPositionalArgs()
   try:    
     res = putAndRegisterPROD3( args )

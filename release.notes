@@ -221,3 +221,43 @@ BUGFIX: in cvmfs path
 [v1r28p2]
 *LA
 BUGFIX: in MC PROD3 API
+
+[v1r28p3]
+*LA
+BUGFIX: in MC PROD3 API
+
+[v1r28p4]
+*LA
+CHANGE: Add histo in PROD3 logs
+
+[v1r28p5]
+*LA
+CHANGE: Add step to remove PROD3 local corsika files
+
+[v1r28p6]
+*LA
+NEW: Add cta-prod3-query tool
+
+[v1r28p7]
+*LA
+BUGFIX: in cta-prod3-query tool
+
+[v1r28p8]
+*LA
+BUGFIX: phip in PROD3 job API
+
+[v1r28p9]
+*LA
+NEW: add scripts for prod3 dataset monitor
+
+[v1r28p10]
+*LA
+CHANGE: Minor changes
+
+[v1r28p11]
+*LA
+NEW: Add start_runnumber for prod3 and FailoverProductionSE
+
+[v1r28p12]
+*LA
+BUGFIX: in Prod3MCJob
