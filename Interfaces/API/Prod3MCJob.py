@@ -193,7 +193,7 @@ class Prod3MCJob( Job ) :
     iStep += 1
 
     # step 7
-    cleanStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-cleandata.py',
+    cleanStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-cleandata',
                               arguments = "%s %s" % ( 'Data/corsika' , '*/*.corsika.gz' ),
                               logFile = 'CleanData_Log.txt' )
     cleanStep['Value']['name'] = 'Step%i_CleanData' % iStep
