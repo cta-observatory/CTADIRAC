@@ -202,7 +202,7 @@ class Prod3MCJob( Job ) :
 
     # step 8
     mgStep=self.setExecutable('./dirac_prod3_merge',\
-                              arguments='--run %s %s'%(self.run_number, self.array_layout),\
+                              arguments = '--start_run %s --run %s %s' % ( self.start_run_number, self.run_number, self.array_layout ), \
                               logFile='Merging_Log.txt')
     mgStep['Value']['name']='Step%i_Merging'%iStep
     mgStep['Value']['descr_short']='Merge 31 simtel output into 5 data files and 3 tar balls for log files'
