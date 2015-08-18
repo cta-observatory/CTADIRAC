@@ -261,3 +261,7 @@ NEW: Add start_runnumber for prod3 and FailoverProductionSE
 [v1r28p12]
 *LA
 BUGFIX: in Prod3MCJob
+
+[v1r28p13]
+*LA
+NEW: add scripts for sw installation/removal
