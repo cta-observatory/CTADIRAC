@@ -48,11 +48,12 @@ class Prod3DataManager(object) :
     """
     self.dm = DataManager( catalogs )
 
-  def _getSEList( self ):
+  def _getSEList( self, SEType = 'ProductionOutputs' ):
     """ get from CS the list of available SE for data upload
     """
     opsHelper = Operations()
-    SEList = opsHelper.getValue( 'ProductionOutputs/SimtelProd', [] )
+    optionName = os.path.join( SEType, 'SimtelProd' )
+    SEList = opsHelper.getValue( optionName , [] )
     SEList = List.randomize( SEList )
     DIRAC.gLogger.notice( 'List of available Storage Element is: ', SEList )
 
@@ -181,13 +182,56 @@ class Prod3DataManager(object) :
   def putAndRegister( self, lfn, localfile, filemetadata ):
     """ put and register one file and set metadata
     """
-    # ## Get the list of available SEs
-    res = self._getSEList()
+    # ## Get the list of Production SE
+    res = self._getSEList( 'ProductionOutputs' )
     if res['OK']:
-      SEList = res['Value']
+      ProductionSEList = res['Value']
     else:
       return res
 
+    # ## Get the list of Failover SE
+    res = self._getSEList( 'ProductionOutputsFailover' )
+    if res['OK']:
+      FailoverSEList = res['Value']
+    else:
+      return res
+
+    # ## Upload file to a Production SE
+    res = self._putAndRegisterToSEList( lfn, localfile, ProductionSEList )
+    if not res['OK']:
+      error = 'Failed to upload file to any Production SE:  %s' % ProductionSEList
+      DIRAC.gLogger.error( error )
+      # ## Upload file to a Failover SE
+      res = self._putAndRegisterToSEList( lfn, localfile, FailoverSEList )
+      if not res['OK']:
+        error = 'Failed to upload file to any Failover SE:  %s' % FailoverSEList
+        return DIRAC.S_ERROR( error )
+
+    # ## Set file metadata: jobID, subarray, sct
+    if res['OK']:
+      fmd = json.loads( filemetadata )
+      if os.environ.has_key( 'JOBID' ):
+        fmd.update( {'jobID':os.environ['JOBID']} )
+      filename = os.path.basename( localfile )
+      # set subarray and sct md from filename
+      p = re.compile( 'subarray-\d+' )
+      if p.search( filename ) != None:
+        subarray = p.search( filename ).group()
+        fmd.update( {'subarray':subarray} )
+      sct = 'False'
+      p = re.compile( 'nosct' )
+      if p.search( filename ) == None:
+        sct = 'True'
+      fmd.update( {'sct':sct} )
+      res = self.fcc.setMetadata( lfn, fmd )
+      if not res['OK']:
+        return res
+
+      return DIRAC.S_OK()
+
+  def _putAndRegisterToSEList( self, lfn, localfile, SEList ):
+    """ put and register one file to one SE in the SEList
+    """
     # ## Try to upload file to a SE in the list
     for SE in SEList:
       msg = 'Try to upload local file: %s \nwith LFN: %s \nto %s' % ( localfile, lfn, SE )
@@ -203,29 +247,9 @@ class Prod3DataManager(object) :
         DIRAC.gLogger.error( error )
         continue
       else:
-        # ## Set file metadata: jobID, subarray, sct
-        fmd = json.loads( filemetadata )
-        if os.environ.has_key( 'JOBID' ):
-          fmd.update( {'jobID':os.environ['JOBID']} )
-        filename = os.path.basename( localfile )
-        # set subarray and sct md from filename
-        p = re.compile( 'subarray-\d+' )
-        if p.search( filename ) != None:
-          subarray = p.search( filename ).group()
-          fmd.update( {'subarray':subarray} )
-        sct = 'False'
-        p = re.compile( 'nosct' )
-        if p.search( filename ) == None:
-          sct = 'True'
-        fmd.update( {'sct':sct} )
-        res = self.fcc.setMetadata( lfn, fmd )
-        if not res['OK']:
-          return res
-
         return DIRAC.S_OK()
 
-    error = 'Failed to upload file to any SE:  %s' % SEList
-    return DIRAC.S_ERROR( error )
+    return DIRAC.S_ERROR()
 
   def cleanLocalFiles ( self, datadir, pattern = '*' ):
     """ remove files matching pattern in datadir
