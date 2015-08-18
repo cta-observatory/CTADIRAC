@@ -29,6 +29,7 @@ class Prod3MCJob( Job ) :
     self.package='corsika_simhessarray'
     self.version='2015-07-21'
     self.nShower=5
+    self.start_run_number = '0'
     self.run_number = '10'
     self.array_layout='hex'
     self.template_tag='6'
@@ -73,6 +74,15 @@ class Prod3MCJob( Job ) :
     runNb -- run number as a string, used as a corsika seed
     """
     self.run_number=runNb
+
+  def setStartRunNumber( self, startrunNb ):
+    """ Set the corsika start run number (to be added to the run_number), passed as a string
+        because may be a TS parameter
+
+    Parameters:
+    startrunNb -- to be added to the run number
+    """
+    self.start_run_number = startrunNb
 
   def setArrayLayout(self, layout):
     """ Set the array layout type
@@ -151,8 +161,8 @@ class Prod3MCJob( Job ) :
 
     # step 3  
     csStep = self.setExecutable( './dirac_prod3_corsika', \
-                              arguments='--run %s %s-%s %s %s %s'%\
-                                         (self.run_number, self.array_layout, self.template_tag, self.cta_site, self.particle, self.pointing_dir),\
+                              arguments = '--start_run %s --run %s %s-%s %s %s %s' % \
+                                         ( self.start_run_number, self.run_number, self.array_layout, self.template_tag, self.cta_site, self.particle, self.pointing_dir ), \
                               logFile='Corsika_Log.txt')
     csStep['Value']['name']='Step%i_Corsika'%iStep
     csStep['Value']['descr_short']='Run Corsika with 800+ telescopes'
@@ -168,7 +178,7 @@ class Prod3MCJob( Job ) :
 
     # step 5  
     stStep=self.setExecutable('./dirac_prod3_simtel',\
-                              arguments='--run %s %s'%(self.run_number, self.array_layout),\
+                              arguments = '--start_run %s --run %s %s' % ( self.start_run_number, self.run_number, self.array_layout ), \
                               logFile='Simtels_Log.txt')
     stStep['Value']['name']='Step%i_Simtel'%iStep
     stStep['Value']['descr_short']='Run 31 simtel_array configuration sequentially'
