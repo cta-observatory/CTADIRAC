@@ -243,14 +243,14 @@ class Prod3MCJob( Job ) :
 
     mdfieldjson = json.dumps( metadatafield )
 
-    filemetadata = {'runNumber': self.run_number}
+    filemetadata = {'runNumber': self.run_number }
 
     fmdjson = json.dumps( filemetadata )
 
     ### Temporary fix: since the deployed script does not have the correct format for arguments
     # dmStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-managedata',
     dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-prod3-managedata.py',
-                              arguments = "'%s' '%s' '%s' %s %s" % ( mdjson, mdfieldjson, fmdjson, self.inputpath, self.basepath ),
+                              arguments = "'%s' '%s' '%s' %s %s %s" % ( mdjson, mdfieldjson, fmdjson, self.inputpath, self.basepath, self.start_run_number ),
                               logFile = 'DataManagement_Log.txt' )
     dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
     dmStep['Value']['descr_short'] = 'Save files to SE and register them in DFC'
