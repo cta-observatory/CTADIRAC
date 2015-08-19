@@ -55,7 +55,7 @@ class Prod3DataManager(object) :
     optionName = os.path.join( SEType, 'SimtelProd' )
     SEList = opsHelper.getValue( optionName , [] )
     SEList = List.randomize( SEList )
-    DIRAC.gLogger.notice( 'List of available Storage Element is: ', SEList )
+    DIRAC.gLogger.notice( 'List of %s SE: %s ' % ( SEType, SEList ) )
 
     # # Check if the local SE is in the list. If yes try it first by reversing list order
     localSEList = []
@@ -199,13 +199,11 @@ class Prod3DataManager(object) :
     # ## Upload file to a Production SE
     res = self._putAndRegisterToSEList( lfn, localfile, ProductionSEList )
     if not res['OK']:
-      error = 'Failed to upload file to any Production SE:  %s' % ProductionSEList
-      DIRAC.gLogger.error( error )
+      DIRAC.gLogger.error( error = 'Failed to upload file to any Production SE: %s' % ProductionSEList )
       # ## Upload file to a Failover SE
       res = self._putAndRegisterToSEList( lfn, localfile, FailoverSEList )
       if not res['OK']:
-        error = 'Failed to upload file to any Failover SE:  %s' % FailoverSEList
-        return DIRAC.S_ERROR( error )
+        return DIRAC.S_ERROR( 'Failed to upload file to any Failover SE: %s' % FailoverSEList )
 
     # ## Set file metadata: jobID, subarray, sct
     if res['OK']:
@@ -239,12 +237,10 @@ class Prod3DataManager(object) :
       res = self.dm.putAndRegister( lfn, localfile, SE )
       # ##  check if failed
       if not res['OK']:
-        error = 'Failed to putAndRegister %s \nto %s \nwith message: %s' % ( lfn, SE, res['Message'] )
-        DIRAC.gLogger.error( error )
+        DIRAC.gLogger.error( 'Failed to putAndRegister %s \nto %s \nwith message: %s' % ( lfn, SE, res['Message'] ) )
         continue
       elif res['Value']['Failed'].has_key( lfn ):
-        error = 'Failed to putAndRegister %s to %s' % ( lfn, SE )
-        DIRAC.gLogger.error( error )
+        DIRAC.gLogger.error( 'Failed to putAndRegister %s to %s' % ( lfn, SE ) )
         continue
       else:
         return DIRAC.S_OK()

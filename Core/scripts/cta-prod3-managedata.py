@@ -38,6 +38,7 @@ def putAndRegisterPROD3(args):
     filemetadata = args[2]
     inputpath = args[3]
     basepath = args[4]
+    start_run_nb = args[5]
     catalogs = ['DIRACFileCatalog']
     
     # # Create MD structure
@@ -54,11 +55,19 @@ def putAndRegisterPROD3(args):
     if not res['OK']:
       return res
 
+    # ## Add start_run_number to run_number and update filemetadata
+    fmd = json.loads( filemetadata )
+    run_number = int( fmd['runNumber'] ) + int( start_run_nb )
+    fmd['runNumber'] = '%08d' % run_number
+    fmdjson = json.dumps( fmd )
+
+    # ## Get the runp directory
+    runpath = prod3dm._getRunPath( fmdjson )
+
     for localfile in glob.glob( datadir ):
       filename = os.path.basename( localfile )
-      runpath = prod3dm._getRunPath( filemetadata )
       lfn = os.path.join( path, 'Data', runpath, filename )
-      res = prod3dm.putAndRegister( lfn, localfile, filemetadata )
+      res = prod3dm.putAndRegister( lfn, localfile, fmdjson )
       if not res['OK']:
         return res
 
@@ -68,7 +77,8 @@ def putAndRegisterPROD3(args):
     if not res['OK']:
       return DIRAC.S_ERROR( 'prod3dm.createTarLogFiles failed' )
     lfn = os.path.join( path, 'Log', runpath, tarname )
-    res = prod3dm.putAndRegister( lfn, tarname, filemetadata )
+    # res = prod3dm.putAndRegister( lfn, tarname, filemetadata )
+    res = prod3dm.putAndRegister( lfn, tarname, fmdjson )
     if not res['OK']:
       return res
 
