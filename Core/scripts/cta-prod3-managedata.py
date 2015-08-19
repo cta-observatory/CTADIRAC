@@ -7,7 +7,7 @@
 __RCSID__ = "$Id$"
 
 # generic imports
-import os, glob
+import os, glob, json
 
 # DIRAC imports
 import DIRAC
