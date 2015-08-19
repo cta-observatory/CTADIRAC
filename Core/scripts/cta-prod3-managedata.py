@@ -55,7 +55,7 @@ def putAndRegisterPROD3(args):
     if not res['OK']:
       return res
 
-    # ## Add start_run_number to run_number
+    # ## Add start_run_number to run_number and update filemetadata
     fmd = json.loads( filemetadata )
     run_number = int( fmd['runNumber'] ) + int( start_run_nb )
     fmd['runNumber'] = '%08d' % run_number
@@ -66,9 +66,7 @@ def putAndRegisterPROD3(args):
 
     for localfile in glob.glob( datadir ):
       filename = os.path.basename( localfile )
-      # runpath = prod3dm._getRunPath( filemetadata )
       lfn = os.path.join( path, 'Data', runpath, filename )
-      # res = prod3dm.putAndRegister( lfn, localfile, filemetadata )
       res = prod3dm.putAndRegister( lfn, localfile, fmdjson )
       if not res['OK']:
         return res
