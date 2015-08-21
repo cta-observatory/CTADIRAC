@@ -199,7 +199,7 @@ class Prod3DataManager(object) :
     # ## Upload file to a Production SE
     res = self._putAndRegisterToSEList( lfn, localfile, ProductionSEList )
     if not res['OK']:
-      DIRAC.gLogger.error( error = 'Failed to upload file to any Production SE: %s' % ProductionSEList )
+      DIRAC.gLogger.error( 'Failed to upload file to any Production SE: %s' % ProductionSEList )
       # ## Upload file to a Failover SE
       res = self._putAndRegisterToSEList( lfn, localfile, FailoverSEList )
       if not res['OK']:
