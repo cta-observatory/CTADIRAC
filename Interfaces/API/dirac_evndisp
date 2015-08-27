@@ -1,0 +1,51 @@
+#!/bin/bash
+# setup_script_path.txt is created by setupSoftware.py
+# and contains the path to the setupPackage.sh script
+### Need to use a setup script for evndisplay
+#source `cat setup_script_path.txt`
+
+echo "Time evndisp start: `date -Iseconds`"
+
+## Here just running over 1 input files
+# get input files
+infile=`find . -name "*.simtel.gz"`
+echo $infile
+
+# get the run number
+run_number=`echo $infile | awk -F "run" '{print $2}' |  awk -F "___cta" '{print $1}'`
+echo $run_number
+
+# get the calibration file
+if [ "$1" = "--calibration_file" ]; then
+   calibration_file=$2
+   shift
+   shift
+fi
+
+# get parameters
+if [ "$1" = "--reconstructionparameter" ]; then
+   reconstructionparameter=$2
+   shift
+   shift
+fi
+
+if [ "$1" = "--NNcleaninginputcard" ]; then
+   NNcleaninginputcard=$2
+   shift
+   shift
+fi
+
+for layout in 3HB1 3HB2 3HB3 3HD1 3HD2 3HI1; do
+  for telescopetype_combination in FA NA FG NG FD NG; do
+    layout_file=CTA.prod3S.$layout-$telescopetype_combination.lis
+    for scaling in 1 2 3 4 5; do
+    # run the converter and evndisp (how to introduce the scaling?)
+    dstfile="$run_number.$layout-$telescopetype_combination-$scaling.root"
+    echo "CTA.convert_hessio_to_VDST $layout_file -f 2 -o $dstfile -c $calibration_file $infile"
+    echo "evndisp -sourcefile $dstfile -averagetzerofiducialradius=0.5 -shorttree -l2setspecialchannels nofile -writenoMCTree -reconstructionparameter $reconstructionparameter -NNcleaninginputcard $NNcleaninginputcard -ignoredstgains"
+    done
+  done
+done
+
+echo "Time evndisp end: `date -Iseconds`"
+
