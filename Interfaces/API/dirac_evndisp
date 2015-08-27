@@ -6,16 +6,22 @@
 
 echo "Time evndisp start: `date -Iseconds`"
 
-## Here just running over 1 input files
-# get input files
-infile=`find . -name "*.simtel.gz"`
+# get subarray
+if [ "$1" = "--subarray" ]; then
+   subarray=$2
+   shift
+   shift
+fi
+
+# get input file
+infile=`find . -name "*.simtel.gz" | grep subarray-$subarray`
 echo $infile
 
 # get the run number
 run_number=`echo $infile | awk -F "run" '{print $2}' |  awk -F "___cta" '{print $1}'`
 echo $run_number
 
-# get the calibration file
+# get calibration file
 if [ "$1" = "--calibration_file" ]; then
    calibration_file=$2
    shift
