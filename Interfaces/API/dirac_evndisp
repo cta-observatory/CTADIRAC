@@ -44,6 +44,7 @@ for layout in 3HB1 3HB2 3HB3 3HD1 3HD2 3HI1; do
     echo "CTA.convert_hessio_to_VDST $layout_file -f 2 -o $dstfile -c $calibration_file $infile"
     echo "evndisp -sourcefile $dstfile -averagetzerofiducialradius=0.5 -shorttree -l2setspecialchannels nofile -writenoMCTree -reconstructionparameter $reconstructionparameter -NNcleaninginputcard $NNcleaninginputcard -ignoredstgains"
     echo "rm $dstfile"
+    echo 'rm $infile"
     done
   done
 done

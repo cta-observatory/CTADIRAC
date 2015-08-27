@@ -85,7 +85,7 @@ class EvnDisp3Job( Job ) :
         iStep+=1
       
     # step 2  
-    lsStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-setupsw',
+    lsStep = self.setExecutable( '$DIRACROOT/scripts/cta-evndisp-setupsw',
                               arguments='%s %s'% (self.package, self.version),\
                               logFile='SetupSoftware_Log.txt')
     lsStep['Value']['name']='Step%i_SetupSoftware'%iStep
@@ -94,7 +94,7 @@ class EvnDisp3Job( Job ) :
     
     # step 3  Need to decide which arguments are passed here and which are hard-coded in the shell script
     csStep = self.setExecutable( './dirac_evndisp', \
-                              arguments = '%s %s' % ( self.calibration_file, self.reconstructionparameter, self.NNcleaninginputcard ), \
+                              arguments = '--calibration_file %s --reconstructionparameter %s --NNcleaninginputcard %s' % ( self.calibration_file, self.reconstructionparameter, self.NNcleaninginputcard ), \
                               logFile = 'EvnDisp_Log.txt' )
     csStep['Value']['name']='Step%i_EvnDispConverter'%iStep
     csStep['Value']['descr_short']='Run EvnDispConverter'
