@@ -48,7 +48,7 @@ def submitWMS( job, infileList ):
   """ Submit the job locally or to the WMS  """
 # job.setDestination( 'LCG.IN2P3-CC.fr' )
   dirac = Dirac()
-  job.setInputData( infileList )
+  # job.setInputData( infileList )
   res = dirac.submit( job, "local" )
 # res = dirac.submit( job )
 
@@ -79,19 +79,19 @@ def runEvnDisp3( args = None ):
   job = EvnDisp3Job()
 
   # override for testing
-  job.setName( 'EvnDisp3Test_%s' % particle )
+  job.setName( 'EvnDisp3Test' )
   
   # package and version
   job.setPackage( 'evndisplay' )
-  job.setVersion( 'v500-prod3v1' )
+  job.setVersion( 'prod3_d20150831b' )
 
   # set EvnDisp Meta data
   job.setEvnDispMD( infileList[0] )
 
   #  set calibration file and parameters file
-  job.setCalibrationFile( 'prod3.peds.20150820.dst.root' )
-  job.setReconstructionParameter( 'EVNDISP.prod3.reconstruction.runparameter.NN' )
-  job.setNNcleaninginputcard( 'EVNDISP.NNcleaning.dat' )
+  job.setCalibrationFile( 'Calibration/prod3.peds.20150820.dst.root' )
+  job.setReconstructionParameter( 'EVNDISP.CTA.runparameter/ParameterFiles/EVNDISP.prod3.reconstruction.runparameter.NN' )
+  job.setNNcleaninginputcard( 'EVNDISP.CTA.runparameter/ParameterFiles/EVNDISP.NNcleaning.dat' )
 
   job.setOutputSandbox( ['*Log.txt'] )
 

@@ -222,7 +222,7 @@ class Prod3DataManager(object) :
         sct = 'True'
       # ## Check added on sct to handle evndisp output file
       p = re.compile( 'sct' )
-      if p.search( filename ) == None:
+      if p.search( filename ) != None:
         fmd.update( {'sct':sct} )
       res = self.fcc.setMetadata( lfn, fmd )
       if not res['OK']:

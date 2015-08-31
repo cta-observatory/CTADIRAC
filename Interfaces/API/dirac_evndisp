@@ -23,33 +23,37 @@ echo $run_number
 
 # get calibration file
 if [ "$1" = "--calibration_file" ]; then
-   calibration_file=$2
+   calibration_file=$CTA_EVNDISP_PATH/Calibration/$2
+   echo $calibration_file
    shift
    shift
 fi
 
 # get parameters
 if [ "$1" = "--reconstructionparameter" ]; then
-   reconstructionparameter=$2
+   reconstructionparameter=$OBS_EVNDISP_ANA_DIR/ParameterFiles/$2
    shift
    shift
 fi
 
 if [ "$1" = "--NNcleaninginputcard" ]; then
-   NNcleaninginputcard=$2
+   NNcleaninginputcard=$OBS_EVNDISP_ANA_DIR/ParameterFiles/$2
    shift
    shift
 fi
 
 for layout in 3HB1 3HB2 3HB3 3HD1 3HD2 3HI1; do
   for telescopetype_combination in FA NA FG NG FD NG; do
-    layout_file=CTA.prod3S.$layout-$telescopetype_combination.lis
+    layout_file=$OBS_EVNDISP_ANA_DIR/DetectorGeometry/CTA.prod3S.$layout-$telescopetype_combination.lis
     # run the converter and evndisp 
-    dstfile="$run_number.$layout-$telescopetype_combination-$subarray.root"
-    echo "CTA.convert_hessio_to_VDST $layout_file -f 2 -o $dstfile -c $calibration_file $infile"
-    echo "evndisp -sourcefile $dstfile -averagetzerofiducialradius=0.5 -shorttree -l2setspecialchannels nofile -writenoMCTree -reconstructionparameter $reconstructionparameter -NNcleaninginputcard $NNcleaninginputcard -ignoredstgains"
+    dstfile="$run_number.$layout-$telescopetype_combination-${subarray}_dst.root"
+    CTA.convert_hessio_to_VDST -a $layout_file -f 2 -o $dstfile -c $calibration_file $infile
+    evndisp -sourcefile $dstfile -averagetzerofiducialradius=0.5 -shorttree -l2setspecialchannels nofile -writenoMCTree -reconstructionparameter $reconstructionparameter -NNcleaninginputcard $NNcleaninginputcard -ignoredstgains
+    evndipfile="$run_number.$layout-$telescopetype_combination-$subarray.root"
+    mv $run_number.root $evndipfile
     echo "rm $dstfile"
     echo "rm $infile"
+    exit 0
   done
 done
 

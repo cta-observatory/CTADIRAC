@@ -49,7 +49,7 @@ def putAndRegisterEvnDisp( args ):
       return res
 
     # # Upload data files
-    datadir = os.path.join( inputpath, 'Data/*' )
+    datadir = os.path.join( inputpath, '*.root' )
     res = prod3dm._checkemptydir( datadir )
     if not res['OK']:
       return res

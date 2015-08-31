@@ -27,11 +27,11 @@ class EvnDisp3Job( Job ) :
     # defaults
     self.setName('Evndisplay_Analysis')
     self.package='evndisplay'
-    self.version='v500-prod3v1'
+    self.version = 'prod3_d20150831b'
     self.calibration_file = 'prod3.peds.20150820.dst.root'
     self.reconstructionparameter = 'EVNDISP.prod3.reconstruction.runparameter.NN'
     self.NNcleaninginputcard = 'EVNDISP.NNcleaning.dat'
-    self.inputpath = 'Data/sim_telarray/cta-prod3/0.0deg'  ### Update for evndisp!!!
+    self.inputpath = './'  ### Update for evndisp!!!
     self.basepath = '/vo.cta.in2p3.fr/MC/PROD3/scratch'
     self.fcc = FileCatalogClient()
     self.metadata = collections.OrderedDict()
@@ -84,7 +84,8 @@ class EvnDisp3Job( Job ) :
     path -- path from which get meta data
     """
     # # Get simtel meta data from path
-    simtelMD = self.fcc.getDirectoryUserMetadata( path )
+    res = self.fcc.getFileUserMetadata( path )
+    simtelMD = res['Value']
 
     # # Set evndisp directory meta data
     self.metadata['array_layout'] = simtelMD['array_layout']
@@ -116,7 +117,7 @@ class EvnDisp3Job( Job ) :
     lsStep['Value']['name']='Step%i_SetupSoftware'%iStep
     lsStep['Value']['descr_short'] = 'Setup software'
     iStep+=1
-    
+
     for subarray in range( 1, 2 ):
       # step 3  Need to decide which arguments are passed here and which are hard-coded in the shell script
       csStep = self.setExecutable( './dirac_evndisp', \
