@@ -15,19 +15,20 @@ class Prod3SoftwareManager(object) :
   """ Manage software setup for prod3
   """
   
-  def __init__(self):
+  def __init__( self, soft_category = {"corsika_simhessarray":"simulations"} ):
     """ Constructor
     """
     self.SW_SHARED_DIR = 'VO_VO_CTA_IN2P3_FR_SW_DIR'
     self.CVMFS_DIR = '/cvmfs/cta.in2p3.fr/software'
     self.LFN_ROOT = '/vo.cta.in2p3.fr/software'
-    self.SOFT_CATEGORY_DICT = {"corsika_simhessarray":"simulations"}
+    # self.SOFT_CATEGORY_DICT = {"corsika_simhessarray":"simulations"}
+    self.SOFT_CATEGORY_DICT = soft_category
     self.dm = DataManager()
 
   def installDIRACScripts( self, package_dir ):
     """ copy prod3 DIRAC scripts in the current directory
     """
-    cmd = 'cp ' + os.path.join( package_dir, 'dirac_prod3_*' ) + ' .'
+    cmd = 'cp ' + os.path.join( package_dir, 'dirac_*' ) + ' .'
     if not os.system( cmd ):
       return DIRAC.S_OK()
     else:

@@ -2,7 +2,7 @@
 # setup_script_path.txt is created by setupSoftware.py
 # and contains the path to the setupPackage.sh script
 ### Need to use a setup script for evndisplay
-#source `cat setup_script_path.txt`
+source `cat setup_script_path.txt`
 
 echo "Time evndisp start: `date -Iseconds`"
 

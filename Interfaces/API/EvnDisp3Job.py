@@ -117,7 +117,7 @@ class EvnDisp3Job( Job ) :
     lsStep['Value']['descr_short'] = 'Setup software'
     iStep+=1
     
-    for subarray in range( 1, 6 ):
+    for subarray in range( 1, 2 ):
       # step 3  Need to decide which arguments are passed here and which are hard-coded in the shell script
       csStep = self.setExecutable( './dirac_evndisp', \
                                 arguments = '--subarray %s --calibration_file %s --reconstructionparameter %s --NNcleaninginputcard %s' % ( subarray, self.calibration_file, self.reconstructionparameter, self.NNcleaninginputcard ), \
