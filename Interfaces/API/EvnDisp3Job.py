@@ -9,6 +9,7 @@ import os, json, collections
 # DIRAC imports
 import DIRAC
 from DIRAC.Interfaces.API.Job import Job
+from DIRAC.Resources.Catalog.FileCatalogClient import FileCatalogClient
 
 class EvnDisp3Job( Job ) :
   """ Job extension class for EvnDisp Analysis,
@@ -30,6 +31,11 @@ class EvnDisp3Job( Job ) :
     self.calibration_file = 'prod3.peds.20150820.dst.root'
     self.reconstructionparameter = 'EVNDISP.prod3.reconstruction.runparameter.NN'
     self.NNcleaninginputcard = 'EVNDISP.NNcleaning.dat'
+    self.inputpath = 'Data/sim_telarray/cta-prod3/0.0deg'  ### Update for evndisp!!!
+    self.basepath = '/vo.cta.in2p3.fr/MC/PROD3/scratch'
+    self.fcc = FileCatalogClient()
+    self.metadata = collections.OrderedDict()
+    self.filemetadata = {}
 
   def setPackage(self, package):
     """ Set package name : e.g. 'evndisplay'
@@ -70,7 +76,26 @@ class EvnDisp3Job( Job ) :
     NNcleaninginputcard -- cleaning inputcard
     """
     self.NNcleaninginputcard = NNcleaninginputcard
+    
+  def setEvnDispMD( self, path ):
+    """ Set evndisplay meta data starting from path metadata
+    
+    Parameters:
+    path -- path from which get meta data
+    """
+    # # Get simtel meta data from path
+    simtelMD = self.fcc.getDirectoryUserMetadata( path )
 
+    # # Set evndisp directory meta data
+    self.metadata['array_layout'] = simtelMD['array_layout']
+    self.metadata['site'] = simtelMD['site']
+    self.metadata['particle'] = simtelMD['particle']
+    self.metadata['phiP'] = simtelMD['phiP']
+    self.metadata['thetaP'] = simtelMD['thetaP']
+    self.metadata['process_program'] = 'evndisp' + '_' + self.version
+
+    # ## Set file metadata
+    self.filemetadata = {'runNumber': simtelMD['runNumber']}
 
   def setupWorkflow(self, debug=False):
     """ Setup job workflow by defining the sequence of all executables
@@ -100,3 +125,22 @@ class EvnDisp3Job( Job ) :
       csStep['Value']['name'] = 'Step%i_EvnDispConverter' % iStep
       csStep['Value']['descr_short'] = 'Run EvnDisplay'
       iStep += 1
+
+    # step 4
+    # ## the order of the metadata dictionary is important, since it's used to build the directory structure
+    mdjson = json.dumps( self.metadata )
+
+    metadatafield = {'array_layout':'VARCHAR(128)', 'site':'VARCHAR(128)', 'particle':'VARCHAR(128)', \
+                         'phiP':'float', 'thetaP': 'float', 'process_program':'VARCHAR(128)'}
+
+    mdfieldjson = json.dumps( metadatafield )
+
+    fmdjson = json.dumps( self.filemetadata )
+
+    dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-evndisp-managedata.py',
+                              arguments = "'%s' '%s' '%s' %s %s" % ( mdjson, mdfieldjson, fmdjson, self.inputpath, self.basepath ),
+                              logFile = 'DataManagement_Log.txt' )
+    dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
+    dmStep['Value']['descr_short'] = 'Save files to SE and register them in DFC'
+    iStep += 1
+

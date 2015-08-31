@@ -85,6 +85,9 @@ def runEvnDisp3( args = None ):
   job.setPackage( 'evndisplay' )
   job.setVersion( 'v500-prod3v1' )
 
+  # set EvnDisp Meta data
+  job.setEvnDispMD( infileList[0] )
+
   #  set calibration file and parameters file
   job.setCalibrationFile( 'prod3.peds.20150820.dst.root' )
   job.setReconstructionParameter( 'EVNDISP.prod3.reconstruction.runparameter.NN' )

@@ -48,11 +48,11 @@ class Prod3DataManager(object) :
     """
     self.dm = DataManager( catalogs )
 
-  def _getSEList( self, SEType = 'ProductionOutputs' ):
+  def _getSEList( self, SEType = 'ProductionOutputs', DataType = 'SimtelProd' ):
     """ get from CS the list of available SE for data upload
     """
     opsHelper = Operations()
-    optionName = os.path.join( SEType, 'SimtelProd' )
+    optionName = os.path.join( SEType, DataType )
     SEList = opsHelper.getValue( optionName , [] )
     SEList = List.randomize( SEList )
     DIRAC.gLogger.notice( 'List of %s SE: %s ' % ( SEType, SEList ) )
@@ -179,18 +179,18 @@ class Prod3DataManager(object) :
 
     return DIRAC.S_OK( Transformation_path )
 
-  def putAndRegister( self, lfn, localfile, filemetadata ):
+  def putAndRegister( self, lfn, localfile, filemetadata, DataType = 'SimtelProd' ):
     """ put and register one file and set metadata
     """
     # ## Get the list of Production SE
-    res = self._getSEList( 'ProductionOutputs' )
+    res = self._getSEList( 'ProductionOutputs', DataType )
     if res['OK']:
       ProductionSEList = res['Value']
     else:
       return res
 
     # ## Get the list of Failover SE
-    res = self._getSEList( 'ProductionOutputsFailover' )
+    res = self._getSEList( 'ProductionOutputsFailover', DataType )
     if res['OK']:
       FailoverSEList = res['Value']
     else:
@@ -220,7 +220,10 @@ class Prod3DataManager(object) :
       p = re.compile( 'nosct' )
       if p.search( filename ) == None:
         sct = 'True'
-      fmd.update( {'sct':sct} )
+      # ## Check added on sct to handle evndisp output file
+      p = re.compile( 'sct' )
+      if p.search( filename ) == None:
+        fmd.update( {'sct':sct} )
       res = self.fcc.setMetadata( lfn, fmd )
       if not res['OK']:
         return res
