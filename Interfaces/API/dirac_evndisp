@@ -6,18 +6,14 @@ source `cat setup_script_path.txt`
 
 echo "Time evndisp start: `date -Iseconds`"
 
-# get subarray
-if [ "$1" = "--subarray" ]; then
-   subarray=$2
-   shift
-   shift
-fi
-
 # get input file
 infile=`find . -name "*.simtel.gz" | grep subarray-$subarray`
 
-# get the run number
+# get run number
 run_number=`echo $infile | awk -F "run" '{print $2}' |  awk -F "___cta" '{print $1}'`
+
+# get subarray
+subarray=`echo $infile | awk -F "subarray-" '{print $2}' |  awk -F "-" '{print $1}'`
 
 # get calibration file
 if [ "$1" = "--calibration_file" ]; then
@@ -57,13 +53,16 @@ inginputcard $NNcleaninginputcard -ignoredstgains -output $evndipfile"
     evndisp -sourcefile $dstfile -averagetzerofiducialradius=0.5 -shorttree -l2setspecialchannels nofile -writenoMCTree -reconstructionparameter $reconstructionparameter -NNcleaninginputcard $NNcleaninginputcard -ignoredstgains -output $evndipfile
     echo "rm $dstfile"
     rm $dstfile
-    echo "rm $infile"
-    rm $infile
   done
 done
 
+### Remove simtel file
+echo "rm $infile"
+rm $infile
+
+
 ## Create tarball   
-tarfile="$run_number-$subarray.tar.gz"
+tarfile="$run_number-${subarray}_evndisp.tar.gz"
 echo "tar czf $tarfile -C Data ."
 tar czf $tarfile -C Data .
 
