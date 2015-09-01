@@ -96,14 +96,13 @@ class EvnDisp3Job( Job ) :
     self.metadata['process_program'] = 'evndisp' + '_' + self.version
 
     # ## Set file metadata
-    self.filemetadata = {'runNumber': simtelMD['runNumber']}
+    # self.filemetadata = {'runNumber': simtelMD['runNumber']}
 
   def setupWorkflow(self, debug=False):
     """ Setup job workflow by defining the sequence of all executables
         All parameters shall have been defined before that method is called.
     """
 
-    self.setExecutionEnv( {'RUN_NUM' : '01'} )
     # step 1 -- to be removed -- debug only
     iStep = 1
     if debug:
