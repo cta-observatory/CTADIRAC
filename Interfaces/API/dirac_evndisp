@@ -62,5 +62,10 @@ inginputcard $NNcleaninginputcard -ignoredstgains -output $evndipfile"
   done
 done
 
+## Create tarball   
+tarfile="$run_number-$subarray.tar.gz"
+echo "tar czf $tarfile -C Data ."
+tar czf $tarfile -C Data .
+
 echo "Time evndisp end: `date -Iseconds`"
 
