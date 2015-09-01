@@ -12,7 +12,7 @@ import os, glob, json
 # DIRAC imports
 import DIRAC
 from DIRAC.Core.Base import Script
- 
+
 Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      'Usage:',
                                      '  %s one two' % Script.scriptName,
@@ -29,19 +29,19 @@ from CTADIRAC.Core.Workflow.Modules.Prod3DataManager import Prod3DataManager
 ####################################################
 def putAndRegisterEvnDisp( args ):
     """ simple wrapper to put and register all evndisplay files
-    
+
     Keyword arguments:
     args -- a list of arguments in order []
     """
-    metadata = args[0] 
+    metadata = args[0]
     metadatafield = args[1]
     filemetadata = args[2]
     inputpath = args[3]
     basepath = args[4]
     catalogs = ['DIRACFileCatalog']
-    
+
     # # Create MD structure
-    prod3dm=Prod3DataManager(catalogs)
+    prod3dm = Prod3DataManager( catalogs )
     res = prod3dm.createMDStructure( metadata, metadatafield, basepath )
     if res['OK']:
       path = res['Value']
@@ -79,10 +79,10 @@ def putAndRegisterEvnDisp( args ):
 
 ####################################################
 if __name__ == '__main__':
-  
-  DIRAC.gLogger.setLevel('VERBOSE')
+
+  DIRAC.gLogger.setLevel( 'VERBOSE' )
   args = Script.getPositionalArgs()
-  try:    
+  try:
     res = putAndRegisterEvnDisp( args )
     if not res['OK']:
       DIRAC.gLogger.error ( res['Message'] )
