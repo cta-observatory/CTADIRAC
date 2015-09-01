@@ -36,6 +36,7 @@ def putAndRegisterEvnDisp( args ):
     metadata = args[0]
     metadatafield = args[1]
     filemetadata = args[2]
+
     inputpath = args[3]
     basepath = args[4]
     catalogs = ['DIRACFileCatalog']
@@ -59,7 +60,7 @@ def putAndRegisterEvnDisp( args ):
       run_number = filename.split( '-' )[0]
       runpath = prod3dm._getRunPath( run_number )
       lfn = os.path.join( path, 'Data', runpath, filename )
-      res = prod3dm.putAndRegister( lfn, localfile, fmdjson, 'EvnDisp' )
+      res = prod3dm.putAndRegister( lfn, localfile, filemetadata, 'EvnDisp' )
       if not res['OK']:
         return res
 
