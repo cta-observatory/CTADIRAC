@@ -102,6 +102,8 @@ class EvnDisp3Job( Job ) :
     """ Setup job workflow by defining the sequence of all executables
         All parameters shall have been defined before that method is called.
     """
+
+    self.setExecutionEnv( {'RUN_NUM' : '01'} )
     # step 1 -- to be removed -- debug only
     iStep = 1
     if debug:
@@ -118,14 +120,13 @@ class EvnDisp3Job( Job ) :
     lsStep['Value']['descr_short'] = 'Setup software'
     iStep+=1
 
-    for subarray in range( 1, 2 ):
-      # step 3  Need to decide which arguments are passed here and which are hard-coded in the shell script
-      csStep = self.setExecutable( './dirac_evndisp', \
-                                arguments = '--subarray %s --calibration_file %s --reconstructionparameter %s --NNcleaninginputcard %s' % ( subarray, self.calibration_file, self.reconstructionparameter, self.NNcleaninginputcard ), \
+    # step 3
+    csStep = self.setExecutable( './dirac_evndisp', \
+                                arguments = '--calibration_file %s --reconstructionparameter %s --NNcleaninginputcard %s' % ( self.calibration_file, self.reconstructionparameter, self.NNcleaninginputcard ), \
                                 logFile = 'EvnDisp_Log.txt' )
-      csStep['Value']['name'] = 'Step%i_EvnDispConverter' % iStep
-      csStep['Value']['descr_short'] = 'Run EvnDisplay'
-      iStep += 1
+    csStep['Value']['name'] = 'Step%i_EvnDisplay' % iStep
+    csStep['Value']['descr_short'] = 'Run EvnDisplay'
+    iStep += 1
 
     # step 4
     # ## the order of the metadata dictionary is important, since it's used to build the directory structure
@@ -144,4 +145,3 @@ class EvnDisp3Job( Job ) :
     dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
     dmStep['Value']['descr_short'] = 'Save files to SE and register them in DFC'
     iStep += 1
-

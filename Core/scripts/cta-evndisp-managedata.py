@@ -58,6 +58,11 @@ def putAndRegisterEvnDisp( args ):
     fmd = json.loads( filemetadata )
     fmdjson = json.dumps( fmd )
 
+    # ##
+    if os.environ.has_key( 'RUN_NUM' ):
+      print 'RUN_NUM'
+      print os.environ['RUN_NUM']
+
     # ## Get the run directory
     runpath = prod3dm._getRunPath( fmdjson )
 
