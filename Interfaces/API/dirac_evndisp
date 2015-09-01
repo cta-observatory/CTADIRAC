@@ -40,7 +40,7 @@ if [ "$1" = "--NNcleaninginputcard" ]; then
 fi
 
 ### create directory to store output data
-mkdir ./Data
+mkdir Data
 
 for layout in 3HB1 3HB2 3HB3 3HD1 3HD2 3HI1; do
   for telescopetype_combination in FA NA FG NG FD NG; do
@@ -50,15 +50,13 @@ for layout in 3HB1 3HB2 3HB3 3HD1 3HD2 3HI1; do
     echo "Now running:"
     echo "CTA.convert_hessio_to_VDST -a $layout_file -f 2 -o $dstfile -c $calibration_file $infile"
     CTA.convert_hessio_to_VDST -a $layout_file -f 2 -o $dstfile -c $calibration_file $infile
+    evndipfile="Data/$run_number.$layout-$telescopetype_combination-$subarray.root"
     echo "Now running:"
     echo "evndisp -sourcefile $dstfile -averagetzerofiducialradius=0.5 -shorttree -l2setspecialchannels nofile -writenoMCTree -reconstructionparameter $reconstructionparameter -NNclean\
-inginputcard $NNcleaninginputcard -ignoredstgains"
-    evndisp -sourcefile $dstfile -averagetzerofiducialradius=0.5 -shorttree -l2setspecialchannels nofile -writenoMCTree -reconstructionparameter $reconstructionparameter -NNcleaninginputcard $NNcleaninginputcard -ignoredstgains
+inginputcard $NNcleaninginputcard -ignoredstgains -output $evndipfile"
+    evndisp -sourcefile $dstfile -averagetzerofiducialradius=0.5 -shorttree -l2setspecialchannels nofile -writenoMCTree -reconstructionparameter $reconstructionparameter -NNcleaninginputcard $NNcleaninginputcard -ignoredstgains -output $evndipfile
     echo "rm $dstfile"
     rm $dstfile
-    evndipfile="$run_number.$layout-$telescopetype_combination-$subarray.root"
-    echo "mv $run_number.root $evndipfile"
-    mv $run_number.root Data/$evndipfile  
     echo "rm $infile"
     rm $infile
   done
