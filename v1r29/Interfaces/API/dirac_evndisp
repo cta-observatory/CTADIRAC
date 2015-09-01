@@ -1,0 +1,71 @@
+#!/bin/bash
+# setup_script_path.txt is created by setupSoftware.py
+# and contains the path to the setupPackage.sh script
+### Need to use a setup script for evndisplay
+source `cat setup_script_path.txt`
+
+echo "Time evndisp start: `date -Iseconds`"
+
+# get subarray
+if [ "$1" = "--subarray" ]; then
+   subarray=$2
+   shift
+   shift
+fi
+
+# get input file
+infile=`find . -name "*.simtel.gz" | grep subarray-$subarray`
+
+# get the run number
+run_number=`echo $infile | awk -F "run" '{print $2}' |  awk -F "___cta" '{print $1}'`
+
+# get calibration file
+if [ "$1" = "--calibration_file" ]; then
+   calibration_file=$CTA_EVNDISP_PATH/Calibration/$2
+   shift
+   shift
+fi
+
+# get parameters
+if [ "$1" = "--reconstructionparameter" ]; then
+   reconstructionparameter=$OBS_EVNDISP_ANA_DIR/ParameterFiles/$2
+   shift
+   shift
+fi
+
+if [ "$1" = "--NNcleaninginputcard" ]; then
+   NNcleaninginputcard=$OBS_EVNDISP_ANA_DIR/ParameterFiles/$2
+   shift
+   shift
+fi
+
+### create directory to store output data
+mkdir Data
+
+for layout in 3HB1 3HB2 3HB3 3HD1 3HD2 3HI1; do
+  for telescopetype_combination in FA NA FG NG FD NG; do
+    layout_file=$OBS_EVNDISP_ANA_DIR/DetectorGeometry/CTA.prod3S.$layout-$telescopetype_combination.lis
+    # run the converter and evndisp 
+    dstfile="$run_number.$layout-$telescopetype_combination-${subarray}_dst.root"
+    echo "Now running:"
+    echo "CTA.convert_hessio_to_VDST -a $layout_file -f 2 -o $dstfile -c $calibration_file $infile"
+    CTA.convert_hessio_to_VDST -a $layout_file -f 2 -o $dstfile -c $calibration_file $infile
+    evndipfile="Data/$run_number.$layout-$telescopetype_combination-$subarray.root"
+    echo "Now running:"
+    echo "evndisp -sourcefile $dstfile -averagetzerofiducialradius=0.5 -shorttree -l2setspecialchannels nofile -writenoMCTree -reconstructionparameter $reconstructionparameter -NNclean\
+inginputcard $NNcleaninginputcard -ignoredstgains -output $evndipfile"
+    evndisp -sourcefile $dstfile -averagetzerofiducialradius=0.5 -shorttree -l2setspecialchannels nofile -writenoMCTree -reconstructionparameter $reconstructionparameter -NNcleaninginputcard $NNcleaninginputcard -ignoredstgains -output $evndipfile
+    echo "rm $dstfile"
+    rm $dstfile
+    echo "rm $infile"
+    rm $infile
+  done
+done
+
+## Create tarball   
+tarfile="$run_number-$subarray.tar.gz"
+echo "tar czf $tarfile -C Data ."
+tar czf $tarfile -C Data .
+
+echo "Time evndisp end: `date -Iseconds`"
+
