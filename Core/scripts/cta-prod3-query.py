@@ -19,7 +19,10 @@ Script.registerSwitch( "", "process_program=", "e.g. simtel_2015-07-21" )
 Script.registerSwitch( "", "array_layout=", "e.g. hex,square" )
 Script.registerSwitch( "", "thetaP=", "e.g. 20" )
 Script.registerSwitch( "", "phiP=", "e.g. 0,180" )
+Script.registerSwitch( "", "sct=", "e.g. True,False" )
+Script.registerSwitch( "", "subarray=", "e.g. subarray-1,...,subarray-5" )
 Script.registerSwitch( "", "outputType=", "e.g. Data,Log" )
+
 
 Script.parseCommandLine( ignoreErrors = True )
 
@@ -45,6 +48,10 @@ for switch in Script.getUnprocessedSwitches():
     metaDict['thetaP'] = switch[1]
   elif switch[0].lower() == "phip":
     metaDict['phiP'] = switch[1]
+  elif switch[0].lower() == "sct":
+    metaDict['sct'] = switch[1]
+  elif switch[0].lower() == "subarray":
+    metaDict['subarray'] = switch[1]
   elif switch[0].lower() == "outputtype":
     metaDict['outputType'] = switch[1]
 

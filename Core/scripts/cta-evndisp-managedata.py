@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-""" Simple data management script for PROD3 MC
+""" Simple data management script for Evndisplay PROD3 MC
     create DFC MetaData structure
     put and register files in DFC
 """
@@ -28,7 +28,7 @@ from CTADIRAC.Core.Workflow.Modules.Prod3DataManager import Prod3DataManager
 
 ####################################################
 def putAndRegisterEvnDisp( args ):
-    """ simple wrapper to put and register all PROD3 files
+    """ simple wrapper to put and register all evndisplay files
     
     Keyword arguments:
     args -- a list of arguments in order []

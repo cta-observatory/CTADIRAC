@@ -89,9 +89,9 @@ def runEvnDisp3( args = None ):
   job.setEvnDispMD( infileList[0] )
 
   #  set calibration file and parameters file
-  job.setCalibrationFile( 'Calibration/prod3.peds.20150820.dst.root' )
-  job.setReconstructionParameter( 'EVNDISP.CTA.runparameter/ParameterFiles/EVNDISP.prod3.reconstruction.runparameter.NN' )
-  job.setNNcleaninginputcard( 'EVNDISP.CTA.runparameter/ParameterFiles/EVNDISP.NNcleaning.dat' )
+  job.setCalibrationFile( 'prod3.peds.20150820.dst.root' )
+  job.setReconstructionParameter( 'EVNDISP.prod3.reconstruction.runparameter.NN' )
+  job.setNNcleaninginputcard( 'EVNDISP.NNcleaning.dat' )
 
   job.setOutputSandbox( ['*Log.txt'] )
 
