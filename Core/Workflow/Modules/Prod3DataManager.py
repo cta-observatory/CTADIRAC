@@ -88,9 +88,10 @@ class Prod3DataManager(object) :
   def _getRunPath( self, filemetadata ):
     """ format path to string with 1 digit precision
         run_number is taken from filemetadata
+        filemetadata can be a dict or the run_number itself
     """
     fmd = json.loads( filemetadata )
-    if type(filemetadata) == type(dict()):
+    if type( fmd ) == type( dict() ):
       run_number = int( fmd['runNumber'] )
     else:
       run_number = int( filemetadata )

@@ -54,13 +54,6 @@ def putAndRegisterEvnDisp( args ):
     if not res['OK']:
       return res
 
-    # ## Get the run number
-    # fmd = json.loads( filemetadata )
-    # fmdjson = json.dumps( fmd )
-
-    # ## Get the run directory
-    # runpath = prod3dm._getRunPath( fmdjson )
-
     for localfile in glob.glob( datadir ):
       filename = os.path.basename( localfile )
       run_number = filename.split( '-' )[0]
