@@ -106,6 +106,7 @@ class Prod3DataManager(object) :
       path = '%.1f' % path
     return str( path )
 
+# ## to be fixed...
   def _getInputData( self, run_number ):
     """ get InputData
     """
@@ -119,6 +120,7 @@ class Prod3DataManager(object) :
         if run_number in lfn:
           return lfn
 
+# ## to be fixed...
   def _setInputDataAsProcessed( self, run_number ):
     """ mark inputdata as 'processed'
     """
