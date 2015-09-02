@@ -67,7 +67,7 @@ for infile in "${infilelist[@]}"; do
 	# get phip
 	phip=`echo $infile | awk -F "deg" '{print $2}' | awk -F "_" '{print $2}'`
 	for layout in ${layout_list[@]}; do
-	  for ${telescopetype_combination_list[@]}; do
+	  for telescopetype_combination in ${telescopetype_combination_list[@]}; do
 	    layout_file=$OBS_EVNDISP_ANA_DIR/DetectorGeometry/CTA.prod3S.$layout-$telescopetype_combination.lis
 	    # run the converter and evndisp 
 	    dstfile="$run_number.${phip}deg-$layout-$telescopetype_combination-${subarray}_dst.root"
