@@ -63,7 +63,10 @@ def putAndRegisterEvnDisp( args ):
       res = prod3dm.putAndRegister( lfn, localfile, filemetadata, 'EvnDisp' )
       if not res['OK']:
         return res
-
+      ########## Mark input data as processed
+      res = prod3dm._setInputDataAsProcessed( 'run' + run_number )
+      if not res['OK']:
+        return res
     # ## Upload log files????
 
     return DIRAC.S_OK()
