@@ -9,6 +9,26 @@ echo "Time evndisp start: `date -Iseconds`"
 ### create directory to store output data
 mkdir Data
 
+# get layout list
+if [ "$1" = "--layout_list" ]; then
+   layout_list=( $2 )
+   shift
+   shift
+fi
+
+echo "Layout list"
+echo ${layout_list[@]}
+
+# get telescopetype_combination list
+if [ "$1" = "--telescopetype_combination_list" ]; then
+   telescopetype_combination_list=( $2 )
+   shift
+   shift
+fi
+
+echo "Telescopetype_combination list"
+echo ${telescopetype_combination_list[@]}
+
 # get calibration file
 if [ "$1" = "--calibration_file" ]; then
    calibration_file=$CTA_EVNDISP_PATH/Calibration/$2
@@ -32,7 +52,11 @@ fi
 # get input file list
 infilelist=( `find . -name "*.simtel.gz"` )
 
-for infile in "${infilelist[@]}"; do   
+echo "Input file list"
+echo ${infilelist[@]}
+
+for infile in "${infilelist[@]}"; do  
+    count=0 
 
 	# get run number
 	run_number=`echo $infile | awk -F "run" '{print $2}' |  awk -F "___cta" '{print $1}'`
@@ -42,32 +66,47 @@ for infile in "${infilelist[@]}"; do
 	
 	# get phip
 	phip=`echo $infile | awk -F "deg" '{print $2}' | awk -F "_" '{print $2}'`
-
-	for layout in 3HB1 3HB2 3HB3 3HD1 3HD2 3HI1; do
-	  for telescopetype_combination in FA NA FG NG FD ND; do
+	for layout in ${layout_list[@]}; do
+	  for ${telescopetype_combination_list[@]}; do
 	    layout_file=$OBS_EVNDISP_ANA_DIR/DetectorGeometry/CTA.prod3S.$layout-$telescopetype_combination.lis
 	    # run the converter and evndisp 
 	    dstfile="$run_number.${phip}deg-$layout-$telescopetype_combination-${subarray}_dst.root"
 	    echo "Now running:"
 	    echo "CTA.convert_hessio_to_VDST -a $layout_file -f 2 -o $dstfile -c $calibration_file $infile"
 	    CTA.convert_hessio_to_VDST -a $layout_file -f 2 -o $dstfile -c $calibration_file $infile
+	    #if [[ ( $? != 0 ) ]]; then
+		#  echo 'Error in CTA.convert_hessio_to_VDST'
+		#  exit -1
+		#fi
 	    evndipfile="Data/$run_number.${phip}deg-$layout-$telescopetype_combination-$subarray.root"
 	    echo "Now running:"
 	    echo "evndisp -sourcefile $dstfile -averagetzerofiducialradius=0.5 -shorttree -l2setspecialchannels nofile -writenoMCTree -reconstructionparameter $reconstructionparameter -NNcleaninginputcard $NNcleaninginputcard -ignoredstgains -output $evndipfile"
 	    evndisp -sourcefile $dstfile -averagetzerofiducialradius=0.5 -shorttree -l2setspecialchannels nofile -writenoMCTree -reconstructionparameter $reconstructionparameter -NNcleaninginputcard $NNcleaninginputcard -ignoredstgains -output $evndipfile
+		#if [[ ( $? != 0 ) ]]; then
+		#  echo 'Error in evndisp'
+		#  exit -1
+		#fi
 	    echo "rm $dstfile"
 	    rm $dstfile
+	    count=$((count+1))
 	  done
 	done
-
-        ### Remove simtel file                                                                                                                                                   
-        echo "rm $infile"
-        rm $infile
+    ### Remove simtel file                                                                                                                                                   
+    echo "rm $infile"
+    rm $infile
 	
-        # Create tarball   
+	# Check Data directory content
+    numfiles=(Data/*)
+    numfiles=${#numfiles[@]}
+	if [[ ( $numfiles != $count ) ]]; then
+	  echo 'Missing files in Data directory'
+	  exit -1
+	else
+    # Create tarball   
 	tarfile="$run_number-${phip}deg-${subarray}_evndisp.tar.gz"
 	echo "tar czf $tarfile -C Data ."
 	tar czf $tarfile -C Data .
+	fi
 done
 
 echo "Time evndisp end: `date -Iseconds`"

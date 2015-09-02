@@ -88,6 +88,9 @@ def runEvnDisp3( args = None ):
   # set EvnDisp Meta data
   job.setEvnDispMD( infileList[0] )
 
+  # # set layout and telescope combination
+  job.setLayoutList( "3HB1" )
+  job.setTelescopetypeCombinationList( "FA NA FG NG FD ND" )
   #  set calibration file and parameters file
   job.setCalibrationFile( 'prod3.peds.20150820.dst.root' )
   job.setReconstructionParameter( 'EVNDISP.prod3.reconstruction.runparameter.NN' )
