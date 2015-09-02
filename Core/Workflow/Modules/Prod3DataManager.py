@@ -115,18 +115,16 @@ class Prod3DataManager(object) :
       dirac = Dirac()
       res = dirac.getJobJDL( jobID )
       InputData = res['Value']['InputData']
-    print 'InputData' % InputData
-    for lfn in InputData:
-      if run_number in lfn:
-        return lfn
+      for lfn in InputData:
+        if run_number in lfn:
+          return lfn
 
   def _setInputDataAsProcessed( self, run_number ):
     """ mark inputdata as 'processed'
     """
     lfn = self._getInputData( run_number )
     res = self.fcc.setMetadata( lfn, {'processed':'True'} )
-    if not res['OK']:
-      return res
+    return res
 
   def createTarLogFiles ( self, inputpath, tarname ):
     """ create tar of log and histogram files
