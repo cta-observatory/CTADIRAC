@@ -148,7 +148,7 @@ class Prod3DataManager(object) :
 
     return DIRAC.S_OK()
 
-  def createMDStructure( self, metadata, metadatafield, basepath ):
+  def createMDStructure( self, metadata, metadatafield, basepath, jobGroupID = 0 ):
     """ create meta data structure
     """
     # ## Add metadata fields to the DFC
@@ -183,7 +183,7 @@ class Prod3DataManager(object) :
       TransformationID = res['Value']['TransformationID']
     else:
       # ## This is used just when job runs locally or without TS
-      TransformationID = 'TransformationID'
+      TransformationID = jobGroupID
 
     path = os.path.join( path, TransformationID )
     res = self.fc.createDirectory( path )

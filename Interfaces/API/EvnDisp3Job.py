@@ -34,10 +34,11 @@ class EvnDisp3Job( Job ) :
     self.reconstructionparameter = 'EVNDISP.prod3.reconstruction.runparameter.NN'
     self.NNcleaninginputcard = 'EVNDISP.NNcleaning.dat'
     self.inputpath = './'  ### Update for evndisp!!!
-    self.basepath = '/vo.cta.in2p3.fr/MC/PROD3/scratch'
+    self.basepath = '/vo.cta.in2p3.fr/MC/PROD3/'
     self.fcc = FileCatalogClient()
     self.metadata = collections.OrderedDict()
     self.filemetadata = {}
+    self.jobGroupID = 1
 
   def setPackage(self, package):
     """ Set package name : e.g. 'evndisplay'
@@ -157,7 +158,7 @@ class EvnDisp3Job( Job ) :
     fmdjson = json.dumps( self.filemetadata )
 
     dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-evndisp-managedata.py',
-                              arguments = "'%s' '%s' '%s' %s %s" % ( mdjson, mdfieldjson, fmdjson, self.inputpath, self.basepath ),
+                              arguments = "'%s' '%s' '%s' %s %s %s" % ( mdjson, mdfieldjson, fmdjson, self.inputpath, self.basepath, self.JobGroupID ),
                               logFile = 'DataManagement_Log.txt' )
     dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
     dmStep['Value']['descr_short'] = 'Save files to SE and register them in DFC'

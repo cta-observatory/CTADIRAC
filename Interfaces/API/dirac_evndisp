@@ -107,6 +107,9 @@ for infile in "${infilelist[@]}"; do
 	echo "tar czf $tarfile -C Data ."
 	tar czf $tarfile -C Data .
 	fi
+	### Remove evndisp data
+	echo "remove Data/*.root"
+	rm Data/*.root
 done
 
 echo "Time evndisp end: `date -Iseconds`"

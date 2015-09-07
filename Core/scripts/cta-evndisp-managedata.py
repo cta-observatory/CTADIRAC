@@ -39,11 +39,12 @@ def putAndRegisterEvnDisp( args ):
 
     inputpath = args[3]
     basepath = args[4]
+    jobGroupID = args[5]
     catalogs = ['DIRACFileCatalog']
 
     # # Create MD structure
     prod3dm = Prod3DataManager( catalogs )
-    res = prod3dm.createMDStructure( metadata, metadatafield, basepath )
+    res = prod3dm.createMDStructure( metadata, metadatafield, basepath, jobGroupID )
     if res['OK']:
       path = res['Value']
     else:
