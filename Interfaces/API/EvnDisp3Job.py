@@ -158,7 +158,7 @@ class EvnDisp3Job( Job ) :
     fmdjson = json.dumps( self.filemetadata )
 
     dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-evndisp-managedata.py',
-                              arguments = "'%s' '%s' '%s' %s %s %s" % ( mdjson, mdfieldjson, fmdjson, self.inputpath, self.basepath, self.JobGroupID ),
+                              arguments = "'%s' '%s' '%s' %s %s %s" % ( mdjson, mdfieldjson, fmdjson, self.inputpath, self.basepath, self.jobGroupID ),
                               logFile = 'DataManagement_Log.txt' )
     dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
     dmStep['Value']['descr_short'] = 'Save files to SE and register them in DFC'
