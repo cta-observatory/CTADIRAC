@@ -1,0 +1,116 @@
+#!/bin/bash
+# setup_script_path.txt is created by setupSoftware.py
+# and contains the path to the setupPackage.sh script
+### Need to use a setup script for evndisplay
+source `cat setup_script_path.txt`
+
+echo "Time evndisp start: `date -Iseconds`"
+
+### create directory to store output data
+mkdir Data
+
+# get layout list
+if [ "$1" = "--layout_list" ]; then
+   layout_list=( $2 )
+   shift
+   shift
+fi
+
+echo "Layout list"
+echo ${layout_list[@]}
+
+# get telescopetype_combination list
+if [ "$1" = "--telescopetype_combination_list" ]; then
+   telescopetype_combination_list=( $2 )
+   shift
+   shift
+fi
+
+echo "Telescopetype_combination list"
+echo ${telescopetype_combination_list[@]}
+
+# get calibration file
+if [ "$1" = "--calibration_file" ]; then
+   calibration_file=$CTA_EVNDISP_PATH/Calibration/$2
+   shift
+   shift
+fi
+
+# get parameters
+if [ "$1" = "--reconstructionparameter" ]; then
+   reconstructionparameter=$OBS_EVNDISP_ANA_DIR/ParameterFiles/$2
+   shift
+   shift
+fi
+
+if [ "$1" = "--NNcleaninginputcard" ]; then
+   NNcleaninginputcard=$OBS_EVNDISP_ANA_DIR/ParameterFiles/$2
+   shift
+   shift
+fi
+	
+# get input file list
+infilelist=( `find . -name "*.simtel.gz"` )
+
+echo "Input file list"
+echo ${infilelist[@]}
+
+for infile in "${infilelist[@]}"; do  
+    count=0 
+
+	# get run number
+	run_number=`echo $infile | awk -F "run" '{print $2}' |  awk -F "___cta" '{print $1}'`
+	
+	# get subarray
+	subarray=`echo $infile | awk -F "subarray-" '{print $2}' |  awk -F "-" '{print $1}'`
+	
+	# get phip
+	phip=`echo $infile | awk -F "deg" '{print $2}' | awk -F "_" '{print $2}'`
+	for layout in ${layout_list[@]}; do
+	  for telescopetype_combination in ${telescopetype_combination_list[@]}; do
+	    layout_file=$OBS_EVNDISP_ANA_DIR/DetectorGeometry/CTA.prod3S.$layout-$telescopetype_combination.lis
+	    # run the converter and evndisp 
+	    dstfile="$run_number.${phip}deg-$layout-$telescopetype_combination-${subarray}_dst.root"
+	    echo "Now running:"
+	    echo "CTA.convert_hessio_to_VDST -a $layout_file -f 2 -o $dstfile -c $calibration_file $infile"
+	    CTA.convert_hessio_to_VDST -a $layout_file -f 2 -o $dstfile -c $calibration_file $infile
+	    #if [[ ( $? != 0 ) ]]; then
+		#  echo 'Error in CTA.convert_hessio_to_VDST'
+		#  exit -1
+		#fi
+	    evndipfile="Data/$run_number.${phip}deg-$layout-$telescopetype_combination-$subarray.root"
+	    echo "Now running:"
+	    echo "evndisp -sourcefile $dstfile -averagetzerofiducialradius=0.5 -shorttree -l2setspecialchannels nofile -writenoMCTree -reconstructionparameter $reconstructionparameter -NNcleaninginputcard $NNcleaninginputcard -ignoredstgains -output $evndipfile"
+	    evndisp -sourcefile $dstfile -averagetzerofiducialradius=0.5 -shorttree -l2setspecialchannels nofile -writenoMCTree -reconstructionparameter $reconstructionparameter -NNcleaninginputcard $NNcleaninginputcard -ignoredstgains -output $evndipfile
+		#if [[ ( $? != 0 ) ]]; then
+		#  echo 'Error in evndisp'
+		#  exit -1
+		#fi
+	    echo "rm $dstfile"
+	    rm $dstfile
+	    count=$((count+1))
+	  done
+	done
+    ### Remove simtel file                                                                                                                                                   
+    echo "rm $infile"
+    rm $infile
+	
+	# Check Data directory content
+    numfiles=(Data/*)
+    numfiles=${#numfiles[@]}
+	if [[ ( $numfiles != $count ) ]]; then
+	  echo 'Missing files in Data directory'
+	  exit -1
+	else
+    # Create tarball   
+	tarfile="$run_number-${phip}deg-${subarray}_evndisp.tar.gz"
+	echo "tar czf $tarfile -C Data ."
+	tar czf $tarfile -C Data .
+	fi
+	### Remove evndisp data
+	echo "remove Data/*.root"
+	rm Data/*.root
+done
+
+echo "Time evndisp end: `date -Iseconds`"
+

@@ -1,0 +1,20 @@
+# Keep in mind: LST #3 is less than 40 m from DC-SST #60.
+# LSTs #1 and #2 are not meant to be used together with #3.
+# No implementation foreseen with both DC-SSTs and SC-SSTs in place.
+
+# 4 LSTs, MSTs, DC-SSTs:
+Trigger 2 of 1,2,4,5, 6 to 59, 60 to 96 width 1000
+
+# 4 LSTs, MSTs, SC-SSTs:
+Trigger 2 of 1,2,4,5, 6 to 59, 97 to 168 width 1000
+
+# 3 LSTs, MSTs, DC-SSTs (except #60):
+Trigger 2 of 2,3,5, 6 to 59, 61 to 96 width 1000
+Trigger 2 of 2,3,5, 6 to 59, 97 to 168 width 1000
+
+# If triggers of one DC-SST plus one SC-SST are acceptable, we have
+# Trigger 2 of 1,2,4,5, 6 to 168 width 1000
+# Trigger 2 of 2,3,5, 6 to 59, 61 to 168 width 1000
+
+# Mono triggers for LSTs?
+# Trigger 1 of 1,2,3,4,5 with 100
