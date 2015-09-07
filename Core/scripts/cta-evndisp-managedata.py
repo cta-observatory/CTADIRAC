@@ -42,7 +42,7 @@ def putAndRegisterEvnDisp( args ):
     if len( args ) == 6:
       jobGroupID = args[5]
     else:
-      jobGroupID = -1
+      jobGroupID = '-1'
     catalogs = ['DIRACFileCatalog']
 
     # # Create MD structure
