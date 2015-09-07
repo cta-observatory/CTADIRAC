@@ -180,10 +180,11 @@ class Prod3DataManager(object) :
       jobID = os.environ['JOBID']
       dirac = Dirac()
       res = dirac.getJobJDL( jobID )
-      TransformationID = res['Value']['TransformationID']
-    else:
+      if res['Value'].has_key( 'TransformationID' ):
+        TransformationID = res['Value']['TransformationID']
+      else:
       # ## This is used just when job runs locally or without TS
-      TransformationID = jobGroupID
+        TransformationID = jobGroupID
 
     path = os.path.join( path, TransformationID )
     res = self.fc.createDirectory( path )
