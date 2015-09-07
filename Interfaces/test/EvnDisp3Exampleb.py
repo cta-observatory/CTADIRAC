@@ -48,8 +48,6 @@ def submitWMS( job, infileList ):
 # job.setDestination( 'LCG.IN2P3-CC.fr' )
   dirac = Dirac()
 
-  layoutlist = args[2]
-
   res = Dirac().splitInputData( infileList, 5 )
 
   if not res['OK']:
@@ -59,6 +57,8 @@ def submitWMS( job, infileList ):
   job.setGenericParametricInput( res['Value'] )
 
   job.setInputData( '%s' )
+
+  job.setType( 'EvnDispAnalysis' )
 
   # res = dirac.submit( job, "local" )
   res = dirac.submit( job )
