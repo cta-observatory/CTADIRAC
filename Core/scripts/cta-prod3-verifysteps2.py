@@ -164,7 +164,7 @@ def verify(args):
         res=verifySimtel()
     elif stepType == "merging":
         res=verifyMerging()
-    elif stepType == "evndispInputs":
+    elif stepType == "evndispinputs":
         res = verifyEvnDispInputs()
     else:
         res=DIRAC.S_ERROR()
