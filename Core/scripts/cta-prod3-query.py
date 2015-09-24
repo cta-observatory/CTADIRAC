@@ -15,7 +15,11 @@ Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
 
 Script.registerSwitch( "", "site=", "e.g. Paranal" )
 Script.registerSwitch( "", "particle=", "e.g. gamma,gamma-diffuse,electron,proton" )
-Script.registerSwitch( "", "process_program=", "e.g. simtel_2015-07-21" )
+# Script.registerSwitch( "", "process_program=", "e.g. simtel_2015-07-21" )
+Script.registerSwitch( "", "tel_sim_prog=", "e.g. simtel" )
+Script.registerSwitch( "", "tel_sim_prog_version=", "e.g. 2015-07-21" )
+Script.registerSwitch( "", "analysis_prog=", "e.g. evndisp" )
+Script.registerSwitch( "", "analysis_prog_version=", "e.g. prod3_d20150903b" )
 Script.registerSwitch( "", "array_layout=", "e.g. hex,square" )
 Script.registerSwitch( "", "thetaP=", "e.g. 20" )
 Script.registerSwitch( "", "phiP=", "e.g. 0,180" )
@@ -40,8 +44,14 @@ for switch in Script.getUnprocessedSwitches():
     metaDict['site'] = switch[1]
   elif switch[0].lower() == "particle":
     metaDict['particle'] = switch[1]
-  elif switch[0].lower() == "process_program":
-    metaDict['process_program'] = switch[1]
+  elif switch[0].lower() == "tel_sim_prog":
+    metaDict['tel_sim_prog'] = switch[1]
+  elif switch[0].lower() == "tel_sim_prog_version":
+    metaDict['tel_sim_prog_version'] = switch[1]
+  elif switch[0].lower() == "analysis_prog":
+    metaDict['analysis_prog'] = switch[1]
+  elif switch[0].lower() == "analysis_prog_version":
+    metaDict['analysis_prog_version'] = switch[1]
   elif switch[0].lower() == "array_layout":
     metaDict['array_layout'] = switch[1]
   elif switch[0].lower() == "thetap":
