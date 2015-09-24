@@ -22,6 +22,17 @@ Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
 
 Script.parseCommandLine()
 
+def cleanFiles( outputFiles ):
+    """ Delete Local Files
+    """
+    DIRAC.gLogger.info( 'Deleting Local Files' )
+
+    for afile in outputFiles:
+      DIRAC.gLogger.warn( 'Remove local File %s' % ( afile ) )
+      os.remove( afile )
+
+    return DIRAC.S_OK()
+
 def verifyCorsika( nbFiles = 6, minSize = 50. ):
     """ Verify a PROD3 corsika step
     
@@ -37,17 +48,17 @@ def verifyCorsika( nbFiles = 6, minSize = 50. ):
     # check the number of output files
     N=len(outputFiles)
     if N != nbFiles :
-        res = DIRAC.S_ERROR()
-        res['Message'] = 'Wrong number of Corsika files : %s instead of %s' % (N, nbFiles)
-        return res
+        DIRAC.gLogger.error( 'Wrong number of Corsika files : %s instead of %s' % ( N, nbFiles ) )
+        cleanFiles( outputFiles )
+        return DIRAC.S_ERROR()
         
     # check the file size
     for afile in outputFiles:
         sizekb=os.path.getsize(afile)/1024.
         if sizekb < minSize:
-            res = DIRAC.S_ERROR()
-            res['Message'] = '%s\n File size too small : %s < %s kb'% (afile, sizekb, minSize)
-            return res
+            DIRAC.gLogger.error( '%s\n File size too small : %s < %s kb' % ( afile, sizekb, minSize ) )
+            cleanFiles( outputFiles )
+            return DIRAC.S_ERROR()
 
     return DIRAC.S_OK()
 
@@ -66,17 +77,17 @@ def verifySimtel(nbFiles=31, minSize=50.):
     # check the number of output files --- could be done by telescope type
     N=len(outputFiles)
     if N != nbFiles :
-        res = DIRAC.S_ERROR()
-        res['Message'] = 'Wrong number of Simtel files : %s instead of %s' % (N, nbFiles)
-        return res
+        DIRAC.gLogger.error( 'Wrong number of Simtel files : %s instead of %s' % ( N, nbFiles ) )
+        cleanFiles( outputFiles )
+        return DIRAC.S_ERROR()
         
     # check the file size --- could be done by telescope type
     for afile in outputFiles:
         sizekb=os.path.getsize(afile)/1024.
         if sizekb < minSize:
-            res = DIRAC.S_ERROR()
-            res['Message'] = '%s\n File size too small : %s < %s kb'% (afile, sizekb, minSize)
-            return res
+            DIRAC.gLogger.error( '%s\n File size too small : %s < %s kb' % ( afile, sizekb, minSize ) )
+            cleanFiles( outputFiles )
+            return DIRAC.S_ERROR()
 
     return DIRAC.S_OK()
 
@@ -96,21 +107,40 @@ def verifyMerging(nbFiles=10, minSize=5000.):
     # check the number of output files --- could be done by telescope type
     N=len(outputFiles)
     if N != nbFiles :
-        res = DIRAC.S_ERROR()
-        res['Message'] = 'Wrong number of Simtel Merged files : %s instead of %s' % (N, nbFiles)
-        return res
+        DIRAC.gLogger.error( 'Wrong number of Simtel Merged files : %s instead of %s' % ( N, nbFiles ) )
+        cleanFiles( outputFiles )
+        return DIRAC.S_ERROR()
         
     # check the file size --- could be done by telescope type
     for afile in outputFiles:
         sizekb=os.path.getsize(afile)/1024.
         if sizekb < minSize:
-            res = DIRAC.S_ERROR()
-            res['Message'] = '%s\n File size too small : %s < %s kb'% (afile, sizekb, minSize)
-            return res
+            DIRAC.gLogger.error( '%s\n File size too small : %s < %s kb' % ( afile, sizekb, minSize ) )
+            cleanFiles( outputFiles )
+            return DIRAC.S_ERROR()
             
     return DIRAC.S_OK()
 
+def verifyEvnDispInputs( minSize = 50. ):
+    """ Verify a EvnDisp input files
 
+    Keyword arguments:
+    minSize -- minimum file size
+    """
+    DIRAC.gLogger.info( 'Verifying EvnDispInputs step' )
+
+    # get list of output files
+    outputFiles = glob.glob( './*simtel.gz' )
+
+    # check the file size --- could be done by telescope type
+    for afile in outputFiles:
+        sizekb = os.path.getsize( afile ) / 1024.
+        if sizekb < minSize:
+            DIRAC.gLogger.warn( '%s\n File size too small : %s < %s kb' % ( afile, sizekb, minSize ) )
+            DIRAC.gLogger.warn( 'Remove local File %s' % ( afile ) )
+            os.remove( afile )
+
+    return DIRAC.S_OK()
 
 # Main
 def verify(args):
@@ -128,6 +158,8 @@ def verify(args):
         res=verifySimtel()
     elif stepType == "merging":
         res=verifyMerging()
+    elif stepType == "evndispinputs":
+        res = verifyEvnDispInputs()
     else:
         res=DIRAC.S_ERROR()
         res['Message'] = 'Do not know how to verify "%s"'% stepType

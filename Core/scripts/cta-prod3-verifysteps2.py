@@ -48,19 +48,17 @@ def verifyCorsika( nbFiles = 6, minSize = 50. ):
     # check the number of output files
     N=len(outputFiles)
     if N != nbFiles :
-        res = DIRAC.S_ERROR()
-        res['Message'] = 'Wrong number of Corsika files : %s instead of %s' % (N, nbFiles)
+        DIRAC.gLogger.error( 'Wrong number of Corsika files : %s instead of %s' % ( N, nbFiles ) )
         cleanFiles( outputFiles )
-        return res
+        return DIRAC.S_ERROR()
         
     # check the file size
     for afile in outputFiles:
         sizekb=os.path.getsize(afile)/1024.
         if sizekb < minSize:
-            res = DIRAC.S_ERROR()
-            res['Message'] = '%s\n File size too small : %s < %s kb'% (afile, sizekb, minSize)
+            DIRAC.gLogger.error( '%s\n File size too small : %s < %s kb' % ( afile, sizekb, minSize ) )
             cleanFiles( outputFiles )
-            return res
+            return DIRAC.S_ERROR()
 
     return DIRAC.S_OK()
 
@@ -79,19 +77,17 @@ def verifySimtel(nbFiles=31, minSize=50.):
     # check the number of output files --- could be done by telescope type
     N=len(outputFiles)
     if N != nbFiles :
-        res = DIRAC.S_ERROR()
-        res['Message'] = 'Wrong number of Simtel files : %s instead of %s' % (N, nbFiles)
+        DIRAC.gLogger.error( 'Wrong number of Simtel files : %s instead of %s' % ( N, nbFiles ) )
         cleanFiles( outputFiles )
-        return res
+        return DIRAC.S_ERROR()
         
     # check the file size --- could be done by telescope type
     for afile in outputFiles:
         sizekb=os.path.getsize(afile)/1024.
         if sizekb < minSize:
-            res = DIRAC.S_ERROR()
-            res['Message'] = '%s\n File size too small : %s < %s kb'% (afile, sizekb, minSize)
+            DIRAC.gLogger.error( '%s\n File size too small : %s < %s kb' % ( afile, sizekb, minSize ) )
             cleanFiles( outputFiles )
-            return res
+            return DIRAC.S_ERROR()
 
     return DIRAC.S_OK()
 
@@ -111,19 +107,17 @@ def verifyMerging(nbFiles=10, minSize=5000.):
     # check the number of output files --- could be done by telescope type
     N=len(outputFiles)
     if N != nbFiles :
-        res = DIRAC.S_ERROR()
-        res['Message'] = 'Wrong number of Simtel Merged files : %s instead of %s' % (N, nbFiles)
+        DIRAC.gLogger.error( 'Wrong number of Simtel Merged files : %s instead of %s' % ( N, nbFiles ) )
         cleanFiles( outputFiles )
-        return res
+        return DIRAC.S_ERROR()
         
     # check the file size --- could be done by telescope type
     for afile in outputFiles:
         sizekb=os.path.getsize(afile)/1024.
         if sizekb < minSize:
-            res = DIRAC.S_ERROR()
-            res['Message'] = '%s\n File size too small : %s < %s kb'% (afile, sizekb, minSize)
+            DIRAC.gLogger.error( '%s\n File size too small : %s < %s kb' % ( afile, sizekb, minSize ) )
             cleanFiles( outputFiles )
-            return res
+            return DIRAC.S_ERROR()
             
     return DIRAC.S_OK()
 
