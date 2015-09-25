@@ -47,7 +47,7 @@ def putAndRegisterEvnDisp( args ):
 
     # # Create MD structure
     prod3dm = Prod3DataManager( catalogs )
-    res = prod3dm.createMDStructure( metadata, metadatafield, basepath, jobGroupID )
+    res = prod3dm.createMDStructure( metadata, metadatafield, basepath, 'analysis', jobGroupID )
     if res['OK']:
       path = res['Value']
     else:

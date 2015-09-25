@@ -43,7 +43,7 @@ def putAndRegisterPROD3(args):
     
     # # Create MD structure
     prod3dm=Prod3DataManager(catalogs)
-    res = prod3dm.createMDStructure( metadata, metadatafield, basepath )
+    res = prod3dm.createMDStructure( metadata, metadatafield, basepath, 'tel_sim' )
     if res['OK']:
       path = res['Value']
     else:

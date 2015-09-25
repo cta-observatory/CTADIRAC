@@ -152,11 +152,11 @@ class Prod3MCJob( Job ) :
         iStep+=1
 
     # step 2  
-    lsStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-setupsw',
+    swStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-setupsw',
                               arguments='%s %s'% (self.package, self.version),\
                               logFile='SetupSoftware_Log.txt')
-    lsStep['Value']['name']='Step%i_SetupSoftware'%iStep
-    lsStep['Value']['descr_short'] = 'Setup software'
+    swStep['Value']['name'] = 'Step%i_SetupSoftware' % iStep
+    swStep['Value']['descr_short'] = 'Setup software'
     iStep+=1
 
     # step 3  
@@ -234,12 +234,14 @@ class Prod3MCJob( Job ) :
     if self.pointing_dir == 'South':
       metadata['phiP'] = 0
     metadata['thetaP'] = float( self.zenith_angle )
-    metadata['process_program'] = 'simtel' + '_' + self.version
+    # metadata['process_program'] = 'simtel' + '_' + self.version
+    metadata['tel_sim_prog'] = 'simtel'
+    metadata['tel_sim_prog_version'] = self.version
 
     mdjson = json.dumps( metadata )
 
     metadatafield = {'array_layout':'VARCHAR(128)', 'site':'VARCHAR(128)', 'particle':'VARCHAR(128)', \
-                         'phiP':'float', 'thetaP': 'float', 'process_program':'VARCHAR(128)'}
+                         'phiP':'float', 'thetaP': 'float', 'tel_sim_prog':'VARCHAR(128)', 'tel_sim_prog_version':'VARCHAR(128)'}
 
     mdfieldjson = json.dumps( metadatafield )
 

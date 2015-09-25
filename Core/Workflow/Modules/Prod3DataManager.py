@@ -148,7 +148,7 @@ class Prod3DataManager(object) :
 
     return DIRAC.S_OK()
 
-  def createMDStructure( self, metadata, metadatafield, basepath, jobGroupID = 0 ):
+  def createMDStructure( self, metadata, metadatafield, basepath, program_category, jobGroupID = 0 ):
     """ create meta data structure
     """
     # ## Add metadata fields to the DFC
@@ -162,6 +162,7 @@ class Prod3DataManager(object) :
     md = json.loads( metadata , object_pairs_hook = collections.OrderedDict )
 
     path = basepath
+    process_program = program_category + '_program'
     for key, value in dict( ( k, md[k] ) for k in ( 'site', 'particle', 'process_program' ) if k in md ).items():
       path = os.path.join( path, self._formatPath( value ) )
       res = self.fc.createDirectory( path )
@@ -172,6 +173,10 @@ class Prod3DataManager(object) :
       res = self.fcc.setMetadata( path, {key:value} )
       if not res['OK']:
         return res
+
+    # # Add also process_program_version MD
+    process_program_version = process_program + '_version'
+    res = self.fcc.setMetadata( path, {process_program_version:md[process_program_version]} )
 
     # Create the TransformationID subdir and set MD
 
