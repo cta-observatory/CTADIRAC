@@ -112,7 +112,9 @@ class EvnDisp3Job( Job ) :
     self.metadata['particle'] = simtelMD['particle']
     self.metadata['phiP'] = simtelMD['phiP']
     self.metadata['thetaP'] = simtelMD['thetaP']
-    self.metadata['process_program'] = 'evndisp' + '_' + self.version
+    # self.metadata['process_program'] = 'evndisp' + '_' + self.version
+    self.metadata['analysis_prog'] = 'evndisp'
+    self.metadata['analysis_prog_version'] = self.version
 
     # ## Set file metadata
     # self.filemetadata = {'runNumber': simtelMD['runNumber']}
@@ -131,19 +133,27 @@ class EvnDisp3Job( Job ) :
         iStep+=1
       
     # step 2  
-    lsStep = self.setExecutable( '$DIRACROOT/scripts/cta-evndisp-setupsw',
+    swStep = self.setExecutable( '$DIRACROOT/scripts/cta-evndisp-setupsw',
                               arguments='%s %s'% (self.package, self.version),\
                               logFile='SetupSoftware_Log.txt')
-    lsStep['Value']['name']='Step%i_SetupSoftware'%iStep
-    lsStep['Value']['descr_short'] = 'Setup software'
+    swStep['Value']['name'] = 'Step%i_SetupSoftware' % iStep
+    swStep['Value']['descr_short'] = 'Setup software'
     iStep+=1
 
+    # step 2bis
+    eivStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-verifysteps', \
+                              arguments = 'evndispinputs', \
+                              logFile = 'Verify_EvnDispInputs_Log.txt' )
+    eivStep['Value']['name'] = 'Step%i_VerifyEvnDispInputs' % iStep
+    eivStep['Value']['descr_short'] = 'Verify EvnDisp Inputs'
+    iStep += 1
+
     # step 3
-    csStep = self.setExecutable( './dirac_evndisp', \
+    evStep = self.setExecutable( './dirac_evndisp', \
                                 arguments = "--layout_list '%s' --telescopetype_combination_list '%s' --calibration_file %s --reconstructionparameter %s --NNcleaninginputcard %s" % ( self.layout_list, self.telescopetype_combination_list, self.calibration_file, self.reconstructionparameter, self.NNcleaninginputcard ), \
                                 logFile = 'EvnDisp_Log.txt' )
-    csStep['Value']['name'] = 'Step%i_EvnDisplay' % iStep
-    csStep['Value']['descr_short'] = 'Run EvnDisplay'
+    evStep['Value']['name'] = 'Step%i_EvnDisplay' % iStep
+    evStep['Value']['descr_short'] = 'Run EvnDisplay'
     iStep += 1
 
     # step 4
@@ -151,7 +161,7 @@ class EvnDisp3Job( Job ) :
     mdjson = json.dumps( self.metadata )
 
     metadatafield = {'array_layout':'VARCHAR(128)', 'site':'VARCHAR(128)', 'particle':'VARCHAR(128)', \
-                         'phiP':'float', 'thetaP': 'float', 'process_program':'VARCHAR(128)'}
+                         'phiP':'float', 'thetaP': 'float', 'analysis_prog':'VARCHAR(128)', 'analysis_prog_version':'VARCHAR(128)'}
 
     mdfieldjson = json.dumps( metadatafield )
 
