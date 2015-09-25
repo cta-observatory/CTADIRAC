@@ -58,7 +58,7 @@ if __name__ == '__main__':
   args = Script.getPositionalArgs()
 
   try:
-    DataRemovalTSExample( args )
+    DataReplicaRemovalTSExample( args )
   except Exception:
     Script.gLogger.exception()
 
