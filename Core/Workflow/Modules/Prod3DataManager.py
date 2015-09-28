@@ -162,7 +162,7 @@ class Prod3DataManager(object) :
     md = json.loads( metadata , object_pairs_hook = collections.OrderedDict )
 
     path = basepath
-    process_program = program_category + '_program'
+    process_program = program_category + '_prog'
     for key, value in dict( ( k, md[k] ) for k in ( 'site', 'particle', 'process_program' ) if k in md ).items():
       path = os.path.join( path, self._formatPath( value ) )
       res = self.fc.createDirectory( path )
