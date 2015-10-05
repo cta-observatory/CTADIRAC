@@ -90,7 +90,6 @@ def runProd3( args = None ):
   
   # package and version
   job.setPackage('corsika_simhessarray')
-  # job.setVersion('2015-07-21')
   job.setVersion( '2015-08-18' )
 
   # layout, site, particle, pointing direction, zenith angle
@@ -110,6 +109,10 @@ def runProd3( args = None ):
 
   # set run number for TS submission: JOB_ID variable left for dynamic resolution during the Job. It corresponds to the Task_ID
   job.setRunNumber( '@{JOB_ID}' )
+
+  # Do not simulate SCTs
+  job.setNoSCTFlag(True)
+
   # # for WMS submission:
   #job.setRunNumber( '00000009' )
 

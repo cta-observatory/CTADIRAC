@@ -37,6 +37,7 @@ class Prod3MCJob( Job ) :
     self.particle='gamma'
     self.pointing_dir = 'South'
     self.zenith_angle = 20.
+    self.no_sct=True
     self.inputpath = 'Data/sim_telarray/cta-prod3/0.0deg'
     self.basepath = '/vo.cta.in2p3.fr/MC/PROD3/scratch'
 
@@ -139,6 +140,14 @@ class Prod3MCJob( Job ) :
     """
     self.zenith_angle = zenith
 
+  def setNoSCTFlag(self, no_sct):
+    """ Set the no sct flag to true or false
+
+    Parameters:
+    no_sct -- a bool set to true if you do not want to simulate SCTs
+    """
+    self.no_sct = no_sct
+
   def setupWorkflow(self, debug=False):
     """ Setup job workflow by defining the sequence of all executables
         All parameters shall have been defined before that method is called.
@@ -176,9 +185,12 @@ class Prod3MCJob( Job ) :
     csvStep['Value']['descr_short']='Verify the Corsika run'
     iStep += 1
 
-    # step 5  
+    # step 5
+    simtel_args='--start_run %s --run %s --layout %s' % ( self.start_run_number, self.run_number, self.array_layout )
+    if self.no_sct:
+        simtel_args+=' --no-sct 1' 
     stStep=self.setExecutable('./dirac_prod3_simtel',\
-                              arguments = '--start_run %s --run %s %s' % ( self.start_run_number, self.run_number, self.array_layout ), \
+                              arguments=simtel_args,\
                               logFile='Simtels_Log.txt')
     stStep['Value']['name']='Step%i_Simtel'%iStep
     stStep['Value']['descr_short']='Run 31 simtel_array configuration sequentially'
@@ -202,7 +214,7 @@ class Prod3MCJob( Job ) :
 
     # step 8
     mgStep=self.setExecutable('./dirac_prod3_merge',\
-                              arguments = '--start_run %s --run %s %s' % ( self.start_run_number, self.run_number, self.array_layout ), \
+                              arguments=simtel_args,\
                               logFile='Merging_Log.txt')
     mgStep['Value']['name']='Step%i_Merging'%iStep
     mgStep['Value']['descr_short']='Merge 31 simtel output into 5 data files and 3 tar balls for log files'
