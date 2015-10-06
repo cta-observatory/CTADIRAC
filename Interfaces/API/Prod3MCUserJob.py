@@ -60,7 +60,7 @@ class Prod3MCUserJob( Job ) :
     """
 
     self.workflow = Workflow()
-    self.executable = '$DIRACROOT/scripts/cta-prod3-corsika.py'
+    self.executable = '$DIRACROOT/scripts/cta-prod3-corsika'
     argumentStr = '%s %s %s' % ( self.package, self.version, self.input_card )
     self.setConfigArgs( argumentStr )
 
