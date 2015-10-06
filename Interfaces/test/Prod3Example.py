@@ -31,7 +31,6 @@ def submitTS( job ):
 
   ### Temporary fix to initialize JOB_ID and PRODUCTION_ID #######
   job.workflow.addParameter( Parameter( "JOB_ID", "000000", "string", "", "", True, False, "Temporary fix" ) )
-  job.workflow.addParameter( Parameter( "PRODUCTION_ID", "000000", "string", "", "", True, False, "Temporary fix" ) )
 
   t = Transformation()
   # t.setTransformationName( "Prod3Exemple" )  # This must be unique. If not set it's asked in the prompt
