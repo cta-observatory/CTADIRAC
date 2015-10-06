@@ -47,7 +47,7 @@ def setupSoftware( args ):
     arch = args[2]
 
   prod3swm = Prod3SoftwareManager()
-  # check where if Package is installed
+  # check where Package is installed
   res = prod3swm.checkSoftwarePackage( package, version, arch )
   if not res['OK']:
     res = prod3swm.installSoftwarePackage( package, version, arch )

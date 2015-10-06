@@ -69,7 +69,7 @@ class Prod3SoftwareManager(object) :
     tar.close()
     os.unlink( tarFile )
 
-    DIRAC.gLogger.notice( 'Package %s version %s installed successfully at:\n%s:' % ( package, version, installDir ) )
+    DIRAC.gLogger.notice( 'Package %s version %s installed successfully at:\n%s' % ( package, version, installDir ) )
 
     return DIRAC.S_OK( installDir )
 
