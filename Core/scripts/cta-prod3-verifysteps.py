@@ -149,17 +149,27 @@ def verify(args):
     Keyword arguments:
     args -- a list of arguments in order []
     """
-    stepType = args[0] 
+    # check command line
     res=None
+    if len(args)!=3:
+        res=DIRAC.S_ERROR()
+        res['Message'] = 'verify now requires nbFiles and fileSize as arguments'
+        return res
+
+    # now do something
+    stepType = args[0] 
+    nbFiles  = int(args[1])
+    fileSize = float(args[2])
+
     # What shall we verify ?
     if stepType == "corsika":
-        res=verifyCorsika()
+        res=verifyCorsika(nbFiles, fileSize)
     elif stepType == "simtel":
-        res=verifySimtel()
+        res=verifySimtel(nbFiles, fileSize)
     elif stepType == "merging":
-        res=verifyMerging()
+        res=verifyMerging(nbFiles, fileSize)
     elif stepType == "evndispinputs":
-        res = verifyEvnDispInputs()
+        res = verifyEvnDispInputs(fileSize)
     else:
         res=DIRAC.S_ERROR()
         res['Message'] = 'Do not know how to verify "%s"'% stepType

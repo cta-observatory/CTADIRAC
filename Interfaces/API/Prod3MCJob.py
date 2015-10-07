@@ -179,7 +179,7 @@ class Prod3MCJob( Job ) :
 
     # step 4  
     csvStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-verifysteps', \
-                              arguments='corsika',\
+                              arguments='corsika 6 100',\
                               logFile='Verify_Corsika_Log.txt')
     csvStep['Value']['name']='Step%i_VerifyCorsika'%iStep
     csvStep['Value']['descr_short']='Verify the Corsika run'
@@ -196,9 +196,14 @@ class Prod3MCJob( Job ) :
     stStep['Value']['descr_short']='Run 31 simtel_array configuration sequentially'
     iStep+=1
 
-    # step 6  
+    # step 6
+    verif_simtel_args='simtel'
+    if self.no_sct:
+        verif_simtel_args+=' 26 100' 
+    else:
+        verif_simtel_args+=' 31 100' 
     stvStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-verifysteps', \
-                              arguments='simtel',\
+                              arguments=verif_simtel_args,\
                               logFile='Verify_Simtel_Log.txt')
     stvStep['Value']['name']='Step%i_VerifySimtel'%iStep
     stvStep['Value']['descr_short']='Verify the 31 Simtel runs'
@@ -221,8 +226,13 @@ class Prod3MCJob( Job ) :
     iStep+=1
 
     # step 9
+    verif_merging_args='merging'
+    if self.no_sct:
+        verif_merging_args+=' 5 5000' 
+    else:
+        verif_merging_args+=' 10 5000' 
     mgvStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-verifysteps', \
-                              arguments='merging',\
+                              arguments=verif_merging_args,\
                               logFile='Verify_Merging_Log.txt')
     mgvStep['Value']['name']='Step%i_VerifyMerging'%iStep
     mgvStep['Value']['descr_short']='Verify the merging of Simtel files'
