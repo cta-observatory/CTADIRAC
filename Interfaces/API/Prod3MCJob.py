@@ -206,7 +206,7 @@ class Prod3MCJob( Job ) :
                               arguments=verif_simtel_args,\
                               logFile='Verify_Simtel_Log.txt')
     stvStep['Value']['name']='Step%i_VerifySimtel'%iStep
-    stvStep['Value']['descr_short']='Verify the 31 Simtel runs'
+    stvStep['Value']['descr_short'] = 'Verify the 26 or 31 Simtel runs'
     iStep += 1
 
     # step 7
