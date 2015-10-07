@@ -141,8 +141,9 @@ class EvnDisp3Job( Job ) :
     iStep+=1
 
     # step 2bis
+    # arguments are nbFiles=0 (not used) and fileSize=100kB
     eivStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-verifysteps', \
-                              arguments = 'evndispinputs', \
+                              arguments = 'evndispinputs 0 100', \
                               logFile = 'Verify_EvnDispInputs_Log.txt' )
     eivStep['Value']['name'] = 'Step%i_VerifyEvnDispInputs' % iStep
     eivStep['Value']['descr_short'] = 'Verify EvnDisp Inputs'
