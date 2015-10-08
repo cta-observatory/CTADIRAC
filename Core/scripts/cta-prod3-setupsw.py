@@ -32,7 +32,6 @@ def setupSoftware( args ):
     Keyword arguments:
     args -- a list of arguments in order [package, version, arch]
   """
-  # return DIRAC.S_ERROR( 'TEST ERROR' )
   # check number of arguments
   if len( args ) not in [2, 3]:
     Script.gLogger.notice()
@@ -46,8 +45,8 @@ def setupSoftware( args ):
   if len( args ) == 3:
     arch = args[2]
 
-  prod3swm = Prod3SoftwareManager()
-  # check where Package is installed
+  prod3swm = Prod3SoftwareManager( soft_category = {package:"simulations"} )
+  # check if and where Package is installed
   res = prod3swm.checkSoftwarePackage( package, version, arch )
   if not res['OK']:
     res = prod3swm.installSoftwarePackage( package, version, arch )
@@ -70,8 +69,6 @@ def setupSoftware( args ):
 
 ####################################################
 if __name__ == '__main__':
-  
-  DIRAC.gLogger.setLevel('VERBOSE')
   args = Script.getPositionalArgs()
   try:
     res = setupSoftware( args )

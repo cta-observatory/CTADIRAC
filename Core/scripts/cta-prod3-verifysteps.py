@@ -121,13 +121,13 @@ def verifyMerging(nbFiles=10, minSize=5000.):
             
     return DIRAC.S_OK()
 
-def verifyEvnDispInputs( minSize = 50. ):
-    """ Verify a EvnDisp input files
+def verifyAnalysisInputs( minSize = 50. ):
+    """ Verify input files for analysis
 
     Keyword arguments:
     minSize -- minimum file size
     """
-    DIRAC.gLogger.info( 'Verifying EvnDispInputs step' )
+    DIRAC.gLogger.info( 'Verifying AnalysisInputs step' )
 
     # get list of output files
     outputFiles = glob.glob( './*simtel.gz' )
@@ -168,7 +168,7 @@ def verify(args):
         res=verifySimtel(nbFiles, fileSize)
     elif stepType == "merging":
         res=verifyMerging(nbFiles, fileSize)
-    elif stepType == "evndispinputs":
+    elif stepType == "analysisinputs":
         res = verifyEvnDispInputs(fileSize)
     else:
         res=DIRAC.S_ERROR()

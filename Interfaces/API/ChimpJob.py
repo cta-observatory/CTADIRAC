@@ -36,8 +36,8 @@ class ChimpJob( Job ) :
     # self.calibration_file = 'prod3.peds.20150820.dst.root'
     # self.reconstructionparameter = 'EVNDISP.prod3.reconstruction.runparameter.NN'
     # self.NNcleaninginputcard = 'EVNDISP.NNcleaning.dat'
-    self.inputpath = './'  ### Update for evndisp!!!
     self.basepath = '/vo.cta.in2p3.fr/MC/PROD3/'
+    self.outputpattern = './*.root'
     self.fcc = FileCatalogClient()
     self.metadata = collections.OrderedDict()
     self.filemetadata = {}
@@ -67,7 +67,7 @@ class ChimpJob( Job ) :
     """
     self.NNcleaninginputcard = NNcleaninginputcard'''
     
-  def setChimpMD( self, path ):
+  def setMD( self, path ):
     """ Set chimp meta data starting from path metadata
     
     Parameters:
@@ -100,7 +100,7 @@ class ChimpJob( Job ) :
         iStep+=1
       
     # step 2  
-    swStep = self.setExecutable( '$DIRACROOT/scripts/cta-chimp-setupsw',
+    swStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-setupsw',
                               arguments='%s %s'% (self.package, self.version),\
                               logFile='SetupSoftware_Log.txt')
     swStep['Value']['name'] = 'Step%i_SetupSoftware' % iStep
@@ -117,9 +117,7 @@ class ChimpJob( Job ) :
     iStep += 1
 
     # step 3
-    "chimp gamma_20deg_180deg_run100___cta-prod3-merged_desert-2150m--subarray-1-nosct.simtel.gz   -100.   ./   0   -staroutput"
-
-    evStep = self.setExecutable( './dirac_chimp', \
+    evStep = self.setExecutable( './dirac_prod3_chimp', \
                                 arguments = '%s %s %s %s' % ( self.par1, self.par2, self.par3, self.par4 ),
                                 logFile = 'Chimp_Log.txt' )
     evStep['Value']['name'] = 'Step%i_Chimp' % iStep
@@ -138,7 +136,7 @@ class ChimpJob( Job ) :
     fmdjson = json.dumps( self.filemetadata )
 
     dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-chimp-managedata.py',
-                              arguments = "'%s' '%s' '%s' %s %s %s" % ( mdjson, mdfieldjson, fmdjson, self.inputpath, self.basepath, self.jobGroupID ),
+                              arguments = "'%s' '%s' '%s' %s %s %s" % ( mdjson, mdfieldjson, fmdjson, self.basepath, self.outputpattern, self.package ),
                               logFile = 'DataManagement_Log.txt' )
     dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
     dmStep['Value']['descr_short'] = 'Save files to SE and register them in DFC'

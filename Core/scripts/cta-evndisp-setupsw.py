@@ -16,9 +16,9 @@ Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      'Usage:',
                                      '  %s package version (arch)' % Script.scriptName,
                                      'Arguments:',
-                                     '  package: corsika_simhessarray',
-                                     '  version: 2015-06-02',
-                                     '\ne.g: %s corsika_simhessarray 2015-06-02'% Script.scriptName,
+                                     '  package: evndisplay',
+                                     '  version: 2015-xx-xx',
+                                     '\ne.g: %s evndisplay 2015-xx-xx' % Script.scriptName,
                                      ] ) )
 
 Script.parseCommandLine()
@@ -32,7 +32,6 @@ def setupSoftware( args ):
     Keyword arguments:
     args -- a list of arguments in order [package, version, arch]
   """
-  # return DIRAC.S_ERROR( 'TEST ERROR' )
   # check number of arguments
   if len( args ) not in [2, 3]:
     Script.gLogger.notice()
@@ -47,7 +46,7 @@ def setupSoftware( args ):
     arch = args[2]
 
   prod3swm = Prod3SoftwareManager( soft_category = {"evndisplay":"simulations"} )
-  # check where if Package is installed
+  # check if Package is installed
   res = prod3swm.checkSoftwarePackage( package, version, arch )
   if not res['OK']:
     res = prod3swm.installSoftwarePackage( package, version, arch )
@@ -70,8 +69,6 @@ def setupSoftware( args ):
 
 ####################################################
 if __name__ == '__main__':
-  
-  DIRAC.gLogger.setLevel('VERBOSE')
   args = Script.getPositionalArgs()
   try:
     res = setupSoftware( args )

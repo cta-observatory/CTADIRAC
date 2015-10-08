@@ -33,7 +33,7 @@ class EvnDisp3Job( Job ) :
     self.calibration_file = 'prod3.peds.20150820.dst.root'
     self.reconstructionparameter = 'EVNDISP.prod3.reconstruction.runparameter.NN'
     self.NNcleaninginputcard = 'EVNDISP.NNcleaning.dat'
-    self.inputpath = './'  ### Update for evndisp!!!
+    self.inputpath = './'
     self.basepath = '/vo.cta.in2p3.fr/MC/PROD3/'
     self.fcc = FileCatalogClient()
     self.metadata = collections.OrderedDict()
@@ -133,7 +133,7 @@ class EvnDisp3Job( Job ) :
         iStep+=1
       
     # step 2  
-    swStep = self.setExecutable( '$DIRACROOT/scripts/cta-evndisp-setupsw',
+    swStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-setupsw',
                               arguments='%s %s'% (self.package, self.version),\
                               logFile='SetupSoftware_Log.txt')
     swStep['Value']['name'] = 'Step%i_SetupSoftware' % iStep
@@ -143,7 +143,7 @@ class EvnDisp3Job( Job ) :
     # step 2bis
     # arguments are nbFiles=0 (not used) and fileSize=100kB
     eivStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-verifysteps', \
-                              arguments = 'evndispinputs 0 100', \
+                              arguments = 'analysisinputs 0 100', \
                               logFile = 'Verify_EvnDispInputs_Log.txt' )
     eivStep['Value']['name'] = 'Step%i_VerifyEvnDispInputs' % iStep
     eivStep['Value']['descr_short'] = 'Verify EvnDisp Inputs'

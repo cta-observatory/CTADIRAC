@@ -12,15 +12,6 @@ import os, glob, json
 # DIRAC imports
 import DIRAC
 from DIRAC.Core.Base import Script
- 
-Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
-                                     'Usage:',
-                                     '  %s one two' % Script.scriptName,
-                                     'Arguments:',
-                                     '  one: one',
-                                     '\ne.g: %s ?' % Script.scriptName
-                                     ] ) )
-
 Script.parseCommandLine()
 
 # Specific DIRAC imports
@@ -86,8 +77,6 @@ def putAndRegisterPROD3(args):
 
 ####################################################
 if __name__ == '__main__':
-  
-  DIRAC.gLogger.setLevel('VERBOSE')
   args = Script.getPositionalArgs()
   try:    
     res = putAndRegisterPROD3( args )
