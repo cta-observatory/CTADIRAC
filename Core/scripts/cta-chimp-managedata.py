@@ -17,6 +17,13 @@ Script.parseCommandLine()
 # Specific DIRAC imports
 from CTADIRAC.Core.Workflow.Modules.Prod3DataManager import Prod3DataManager
 
+def getRunNumber( filename, package ):
+  if package == 'chimp':
+    run_number = filename.split( 'run' )[1].split( '___cta' )[0]
+  if package == 'evndisplay':
+    run_number = filename.split( '-' )[0]
+  return run_number
+
 ####################################################
 def putAndRegisterPROD3( args ):
     """ simple wrapper to put and register all analysis files
@@ -52,7 +59,7 @@ def putAndRegisterPROD3( args ):
 
     for localfile in glob.glob( outputpattern ):
       filename = os.path.basename( localfile )
-      run_number = filename.split( '-' )[0]
+      run_number = getRunNumber( filename, package )
       runpath = prod3dm._getRunPath( run_number )
       lfn = os.path.join( path, 'Data', runpath, filename )
       res = prod3dm.putAndRegister( lfn, localfile, filemetadata, package )
