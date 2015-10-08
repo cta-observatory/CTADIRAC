@@ -163,7 +163,8 @@ class Prod3DataManager(object) :
 
     path = basepath
     process_program = program_category + '_prog'
-    for key, value in dict( ( k, md[k] ) for k in ( 'site', 'particle', process_program ) if k in md ).items():
+    # for key, value in dict( ( k, md[k] ) for k in ( 'site', 'particle', process_program ) if k in md ).items():
+    for key, value in collections.OrderedDict( ( k, md[k] ) for k in ( 'site', 'particle', process_program ) if k in md ).items():
       path = os.path.join( path, self._formatPath( value ) )
       res = self.fc.createDirectory( path )
       if not res['OK']:
