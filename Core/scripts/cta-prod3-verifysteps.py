@@ -169,7 +169,7 @@ def verify(args):
     elif stepType == "merging":
         res=verifyMerging(nbFiles, fileSize)
     elif stepType == "analysisinputs":
-        res = verifyEvnDispInputs(fileSize)
+        res = verifyAnalysisInputs( fileSize )
     else:
         res=DIRAC.S_ERROR()
         res['Message'] = 'Do not know how to verify "%s"'% stepType

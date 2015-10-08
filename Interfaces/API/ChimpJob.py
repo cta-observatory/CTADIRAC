@@ -32,10 +32,6 @@ class ChimpJob( Job ) :
     self.par2 = './'
     self.par3 = '0'
     self.par4 = '-staroutput'
-    # self.telescopetype_combination_list = 'FA NA FG NG FD ND'
-    # self.calibration_file = 'prod3.peds.20150820.dst.root'
-    # self.reconstructionparameter = 'EVNDISP.prod3.reconstruction.runparameter.NN'
-    # self.NNcleaninginputcard = 'EVNDISP.NNcleaning.dat'
     self.basepath = '/vo.cta.in2p3.fr/MC/PROD3/'
     self.outputpattern = './*.root'
     self.fcc = FileCatalogClient()
@@ -58,14 +54,6 @@ class ChimpJob( Job ) :
     version -- chimp package version number
     """
     self.version=version
-    
-  '''def setNNcleaninginputcard( self, NNcleaninginputcard ):
-    """ Set the cleaning inputcard
-    
-    Parameters:
-    NNcleaninginputcard -- cleaning inputcard
-    """
-    self.NNcleaninginputcard = NNcleaninginputcard'''
     
   def setMD( self, path ):
     """ Set chimp meta data starting from path metadata
@@ -90,7 +78,6 @@ class ChimpJob( Job ) :
     """ Setup job workflow by defining the sequence of all executables
         All parameters shall have been defined before that method is called.
     """
-
     # step 1 -- to be removed -- debug only
     iStep = 1
     if debug:

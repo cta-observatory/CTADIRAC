@@ -21,6 +21,7 @@ from DIRAC.Interfaces.API.Dirac import Dirac
 
 def submitTS( job, infileList ):
   """ Create a transformation executing the job workflow  """
+  job.workflow.addParameter( Parameter( "PRODUCTION_ID", "000000", "string", "", "", True, False, "Temporary fix" ) )
   t = Transformation()
   tc = TransformationClient()
   t.setType( "DataReprocessing" )
