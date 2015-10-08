@@ -53,7 +53,8 @@ def putAndRegisterPROD3(args):
     fmdjson = json.dumps( fmd )
 
     # ## Get the run directory
-    runpath = prod3dm._getRunPath( fmdjson )
+    # runpath = prod3dm._getRunPath( fmdjson )
+    runpath = prod3dm._getRunPath( fmd )
 
     for localfile in glob.glob( datadir ):
       filename = os.path.basename( localfile )
