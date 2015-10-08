@@ -91,8 +91,8 @@ class Prod3DataManager(object) :
         filemetadata can be a dict or the run_number itself
     """
     # fmd = json.loads( filemetadata )
-    if type( fmd ) == type( dict() ):
-      run_number = int( fmd['runNumber'] )
+    if type( filemetadata ) == type( dict() ):
+      run_number = int( filemetadata['runNumber'] )
     else:
       run_number = int( filemetadata )
     run_numberMod = run_number % 1000
