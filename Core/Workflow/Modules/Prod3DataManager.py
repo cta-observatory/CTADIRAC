@@ -90,7 +90,7 @@ class Prod3DataManager(object) :
         run_number is taken from filemetadata
         filemetadata can be a dict or the run_number itself
     """
-    fmd = json.loads( filemetadata )
+    # fmd = json.loads( filemetadata )
     if type( fmd ) == type( dict() ):
       run_number = int( fmd['runNumber'] )
     else:
