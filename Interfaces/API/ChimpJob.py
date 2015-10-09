@@ -1,5 +1,5 @@
 """
-  Simple Wrapper on the Job class to handle Chimp Analysis
+  Simple Wrapper on the Job class to handle Mars Analysis
 """
 
 __RCSID__ = "$Id$"
@@ -12,8 +12,8 @@ from DIRAC.Interfaces.API.Job import Job
 from DIRAC.Resources.Catalog.FileCatalogClient import FileCatalogClient
 
 class ChimpJob( Job ) :
-  """ Job extension class for Chimp Analysis,
-      takes care of running chimp converter
+  """ Job extension class for Mars Analysis,
+      takes care of running mars applications
   """
         
   def __init__( self, cpuTime = 432000 ):
@@ -25,13 +25,13 @@ class ChimpJob( Job ) :
     Job.__init__( self )
     self.setCPUTime( cpuTime )
     # defaults
-    self.setName( 'Chimp_Analysis' )
+    self.setName( 'Mars_Analysis' )
     self.package = 'chimp'
     self.version = 'prod3_xxx'
-    self.par1 = '-100.'
-    self.par2 = './'
-    self.par3 = '0'
-    self.par4 = '-staroutput'
+    self.PixelRequiredPhes = '-100.'
+    self.outdir = './'
+    self.MuonMode = '0'
+    self.StarOutput = '-staroutput'
     self.basepath = '/vo.cta.in2p3.fr/MC/PROD3/'
     self.outputpattern = './*.root'
     self.fcc = FileCatalogClient()
@@ -105,7 +105,8 @@ class ChimpJob( Job ) :
 
     # step 3
     evStep = self.setExecutable( './dirac_prod3_chimp', \
-                                arguments = '%s %s %s %s' % ( self.par1, self.par2, self.par3, self.par4 ),
+                                # arguments = '%s %s %s %s' % ( self.par1, self.par2, self.par3, self.par4 ),
+                                arguments = '%s %s %s %s' % ( self.PixelRequiredPhes, self.outdir, self.MuonMode, self.StarOutput ),
                                 logFile = 'Chimp_Log.txt' )
     evStep['Value']['name'] = 'Step%i_Chimp' % iStep
     evStep['Value']['descr_short'] = 'Run Chimp'
@@ -122,8 +123,8 @@ class ChimpJob( Job ) :
 
     fmdjson = json.dumps( self.filemetadata )
 
-    dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-chimp-managedata.py',
-                              arguments = "'%s' '%s' '%s' %s %s %s" % ( mdjson, mdfieldjson, fmdjson, self.basepath, self.outputpattern, self.package ),
+    dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
+                              arguments = "'%s' '%s' '%s' %s '%s' %s" % ( mdjson, mdfieldjson, fmdjson, self.basepath, self.outputpattern, self.package ),
                               logFile = 'DataManagement_Log.txt' )
     dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
     dmStep['Value']['descr_short'] = 'Save files to SE and register them in DFC'

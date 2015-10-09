@@ -33,8 +33,8 @@ class EvnDisp3Job( Job ) :
     self.calibration_file = 'prod3.peds.20150820.dst.root'
     self.reconstructionparameter = 'EVNDISP.prod3.reconstruction.runparameter.NN'
     self.NNcleaninginputcard = 'EVNDISP.NNcleaning.dat'
-    self.inputpath = './'
     self.basepath = '/vo.cta.in2p3.fr/MC/PROD3/'
+    self.outputpattern = './*.root'
     self.fcc = FileCatalogClient()
     self.metadata = collections.OrderedDict()
     self.filemetadata = {}
@@ -168,8 +168,8 @@ class EvnDisp3Job( Job ) :
 
     fmdjson = json.dumps( self.filemetadata )
 
-    dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-evndisp-managedata.py',
-                              arguments = "'%s' '%s' '%s' %s %s %s" % ( mdjson, mdfieldjson, fmdjson, self.inputpath, self.basepath, self.jobGroupID ),
+    dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
+                              arguments = "'%s' '%s' '%s' %s '%s' %s" % ( mdjson, mdfieldjson, fmdjson, self.basepath, self.outputpattern, self.package ),
                               logFile = 'DataManagement_Log.txt' )
     dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
     dmStep['Value']['descr_short'] = 'Save files to SE and register them in DFC'
