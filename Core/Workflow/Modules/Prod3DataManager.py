@@ -176,11 +176,10 @@ class Prod3DataManager(object) :
         return res
 
     # # Add also process_program_version MD
-    process_program_version = process_program + '_version'
-    res = self.fcc.setMetadata( path, {process_program_version:md[process_program_version]} )
+    # process_program_version = process_program + '_version'
+    # res = self.fcc.setMetadata( path, {process_program_version:md[process_program_version]} )
 
     # Create the TransformationID subdir and set MD
-
     # ## Get the TransformationID
     if os.environ.has_key( 'JOBID' ):
       jobID = os.environ['JOBID']
@@ -196,7 +195,9 @@ class Prod3DataManager(object) :
     res = self.fc.createDirectory( path )
     if not res['OK']:
       return res
-    res = self.fcc.setMetadata( path, dict( ( k, md[k] ) for k in ( 'phiP', 'thetaP', 'array_layout' ) if k in md ) )
+    # res = self.fcc.setMetadata( path, dict( ( k, md[k] ) for k in ( 'phiP', 'thetaP', 'array_layout' ) if k in md ) )
+    process_program_version = process_program + '_version'
+    res = self.fcc.setMetadata( path, dict( ( k, md[k] ) for k in ( 'phiP', 'thetaP', 'array_layout', process_program_version ) if k in md ) )
     if not res['OK']:
       return res
 
