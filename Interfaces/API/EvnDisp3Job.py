@@ -34,7 +34,7 @@ class EvnDisp3Job( Job ) :
     self.reconstructionparameter = 'EVNDISP.prod3.reconstruction.runparameter.NN'
     self.NNcleaninginputcard = 'EVNDISP.NNcleaning.dat'
     self.basepath = '/vo.cta.in2p3.fr/MC/PROD3/'
-    self.outputpattern = './*.root'
+    self.outputpattern = './*evndisp.tar.gz'
     self.fcc = FileCatalogClient()
     self.metadata = collections.OrderedDict()
     self.filemetadata = {}
