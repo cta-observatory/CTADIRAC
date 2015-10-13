@@ -6,9 +6,6 @@ __RCSID__ = "$Id$"
 
 from DIRAC.Interfaces.API.Job import Job
 from DIRAC.Core.Workflow.Workflow                   import Workflow
-#####################
-from CTADIRAC.Core.Utilities import SoftwareInstallation
-import os
 
 class EvnDispJob( Job ) :
 
