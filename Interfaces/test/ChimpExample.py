@@ -7,7 +7,6 @@ Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      '  %s mode infile' % Script.scriptName,
                                      'Arguments:',
                                      '  infile: ascii file with input files LFNs',
-                                     '  mode: WMS, TS (default)',
                                      '\ne.g: %s Paranal_gamma_North.list TS' % Script.scriptName,
                                      ] ) )
 
@@ -42,25 +41,6 @@ def submitTS( job, infileList ):
 
   return res
 
-def submitWMS( job, infileList, nbFileperJob ):
-  """ Submit the job locally or to the WMS  """
-
-  dirac = Dirac()
-  res = Dirac().splitInputData( infileList, nbFileperJob )
-  if not res['OK']:
-    Script.gLogger.error( 'Failed to splitInputData' )
-    DIRAC.exit( -1 )
-
-  job.setGenericParametricInput( res['Value'] )
-  job.setInputData( '%s' )
-
-  job.setJobGroup( 'proton-partx09' )
-
-  res = dirac.submit( job )
-
-  Script.gLogger.info( 'Submission Result: ', res['Value'] )
-  return res
-
 #########################################################
 
 def runChimp( args = None ):
@@ -80,11 +60,6 @@ def runChimp( args = None ):
     if line != "\n":
       infileList.append( infile )
 
-  if len( args ) == 1:
-    mode = 'TS'
-  else:
-    mode = args[1]
-
 ##################################
   job = ChimpJob( cpuTime = 432000 )  # to be adjusted!!
 
@@ -103,12 +78,7 @@ def runChimp( args = None ):
   # add the sequence of executables
   job.setupWorkflow()
 
-  if mode == 'TS':
-    res = submitTS( job, infileList )
-  elif mode == 'WMS':
-    res = submitWMS( job, infileList, 10 )
-  else:
-    Script.showHelp()
+  res = submitTS( job, infileList )
     
   return res
 
@@ -116,7 +86,7 @@ def runChimp( args = None ):
 if __name__ == '__main__':
 
   args = Script.getPositionalArgs()
-  if ( len( args ) < 1):
+  if ( len( args ) != 1 ):
     Script.showHelp()
   try:
     res = runChimp( args )

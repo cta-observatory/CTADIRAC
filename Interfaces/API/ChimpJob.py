@@ -105,7 +105,6 @@ class ChimpJob( Job ) :
 
     # step 3
     evStep = self.setExecutable( './dirac_prod3_chimp', \
-                                # arguments = '%s %s %s %s' % ( self.par1, self.par2, self.par3, self.par4 ),
                                 arguments = '%s %s %s %s' % ( self.PixelRequiredPhes, self.outdir, self.MuonMode, self.StarOutput ),
                                 logFile = 'Chimp_Log.txt' )
     evStep['Value']['name'] = 'Step%i_Chimp' % iStep
