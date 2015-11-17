@@ -32,8 +32,10 @@ class MarsJob( Job ) :
     self.outdir = './'
     self.MuonMode = '0'
     self.StarOutput = '-staroutput'
+#    self.training_type = 'point-like' # or diffuse
+    self.training_type = 'diffuse'
     self.basepath = '/vo.cta.in2p3.fr/MC/PROD3/'
-    self.outputpattern = './*.root'
+    self.outputpattern = './stereo_All/*.root'
     self.fcc = FileCatalogClient()
     self.metadata = collections.OrderedDict()
     self.filemetadata = {}
@@ -71,7 +73,7 @@ class MarsJob( Job ) :
     self.metadata['particle'] = simtelMD['particle']
     self.metadata['phiP'] = simtelMD['phiP']
     self.metadata['thetaP'] = simtelMD['thetaP']
-    self.metadata['analysis_prog'] = self.package
+    self.metadata['analysis_prog'] = 'ctastereo'
     self.metadata['analysis_prog_version'] = self.version
 
   def setupWorkflow(self, debug=False):
@@ -104,15 +106,16 @@ class MarsJob( Job ) :
     iStep += 1
 
     # step 3
-    '''chStep = self.setExecutable( './dirac_prod3_chimp', \
+    chStep = self.setExecutable( './dirac_prod3_chimp', \
                                 arguments = '%s %s %s %s' % ( self.PixelRequiredPhes, self.outdir, self.MuonMode, self.StarOutput ),
                                 logFile = 'Chimp_Log.txt' )
     chStep['Value']['name'] = 'Step%i_Chimp' % iStep
     chStep['Value']['descr_short'] = 'Run Chimp'
-    iStep += 1'''
+    iStep += 1
 
     # step 3b
-    ctastStep = self.setExecutable( './dirac_prod3_stereo', \
+    ctastStep = self.setExecutable( './dirac_prod3_ctastereo', \
+                                arguments = '--training_type %s' % ( self.training_type),
                                 logFile = 'CTAstereo_Log.txt' )
     ctastStep['Value']['name'] = 'Step%i_CTAstereo' % iStep
     ctastStep['Value']['descr_short'] = 'Run CTAstereo'
