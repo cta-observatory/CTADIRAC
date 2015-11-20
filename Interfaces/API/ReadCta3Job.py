@@ -51,7 +51,7 @@ class ReadCta3Job( Job ) :
     """
     self.version=version
     
-  def setReadCTAMD( self, path ):
+  def setReadCtaMD( self, path ):
     """ Set read_cta meta data starting from path metadata
     
     Parameters:
