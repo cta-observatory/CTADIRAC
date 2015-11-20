@@ -69,8 +69,7 @@ def runMars( args = None ):
   # package and version
   job.setPackage( 'mars' )
   job.setVersion( '2015-10-22' )
-  #job.setVersion( 'test' )
-  
+
   # set Meta data
   job.setMD( infileList[0] )
 
