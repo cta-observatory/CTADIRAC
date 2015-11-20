@@ -25,7 +25,7 @@ class ReadCta3Job( Job ) :
     Job.__init__( self )
     self.setCPUTime( cpuTime )
     # defaults
-    self.setName('Read_Cta_Analysis')
+    self.setName('ReadCta_Analysis')
     self.package='corsika_simhessarray'
     self.version = '2015-10-20'
     self.basepath = '/vo.cta.in2p3.fr/MC/PROD3/'

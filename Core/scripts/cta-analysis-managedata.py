@@ -18,7 +18,7 @@ Script.parseCommandLine()
 from CTADIRAC.Core.Workflow.Modules.Prod3DataManager import Prod3DataManager
 
 def getRunNumber( filename, package ):
-  if package in ['chimp', 'mars']:
+  if package in ['chimp', 'mars', 'corsika_simhessarray']:
     run_number = filename.split( 'run' )[1].split( '___cta' )[0]
   if package == 'evndisplay':
     run_number = filename.split( '-' )[0]
