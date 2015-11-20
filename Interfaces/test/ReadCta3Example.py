@@ -64,7 +64,6 @@ def runReadCta3( args = None ):
   job = ReadCta3Job(cpuTime = 432000)  # to be adjusted!!
 
   ### Main Script ###
-  # override for testing
   job.setName( 'ReadCta3Test' )
 
   # package and version
@@ -74,26 +73,13 @@ def runReadCta3( args = None ):
   # set ReadCta Meta data
   job.setReadCtaMD( infileList[0] )
 
-  # # set layout and telescope combination
-  job.setLayoutList( "3HB1 3HB2 3HB3 3HD1 3HD2 3HI1" )
-  job.setTelescopetypeCombinationList( "FA NA FG NG FD ND" )
-  #  set calibration file and parameters file
-  job.setCalibrationFile( 'prod3.peds.20150820.dst.root' )
-  job.setReconstructionParameter( 'EVNDISP.prod3.reconstruction.runparameter.NN' )
-  job.setNNcleaninginputcard( 'EVNDISP.NNcleaning.dat' )
-
-
   job.setOutputSandbox( ['*Log.txt'] )
 
   # add the sequence of executables
   job.setupWorkflow()
 
-  if mode == 'TS':
-    res = submitTS( job, infileList )
-  elif mode == 'WMS':
-    res = submitWMS( job, infileList, 10 )
-  else:
-    Script.showHelp()
+  # submit to the Transformation System
+  res = submitTS( job, infileList )
 
   # debug
     #Script.gLogger.info( job.workflow )
@@ -107,7 +93,7 @@ if __name__ == '__main__':
   if ( len( args ) < 1):
     Script.showHelp()
   try:
-    res = runEvnDisp3( args )
+    res = runReadCta3( args )
     if not res['OK']:
       DIRAC.gLogger.error ( res['Message'] )
       DIRAC.exit( -1 )
