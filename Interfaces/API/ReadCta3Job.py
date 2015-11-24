@@ -28,7 +28,7 @@ class ReadCta3Job( Job ) :
     self.setName('ReadCta_Analysis')
     self.package='corsika_simhessarray'
     self.version = '2015-10-20'
-    self.basepath = '/vo.cta.in2p3.fr/user/a/arrabito/MC/PROD3/'
+    self.basepath = '/vo.cta.in2p3.fr/MC/PROD3/'
     self.outputpattern = './*simtel-dst0.gz'
     self.fcc = FileCatalogClient()
     self.metadata = collections.OrderedDict()
