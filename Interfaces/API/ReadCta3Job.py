@@ -29,7 +29,7 @@ class ReadCta3Job( Job ) :
     self.package='corsika_simhessarray'
     self.version = '2015-10-20'
     self.basepath = '/vo.cta.in2p3.fr/MC/PROD3/'
-    self.outputpattern = './*dst.gz'
+    self.outputpattern = './*simtel-dst0.gz'
     self.fcc = FileCatalogClient()
     self.metadata = collections.OrderedDict()
     self.filemetadata = {}
@@ -96,17 +96,17 @@ class ReadCta3Job( Job ) :
     # arguments are nbFiles=0 (not used) and fileSize=100kB
     inStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-verifysteps', \
                               arguments = 'analysisinputs 0 100', \
-                              logFile = 'Verify_EvnDispInputs_Log.txt' )
-    inStep['Value']['name'] = 'Step%i_VerifyEvnDispInputs' % iStep
-    inStep['Value']['descr_short'] = 'Verify EvnDisp Inputs'
+                              logFile = 'Verify_ReadCtaInputs_Log.txt' )
+    inStep['Value']['name'] = 'Step%i_VerifyReadCtaInputs' % iStep
+    inStep['Value']['descr_short'] = 'Verify ReadCta Inputs'
     iStep += 1
 
     # step 3
+    res = DIRAC.sourceEnv(600, ['prod3_types'], {} )
+    read_cta_opts=res['outputEnv']['read_cta_opts']
+
     rctaStep = self.setExecutable( './dirac_prod3_read_cta', \
-                                arguments = "-q --dst-level 0 --only-telescopes 1-7,73-90,103-109,279-284,297-338,393,400-423 --integration-scheme 4 \
-                                --type 1,1,7 --integration-window 7,3 \
-                                --type 2,73,109 --integration-window 14,6 \
-                                --type 3,279,423 --integration-window 12,5", \
+                                   arguments = "-q -r 4 -u --min-trg-tel 2 %s" % (read_cta_opts),
                                 logFile = 'ReadCta_Log.txt' )
     rctaStep['Value']['name'] = 'Step%i_ReadCta' % iStep
     rctaStep['Value']['descr_short'] = 'Run ReadCta'
@@ -123,8 +123,19 @@ class ReadCta3Job( Job ) :
 
     fmdjson = json.dumps( self.filemetadata )
 
+    ## Upload Data files
     dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s" % ( mdjson, mdfieldjson, fmdjson, self.basepath, self.outputpattern, self.package ),
+                              logFile = 'DataManagement_Log.txt' )
+    dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
+    dmStep['Value']['descr_short'] = 'Save files to SE and register them in DFC'
+    iStep += 1
+
+    # Upload Histogram files and use 'Log' as outputType
+    self.outputpattern = './*hdata-dst0.gz'
+
+    dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
+                              arguments = "'%s' '%s' '%s' %s '%s' %s %s" % ( mdjson, mdfieldjson, fmdjson, self.basepath, self.outputpattern, self.package, 'Log'),
                               logFile = 'DataManagement_Log.txt' )
     dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
     dmStep['Value']['descr_short'] = 'Save files to SE and register them in DFC'
