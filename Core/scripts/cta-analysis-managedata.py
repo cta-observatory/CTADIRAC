@@ -37,7 +37,7 @@ def putAndRegisterPROD3( args ):
     basepath = args[3]
     outputpattern = args[4]
     package = args[5]
-    if len(args==6):
+    if len(args)==6:
       outputType='Data'
     else:
       outputType='Log'
