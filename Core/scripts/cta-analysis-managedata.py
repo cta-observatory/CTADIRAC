@@ -37,16 +37,17 @@ def putAndRegisterPROD3( args ):
     basepath = args[3]
     outputpattern = args[4]
     package = args[5]
-
-    if len( args ) == 7:
-      jobGroupID = args[6]
+    if len(args==6):
+      outputType='Data'
     else:
-      jobGroupID = -1
+      outputType='Log'
+
+
     catalogs = ['DIRACFileCatalog']
 
     # # Create MD structure
     prod3dm = Prod3DataManager( catalogs )
-    res = prod3dm.createMDStructure( metadata, metadatafield, basepath, 'analysis', jobGroupID )
+    res = prod3dm.createMDStructure( metadata, metadatafield, basepath, 'analysis')
     if res['OK']:
       path = res['Value']
     else:
@@ -61,7 +62,8 @@ def putAndRegisterPROD3( args ):
       filename = os.path.basename( localfile )
       run_number = getRunNumber( filename, package )
       runpath = prod3dm._getRunPath( run_number )
-      lfn = os.path.join( path, 'Data', runpath, filename )
+      #lfn = os.path.join( path, 'Data', runpath, filename )
+      lfn = os.path.join( path, outputType, runpath, filename )
       res = prod3dm.putAndRegister( lfn, localfile, filemetadata, package )
       if not res['OK']:
         return res

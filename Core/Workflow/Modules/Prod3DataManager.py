@@ -90,7 +90,6 @@ class Prod3DataManager(object) :
         run_number is taken from filemetadata
         filemetadata can be a dict or the run_number itself
     """
-    # fmd = json.loads( filemetadata )
     if type( filemetadata ) == type( dict() ):
       run_number = int( filemetadata['runNumber'] )
     else:
@@ -105,28 +104,6 @@ class Prod3DataManager(object) :
     if type( path ) == float or type( path ) == int:
       path = '%.1f' % path
     return str( path )
-
-# ## to be fixed...
-  def _getInputData( self, run_number ):
-    """ get InputData
-    """
-    # ## Get InputData
-    if os.environ.has_key( 'JOBID' ):
-      jobID = os.environ['JOBID']
-      dirac = Dirac()
-      res = dirac.getJobJDL( jobID )
-      InputData = res['Value']['InputData']
-      for lfn in InputData:
-        if run_number in lfn:
-          return lfn
-
-# ## to be fixed...
-  def _setInputDataAsProcessed( self, run_number ):
-    """ mark inputdata as 'processed'
-    """
-    lfn = self._getInputData( run_number )
-    res = self.fcc.setMetadata( lfn, {'processed':'True'} )
-    return res
 
   def createTarLogFiles ( self, inputpath, tarname ):
     """ create tar of log and histogram files
@@ -148,7 +125,7 @@ class Prod3DataManager(object) :
 
     return DIRAC.S_OK()
 
-  def createMDStructure( self, metadata, metadatafield, basepath, program_category, jobGroupID = 0 ):
+  def createMDStructure( self, metadata, metadatafield, basepath, program_category ):
     """ create meta data structure
     """
     # ## Add metadata fields to the DFC
@@ -163,7 +140,6 @@ class Prod3DataManager(object) :
 
     path = basepath
     process_program = program_category + '_prog'
-    # for key, value in dict( ( k, md[k] ) for k in ( 'site', 'particle', process_program ) if k in md ).items():
     for key, value in collections.OrderedDict( ( k, md[k] ) for k in ( 'site', 'particle', process_program ) if k in md ).items():
       path = os.path.join( path, self._formatPath( value ) )
       res = self.fc.createDirectory( path )
@@ -175,10 +151,6 @@ class Prod3DataManager(object) :
       if not res['OK']:
         return res
 
-    # # Add also process_program_version MD
-    # process_program_version = process_program + '_version'
-    # res = self.fcc.setMetadata( path, {process_program_version:md[process_program_version]} )
-
     # Create the TransformationID subdir and set MD
     # ## Get the TransformationID
     if os.environ.has_key( 'JOBID' ):
@@ -187,15 +159,12 @@ class Prod3DataManager(object) :
       res = dirac.getJobJDL( jobID )
       if res['Value'].has_key( 'TransformationID' ):
         TransformationID = res['Value']['TransformationID']
-      else:
-      # ## This is used just when job runs locally or without TS
-        TransformationID = jobGroupID
 
     path = os.path.join( path, TransformationID )
     res = self.fc.createDirectory( path )
     if not res['OK']:
       return res
-    # res = self.fcc.setMetadata( path, dict( ( k, md[k] ) for k in ( 'phiP', 'thetaP', 'array_layout' ) if k in md ) )
+
     process_program_version = process_program + '_version'
     res = self.fcc.setMetadata( path, dict( ( k, md[k] ) for k in ( 'phiP', 'thetaP', 'array_layout', process_program_version ) if k in md ) )
     if not res['OK']:
