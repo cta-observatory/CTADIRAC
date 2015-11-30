@@ -15,7 +15,6 @@ Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
 
 Script.registerSwitch( "", "site=", "e.g. Paranal" )
 Script.registerSwitch( "", "particle=", "e.g. gamma,gamma-diffuse,electron,proton" )
-# Script.registerSwitch( "", "process_program=", "e.g. simtel_2015-07-21" )
 Script.registerSwitch( "", "tel_sim_prog=", "e.g. simtel" )
 Script.registerSwitch( "", "tel_sim_prog_version=", "e.g. 2015-07-21" )
 Script.registerSwitch( "", "analysis_prog=", "e.g. evndisp" )
@@ -25,7 +24,6 @@ Script.registerSwitch( "", "array_layout=", "e.g. hex,square" )
 Script.registerSwitch( "", "thetaP=", "e.g. 20" )
 Script.registerSwitch( "", "phiP=", "e.g. 0,180" )
 Script.registerSwitch( "", "sct=", "e.g. True,False" )
-Script.registerSwitch( "", "subarray=", "e.g. subarray-1,...,subarray-5" )
 Script.registerSwitch( "", "outputType=", "e.g. Data,Log" )
 
 
@@ -63,8 +61,6 @@ for switch in Script.getUnprocessedSwitches():
     metaDict['training_type'] = switch[1]
   elif switch[0].lower() == "training_type":
     metaDict['sct'] = switch[1]
-  elif switch[0].lower() == "subarray":
-    metaDict['subarray'] = switch[1]
   elif switch[0].lower() == "outputtype":
     metaDict['outputType'] = switch[1]
 

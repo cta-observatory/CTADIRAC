@@ -26,11 +26,10 @@ from DIRAC.Interfaces.API.Dirac import Dirac
 
 def submitTS( job ):
   """ Create a transformation executing the job workflow  """
-  # ## send jobs to Lyon
-  #job.setDestination( 'LCG.IN2P3-CC.fr' )
 
-  ### Temporary fix to initialize JOB_ID and PRODUCTION_ID #######
+  ### Temporary fix to initialize JOB_ID #######
   job.workflow.addParameter( Parameter( "JOB_ID", "000000", "string", "", "", True, False, "Temporary fix" ) )
+  job.setType('MCSimulation') ## Used for the JobType plugin
 
   t = Transformation()
   # t.setTransformationName( "Prod3Exemple" )  # This must be unique. If not set it's asked in the prompt
@@ -50,16 +49,6 @@ def submitTS( job ):
   
   return res
 
-def submitWMS( job ):
-  """ Submit the job locally or to the WMS  """
-# job.setDestination( 'LCG.IN2P3-CC.fr' )
-  dirac = Dirac()
-  res = dirac.submit( job, "local" )
-# res = dirac.submit( job )
-
-  Script.gLogger.notice( 'Submission Result: ', res )
-  return res
-
 #########################################################
 
 def runProd3( args = None ):
@@ -77,10 +66,7 @@ def runProd3( args = None ):
   pointing = args[3]
   zenith = args[4]
   nShower= args[5]
-  mode = 'TS'
-  if len( args ) == 7:
-    mode = args[6]
-  
+
     ### Main Script ###
   job = Prod3MCJob()
 
@@ -89,7 +75,7 @@ def runProd3( args = None ):
   
   # package and version
   job.setPackage('corsika_simhessarray')
-  job.setVersion( '2015-08-18' )
+  job.setVersion( '2015-10-20-p1' )
 
   # layout, site, particle, pointing direction, zenith angle
   # hex,  Paranal,  gamma, South,  20
@@ -112,20 +98,13 @@ def runProd3( args = None ):
   # Do not simulate SCTs
   job.setNoSCTFlag(True)
 
-  # # for WMS submission:
-  #job.setRunNumber( '00000009' )
-
   job.setOutputSandbox( ['*Log.txt'] )
 
   # add the sequence of executables
   job.setupWorkflow()
 
-  if mode == 'TS':
-    res = submitTS( job )
-  elif mode == 'WMS':
-    res = submitWMS( job )
-  else:
-    Script.showHelp()
+  # submit to the Transformation System
+  res = submitTS( job )
     
   # debug
   Script.gLogger.info( job.workflow )
