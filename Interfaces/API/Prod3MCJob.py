@@ -170,8 +170,10 @@ class Prod3MCJob( Job ) :
 
     # step 3  
     csStep = self.setExecutable( './dirac_prod3_corsika', \
-                              arguments = '--start_run %s --run %s %s-%s %s %s %s' % \
-                                         ( self.start_run_number, self.run_number, self.array_layout, self.template_tag, self.cta_site, self.particle, self.pointing_dir ), \
+                              arguments = '--start_run %s --run %s %s-%s %s %s %s %s' % \
+                                         ( self.start_run_number, self.run_number, \
+                                           self.array_layout, self.template_tag, self.cta_site,\
+                                           self.particle, self.pointing_dir, self.zenith_angle ), \
                               logFile='Corsika_Log.txt')
     csStep['Value']['name']='Step%i_Corsika'%iStep
     csStep['Value']['descr_short']='Run Corsika with 800+ telescopes'
