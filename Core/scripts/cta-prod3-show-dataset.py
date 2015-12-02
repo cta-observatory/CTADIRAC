@@ -47,19 +47,21 @@ eventsPerRun = raw_input( '\nEnter eventsPerRun (default 20000):' )
 if not eventsPerRun:
   eventsPerRun = 20000
 
+numberOfFilesperRun = raw_input( '\nEnter numberOfFilesperRun (10 with sct, 5 without sct)\ndefault is 10:' )
+# ## default
+if not numberOfFilesperRun:
+  numberOfFilesperRun = 10
+
 records = []
 print '\n' + datasetName + ":"
 print '=' * ( len( datasetName ) + 1 )
 
 numberOfFiles = datasetDict[datasetName]['NumberOfFiles']
 
-# ## default for prod3
-numberOfFilesperRun = 10
-
 records.append( ['MetaQuery', str( datasetDict[datasetName]['MetaQuery'] )] )
 
 # # calculate total numberOfEvents
-TotalNumberOfEvents = numberOfFiles * int( eventsPerRun ) / numberOfFilesperRun / 1e9
+TotalNumberOfEvents = numberOfFiles * int( eventsPerRun ) / float(numberOfFilesperRun) / 1e9
 TotalNumberOfEvents = '%.2fe9' % TotalNumberOfEvents
 
 records.append( ['EventsPerRun', str( eventsPerRun )] )
