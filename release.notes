@@ -265,3 +265,7 @@ BUGFIX: in Prod3MCJob
 [v1r28p13]
 *LA
 NEW: add scripts for sw installation/removal
+
+[?]
+*JB
+NEW: add scripts to run PROD3 3HB8 merging jobs
