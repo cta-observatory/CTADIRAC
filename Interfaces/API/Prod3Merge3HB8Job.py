@@ -25,7 +25,7 @@ class Prod3Merge3HB8Job( Job ) :
     Job.__init__( self )
     self.setCPUTime( cpuTime )
     # defaults
-    self.setName('ReadCta_Analysis')
+    self.setName('Merge3HB8')
     self.package='corsika_simhessarray'
     self.version = '2015-10-20-p2'
     self.basepath = '/vo.cta.in2p3.fr/MC/PROD3/'
@@ -102,7 +102,7 @@ class Prod3Merge3HB8Job( Job ) :
     iStep += 1
 
     # step tris - download all needed files
-    rctaStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-get-matching-data.py sub5',\
+    rctaStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-get-matching-data sub5',\
                                 logFile = 'Download_Files_Log.txt' )
     rctaStep['Value']['name'] = 'Step%i_Download_Files' % iStep
     rctaStep['Value']['descr_short'] = 'Run Download Subarray-5 Files'
