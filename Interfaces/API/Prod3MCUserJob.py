@@ -83,7 +83,7 @@ class Prod3MCUserJob( Job ) :
     #self.setConfigArgs( argumentStr )
 
     #### execute simtel_array step
-    self.executable = '$DIRACROOT/scripts/ccta-prod3-simtel'
+    self.executable = '$DIRACROOT/scripts/cta-prod3-simtel'
     argumentStr = "%s %s %s '%s'" % ( self.package, self.version, self.simtelcfg, self.simtelopts )
     self.setConfigArgs( argumentStr )
 

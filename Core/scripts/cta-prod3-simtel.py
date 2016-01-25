@@ -1,15 +1,10 @@
 #!/usr/bin/env python
 
-import os
+import glob
 
 import DIRAC
 from DIRAC.Core.Base import Script
 from DIRAC.Core.Utilities.Subprocess import systemCall
-
-def setCorsikaFileLFN( optionValue ):
-  global corsikaFileLFN
-  corsikaFileLFN = switch[1].split('ParametricInputData=LFN:')[1]
-  return DIRAC.S_OK()
 
 def sendOutput( stdid, line ):
   f = open( 'Simtel_Log.txt', 'a' )
@@ -18,16 +13,16 @@ def sendOutput( stdid, line ):
   f.close()
 
 def main():
-  Script.registerSwitch( "p:", "corsikaFileLFN=", "Corsika File", setCorsikaFileLFN )
   Script.parseCommandLine( ignoreErrors = True )
   from CTADIRAC.Core.Utilities.Prod3SoftwareManager import Prod3SoftwareManager
   args = Script.getPositionalArgs()
 
+  print args
   # get arguments
   package = args[1]
   version = args[2]
   arch = "sl6-gcc44"
-  simtelcfg = args[3]
+  simtelcfg = args[3]+'.cfg'
   simtelopts = args[4]
 
   # # install software
@@ -50,8 +45,13 @@ def main():
     if not res['OK']:
       return res
 
+  ### get input files
+  inputfilestr = ''
+  for corsikafile in glob.glob( './*corsika.gz'):
+    inputfilestr = inputfilestr + ' ' + corsikafile 
+
   # # run simtel_array
-  cmdTuple = ['./dirac_prod3_simtel_only', simtelcfg, simtelopts, os.path.basename(corsikaFileLFN)]
+  cmdTuple = ['./dirac_prod3_simtel_only', simtelcfg, simtelopts, inputfilestr]
   DIRAC.gLogger.notice( 'Executing command tuple:', cmdTuple )
   res = systemCall( 0, cmdTuple, sendOutput )
   if not res['OK']:
