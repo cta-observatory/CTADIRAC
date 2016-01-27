@@ -16,7 +16,7 @@ import DIRAC
 from DIRAC.TransformationSystem.Client.Transformation import Transformation
 from DIRAC.TransformationSystem.Client.TransformationClient import TransformationClient
 #from CTADIRAC.Interfaces.API.Prod3Merge3HB8Job import Prod3Merge3HB8Job
-from Prod3Merge3HB8Job import Prod3Merge3HB8Job
+from CTADIRAC.Interfaces.API.Prod3Merge3HB8Job import Prod3Merge3HB8Job 
 from DIRAC.Interfaces.API.Dirac import Dirac
 
 
