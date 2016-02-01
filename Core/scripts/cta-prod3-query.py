@@ -17,8 +17,9 @@ Script.registerSwitch( "", "site=", "e.g. Paranal" )
 Script.registerSwitch( "", "particle=", "e.g. gamma,gamma-diffuse,electron,proton" )
 Script.registerSwitch( "", "tel_sim_prog=", "e.g. simtel" )
 Script.registerSwitch( "", "tel_sim_prog_version=", "e.g. 2015-07-21" )
-Script.registerSwitch( "", "analysis_prog=", "e.g. evndisp" )
+Script.registerSwitch( "", "analysis_prog=", "e.g. evndisp,ctastereo,read_cta" )
 Script.registerSwitch( "", "analysis_prog_version=", "e.g. prod3_d20150903b" )
+Script.registerSwitch( "", "sample=", "e.g. analysis,training,background_training" )
 Script.registerSwitch( "", "training_type=", "e.g. gamma, gamma-diffuse" )
 Script.registerSwitch( "", "array_layout=", "e.g. hex,square" )
 Script.registerSwitch( "", "thetaP=", "e.g. 20" )
@@ -51,6 +52,8 @@ for switch in Script.getUnprocessedSwitches():
     metaDict['analysis_prog'] = switch[1]
   elif switch[0].lower() == "analysis_prog_version":
     metaDict['analysis_prog_version'] = switch[1]
+  elif switch[0].lower() == "sample":
+    metaDict['sample'] = switch[1]
   elif switch[0].lower() == "array_layout":
     metaDict['array_layout'] = switch[1]
   elif switch[0].lower() == "thetap":
@@ -59,7 +62,7 @@ for switch in Script.getUnprocessedSwitches():
     metaDict['phiP'] = switch[1]
   elif switch[0].lower() == "training_type":
     metaDict['training_type'] = switch[1]
-  elif switch[0].lower() == "training_type":
+  elif switch[0].lower() == "sct":
     metaDict['sct'] = switch[1]
   elif switch[0].lower() == "outputtype":
     metaDict['outputType'] = switch[1]
