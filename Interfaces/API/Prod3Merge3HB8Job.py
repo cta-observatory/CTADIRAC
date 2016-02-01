@@ -130,20 +130,20 @@ class Prod3Merge3HB8Job( Job ) :
     fmdjson = json.dumps( self.filemetadata )
 
     ## Upload Data files
-    self.outputpattern = './*Paranal-3HB8-NG.simtel.gz.tar'
+    self.outputpattern = './*Paranal-3HB8-NG*.simtel.gz.tar'
     dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s" % ( mdjson, mdfieldjson, fmdjson, self.basepath, self.outputpattern, self.package ),
-                              logFile = 'DataManagement_Log.txt' )
+                              logFile = 'Data_DataManagement_Log.txt' )
     dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
     dmStep['Value']['descr_short'] = 'Save files to SE and register them in DFC'
     iStep += 1
 
     # Upload Histogram files and use 'Log' as outputType
-    self.outputpattern = './merge_simtel_logs.tar'
+    self.outputpattern = './*Paranal-3HB8-NG*.merge_logs.tar'
 
     dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s %s" % ( mdjson, mdfieldjson, fmdjson, self.basepath, self.outputpattern, self.package, 'Log'),
-                              logFile = 'DataManagement_Log.txt' )
+                              logFile = 'Log_DataManagement_Log.txt' )
     dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
     dmStep['Value']['descr_short'] = 'Save files to SE and register them in DFC'
     iStep += 1
