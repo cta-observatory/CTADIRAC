@@ -16,6 +16,26 @@ import DIRAC
 from CTADIRAC.Interfaces.API.Prod3MCUserJob import Prod3MCUserJob
 from DIRAC.Interfaces.API.Dirac import Dirac
 
+def submitWMS( job, infileList, nbFileperJob ):
+  """ Submit the job locally or to the WMS  """
+
+  dirac = Dirac()
+  res = Dirac().splitInputData( infileList, nbFileperJob )
+  if not res['OK']:
+    Script.gLogger.error( 'Failed to splitInputData' )
+    DIRAC.exit( -1 )
+
+  job.setGenericParametricInput( res['Value'] )
+  job.setInputData( '%s' )
+  job.setOutputData( ['*simtel.gz'] )
+
+  res = dirac.submit( job )
+
+  Script.gLogger.info( 'Submission Result: ', res['Value'] )
+  return res
+
+
+
 def runProd3( args = None ):
   """ Simple wrapper to create a Prod3MCUserJob and setup parameters
       from positional arguments given on the command line.
@@ -34,33 +54,30 @@ def runProd3( args = None ):
     if line != "\n":
       infileList.append( infile )
 
-  ### Create Prod3 User Job
+  ### Main script
   job = Prod3MCUserJob()
+  job.setName( 'simteljob' )
 
   # set package version: to be set before setupWorkflow
   job.setPackage('corsika_simhessarray')
-  job.setVersion( '2015-10-20-p2' )
-  job.setSimtelCfg( 'mycfg/CTA-ULTRA6-SST-GCT-S' )
+  job.setVersion( '2015-10-20-p3' )
+
+  ## set sim_telarray config
+  job.setSimtelCfg( 'mycfg/CTA-ULTRA6-SST-GCT-S.cfg' )
   #job.setSimtelOpts('TELESCOPE_THETA=20.0 TELESCOPE_PHI=90.0') ## optional
+
+  ## set job attributes
+  job.setOutputSandbox( ['*Log.txt'] )
+  job.setInputSandbox( ['mycfg'] )
 
   # ## setup workflow: set executable and parameters
   job.setupWorkflow()
 
-  # ## set job attributes
-  job.setName( 'simteljob' )
-  job.setInputSandbox( [ 'mycfg' ] )
-  job.setOutputSandbox( ['*Log.txt'] )
-  job.setOutputData( ['*simtel.gz'] )
+  ## group input files and submit
+  res = submitWMS( job, infileList, 2 )
 
-  ### set input files
-  job.setInputData(infileList)
-  
-  # # submit job
-  dirac = Dirac()
-  res = dirac.submit( job )
   # debug
-  Script.gLogger.info( 'Submission Result: ', res )
-  Script.gLogger.info( job.workflow )
+    #Script.gLogger.info( job.workflow )
 
   return res
 
