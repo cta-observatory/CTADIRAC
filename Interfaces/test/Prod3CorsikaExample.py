@@ -36,7 +36,7 @@ def runProd3( args = None ):
 
   # set package version and corsika input card. to be set before setupWorkflow
   job.setPackage('corsika_simhessarray')
-  job.setVersion( '2015-08-18' )
+  job.setVersion( '2015-10-20-p3' )
   job.setInputCard( input_card )
 
   # ## setup workflow: set executable and parameters
@@ -50,7 +50,7 @@ def runProd3( args = None ):
 
   # ## set job attributes
   job.setName( 'run%s' )
-  job.setInputSandbox( [input_card ] )
+  job.setInputSandbox( [input_card] )
   job.setOutputSandbox( ['*Log.txt'] )
   job.setOutputData( ['*corsika.gz'] )
 
@@ -75,7 +75,7 @@ if __name__ == '__main__':
       DIRAC.gLogger.error ( res['Message'] )
       DIRAC.exit( -1 )
     else:
-      DIRAC.gLogger.notice( 'Done' )
+      DIRAC.gLogger.notice( res['Value'] )
   except Exception:
     DIRAC.gLogger.exception()
     DIRAC.exit( -1 )
