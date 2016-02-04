@@ -11,7 +11,7 @@ import DIRAC
 from DIRAC.Interfaces.API.Job import Job
 from DIRAC.Resources.Catalog.FileCatalogClient import FileCatalogClient
 
-class EvnDisp3Job( Job ) :
+class EvnDisp3UserJob( Job ) :
   """ Job extension class for EvnDisp Analysis,
       takes care of running converter and evndisp.
   """
@@ -29,16 +29,13 @@ class EvnDisp3Job( Job ) :
     self.package='evndisplay'
     self.version = 'prod3_d20150831b'
     self.layout_list = '3HB1 3HB2 3HB3 3HD1 3HD2 3HI1'
-    self.telescopetype_combination_list = 'FA NA FG NG FD ND'
     self.calibration_file = 'prod3.peds.20150820.dst.root'
     self.reconstructionparameter = 'EVNDISP.prod3.reconstruction.runparameter.NN'
     self.NNcleaninginputcard = 'EVNDISP.NNcleaning.dat'
-    self.basepath = '/vo.cta.in2p3.fr/MC/PROD3/'
-    self.outputpattern = './*evndisp.tar.gz'
+    #self.outputpattern = './*evndisp.tar.gz'
+    #self.outputpath = '/vo.cta.in2p3.fr/user/a/arrabito'
+    #self.outputSE = 'DESY-ZN-USER'
     self.fcc = FileCatalogClient()
-    self.metadata = collections.OrderedDict()
-    self.filemetadata = {}
-    self.jobGroupID = 1
 
   def setPackage(self, package):
     """ Set package name : e.g. 'evndisplay'
@@ -64,14 +61,6 @@ class EvnDisp3Job( Job ) :
     """
     self.layout_list = layout_list
 
-  def setTelescopetypeCombinationList( self, telescopetype_combination_list ):
-    """ Set the telescope type combination list
-
-    Parameters:
-    telescopetype_combination_list -- list of telescope type combinations
-    """
-    self.telescopetype_combination_list = telescopetype_combination_list
-    
   def setCalibrationFile( self, calibration_file ):
     """ Set the calibration file
     
@@ -95,29 +84,6 @@ class EvnDisp3Job( Job ) :
     NNcleaninginputcard -- cleaning inputcard
     """
     self.NNcleaninginputcard = NNcleaninginputcard
-    
-  def setEvnDispMD( self, path ):
-    """ Set evndisplay meta data starting from path metadata
-    
-    Parameters:
-    path -- path from which get meta data
-    """
-    # # Get simtel meta data from path
-    res = self.fcc.getFileUserMetadata( path )
-    simtelMD = res['Value']
-
-    # # Set evndisp directory meta data
-    self.metadata['array_layout'] = simtelMD['array_layout']
-    self.metadata['site'] = simtelMD['site']
-    self.metadata['particle'] = simtelMD['particle']
-    self.metadata['phiP'] = simtelMD['phiP']
-    self.metadata['thetaP'] = simtelMD['thetaP']
-    # self.metadata['process_program'] = 'evndisp' + '_' + self.version
-    self.metadata['analysis_prog'] = 'evndisp'
-    self.metadata['analysis_prog_version'] = self.version
-
-    # ## Set file metadata
-    # self.filemetadata = {'runNumber': simtelMD['runNumber']}
 
   def setupWorkflow(self, debug=False):
     """ Setup job workflow by defining the sequence of all executables
@@ -150,27 +116,20 @@ class EvnDisp3Job( Job ) :
     iStep += 1
 
     # step 3
-    evStep = self.setExecutable( './dirac_prod3_evndisp', \
-                                arguments = "--layout_list '%s' --telescopetype_combination_list '%s' --calibration_file %s --reconstructionparameter %s --NNcleaninginputcard %s" % ( self.layout_list, self.telescopetype_combination_list, self.calibration_file, self.reconstructionparameter, self.NNcleaninginputcard ), \
+    evStep = self.setExecutable( './dirac_prod3_user_evndisp', \
+                                arguments = "--layout_list '%s' --calibration_file %s --reconstructionparameter %s --NNcleaninginputcard %s" % \
+                                            ( self.layout_list, self.calibration_file, self.reconstructionparameter, self.NNcleaninginputcard), \
                                 logFile = 'EvnDisp_Log.txt' )
     evStep['Value']['name'] = 'Step%i_EvnDisplay' % iStep
     evStep['Value']['descr_short'] = 'Run EvnDisplay'
     iStep += 1
 
     # step 4
-    # ## the order of the metadata dictionary is important, since it's used to build the directory structure
-    mdjson = json.dumps( self.metadata )
+    # ## put and register files (to be used in replacement of setOutputData of Job API)
 
-    metadatafield = {'array_layout':'VARCHAR(128)', 'site':'VARCHAR(128)', 'particle':'VARCHAR(128)', \
-                         'phiP':'float', 'thetaP': 'float', 'analysis_prog':'VARCHAR(128)', 'analysis_prog_version':'VARCHAR(128)'}
-
-    mdfieldjson = json.dumps( metadatafield )
-
-    fmdjson = json.dumps( self.filemetadata )
-
-    dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
-                              arguments = "'%s' '%s' '%s' %s '%s' %s" % ( mdjson, mdfieldjson, fmdjson, self.basepath, self.outputpattern, self.package ),
-                              logFile = 'DataManagement_Log.txt' )
-    dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
-    dmStep['Value']['descr_short'] = 'Save files to SE and register them in DFC'
-    iStep += 1
+    #dmStep = self.setExecutable( '$DIRACROOT/scripts/cta-user-managedata',
+    #                          arguments = "%s %s %s" % ( self.outputpattern, self.outputpath, self.outputSE ),
+    #                          logFile = 'DataManagement_Log.txt' )
+    #dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
+    #dmStep['Value']['descr_short'] = 'Save files to SE and register them in DFC'
+    #iStep += 1
