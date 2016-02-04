@@ -32,10 +32,13 @@ class MarsJob( Job ) :
     self.outdir = './'
     self.MuonMode = '0'
     self.StarOutput = '-staroutput'
-#    self.training_type = 'point-like' # or diffuse
+#    self.training_type = 'point-like'
     self.training_type = 'diffuse'
+    #self.training_type = 'point-like diffuse'
     self.basepath = '/vo.cta.in2p3.fr/MC/PROD3/'
-    self.outputpattern = './stereo_All/*.root'
+    #self.outputpattern = './stereo_All/*.root' # not used
+    self.outputpattern = './data/*.tar.gz' # used for ctastereo
+    #self.outputpattern = './*_I.root' # used for chimp
     self.fcc = FileCatalogClient()
     self.metadata = collections.OrderedDict()
     self.filemetadata = {}
@@ -114,8 +117,8 @@ class MarsJob( Job ) :
     iStep += 1
 
     # step 3b
-    ctastStep = self.setExecutable( './dirac_prod3_ctastereo', \
-                                arguments = '--training_type %s' % ( self.training_type),
+    ctastStep = self.setExecutable( './dirac_prod3_ctastereo_p2', \
+                                arguments = "--training_type '%s'" % ( self.training_type),
                                 logFile = 'CTAstereo_Log.txt' )
     ctastStep['Value']['name'] = 'Step%i_CTAstereo' % iStep
     ctastStep['Value']['descr_short'] = 'Run CTAstereo'

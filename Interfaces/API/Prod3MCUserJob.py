@@ -1,11 +1,9 @@
 """
-  Simple Wrapper on the Job class to handle Prod3 MC
+  Simple Wrapper on the Job class to handle User Prod3 MC
 """
 
 __RCSID__ = "$Id$"
 
-# generic imports
-import os, json, collections
 # DIRAC imports
 import DIRAC
 from DIRAC.Interfaces.API.Job import Job
@@ -29,6 +27,9 @@ class Prod3MCUserJob( Job ) :
     self.package='corsika_simhessarray'
     self.version = '2015-08-18'
     self.simtelopts = ''
+    self.outputpattern = './*simtel.gz' 
+    self.outputpath = '/vo.cta.in2p3.fr/user/a/arrabito'
+    self.outputSE = 'DESY-ZN-USER'
 
   def setPackage(self, package):
     """ Set package name : e.g. 'corsika_simhessarray'
@@ -76,14 +77,46 @@ class Prod3MCUserJob( Job ) :
     """
 
     self.workflow = Workflow()
-
+    iStep=1
+    
     ### execute corsika step
-    #self.executable = '$DIRACROOT/scripts/cta-prod3-corsika'
-    #argumentStr = '%s %s %s' % ( self.package, self.version, self.input_card )
-    #self.setConfigArgs( argumentStr )
+    self.executable = '$DIRACROOT/scripts/cta-prod3-corsika'
+    argumentStr = '%s %s %s' % ( self.package, self.version, self.input_card )
+    self.setConfigArgs( argumentStr )
+
+    #### execute setup software: needed for next steps
+    #swStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-setupsw',
+    #                          arguments='%s %s'% (self.package, self.version),\
+    #                          logFile='SetupSoftware_Log.txt')
+    #swStep['Value']['name'] = 'Step%i_SetupSoftware' % iStep
+    #swStep['Value']['descr_short'] = 'Setup software'
+    #iStep+=1
 
     #### execute simtel_array step
-    self.executable = '$DIRACROOT/scripts/cta-prod3-simtel'
-    argumentStr = "%s %s %s '%s'" % ( self.package, self.version, self.simtelcfg, self.simtelopts )
-    self.setConfigArgs( argumentStr )
+    #simStep = self.setExecutable( './dirac_prod3_simtel_only_p1',
+    #                          arguments='%s %s'% (self.simtelcfg, self.simtelopts),\
+    #                          logFile='Simtel_Log.txt')
+    #simStep['Value']['name'] = 'Step%i_Simtel' % iStep
+    #simStep['Value']['descr_short'] = 'Run sim_telarray'
+    #iStep+=1
+
+    # step 2
+    #res = DIRAC.sourceEnv(600, ['prod3_types'], {} )
+    #read_cta_opts=res['outputEnv']['read_cta_opts']
+
+    #rctaStep = self.setExecutable( './dirac_prod3_read_cta', \
+    #                               arguments = "-q -r 4 -u --min-trg-tel 2 %s" % (read_cta_opts),
+    #                            logFile = 'ReadCta_Log.txt' )
+    #rctaStep['Value']['name'] = 'Step%i_ReadCta' % iStep
+    #rctaStep['Value']['descr_short'] = 'Run ReadCta'
+    #iStep += 1
+
+    # step 4
+    # ## put and register files (to be used in replacement of setOutputData of Job API)
+    #dmStep = self.setExecutable( '$DIRACROOT/scripts/cta-user-managedata',
+    #                          arguments = "%s %s %s" % ( self.outputpattern, self.outputpath, self.outputSE ),
+    #                          logFile = 'DataManagement_Log.txt' )
+    #dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
+    #dmStep['Value']['descr_short'] = 'Save files to SE and register them in DFC'
+    #iStep += 1
 
