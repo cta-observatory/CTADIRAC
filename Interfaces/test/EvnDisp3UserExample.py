@@ -31,6 +31,9 @@ def submitWMS( job, infileList, nbFileperJob ):
   job.setOutputData( ['./*evndisp.tar.gz'] ) # to be used if DataManagement step in EvnDisp3UserJob is commented
 
   #job.setJobGroup( 'EvnDisp-proton' )
+  job.setName( 'evndispjob' )
+  job.setOutputSandbox( ['*Log.txt'] )
+  #job.setInputSandbox( ['myconf'] )
 
   res = dirac.submit( job )
 
@@ -60,8 +63,7 @@ def runEvnDisp3( args = None ):
   job = EvnDisp3UserJob(cpuTime = 432000)  # to be adjusted!!
 
   ### Main Script ###
-  job.setName( 'EvnDisp3Test' )
-  
+
   # package and version
   job.setPackage( 'evndisplay' )
   job.setVersion( 'prod3_d20160111' )
@@ -69,14 +71,10 @@ def runEvnDisp3( args = None ):
   # # set layout list
   job.setLayoutList( "CTA.prod3S.3HB1-NA.lis CTA.prod3S.3HB2-NA.lis" )
   #  set calibration file and parameters file
-  job.setCalibrationFile( 'prod3.peds.20150820.dst.root' )
+  job.setCalibrationFile( 'ped.20151106.evndisp.root' )
   job.setReconstructionParameter( 'EVNDISP.prod3.reconstruction.runparameter.NN' )
   job.setNNcleaninginputcard( 'EVNDISP.NNcleaning.dat' )
   
-
-  job.setOutputSandbox( ['*Log.txt'] )
-  job.setInputSandbox( ['myconf'] )
-
   # add the sequence of executables
   job.setupWorkflow()
 
