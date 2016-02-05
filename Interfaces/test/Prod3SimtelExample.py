@@ -28,6 +28,10 @@ def submitWMS( job, infileList, nbFileperJob ):
   job.setGenericParametricInput( res['Value'] )
   job.setInputData( '%s' )
   job.setOutputData( ['*simtel.gz'] )
+  job.setOutputSandbox( ['*Log.txt'] )
+  job.setInputSandbox( ['mycfg'] )
+  job.setName( 'simteljob' )
+
 
   res = dirac.submit( job )
 
@@ -56,7 +60,6 @@ def runProd3( args = None ):
 
   ### Main script
   job = Prod3MCUserJob()
-  job.setName( 'simteljob' )
 
   # set package version: to be set before setupWorkflow
   job.setPackage('corsika_simhessarray')
@@ -65,10 +68,6 @@ def runProd3( args = None ):
   ## set sim_telarray config
   job.setSimtelCfg( 'mycfg/CTA-ULTRA6-SST-GCT-S.cfg' )
   #job.setSimtelOpts('TELESCOPE_THETA=20.0 TELESCOPE_PHI=90.0') ## optional
-
-  ## set job attributes
-  job.setOutputSandbox( ['*Log.txt'] )
-  job.setInputSandbox( ['mycfg'] )
 
   # ## setup workflow: set executable and parameters
   job.setupWorkflow()

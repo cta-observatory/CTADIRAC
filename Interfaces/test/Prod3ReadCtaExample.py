@@ -28,6 +28,7 @@ def submitWMS( job, infileList, nbFileperJob ):
   job.setGenericParametricInput( res['Value'] )
   job.setInputData( '%s' )
   job.setOutputData( ['*simtel-dst0.gz'] )
+  job.setName( 'readctajob' )
 
   res = dirac.submit( job )
 
@@ -54,7 +55,6 @@ def runProd3( args = None ):
 
   ### Main script
   job = Prod3MCUserJob()
-  job.setName( 'readctajob' )
 
   # set package version: to be set before setupWorkflow
   job.setPackage('corsika_simhessarray')
