@@ -76,14 +76,13 @@ class Prod3MCUserJob( Job ) :
         All parameters shall have been defined before that method is called.
     """
 
-    self.workflow = Workflow()
-    iStep=1
-    
     ### execute corsika step
+    self.workflow = Workflow()
     self.executable = '$DIRACROOT/scripts/cta-prod3-corsika'
     argumentStr = '%s %s %s' % ( self.package, self.version, self.input_card )
     self.setConfigArgs( argumentStr )
 
+    #iStep=1
     #### execute setup software: needed for next steps
     #swStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-setupsw',
     #                          arguments='%s %s'% (self.package, self.version),\
