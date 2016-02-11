@@ -22,6 +22,7 @@ Script.registerSwitch( "", "analysis_prog_version=", "e.g. prod3_d20150903b" )
 Script.registerSwitch( "", "sample=", "e.g. analysis,training,background_training" )
 Script.registerSwitch( "", "training_type=", "e.g. gamma, gamma-diffuse" )
 Script.registerSwitch( "", "array_layout=", "e.g. hex,square" )
+Script.registerSwitch( "", "layout=", "e.g. 3HB4" )
 Script.registerSwitch( "", "thetaP=", "e.g. 20" )
 Script.registerSwitch( "", "phiP=", "e.g. 0,180" )
 Script.registerSwitch( "", "sct=", "e.g. True,False" )
@@ -56,6 +57,8 @@ for switch in Script.getUnprocessedSwitches():
     metaDict['sample'] = switch[1]
   elif switch[0].lower() == "array_layout":
     metaDict['array_layout'] = switch[1]
+  elif switch[0].lower() == "layout":
+    metaDict['layout'] = switch[1]
   elif switch[0].lower() == "thetap":
     metaDict['thetaP'] = switch[1]
   elif switch[0].lower() == "phip":
