@@ -92,7 +92,7 @@ class Prod3MCUserJob( Job ) :
     #iStep+=1
 
     #### execute simtel_array step
-    #simStep = self.setExecutable( './dirac_prod3_simtel_only_p1',
+    #simStep = self.setExecutable( './dirac_prod3_simtel_only',
     #                          arguments='%s %s'% (self.simtelcfg, self.simtelopts),\
     #                          logFile='Simtel_Log.txt')
     #simStep['Value']['name'] = 'Step%i_Simtel' % iStep
