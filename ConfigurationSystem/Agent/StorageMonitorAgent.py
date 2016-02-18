@@ -73,35 +73,39 @@ class StorageMonitorAgent( AgentModule ):
       self.log.error( "Error while executing %s" % cmdTuple )
       return S_ERROR()
 
+    # initialize sedict
     sedict = {}
-    #### Parse the output of the command 
+    for SE in self.productionSEs:
+      sedict[SE] = []
+
+    fields = ['SE', 'Available(TB)', 'Used(TB)', 'Total(TB)', 'Used(%)' ]
+    records = []
+    fullSEList = []
+
     for se in ret['Value'][1].split( '\n' ):
       if len( se.split() ) == 4:
         spacedict = {}
         SE = se.split()[3]
-        if se.split()[0] != 'n.a' and se.split()[1] != 'n.a':
+        if SE in self.productionSEs and se.split()[0] != 'n.a' and se.split()[1] != 'n.a':
           # ## convert into TB
           available = float( se.split()[0] ) / 1e9
           used = float( se.split()[1] ) / 1e9
           spacedict['Available'] = available
           spacedict['Used'] = used
           spacedict['Total'] = available + used
-          sedict[SE] = spacedict
-    
-    fields = ['SE', 'Available(TB)', 'Used(TB)', 'Total(TB)', 'Used(%)' ]
-    records = []
-    fullSEList = []
+          sedict[SE].append(spacedict)
 
     for SE in self.productionSEs:
-      available = '%.1f' % sedict[SE]['Available']
-      used = '%.1f' % sedict[SE]['Used']
-      total = '%.1f' % sedict[SE]['Total']
-      fraction_used = sedict[SE]['Used'] / sedict[SE]['Total'] * 100
-      if fraction_used > 90.:
-        fullSEList.append(SE)
-        self.log.warn( "%s full at %.1f%%" % (SE, fraction_used) )
-      fraction_used = '%.1f' % fraction_used
-      records.append( [SE, available, used, total, fraction_used] )
+      for spacedict in sedict[SE]:
+        available = '%.1f' % spacedict['Available']
+        used = '%.1f' % spacedict['Used']
+        total = '%.1f' % spacedict['Total']
+        fraction_used = spacedict['Used'] / spacedict['Total'] * 100
+        if fraction_used > 90.:
+          fullSEList.append(SE)
+          self.log.warn( "%s full at %.1f%%" % (SE, fraction_used) )
+        fraction_used = '%.1f' % fraction_used
+        records.append( [SE, available, used, total, fraction_used] )
 
     body = printTable( fields, records, printOut = False )
 
