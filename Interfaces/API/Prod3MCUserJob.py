@@ -76,20 +76,22 @@ class Prod3MCUserJob( Job ) :
         All parameters shall have been defined before that method is called.
     """
 
-    ### execute corsika step
-    self.workflow = Workflow()
-    self.executable = '$DIRACROOT/scripts/cta-prod3-corsika'
-    argumentStr = '%s %s %s' % ( self.package, self.version, self.input_card )
-    self.setConfigArgs( argumentStr )
-
-    #iStep=1
+    iStep=1
     #### execute setup software: needed for next steps
-    #swStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-setupsw',
-    #                          arguments='%s %s'% (self.package, self.version),\
-    #                          logFile='SetupSoftware_Log.txt')
-    #swStep['Value']['name'] = 'Step%i_SetupSoftware' % iStep
-    #swStep['Value']['descr_short'] = 'Setup software'
-    #iStep+=1
+    swStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-setupsw',
+                              arguments='%s %s'% (self.package, self.version),\
+                              logFile='SetupSoftware_Log.txt')
+    swStep['Value']['name'] = 'Step%i_SetupSoftware' % iStep
+    swStep['Value']['descr_short'] = 'Setup software'
+    iStep+=1
+
+    ### execute corsika step
+    csStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-corsika',
+                             arguments="%s"% (self.input_card),\
+                             logFile='Corsika_Log.txt')
+    csStep['Value']['name'] = 'Step%i_Corsika' % iStep
+    csStep['Value']['descr_short'] = 'Run corsika'
+    iStep+=1
 
     #### execute simtel_array step
     #simStep = self.setExecutable( './dirac_prod3_simtel_only',
@@ -99,7 +101,7 @@ class Prod3MCUserJob( Job ) :
     #simStep['Value']['descr_short'] = 'Run sim_telarray'
     #iStep+=1
 
-    # step 2
+    # execute read_cta step
     #res = DIRAC.sourceEnv(600, ['prod3_types'], {} )
     #read_cta_opts=res['outputEnv']['read_cta_opts']
 
@@ -110,8 +112,7 @@ class Prod3MCUserJob( Job ) :
     #rctaStep['Value']['descr_short'] = 'Run ReadCta'
     #iStep += 1
 
-    # step 4
-    # ## put and register files (to be used in replacement of setOutputData of Job API)
+    # ## put and register files step (to be used in replacement of setOutputData of Job API)
     #dmStep = self.setExecutable( '$DIRACROOT/scripts/cta-user-managedata',
     #                          arguments = "%s %s %s" % ( self.outputpattern, self.outputpath, self.outputSE ),
     #                          logFile = 'DataManagement_Log.txt' )
