@@ -113,8 +113,8 @@ class Prod3MCUserJob( Job ) :
     #iStep += 1
 
     # ## put and register files step (to be used in replacement of setOutputData of Job API)
-    #dmStep = self.setExecutable( '$DIRACROOT/scripts/cta-user-managedata',
-    #                          arguments = "%s %s %s" % ( self.outputpattern, self.outputpath, self.outputSE ),
+    #dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-user-managedata.py',
+    #                          arguments = "'%s' %s %s" % ( self.outputpattern, self.outputpath, self.outputSE ),
     #                          logFile = 'DataManagement_Log.txt' )
     #dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
     #dmStep['Value']['descr_short'] = 'Save files to SE and register them in DFC'

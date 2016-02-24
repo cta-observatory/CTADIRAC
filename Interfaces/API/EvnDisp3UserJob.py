@@ -90,15 +90,8 @@ class EvnDisp3UserJob( Job ) :
         All parameters shall have been defined before that method is called.
     """
 
-    # step 1 -- to be removed -- debug only
+    # step 1 : setup software
     iStep = 1
-    if debug:
-        lsStep = self.setExecutable( '/bin/ls -alhtr', logFile = 'LS_Init_Log.txt' )
-        lsStep['Value']['name']='Step%i_LS_Init'%iStep
-        lsStep['Value']['descr_short']='list files in working directory'
-        iStep+=1
-      
-    # step 2  
     swStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-setupsw',
                               arguments='%s %s'% (self.package, self.version),\
                               logFile='SetupSoftware_Log.txt')
@@ -106,7 +99,7 @@ class EvnDisp3UserJob( Job ) :
     swStep['Value']['descr_short'] = 'Setup software'
     iStep+=1
 
-    # step 2bis
+    # step 2: check input file size
     # arguments are nbFiles=0 (not used) and fileSize=100kB
     eivStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-verifysteps', \
                               arguments = 'analysisinputs 0 100', \
@@ -115,7 +108,7 @@ class EvnDisp3UserJob( Job ) :
     eivStep['Value']['descr_short'] = 'Verify EvnDisp Inputs'
     iStep += 1
 
-    # step 3
+    # step 3: run evendisplay
     evStep = self.setExecutable( './dirac_prod3_user_evndisp', \
                                 arguments = "--layout_list '%s' --calibration_file %s --reconstructionparameter %s --NNcleaninginputcard %s" % \
                                             ( self.layout_list, self.calibration_file, self.reconstructionparameter, self.NNcleaninginputcard), \
@@ -127,8 +120,8 @@ class EvnDisp3UserJob( Job ) :
     # step 4
     # ## put and register files (to be used in replacement of setOutputData of Job API)
 
-    #dmStep = self.setExecutable( '$DIRACROOT/scripts/cta-user-managedata',
-    #                          arguments = "%s %s %s" % ( self.outputpattern, self.outputpath, self.outputSE ),
+    #dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-user-managedata.py',
+    #                          arguments = "'%s' %s %s" % ( self.outputpattern, self.outputpath, self.outputSE ),
     #                          logFile = 'DataManagement_Log.txt' )
     #dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
     #dmStep['Value']['descr_short'] = 'Save files to SE and register them in DFC'
