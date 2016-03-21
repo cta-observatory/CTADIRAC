@@ -4,10 +4,12 @@
 
 __RCSID__ = "$Id$"
 
+# generic imports
+import json
+
 # DIRAC imports
 import DIRAC
 from DIRAC.Interfaces.API.Job import Job
-from DIRAC.Core.Workflow.Workflow import Workflow
 
 class Prod3MCUserJob( Job ) :
   """ Job extension class for Prod3 MC simulations,
@@ -29,7 +31,7 @@ class Prod3MCUserJob( Job ) :
     self.simtelopts = ''
     self.outputpattern = './*simtel.gz' 
     self.outputpath = '/vo.cta.in2p3.fr/user/a/arrabito'
-    self.outputSE = 'DESY-ZN-USER'
+    self.outputSE = json.dumps(['CC-IN2P3-USER','DESY-ZN-USER'])
 
   def setPackage(self, package):
     """ Set package name : e.g. 'corsika_simhessarray'
@@ -114,7 +116,7 @@ class Prod3MCUserJob( Job ) :
 
     # ## put and register files step (to be used in replacement of setOutputData of Job API)
     #dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-user-managedata.py',
-    #                          arguments = "'%s' %s %s" % ( self.outputpattern, self.outputpath, self.outputSE ),
+    #                          arguments = "'%s' %s '%s'" % ( self.outputpattern, self.outputpath, self.outputSE ),
     #                          logFile = 'DataManagement_Log.txt' )
     #dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
     #dmStep['Value']['descr_short'] = 'Save files to SE and register them in DFC'

@@ -5,7 +5,7 @@
 __RCSID__ = "$Id$"
 
 # generic imports
-import os, json, collections
+import json, collections
 # DIRAC imports
 import DIRAC
 from DIRAC.Interfaces.API.Job import Job

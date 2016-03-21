@@ -6,7 +6,7 @@
 __RCSID__ = "$Id$"
 
 # generic imports
-import os, glob
+import os, glob, json
 
 # DIRAC imports
 import DIRAC
@@ -14,8 +14,8 @@ from DIRAC.Core.Base import Script
 Script.parseCommandLine()
 
 # Specific DIRAC imports
+from DIRAC.Core.Utilities import List
 from CTADIRAC.Core.Workflow.Modules.Prod3DataManager import Prod3DataManager
-from DIRAC.DataManagementSystem.Client.DataManager import DataManager
 
 ####################################################
 def putAndRegisterPROD3( args ):
@@ -26,12 +26,10 @@ def putAndRegisterPROD3( args ):
     """
     outputpattern = args[0]
     outputpath = args[1]
-    SE = args[2]
-
-    catalogs = ['DIRACFileCatalog']
-    dm = DataManager( catalogs )
+    SEList = json.loads( args[2] )
 
     # # Init DataManager
+    catalogs = ['DIRACFileCatalog']
     prod3dm = Prod3DataManager( catalogs )
 
     # # Upload data files
@@ -42,15 +40,10 @@ def putAndRegisterPROD3( args ):
     for localfile in glob.glob( outputpattern ):
       filename = os.path.basename( localfile )
       lfn = os.path.join( outputpath, filename )
-      msg = 'Try to upload local file: %s \nwith LFN: %s \nto %s' % ( localfile, lfn, SE )
-      DIRAC.gLogger.notice( msg )
-      res = dm.putAndRegister( lfn, localfile, SE )
+      SEList = List.randomize( SEList )
+      res = prod3dm._putAndRegisterToSEList( lfn, localfile, SEList)
       # ##  check if failed
       if not res['OK']:
-        DIRAC.gLogger.error( 'Failed to putAndRegister %s \nto %s \nwith message: %s' % ( lfn, SE, res['Message'] ) )
-        return res
-      elif res['Value']['Failed'].has_key( lfn ):
-        DIRAC.gLogger.error( 'Failed to putAndRegister %s to %s' % ( lfn, SE ) )
         return res
 
     return DIRAC.S_OK()
