@@ -19,6 +19,9 @@ def main():
 
   # get arguments
   input_card = args[0]
+  outprefix = ""
+  if len(args) ==2:
+    outprefix = args[1]
 
   #### get Parameter and set run_number #########
   if os.environ.has_key( 'JOBID' ):
@@ -35,7 +38,8 @@ def main():
     return res
 
   # ## rename output file
-  outfile = 'run%s.corsika.gz' % run_number
+  #outfile = 'run%s.corsika.gz' % run_number
+  outfile = '%srun%s.corsika.gz' % (outprefix, run_number)
   cmd = 'mv Data/corsika/*/*corsika.gz %s' % outfile
   if( os.system( cmd ) ):
     DIRAC.exit( -1 )
