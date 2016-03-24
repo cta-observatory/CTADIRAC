@@ -90,6 +90,8 @@ class Prod3MCUserJob( Job ) :
     ### execute corsika step
     csStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-corsika',
                              arguments="%s"% (self.input_card),\
+                             ## optionally one can add a prefix to be used to build the output file name
+                             #arguments="%s %s"% (self.input_card, 'outprefix' ),\
                              logFile='Corsika_Log.txt')
     csStep['Value']['name'] = 'Step%i_Corsika' % iStep
     csStep['Value']['descr_short'] = 'Run corsika'
