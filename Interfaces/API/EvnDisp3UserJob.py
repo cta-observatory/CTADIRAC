@@ -5,11 +5,10 @@
 __RCSID__ = "$Id$"
 
 # generic imports
-import os, json, collections
+import json
 # DIRAC imports
 import DIRAC
 from DIRAC.Interfaces.API.Job import Job
-from DIRAC.Resources.Catalog.FileCatalogClient import FileCatalogClient
 
 class EvnDisp3UserJob( Job ) :
   """ Job extension class for EvnDisp Analysis,
@@ -32,10 +31,10 @@ class EvnDisp3UserJob( Job ) :
     self.calibration_file = 'prod3.peds.20150820.dst.root'
     self.reconstructionparameter = 'EVNDISP.prod3.reconstruction.runparameter.NN'
     self.NNcleaninginputcard = 'EVNDISP.NNcleaning.dat'
+    ### To be defined if using step 4 to put and register files
     #self.outputpattern = './*evndisp.tar.gz'
     #self.outputpath = '/vo.cta.in2p3.fr/user/a/arrabito'
-    #self.outputSE = 'DESY-ZN-USER'
-    self.fcc = FileCatalogClient()
+    #self.outputSE = json.dumps(['CC-IN2P3-USER','DESY-ZN-USER'])
 
   def setPackage(self, package):
     """ Set package name : e.g. 'evndisplay'
@@ -121,7 +120,7 @@ class EvnDisp3UserJob( Job ) :
     # ## put and register files (to be used in replacement of setOutputData of Job API)
 
     #dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-user-managedata.py',
-    #                          arguments = "'%s' %s %s" % ( self.outputpattern, self.outputpath, self.outputSE ),
+    #                          arguments = "'%s' %s '%s'" % ( self.outputpattern, self.outputpath, self.outputSE ),
     #                          logFile = 'DataManagement_Log.txt' )
     #dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
     #dmStep['Value']['descr_short'] = 'Save files to SE and register them in DFC'
