@@ -6,7 +6,7 @@ matching a given pattern / query.
 """
 
 # generic imports
-import os, glob
+import os
 
 # DIRAC import Script
 from DIRAC.Core.Base import Script
@@ -61,6 +61,30 @@ def getSub5():
         
     return DIRAC.S_OK()
 
+def getSub2Sub5():
+    """ Download subarray-2 and 5 files corresponding to a list of subarray-1 files
+    
+    Keyword arguments:
+    none -- none
+    """
+    DIRAC.gLogger.info('Get Subarray-2 and 5 files')
+    # get JDL
+    dirac = Dirac()
+    resJDL = dirac.getJobJDL(os.environ['JOBID'] )    
+    
+    # get list of output files
+    idata=resJDL['Value']['InputData']
+    
+    # dowload files
+    for sub1 in idata:
+        DIRAC.gLogger.debug("Input %s "%sub1)
+        sub2=sub1.strip('\n').replace('subarray-1-nosct', 'subarray-2-nosct')
+        downloadFile(sub2)        
+        sub5=sub1.strip('\n').replace('subarray-1-nosct', 'subarray-5-nosct')
+        downloadFile(sub5)
+        
+    return DIRAC.S_OK()
+
 
 # Main
 def getMatchingFiles(args):
@@ -82,9 +106,11 @@ def getMatchingFiles(args):
     # What shall we verify ?
     if funcName == "sub5":
         res=getSub5()
+    elif funcName == "sub2sub5":
+        res=getSub2Sub5()   
     else:
         res=DIRAC.S_ERROR()
-        res['Message'] = 'Do not know how to verify "%s"'% stepType
+        res['Message'] = 'Function "%s" not known'% funcName
            
     return res
 
