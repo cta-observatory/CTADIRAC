@@ -103,7 +103,8 @@ class Prod3Merge3HB89Job( Job ) :
     iStep += 1
 
     # step 4 - download subarray-2 files corresponding to sub-1 input
-    rctaStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-get-matching-data sub2sub5',\
+#    rctaStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-get-matching-data sub2sub5',\
+    rctaStep = self.setExecutable( './cta-prod3-get-matching-data sub2sub5',\
                                 logFile = 'Download_Files_Log.txt' )
     rctaStep['Value']['name'] = 'Step%i_Download_Files' % iStep
     rctaStep['Value']['descr_short'] = 'Download subarray-2 and 5 Files'
@@ -128,7 +129,7 @@ class Prod3Merge3HB89Job( Job ) :
     fmdjson = json.dumps( self.filemetadata )
 
     ## Upload Data files
-    self.outputpattern = './*Paranal-3HB89-NG*.simtel.gz.tar'
+    self.outputpattern = './*Paranal-3HB89-NGFD*.simtel.gz.tar'
     dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s" % ( mdjson, mdfieldjson, fmdjson, self.basepath, self.outputpattern, self.package ),
                               logFile = 'Data_DataManagement_Log.txt' )
@@ -137,7 +138,7 @@ class Prod3Merge3HB89Job( Job ) :
     iStep += 1
 
     # Upload Histogram files and use 'Log' as outputType
-    self.outputpattern = './*Paranal-3HB89-NG*.merge_logs.tar'
+    self.outputpattern = './*Paranal-3HB89-NGFD*.merge_logs.tar'
 
     dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s %s" % ( mdjson, mdfieldjson, fmdjson, self.basepath, self.outputpattern, self.package, 'Log'),
