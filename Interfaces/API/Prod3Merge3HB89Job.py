@@ -28,7 +28,7 @@ class Prod3Merge3HB89Job( Job ) :
     # defaults
     self.setName('Merge3HB89')
     self.package='corsika_simhessarray'
-    self.version = '2015-10-20-p3'
+    self.version = '2015-10-20-p4'
     self.basepath = '/vo.cta.in2p3.fr/MC/PROD3/'
     self.outputpattern = ''
     self.fcc = FileCatalogClient()

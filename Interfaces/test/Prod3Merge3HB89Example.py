@@ -50,7 +50,7 @@ def submitTS( job, infileList ):
 
 def submitWMS( job, infileList ):
   """ Submit the job locally or to the WMS  """
-  #job.setDestination( 'LCG.IN2P3-CC.fr' )
+  job.setDestination( 'LCG.IN2P3-CC.fr' )
   job.setInputData(infileList[:2])
   job.setInputSandbox( ['cta-prod3-get-matching-data.py'] )   
 
@@ -88,7 +88,7 @@ def runMergeSimtel( args = None ):
 
   # package and version
   job.setPackage( 'corsika_simhessarray' )
-  job.setVersion( '2015-10-20-p3' )
+  job.setVersion( '2015-10-20-p4' )
 
   # set ReadCta Meta data
   job.setReadCtaMD( infileList[0] )
@@ -96,13 +96,13 @@ def runMergeSimtel( args = None ):
   job.setOutputSandbox( ['*Log.txt'] )
 
   # add the sequence of executables
-  job.setupWorkflow(deubg=True)
+  job.setupWorkflow(debug=True)
 
   # submit to the Transformation System
-  res = submitTS( job, infileList[:100] )
-  #res = submitWMS(job, infileList)
+  #res = submitTS( job, infileList[:100] )
+  res = submitWMS(job, infileList)
   # debug
-    #Script.gLogger.info( job.workflow )
+  Script.gLogger.info( job.workflow )
 
   return res
 
