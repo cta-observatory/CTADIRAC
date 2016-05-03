@@ -104,7 +104,7 @@ class Prod3Merge3HB89Job( Job ) :
 
     # step 4 - download subarray-2 files corresponding to sub-1 input
 #    rctaStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-get-matching-data sub2sub5',\
-    rctaStep = self.setExecutable( './cta-prod3-get-matching-data sub2sub5',\
+    rctaStep = self.setExecutable( 'python ./cta-prod3-get-matching-data.py sub2sub5',\
                                 logFile = 'Download_Files_Log.txt' )
     rctaStep['Value']['name'] = 'Step%i_Download_Files' % iStep
     rctaStep['Value']['descr_short'] = 'Download subarray-2 and 5 Files'
