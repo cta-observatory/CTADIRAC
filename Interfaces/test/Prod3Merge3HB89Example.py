@@ -28,7 +28,7 @@ def submitTS( job, infileList ):
   t.setType( "SimtelMerging" )
   t.setDescription( "Runs merge_simtel for array 3HB89" )
   t.setLongDescription( "Merging array 3HB89 analysis" )  # mandatory
-  t.setGroupSize(10)
+  t.setGroupSize(5)
   t.setBody ( job.workflow.toXML() )
 
   res = t.addTransformation()  # Transformation is created here
@@ -88,7 +88,7 @@ def runMergeSimtel( args = None ):
   # package and version
   job.setPackage( 'corsika_simhessarray' )
   job.setVersion( '2015-10-20-p4' )
-  job.basepath = '/vo.cta.in2p3.fr/user/b/bregeon/MC/PROD3/'
+  job.basepath = '/vo.cta.in2p3.fr/MC/PROD3/'
   # set ReadCta Meta data
   job.setReadCtaMD( infileList[0] )
 
@@ -98,8 +98,8 @@ def runMergeSimtel( args = None ):
   job.setupWorkflow(debug=True)
 
   # submit to the Transformation System
-  #res = submitTS( job, infileList[:100] )
-  res = submitWMS(job, infileList)
+  res = submitTS( job, infileList[:100] )
+  #res = submitWMS(job, infileList)
   # debug
   Script.gLogger.info( job.workflow )
 
