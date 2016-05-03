@@ -16,8 +16,7 @@ Script.parseCommandLine()
 import DIRAC
 from DIRAC.TransformationSystem.Client.Transformation import Transformation
 from DIRAC.TransformationSystem.Client.TransformationClient import TransformationClient
-#from CTADIRAC.Interfaces.API.Prod3MergeHB89Job import Prod3MergeHB89Job
-from Prod3Merge3HB89Job import Prod3Merge3HB89Job 
+from CTADIRAC.Interfaces.API.Prod3Merge3HB89Job import Prod3Merge3HB89Job
 from DIRAC.Interfaces.API.Dirac import Dirac
 
 
@@ -50,7 +49,7 @@ def submitTS( job, infileList ):
 
 def submitWMS( job, infileList ):
   """ Submit the job locally or to the WMS  """
-  job.setDestination( 'LCG.IN2P3-CC.fr' )
+#  job.setDestination( 'LCG.IN2P3-CC.fr' )
   job.setInputData(infileList[:2])
   job.setInputSandbox( ['cta-prod3-get-matching-data.py'] )   
 
