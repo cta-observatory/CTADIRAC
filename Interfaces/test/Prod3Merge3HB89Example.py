@@ -17,7 +17,7 @@ import DIRAC
 from DIRAC.TransformationSystem.Client.Transformation import Transformation
 from DIRAC.TransformationSystem.Client.TransformationClient import TransformationClient
 #from CTADIRAC.Interfaces.API.Prod3MergeHB89Job import Prod3MergeHB89Job
-from Prod3MergeHB89Job import Prod3MergeHB89Job 
+from Prod3Merge3HB89Job import Prod3Merge3HB89Job 
 from DIRAC.Interfaces.API.Dirac import Dirac
 
 
@@ -89,7 +89,7 @@ def runMergeSimtel( args = None ):
   # package and version
   job.setPackage( 'corsika_simhessarray' )
   job.setVersion( '2015-10-20-p4' )
-
+  job.basepath = '/vo.cta.in2p3.fr/user/b/bregeon/MC/PROD3/'
   # set ReadCta Meta data
   job.setReadCtaMD( infileList[0] )
 
