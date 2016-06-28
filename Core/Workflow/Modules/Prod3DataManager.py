@@ -226,7 +226,8 @@ class Prod3DataManager(object) :
       if p.search( filename ) == None and psct.search( filename ) != None:
         sct = 'True'
       # ## Set sct flag only for production data
-      if DataType == 'SimtelProd':
+      res = self.fcc.getFileUserMetadata( lfn )
+      if DataType == 'SimtelProd' and res['Value']['outputType'] == 'Data':
         fmd.update( {'sct':sct} )
       res = self.fcc.setMetadata( lfn, fmd )
       if not res['OK']:
