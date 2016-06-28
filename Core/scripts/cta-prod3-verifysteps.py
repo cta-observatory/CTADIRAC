@@ -142,7 +142,37 @@ def verifyAnalysisInputs( minSize = 50. ):
 
     return DIRAC.S_OK()
 
-# Main
+def verifyGeneric(nbFiles=1, minSize=50., path = 'Data/*'):
+    """ Verify a PROD3 generic step
+
+    Keyword arguments:
+    nbFiles -- number of output files expected
+    minSize -- minimum file size
+    """
+    DIRAC.gLogger.info('Verifying generic step output')
+
+    # get list of output files
+    outputFiles=glob.glob(path)
+
+    # check the number of output files
+    N=len(outputFiles)
+    if N != nbFiles :
+        DIRAC.gLogger.error( 'Wrong number of output files : %s instead of %s' % ( N, nbFiles ) )
+        cleanFiles( outputFiles )
+        return DIRAC.S_ERROR()
+
+    # check the file size
+    for afile in outputFiles:
+        sizekb=os.path.getsize(afile)/1024.
+        if sizekb < minSize:
+            DIRAC.gLogger.error( '%s\n File size too small : %s < %s kb' % ( afile, sizekb, minSize ) )
+            cleanFiles( outputFiles )
+            return DIRAC.S_ERROR()
+
+    return DIRAC.S_OK()
+
+
+
 def verify(args):
     """ simple wrapper to put and register all PROD3 files
     
@@ -150,16 +180,17 @@ def verify(args):
     args -- a list of arguments in order []
     """
     # check command line
-    res=None
-    if len(args)!=3:
+    if len(args) < 3 :
         res=DIRAC.S_ERROR()
-        res['Message'] = 'verify now requires nbFiles and fileSize as arguments'
+        res['Message'] = 'verify requires at least nbFiles and fileSize as arguments'
         return res
 
     # now do something
-    stepType = args[0] 
+    stepType = args[0]
     nbFiles  = int(args[1])
     fileSize = float(args[2])
+    if len(args)==4 :
+      path = args[3]
 
     # What shall we verify ?
     if stepType == "corsika":
@@ -170,12 +201,15 @@ def verify(args):
         res=verifyMerging(nbFiles, fileSize)
     elif stepType == "analysisinputs":
         res = verifyAnalysisInputs( fileSize )
+    elif stepType == "generic":
+        res = verifyGeneric( nbFiles, fileSize, path )
     else:
         res=DIRAC.S_ERROR()
         res['Message'] = 'Do not know how to verify "%s"'% stepType
            
     return res
 
+# Main
 ####################################################
 if __name__ == '__main__':
   

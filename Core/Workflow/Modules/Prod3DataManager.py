@@ -222,11 +222,11 @@ class Prod3DataManager(object) :
         fmd.update( {'subarray':subarray} )
       sct = 'False'
       p = re.compile( 'nosct' )
-      if p.search( filename ) == None:
+      psct = re.compile( 'sct' )
+      if p.search( filename ) == None and psct.search( filename ) != None:
         sct = 'True'
-      # ## Check added on sct to handle evndisp output file
-      p = re.compile( 'sct' )
-      if p.search( filename ) != None:
+      # ## Set sct flag only for production data
+      if DataType == 'SimtelProd':
         fmd.update( {'sct':sct} )
       res = self.fcc.setMetadata( lfn, fmd )
       if not res['OK']:
