@@ -64,7 +64,7 @@ def putAndRegisterPROD3(args):
         return res
 
     # ## Upload log files
-    tarname = filename.split( '-subarray' )[0] + '.tar.gz'
+    tarname = filename.split( '___cta-prod3' )[0] + '.tar.gz'
     res = prod3dm.createTarLogFiles( inputpath, tarname )
     if not res['OK']:
       return DIRAC.S_ERROR( 'prod3dm.createTarLogFiles failed' )
