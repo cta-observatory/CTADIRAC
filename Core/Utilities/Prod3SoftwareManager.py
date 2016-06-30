@@ -77,17 +77,18 @@ class Prod3SoftwareManager(object) :
     """ get the list of available software areas (shared area, cvmfs)
     """
     areaList = []
-    if os.environ.has_key( self.SW_SHARED_DIR ):
-      shared_area = os.path.join( os.environ[self.SW_SHARED_DIR], 'software' )
-      areaList.append( shared_area )
-    else:
-      DIRAC.gLogger.warn( 'Shared area not found' )
 
     opsHelper = Operations()
     UseCvmfs = opsHelper.getValue( 'SoftwarePolicy/UseCvmfs', bool )
     DIRAC.gLogger.notice( 'SoftwarePolicy for UseCvmfs is:', UseCvmfs )
     if UseCvmfs:
       areaList.append( self.CVMFS_DIR )
+
+    if os.environ.has_key( self.SW_SHARED_DIR ):
+      shared_area = os.path.join( os.environ[self.SW_SHARED_DIR], 'software' )
+      areaList.append( shared_area )
+    else:
+      DIRAC.gLogger.warn( 'Shared area not found' )
 
     return areaList
 
