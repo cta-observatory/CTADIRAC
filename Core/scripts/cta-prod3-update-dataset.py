@@ -2,11 +2,11 @@
 
 __RCSID__ = "$Id$"
 
+import DIRAC
 from DIRAC.Core.Base import Script
-from DIRAC import gLogger
 
 Script.setUsageMessage( """
-Dump in a file the list of PROD3 files for a given dataset
+Update a given dataset
 
 Usage:
    %s <dataset>
@@ -25,15 +25,9 @@ if len( argss ) > 0:
 else:
   Script.showHelp()
 
-result = fc.getDatasetFiles( datasetName )
+result = fc.updateDataset( datasetName )
 if not result['OK']:
-  print "ERROR: failed to get files for dataset:", result['Message']
+  print "ERROR: failed to update dataset %s: %s" % ( datasetName, result['Message'] )
 else:
-  lfnList = result['Value']
-
-  f = open ( datasetName + '.list', 'w' )
-  for lfn in lfnList:
-    f.write( lfn + '\n' )
-  f.close()
-  gLogger.notice( '%d files have been put in %s.list' % ( len( lfnList ), datasetName ) )
-
+  print "Successfully updated dataset", datasetName
+  

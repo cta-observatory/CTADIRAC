@@ -47,10 +47,10 @@ eventsPerRun = raw_input( '\nEnter eventsPerRun (default 20000):' )
 if not eventsPerRun:
   eventsPerRun = 20000
 
-numberOfFilesperRun = raw_input( '\nEnter numberOfFilesperRun (10 with sct, 5 without sct)\ndefault is 10:' )
+numberOfFilesperRun = raw_input( '\nEnter numberOfFilesperRun (default 1):' )
 # ## default
 if not numberOfFilesperRun:
-  numberOfFilesperRun = 10
+  numberOfFilesperRun = 1
 
 records = []
 print '\n' + datasetName + ":"
