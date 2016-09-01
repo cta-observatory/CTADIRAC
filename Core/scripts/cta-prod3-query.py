@@ -75,7 +75,7 @@ for switch in Script.getUnprocessedSwitches():
 
 fc = FileCatalogClient()
 
-res = fc.findFilesByMetadata( metaDict, path = '/', rpc = '', url = '', timeout = 300 )
+res = fc.findFilesByMetadata( metaDict, path = '/', timeout = 300 )
 
 if not res['OK']:
   DIRAC.gLogger.error ( res['Message'] )
