@@ -27,7 +27,6 @@ if len( argss ) > 0:
   datasetName = argss[0]
 
 result = fc.getDatasets( datasetName )
-print result
 if not result['OK']:
   print "ERROR: failed to get datasets"
   DIRAC.exit( -1 )
