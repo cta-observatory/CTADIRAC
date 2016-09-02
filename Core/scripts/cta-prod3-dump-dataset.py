@@ -26,10 +26,11 @@ else:
   Script.showHelp()
 
 result = fc.getDatasetFiles( datasetName )
+
 if not result['OK']:
   print "ERROR: failed to get files for dataset:", result['Message']
 else:
-  lfnList = result['Value']
+  lfnList = result['Value']['Successful'][datasetName]
 
   f = open ( datasetName + '.list', 'w' )
   for lfn in lfnList:
