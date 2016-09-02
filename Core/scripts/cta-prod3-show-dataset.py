@@ -22,11 +22,12 @@ argss = Script.getPositionalArgs()
 
 fc = FileCatalogClient()
 
-datasetName = ''
+datasetName = '*'
 if len( argss ) > 0:
   datasetName = argss[0]
 
 result = fc.getDatasets( datasetName )
+print result
 if not result['OK']:
   print "ERROR: failed to get datasets"
   DIRAC.exit( -1 )
@@ -35,7 +36,7 @@ datasetDict = result['Value']
 
 if len( argss ) == 0:
   print '\nAvailable datasets are:\n'
-  for dName in datasetDict.keys():
+  for dName in datasetDict['Successful'][datasetName].keys():
     print dName
   print '\n'
   DIRAC.exit()
@@ -56,9 +57,15 @@ records = []
 print '\n' + datasetName + ":"
 print '=' * ( len( datasetName ) + 1 )
 
-numberOfFiles = datasetDict[datasetName]['NumberOfFiles']
+res = datasetDict['Successful'][datasetName][datasetName]
 
-records.append( ['MetaQuery', str( datasetDict[datasetName]['MetaQuery'] )] )
+numberOfFiles = res['NumberOfFiles']
+metaQuery = res['MetaQuery']
+totalSize = res['TotalSize']
+numberOfFiles = res['NumberOfFiles']
+
+# Fill the table to display
+records.append( ['MetaQuery', str( metaQuery )] )
 
 # # calculate total numberOfEvents
 TotalNumberOfEvents = numberOfFiles * int( eventsPerRun ) / float(numberOfFilesperRun) / 1e9
@@ -66,13 +73,12 @@ TotalNumberOfEvents = '%.2fe9' % TotalNumberOfEvents
 
 records.append( ['EventsPerRun', str( eventsPerRun )] )
 records.append( ['TotalNumberOfEvents', str( TotalNumberOfEvents )] )
+records.append( ['NumberOfFiles', str( numberOfFiles )] )
 
-records.append( ['NumberOfFiles', str( datasetDict[datasetName]['NumberOfFiles'] )] )
-
-  # # convert total size in TB
-totalsize = datasetDict[datasetName]['TotalSize'] / 1e12
-totalsize = '%.1f TB' % totalsize
-records.append( ['TotalSize', totalsize] )
+# # convert total size in TB
+totalSize = totalSize / 1e12
+totalSize = '%.1f TB' % totalSize
+records.append( ['TotalSize', totalSize] )
 
 
 printTable( fields, records )
