@@ -6,7 +6,8 @@ import types
 import time
 
 from DIRAC                                                         import S_OK, gLogger
-import DIRAC.Resources.Utilities as utils
+### from CTA
+import CTADIRAC.Resources.Utilities as utils
 from DIRAC.Core.Base.Client                                        import Client
 from DIRAC.Core.Utilities.List                                     import breakListIntoChunks
 from DIRAC.Core.Utilities.Shifter                         import setupShifterProxyInEnv
