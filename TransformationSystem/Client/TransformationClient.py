@@ -12,7 +12,8 @@ from DIRAC.Core.Utilities.List                                     import breakL
 from DIRAC.Core.Utilities.Shifter                         import setupShifterProxyInEnv
 from DIRAC.Core.Utilities.Subprocess                      import pythonCall
 from DIRAC.ConfigurationSystem.Client.Helpers.Operations           import Operations
-from DIRAC.Resources.Catalog.FileCatalog import FileCatalog
+### change just from FileCatalog to FileCatalogClient waiting for the fix in FileCatalogClient declared methods
+from DIRAC.Resources.Catalog.FileCatalogClient import FileCatalogClient
 ### import from CTADIRAC
 from CTADIRAC.DataManagementSystem.Utilities.MetaQuery import MetaQuery
 
@@ -73,7 +74,7 @@ class TransformationClient( Client ):
 
     self.setServer( 'Transformation/TransformationManager2' )
 
-    self.fc = FileCatalog()
+    self.fc = FileCatalogClient()
 
   def setServer( self, url ):
     self.serverURL = url

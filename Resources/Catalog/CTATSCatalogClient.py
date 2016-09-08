@@ -4,9 +4,10 @@
 
 __RCSID__ = "$Id$"
 
-from DIRAC.Resources.Catalog.Utilities             import checkCatalogArguments
+### from CTADIRAC
+from CTADIRAC.Resources.Catalog.Utilities             import checkCatalogArguments
 from DIRAC.Resources.Catalog.FileCatalogClientBase import FileCatalogClientBase
-### import from CTADIRAC!!!
+### from CTADIRAC
 from CTADIRAC.TransformationSystem.Client.TransformationClient import TransformationClient
 
 class CTATSCatalogClient( FileCatalogClientBase ):
