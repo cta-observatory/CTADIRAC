@@ -396,7 +396,6 @@ class FileCatalog( object ):
     """
     # First, look in the Operations, if nothing defined look in /Resources for backward compatibility
     fileCatalogs = self.opHelper.getValue( '/Services/Catalogs/CatalogList', [] )
-    print fileCatalogs
     if not fileCatalogs:
       result = self.opHelper.getSections( '/Services/Catalogs' )
       if result['OK']:
