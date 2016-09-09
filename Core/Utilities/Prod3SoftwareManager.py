@@ -8,7 +8,7 @@ import os, tarfile
 
 # DIRAC imports
 import DIRAC
-from DIRAC.DataManagementSystem.Client.DataManager import DataManager
+from CTADIRAC.DataManagementSystem.Client.DataManager import DataManager
 from DIRAC.ConfigurationSystem.Client.Helpers.Operations import Operations
 
 class Prod3SoftwareManager(object) :
