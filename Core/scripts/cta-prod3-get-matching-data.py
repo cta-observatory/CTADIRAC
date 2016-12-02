@@ -15,7 +15,7 @@ Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      'Usage:',
                                      '  %s funcName' % Script.scriptName,
                                      'Arguments:',
-                                     '  stepName: sub5',
+                                     '  stepName: sub5, sub2sub5, HB9SCT',
                                      '\ne.g: %s sub5' % Script.scriptName
                                      ] ) )
 
@@ -85,6 +85,27 @@ def getSub2Sub5():
         
     return DIRAC.S_OK()
 
+def getHB9SCT():
+    """ Download SCT files corresponding to a list of HB9 merged files
+    
+    Keyword arguments:
+    none -- none
+    """
+    DIRAC.gLogger.info('Get Subarray-5 files')
+    # get JDL
+    dirac = Dirac()
+    resJDL = dirac.getJobJDL(os.environ['JOBID'] )    
+    
+    # get list of output files
+    idata=resJDL['Value']['InputData']
+    
+    # dowload files
+    for merged in idata:
+        DIRAC.gLogger.debug("Input %s "%merged)
+        sct=merged.strip('\n').replace('merged.simtel.gz', 'SCT.simtel.gz')
+        downloadFile(sct)
+        
+    return DIRAC.S_OK()
 
 # Main
 def getMatchingFiles(args):
@@ -97,7 +118,7 @@ def getMatchingFiles(args):
     res=None
     if len(args)!=1:
         res=DIRAC.S_ERROR()
-        res['Message'] = 'just give the function you wish to use, sub5'
+        res['Message'] = 'just give the function you wish to use: sub5, sub2sub5, HB9SCT'
         return res
 
     # now do something
@@ -108,6 +129,8 @@ def getMatchingFiles(args):
         res=getSub5()
     elif funcName == "sub2sub5":
         res=getSub2Sub5()   
+    elif funcName == "HB9SCT":
+        res=getHB9SCT()   
     else:
         res=DIRAC.S_ERROR()
         res['Message'] = 'Function "%s" not known'% funcName
