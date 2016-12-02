@@ -131,7 +131,7 @@ def runEvnDisp3IDSCT( args = None ):
   job.setOutputSandbox( ['*Log.txt'] )
 
   # add the sequence of executables
-  job.setupWorkflow()
+  job.setupWorkflow(debug=True)
 
   # submit to the Transformation System
   #res = OldSubmitTS( job, infileList[:100] )
