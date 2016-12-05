@@ -62,13 +62,23 @@ def OldSubmitTS( job, infileList ):
   return res
 
 #########################################################
-def submitWMS( job, infileList ):
+def submitWMS( job, infileList, nbFileperJob ):
   """ Submit the job locally or to the WMS  """
-#  job.setDestination( 'LCG.IN2P3-CC.fr' )
-  job.setInputData(infileList[:2])
-  job.setInputSandbox( ['cta-prod3-get-matching-data.py'] )   
 
   dirac = Dirac()
+  res = Dirac().splitInputData( infileList, nbFileperJob )
+  if not res['OK']:
+    Script.gLogger.error( 'Failed to splitInputData' )
+    DIRAC.exit( -1 )
+
+#  job.setGenericParametricInput( res['Value'] )
+  job.setParametricInputData( res['Value'] )
+#  job.setInputData( '%s' )
+ 
+  job.setJobGroup( 'EvnDisp3-SCT-test' )
+
+  job.setInputSandbox( ['cta-prod3-get-matching-data.py'] )   
+
   res = dirac.submit( job )
 
   Script.gLogger.notice( 'Submission Result: ', res )
@@ -101,7 +111,7 @@ def runEvnDisp3IDSCT( args = None ):
   # override for testing
   job.setName( 'EvnDisp3SCT' )
   ## add for testing
-  job.setType('EvnDisp3SCT')
+  job.setType('DataReprocessing')
     
   # package and version
   job.setPackage( 'evndisplay' )
@@ -134,10 +144,10 @@ def runEvnDisp3IDSCT( args = None ):
   job.setupWorkflow(debug=True)
 
   # submit to the Transformation System
-  #res = OldSubmitTS( job, infileList[:100] )
+  res = OldSubmitTS( job, infileList[:10] )
 
   # or to the WMS for debug
-  res = submitWMS(job, infile)
+  #res = submitWMS(job, infileList[:4], 2)
   # debug
   Script.gLogger.info( job.workflow )
 
