@@ -21,7 +21,7 @@ Script.parseCommandLine()
 import DIRAC
 from DIRAC.TransformationSystem.Client.Transformation import Transformation
 from DIRAC.Core.Workflow.Parameter import Parameter
-from CTADIRAC.Interfaces.API.Prod3MCPipeJob import Prod3bMCPipeJob
+from CTADIRAC.Interfaces.API.Prod3MCPipeJob import Prod3MCPipeJob
 from DIRAC.Interfaces.API.Dirac import Dirac
 
 def submitTS( job ):
@@ -69,7 +69,7 @@ def runProd3( args = None ):
   nShower= args[5]
 
     ### Main Script ###
-  job = Prod3bMCPipeJob()
+  job = Prod3MCPipeJob()
 
   # override for testing
   job.setName('Prod3PipeTest_%s'%particle)
