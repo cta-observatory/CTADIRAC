@@ -162,7 +162,8 @@ class EvnDisp3JobIDSCT( Job ) :
 
     # step 3 - download SCT files corresponding to no-SCT merged input
 #    rctaStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-get-matching-data sub2sub5',\
-    rctaStep = self.setExecutable( 'python ./cta-prod3-get-matching-data.py HB9SCT',\
+#    rctaStep = self.setExecutable( 'python ./cta-prod3-get-matching-data.py HB9SCT',\
+    rctaStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-get-matching-data HB9SCT',\
                                 logFile = 'Download_Files_Log.txt' )
     rctaStep['Value']['name'] = 'Step%i_Download_Files' % iStep
     rctaStep['Value']['descr_short'] = 'Download SCT Files'
