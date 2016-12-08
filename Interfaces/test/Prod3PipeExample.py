@@ -72,7 +72,7 @@ def runProd3( args = None ):
   job = Prod3MCPipeJob()
 
   # override for testing
-  job.setName('Prod3PipeTest_%s'%particle)
+  job.setName('Prod3PipeLaPalma_%s'%particle)
   
   # package and version
   job.setPackage('corsika_simhessarray')
@@ -100,7 +100,7 @@ def runProd3( args = None ):
   job.setOutputSandbox( ['*Log.txt'] )
 
   # add the sequence of executables
-  job.setupWorkflow()
+  job.setupWorkflow(debug=False)
 
   # submit to the Transformation System
   res = submitTS( job )
