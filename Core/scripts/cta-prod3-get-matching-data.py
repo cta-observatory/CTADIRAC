@@ -24,14 +24,16 @@ Script.parseCommandLine()
 # Other DIRAC imports
 import DIRAC
 from DIRAC.Interfaces.API.Dirac import Dirac
+from DIRAC.DataManagementSystem.Client.DataManager  import DataManager
 
 def downloadFile(lfn):
     """ Download a file using DMS
     Keyword arguments:
     lfn -- a logical file name
     """
-    dirac = Dirac()
-    res = dirac.getFile(lfn)
+    DIRAC.gLogger.info('Downloading ',lfn)
+    dm = DataManager()
+    res=dm.getFile(lfn)
     if not res['OK']:
         DIRAC.gLogger.error ( res['Message'] )
         DIRAC.gLogger.error ( 'Could not download %s'%lfn )
@@ -91,7 +93,7 @@ def getHB9SCT():
     Keyword arguments:
     none -- none
     """
-    DIRAC.gLogger.info('Get Subarray-5 files')
+    DIRAC.gLogger.info('Get HB9-SCT files')
     # get JDL
     dirac = Dirac()
     resJDL = dirac.getJobJDL(os.environ['JOBID'] )    
@@ -102,7 +104,7 @@ def getHB9SCT():
     # dowload files
     for merged in idata:
         DIRAC.gLogger.debug("Input %s "%merged)
-        sct=merged.strip('\n').replace('merged.simtel.gz', 'SCT.simtel.gz')
+        sct=merged.strip('\n').replace('merged.simtel.gz', 'SCT.simtel.gz').replace('cta-prod3','cta-prod3-sct')
         downloadFile(sct)
         
     return DIRAC.S_OK()
