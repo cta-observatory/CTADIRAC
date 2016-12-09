@@ -39,7 +39,7 @@ class Prod3bMCJob( Job ) :
     self.zenith_angle = 20.
     self.no_sct=True
     self.inputpath = 'Data/sim_telarray/cta-prod3/0.0deg'
-    self.basepath = '/vo.cta.in2p3.fr/user/a/arrabito/MC/PROD3/scratch'
+    self.basepath = '/vo.cta.in2p3.fr/MC/PROD3/scratch'
 
   def setPackage(self, package):
     """ Set package name : e.g. 'corsika_simhessarray'
@@ -170,12 +170,20 @@ class Prod3bMCJob( Job ) :
 
     # step 3
     self.start_run_number = 0
+    if self.no_sct:
+        corsika_args= ''
+    else:
+        corsika_args= '--with-sct'
+        
+    corsika_args += ' --start_run %s --run %s %s %s %s %s %s' % \
+                    ( self.start_run_number, self.run_number, \
+                      self.array_layout, self.cta_site,\
+                     self.particle, self.pointing_dir, self.zenith_angle )
+
     csStep = self.setExecutable( './dirac_prod3b_corsika', \
-                              arguments = '--with-sct --start_run %s --run %s %s %s %s %s %s' % \
-                                         ( self.start_run_number, self.run_number, \
-                                           self.array_layout, self.cta_site,\
-                                           self.particle, self.pointing_dir, self.zenith_angle ), \
+                              arguments = corsika_args, \
                               logFile='Corsika_Log.txt')
+    
     csStep['Value']['name']='Step%i_Corsika'%iStep
     csStep['Value']['descr_short']='Run Corsika'
     iStep+=1
@@ -208,12 +216,13 @@ class Prod3bMCJob( Job ) :
     iStep += 1
 
     # step 6b verify SCT data
-    stvStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-verifysteps', \
-                              arguments = "generic 1 1000 'Data/sim_telarray/cta-prod3/0.0deg/Data/*SCT*.simtel.gz'",\
-                              logFile='Verify_Simtel_SCT_Log.txt')
-    stvStep['Value']['name']='Step%i_VerifySimtelSCT'%iStep
-    stvStep['Value']['descr_short'] = 'Verify simtel sct run'
-    iStep += 1
+    if not self.no_sct:    
+        stvStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-verifysteps', \
+                                      arguments = "generic 1 1000 'Data/sim_telarray/cta-prod3/0.0deg/Data/*SCT*.simtel.gz'",\
+                                      logFile='Verify_Simtel_SCT_Log.txt')
+        stvStep['Value']['name']='Step%i_VerifySimtelSCT'%iStep
+        stvStep['Value']['descr_short'] = 'Verify simtel sct run'
+        iStep += 1
 
     # step 7
     cleanStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-cleandata',
@@ -274,5 +283,7 @@ class Prod3bMCJob( Job ) :
     dmStep['Value']['descr_short'] = 'Save files to SE and register them in DFC'
 
     # set env variables valid within the whole workflow
-    self.setExecutionEnv( {'NSHOW': '%s' % self.nShower, 'WITH_SCT': 1} )
-
+    if self.no_sct:
+        self.setExecutionEnv( {'NSHOW': '%s' % self.nShower} )
+    else:
+        self.setExecutionEnv( {'NSHOW': '%s' % self.nShower, 'WITH_SCT': 1} )        
