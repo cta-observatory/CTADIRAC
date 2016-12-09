@@ -62,18 +62,12 @@ def OldSubmitTS( job, infileList ):
   return res
 
 #########################################################
-def submitWMS( job, infileList, nbFileperJob ):
+def submitWMS( job, infileList ):
   """ Submit the job locally or to the WMS  """
 
   dirac = Dirac()
-  res = Dirac().splitInputData( infileList, nbFileperJob )
-  if not res['OK']:
-    Script.gLogger.error( 'Failed to splitInputData' )
-    DIRAC.exit( -1 )
-
-#  job.setGenericParametricInput( res['Value'] )
-  job.setParametricInputData( res['Value'] )
-#  job.setInputData( '%s' )
+  
+  job.setInputData( infileList )
  
   job.setJobGroup( 'EvnDisp3-SCT-test' )
 
@@ -103,7 +97,7 @@ def runEvnDisp3IDSCT( args = None ):
     infile = line.strip()
     if line != "\n":
       infileList.append( infile )
-
+  
   ################################
   job = EvnDisp3JobIDSCT(cpuTime = 36000)  # to be adjusted!!
 
@@ -144,10 +138,10 @@ def runEvnDisp3IDSCT( args = None ):
   job.setupWorkflow(debug=True)
 
   # submit to the Transformation System
-  res = OldSubmitTS( job, infileList[:10] )
+  #res = OldSubmitTS( job, infileList[:10] )
 
   # or to the WMS for debug
-  #res = submitWMS(job, infileList[:4], 2)
+  res = submitWMS(job, infileList[:2] )
   # debug
   Script.gLogger.info( job.workflow )
 
