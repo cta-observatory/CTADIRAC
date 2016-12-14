@@ -122,7 +122,6 @@ class EvnDisp3JobIDSCT( Job ) :
     self.metadata['particle'] = simtelMD['particle']
     self.metadata['phiP'] = simtelMD['phiP']
     self.metadata['thetaP'] = simtelMD['thetaP']
-    # self.metadata['process_program'] = 'evndisp' + '_' + self.version
     self.metadata['analysis_prog'] = 'evndisp'
     self.metadata['analysis_prog_version'] = self.version
     # here hardcode that we have SCTs
@@ -159,7 +158,6 @@ class EvnDisp3JobIDSCT( Job ) :
     eivStep['Value']['descr_short'] = 'Verify EvnDisp Inputs'
     iStep += 1
 
-
     # step 3 - download SCT files corresponding to no-SCT merged input
 #    rctaStep = self.setExecutable( 'python ./cta-prod3-get-matching-data.py HB9SCT',\
 #    rctaStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-get-matching-data HB9SCT',\
@@ -181,14 +179,15 @@ class EvnDisp3JobIDSCT( Job ) :
     mdjson = json.dumps( self.metadata )
 
     metadatafield = {'array_layout':'VARCHAR(128)', 'site':'VARCHAR(128)', 'particle':'VARCHAR(128)', \
-                         'phiP':'float', 'thetaP': 'float', 'analysis_prog':'VARCHAR(128)', 'analysis_prog_version':'VARCHAR(128)'}
+                     'phiP':'float', 'thetaP': 'float', \
+                     'analysis_prog':'VARCHAR(128)', 'analysis_prog_version':'VARCHAR(128)'}
 
     mdfieldjson = json.dumps( metadatafield )
 
     fmdjson = json.dumps( self.filemetadata )
 
     # register Data
-    self.outputpattern = './*all.evn.tar'
+    self.outputpattern = './*SCT_evndisp.tar'
     dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s" % ( mdjson, mdfieldjson, fmdjson, self.basepath, self.outputpattern, self.package ),
                               logFile = 'Data_DataManagement_Log.txt' )
@@ -197,7 +196,7 @@ class EvnDisp3JobIDSCT( Job ) :
     iStep += 1
 
     # register Log
-    self.outputpattern = './*all.evn.logs.tar'
+    self.outputpattern = './*SCT_evndisp.logs.tar'
     dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s" % ( mdjson, mdfieldjson, fmdjson, self.basepath, self.outputpattern, self.package ),
                               logFile = 'Log_DataManagement_Log.txt' )
