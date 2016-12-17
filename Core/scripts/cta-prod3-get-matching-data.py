@@ -9,6 +9,7 @@ matching a given pattern / query.
 import os
 
 # DIRAC import Script
+import DIRAC
 from DIRAC.Core.Base import Script
  
 Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
@@ -22,7 +23,6 @@ Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
 Script.parseCommandLine()
 
 # Other DIRAC imports
-import DIRAC
 from DIRAC.Interfaces.API.Dirac import Dirac
 from DIRAC.DataManagementSystem.Client.DataManager  import DataManager
 
@@ -104,7 +104,7 @@ def getHB9SCT():
     # dowload files
     for merged in idata:
         DIRAC.gLogger.debug("Input %s "%merged)
-        sct=merged.strip('\n').replace('merged.simtel.gz', 'SCT.simtel.gz').replace('cta-prod3','cta-prod3-sct')
+        sct=merged.strip('\n').replace('merged', 'SCT').replace('cta-prod3','cta-prod3-sct')
         downloadFile(sct)
         
     return DIRAC.S_OK()
