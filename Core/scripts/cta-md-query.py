@@ -105,7 +105,7 @@ fc = FileCatalogClient()
 #print "Metadata query conditions are:"
 #print metaDict
 
-result = fc.findFilesByMetadata(metaDict,path='/',rpc='',url='',timeout=300)
+result = fc.findFilesByMetadata(metaDict,path='/',timeout=300)
 
 if not result['OK']:
   print 'ERROR %s' % result['Message']
