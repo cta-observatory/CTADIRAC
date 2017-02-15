@@ -46,10 +46,10 @@ def runProd3( args = None ):
   ilist = []
   for run_number in range( runMin, runMax + 1 ):
     ilist.append( str( run_number ) )
-  job.setGenericParametricInput( ilist )
+  job.setParameterSequence( 'run', ilist )
 
   # ## set job attributes
-  job.setName( 'run%s' )
+  job.setName( 'corsika' )
   job.setInputSandbox( [input_card] )
   job.setOutputSandbox( ['*Log.txt'] )
   job.setOutputData( ['*corsika.gz'] )
