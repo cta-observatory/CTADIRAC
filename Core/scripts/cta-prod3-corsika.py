@@ -28,7 +28,7 @@ def main():
     jobID = os.environ['JOBID']
     dirac = Dirac()
     res = dirac.getJobJDL( jobID )
-    run_number = res['Value']['Parameter']
+    run_number = res['Value']['Parameter.run']
 
   # # run corsika
   cmdTuple = ['./dirac_prod3_corsika_only', '--run', run_number, input_card]
