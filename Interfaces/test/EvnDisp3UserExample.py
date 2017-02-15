@@ -17,17 +17,12 @@ from CTADIRAC.Interfaces.API.EvnDisp3UserJob import EvnDisp3UserJob
 from DIRAC.Interfaces.API.Dirac import Dirac
 
 
-def submitWMS( job, infileList, nbFileperJob ):
+def submitWMS( job, infileList ):
   """ Submit the job to the WMS  """
 
   dirac = Dirac()
-  res = Dirac().splitInputData( infileList, nbFileperJob )
-  if not res['OK']:
-    Script.gLogger.error( 'Failed to splitInputData' )
-    DIRAC.exit( -1 )
 
-  job.setGenericParametricInput( res['Value'] )
-  job.setInputData( '%s' )
+  job.setParametricInputData( infileList )
   job.setOutputData( ['./*evndisp.tar.gz'] ) # to be used if DataManagement step in EvnDisp3UserJob is commented
 
   #job.setJobGroup( 'EvnDisp-proton' )
@@ -78,7 +73,7 @@ def runEvnDisp3( args = None ):
   # add the sequence of executables
   job.setupWorkflow()
 
-  res = submitWMS( job, infileList, 2 )
+  res = submitWMS( job, infileList )
 
   # debug
     #Script.gLogger.info( job.workflow )
