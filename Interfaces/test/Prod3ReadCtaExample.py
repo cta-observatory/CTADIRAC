@@ -16,17 +16,12 @@ import DIRAC
 from CTADIRAC.Interfaces.API.Prod3MCUserJob import Prod3MCUserJob
 from DIRAC.Interfaces.API.Dirac import Dirac
 
-def submitWMS( job, infileList, nbFileperJob ):
+def submitWMS( job, infileList ):
   """ Submit the job locally or to the WMS  """
 
   dirac = Dirac()
-  res = Dirac().splitInputData( infileList, nbFileperJob )
-  if not res['OK']:
-    Script.gLogger.error( 'Failed to splitInputData' )
-    DIRAC.exit( -1 )
 
-  job.setGenericParametricInput( res['Value'] )
-  job.setInputData( '%s' )
+  job.setParametricInputData( infileList )
   job.setOutputData( ['*simtel-dst0.gz'] )
   job.setName( 'readctajob' )
 
@@ -67,7 +62,7 @@ def runProd3( args = None ):
   job.setupWorkflow()
 
   ## group input files and submit
-  res = submitWMS( job, infileList, 2 )
+  res = submitWMS( job, infileList )
 
   # debug
     #Script.gLogger.info( job.workflow )
