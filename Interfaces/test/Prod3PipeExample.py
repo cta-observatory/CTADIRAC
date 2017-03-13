@@ -21,8 +21,9 @@ Script.parseCommandLine()
 import DIRAC
 from DIRAC.TransformationSystem.Client.Transformation import Transformation
 from DIRAC.Core.Workflow.Parameter import Parameter
-from CTADIRAC.Interfaces.API.Prod3MCPipeJob import Prod3MCPipeJob
-from DIRAC.Interfaces.API.Dirac import Dirac
+#from CTADIRAC.Interfaces.API.Prod3MCPipeJob import Prod3MCPipeJob
+from Prod3MCPipeJob import Prod3MCPipeJob
+#from DIRAC.Interfaces.API.Dirac import Dirac
 
 def submitTS( job ):
   """ Create a transformation executing the job workflow  """
@@ -72,11 +73,12 @@ def runProd3( args = None ):
   job = Prod3MCPipeJob()
 
   # override for testing
-  job.setName('Prod3PipeLaPalma_%s'%particle)
+  job.setName('Prod3b_LaPalma3_40deg_%s'%particle)
   
   # package and version
   job.setPackage('corsika_simhessarray')
-  job.setVersion( '2016-12-02' )  # final with fix for gamma-diffuse
+  job.setVersion( '2016-12-20b' )  # final with fix for gamma-diffuse
+  job.no_sct=True # NO SCT for 40deg !
 
   # layout, site, particle, pointing direction, zenith angle
   # lapalma3, LaPalma,  gamma, South,  20

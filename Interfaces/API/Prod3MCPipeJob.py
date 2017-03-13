@@ -42,6 +42,7 @@ class Prod3MCPipeJob( Job ) :
     self.zenith_angle = 20.
     self.inputpath = 'Data/sim_telarray/cta-prod3-%s/0.0deg'%self.array_layout.lower()
     self.basepath = '/vo.cta.in2p3.fr/MC/PROD3/'
+    self.no_sct = False
 
   def setPackage(self, package):
     """ Set package name : e.g. 'corsika_simhessarray'
@@ -162,8 +163,13 @@ class Prod3MCPipeJob( Job ) :
     swStep['Value']['descr_short'] = 'Setup software'
     iStep+=1
 
-    # step 3  
-    csStep = self.setExecutable( './dirac_prod3_lapalma3', \
+    # step 3
+    # no_sct option works only with version 2016-12-20b
+    if self.no_sct:
+        prod_script='./dirac_prod3_lapalma3_noSCT'
+    else:
+        prod_script='./dirac_prod3_lapalma3'
+    csStep = self.setExecutable( prod_script, \
                               arguments = '--start_run %s --run %s %s %s %s %s' % \
                                          ( self.start_run_number, self.run_number, \
                                            self.cta_site,\
