@@ -221,6 +221,7 @@ class Prod3MCPipeJob( Job ) :
 
     ### Temporary fix: since the deployed script does not have the correct format for arguments
     # dmStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-managedata',
+    ### USE cta-prod3-managedata2.py to enable the Input-Data driven waiting to update to v6r17
     dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-prod3-managedata.py',
                               arguments = "'%s' '%s' '%s' %s %s %s" % ( mdjson, mdfieldjson, fmdjson, self.inputpath, self.basepath, self.start_run_number ),
                               logFile = 'DataManagement_Log.txt' )
