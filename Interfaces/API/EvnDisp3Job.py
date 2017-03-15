@@ -28,8 +28,8 @@ class EvnDisp3Job( Job ) :
     self.setName('Evndisplay_Analysis')
     self.package='evndisplay'
     self.version = 'prod3_d20150831b'
+    self.prefix = 'CTA.prod3S'
     self.layout_list = '3HB1 3HB2 3HB3 3HD1 3HD2 3HI1'
-    self.telescopetype_combination_list = 'FA NA FG NG FD ND'
     self.calibration_file = 'prod3.peds.20150820.dst.root'
     self.reconstructionparameter = 'EVNDISP.prod3.reconstruction.runparameter.NN'
     self.NNcleaninginputcard = 'EVNDISP.NNcleaning.dat'
@@ -56,6 +56,14 @@ class EvnDisp3Job( Job ) :
     """
     self.version=version
 
+  def setPrefix( self, prefix ):
+    """ Set prefix for layout name
+
+    Parameters:
+    prefix -- prefix for layout names
+    """
+    self.prefix = prefix
+
   def setLayoutList( self, layout_list ):
     """ Set the layout list
 
@@ -63,14 +71,6 @@ class EvnDisp3Job( Job ) :
     layout_list -- list of layouts
     """
     self.layout_list = layout_list
-
-  def setTelescopetypeCombinationList( self, telescopetype_combination_list ):
-    """ Set the telescope type combination list
-
-    Parameters:
-    telescopetype_combination_list -- list of telescope type combinations
-    """
-    self.telescopetype_combination_list = telescopetype_combination_list
     
   def setCalibrationFile( self, calibration_file ):
     """ Set the calibration file
@@ -149,9 +149,8 @@ class EvnDisp3Job( Job ) :
     eivStep['Value']['descr_short'] = 'Verify EvnDisp Inputs'
     iStep += 1
 
-    # step 3
     evStep = self.setExecutable( './dirac_prod3_evndisp', \
-                                arguments = "--layout_list '%s' --telescopetype_combination_list '%s' --calibration_file %s --reconstructionparameter %s --NNcleaninginputcard %s" % ( self.layout_list, self.telescopetype_combination_list, self.calibration_file, self.reconstructionparameter, self.NNcleaninginputcard ), \
+                                arguments = "--prefix %s --layout_list '%s' --calibration_file %s --reconstructionparameter %s --NNcleaninginputcard %s" % ( self.prefix, self.layout_list, self.calibration_file, self.reconstructionparameter, self.NNcleaninginputcard ), \
                                 logFile = 'EvnDisp_Log.txt' )
     evStep['Value']['name'] = 'Step%i_EvnDisplay' % iStep
     evStep['Value']['descr_short'] = 'Run EvnDisplay'

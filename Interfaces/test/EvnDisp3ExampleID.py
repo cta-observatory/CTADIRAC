@@ -21,6 +21,7 @@ from DIRAC.Interfaces.API.Dirac import Dirac
 def submitTS( job, transName, mqJson ):
   """ Create a transformation executing the job workflow  """
   tc = TransformationClient()
+
   res = tc.addTransformation( transName, 'EvnDisp3 example', 'EvnDisplay analysis', 'DataReprocessing', 'Standard', 'Automatic', mqJson, groupSize = 1, body = job.workflow.toXML() )
 
   transID = res['Value']
@@ -51,20 +52,19 @@ def runEvnDisp3( args = None ):
     
   # package and version
   job.setPackage( 'evndisplay' )
-  job.setVersion( 'prod3_d20160707' ) ## final HB9
-
-  # set query to add files to the transformation
-  MDdict = {'MCCampaign':'PROD3', 'particle':'gamma', 'array_layout':'full', 'site':'Paranal', 'outputType':'Data', 'tel_sim_prog':'simtel', 'thetaP':{"=": 40}, 'phiP':{"=": 180.0}, 'sct':'False'}
+  job.setVersion( 'prod3_d20170125' ) ### for La Palma optimized
   
+  # set query to add files to the transformation
+  MDdict = {'MCCampaign':'PROD3', 'particle':'proton', 'array_layout':'LaPalma3', 'site':'LaPalma', 'outputType':'Data', 'tel_sim_prog':'simtel', 'tel_sim_prog_version':'2016-12-20c', 'thetaP':{"=": 20}, 'phiP':{"=": 180.0}}
+
   ### set meta-data to the product of the transformation
   job.setEvnDispMD( MDdict )
 
   # # set layout and telescope combination
-  job.setPrefix( "CTA.prod3Sb" ) 
-  job.setLayoutList( "3HB1-2 3HB2-2 3HB4-2 3HB8 3HB89 3HB9" ) 
-  job.setTelescopetypeCombinationList( "FA FD FG NA ND NG" )
+  job.setPrefix( "CTA.prod3Nb" )
+  job.setLayoutList( "3AL4-AF15 3AL4-AN15 3AL4-BF15 3AL4-BN15 3AL4-CF15 3AL4-CN15 3AL4-DF15 3AL4-DN15 3AL4-FF15 3AL4-FN15 3AL4-GF15 3AL4-GN15 3AL4-HF15 3AL4-HN15 hyperarray-F hyperarray-N") # two new layouts
   #  set calibration file and parameters file
-  job.setCalibrationFile( 'gamma_20deg_180deg_run5___cta-prod3-demo_desert-2150m-Paranal.ped.root' )
+  job.setCalibrationFile( 'gamma_20deg_180deg_run3___cta-prod3-lapalma3-2147m-LaPalma.ped.root' ) # for La Palma
   
   job.setReconstructionParameter( 'EVNDISP.prod3.reconstruction.runparameter.NN' )
   job.setNNcleaninginputcard( 'EVNDISP.NNcleaning.dat' )
@@ -73,11 +73,11 @@ def runEvnDisp3( args = None ):
 
   # add the sequence of executables
   job.setupWorkflow()
-
   ### submit the workflow to the TS
   mqJson = json.dumps( MDdict )
-  res = submitTS( job, transName, mqJson )
 
+  res = submitTS( job, transName, mqJson )
+   
   return res
 
 #########################################################

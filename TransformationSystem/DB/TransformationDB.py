@@ -7,6 +7,7 @@
 """
 
 import re
+import time
 import threading
 import json
 
@@ -15,7 +16,10 @@ from DIRAC.Core.Base.DB                                   import DB
 from DIRAC.Resources.Catalog.FileCatalog                  import FileCatalog
 from DIRAC.Core.Security.ProxyInfo                        import getProxyInfo
 from DIRAC.Core.Utilities.List                            import stringListToString, intListToString, breakListIntoChunks
+from DIRAC.Core.Utilities.Shifter                         import setupShifterProxyInEnv
 from DIRAC.ConfigurationSystem.Client.Helpers.Operations  import Operations
+from DIRAC.Core.Utilities.Subprocess                      import pythonCall
+from DIRAC.DataManagementSystem.Client.MetaQuery import MetaQuery
 
 __RCSID__ = "$Id$"
 
@@ -41,7 +45,7 @@ class TransformationDB( DB ):
       DB.__init__( self, dbname, dbconfig )
 
     self.lock = threading.Lock()
-    self.filters = ()
+    self.filters = []
     res = self.__updateFilters()
     if not res['OK']:
       gLogger.fatal( "Failed to create filters" )
@@ -204,10 +208,13 @@ class TransformationDB( DB ):
           return self.deleteTransformation( transID, connection = connection )
 
     ### Add files to the DataFiles table ##################
-    self.fc = FileCatalog()
+    catalog = FileCatalog()
     if addFiles and fileMask:
       mqDict = json.loads( fileMask )
-      res = self.fc.findFilesByMetadata( mqDict )
+      res = catalog.findFilesByMetadata( mqDict )
+      if not res['OK']:
+        gLogger.error( "Failed to find files to be added to the transformation", res['Message'] )
+        return res
       filesToAdd = res['Value']
       gLogger.notice( 'filesToAdd', filesToAdd )
       if filesToAdd:
@@ -219,14 +226,13 @@ class TransformationDB( DB ):
          # Add the files to the transformations
         fileIDs = []
         for lfn in filesToAdd:
-          if lfnFileIDs.has_key( lfn ):
+          if lfn in lfnFileIDs:
             fileIDs.append( lfnFileIDs[lfn] )
         res = self.__addFilesToTransformation( transID, fileIDs, connection = connection )
         if not res['OK']:
           gLogger.error( "Failed to add files to transformation", "%s %s" % ( transID, res['Message'] ) )
-
     message = "Created transformation %d" % transID
-  ##############################
+
     self.__updateTransformationLogging( transID, message, authorDN, connection = connection )
     return S_OK( transID )
 
@@ -491,8 +497,7 @@ class TransformationDB( DB ):
 
   def addFilesToTransformation( self, transName, lfns, connection = False ):
     """ Add a list of LFNs to the transformation directly """
-    gLogger.info( "TransformationDB.addFilesToTransformation: Attempting to add %s files." % lfns )
-    gLogger.info( "TransformationDB.addFilesToTransformation: to Transformations: %s" % transName )
+    gLogger.info( "TransformationDB.addFilesToTransformation: Attempting to add %s files to transformations: %s" % ( len(lfns), transName ) )
     if not lfns:
       return S_ERROR( 'Zero length LFN list' )
     res = self._getConnectionTransID( connection, transName )
@@ -1411,6 +1416,53 @@ class TransformationDB( DB ):
     resDict = {'Successful':successful, 'Failed':failed}
     return S_OK( resDict )
 
+  def addFile( self, fileDicts, force = False, connection = False ):
+    """ Add the supplied lfn to the Transformations and to the DataFiles table if it passes the filter
+    """
+    gLogger.info( "TransformationDB.addFile: Attempting to add %s files." % len( fileDicts ) )
+    successful = {}
+    failed = {}
+    # Determine which files pass the filters and are to be added to transformations
+    transFiles = {}
+    filesToAdd = []
+    catalog = FileCatalog()
+
+    for lfn in fileDicts:
+      gLogger.info( "addFile: Attempting to add file %s" % lfn )
+      res = catalog.getFileUserMetadata( lfn )
+      if not res['OK']:
+        gLogger.error( "Failed to getFileUserMetadata for file", "%s: %s" % ( lfn, res['Message'] ) )
+        failed[lfn] = res['Message']
+        continue
+      else:
+        metadatadict = res['Value']
+      gLogger.info( 'Filter file with metadata', metadatadict )
+      transIDs = self._filterFileByMetadata( metadatadict )
+      gLogger.info('Transformations passing the filter: %s' % transIDs)
+      if not ( transIDs or force ):  # not clear how force should be used for
+        successful[lfn] = False  # True -> False bug fix: otherwise it is set to True even if transIDs is empty.
+      else:
+        filesToAdd.append( lfn )
+        for trans in transIDs:
+          if trans not in transFiles:
+            transFiles[trans] = []
+          transFiles[trans].append( lfn )
+
+      # Add the files to the transformations
+      gLogger.info( 'Files to add to transformations:', filesToAdd )
+      if filesToAdd:
+        for transID, lfns in transFiles.iteritems():
+          res = self.addFilesToTransformation( transID, lfns )
+          if not res['OK']:
+            gLogger.error( "Failed to add files to transformation", "%s %s" % ( transID, res['Message'] ) )
+            return res
+          else:
+            for lfn in lfns:
+              successful[lfn] = True
+
+    res = S_OK( {'Successful':successful, 'Failed':failed } )
+    return res
+
   def removeFile( self, lfns, connection = False ):
     """ Remove file specified by lfn from the ProcessingDB
     """
@@ -1439,3 +1491,131 @@ class TransformationDB( DB ):
         successful[lfn] = True
     resDict = {'Successful':successful, 'Failed':failed}
     return S_OK( resDict )
+
+  def addDirectory( self, path, force = False ):
+    """ Adds all the files stored in a given directory in file catalog """
+    gLogger.info( "TransformationDB.addDirectory: Attempting to populate %s." % path )
+    res = pythonCall( 30, self.__addDirectory, path, force )
+    if not res['OK']:
+      gLogger.error( "Failed to invoke addDirectory with shifter proxy" )
+      return res
+    return res['Value']
+
+  def __addDirectory( self, path, force ):
+    res = setupShifterProxyInEnv( "ProductionManager" )
+    if not res['OK']:
+      return S_OK( "Failed to setup shifter proxy" )
+    catalog = FileCatalog()
+    start = time.time()
+    res = catalog.listDirectory( path )
+    if not res['OK']:
+      gLogger.error( "TransformationDB.addDirectory: Failed to get files. %s" % res['Message'] )
+      return res
+    if not path in res['Value']['Successful']:
+      gLogger.error( "TransformationDB.addDirectory: Failed to get files." )
+      return res
+    gLogger.info( "TransformationDB.addDirectory: Obtained %s files in %s seconds." % ( path, time.time() - start ) )
+    successful = []
+    failed = []
+    for lfn in res['Value']['Successful'][path]["Files"]:
+      res = self.addFile( {lfn:{}}, force = force )
+      if not res['OK'] or lfn not in res['Value']['Successful']:
+        failed.append( lfn )
+      else:
+        successful.append( lfn )
+    return {"OK":True, "Value": len( res['Value']['Successful'] ), "Successful":successful, "Failed": failed }
+
+  def setMetadata( self, path, usermetadatadict ):
+    """ It can be applied to a file or to a directory (path). For a file, add the file to Transformations if the updated metadata dictionary passes the filter.
+        For a directory, add the files contained in the directory to the Transformations if the the updated metadata dictionary passes the filter.
+    """
+    gLogger.info( "setMetadata: Attempting to set metadata %s to: %s" % (usermetadatadict, path) )
+    transFiles = {}
+    filesToAdd = []
+
+    catalog = FileCatalog()
+    res = catalog.isFile( path )
+    if res['OK']:
+      isFile = res['Value']['Successful'][path]
+    else:
+      gLogger.error( "Failed isFile %s: %s" % ( path, res['Message'] ) )
+      return res
+    res = catalog.isDirectory( path )
+    if res['OK']:
+      isDirectory = res['Value']['Successful'][path]
+    else:
+      gLogger.error( "Failed isDirectory %s: %s" % ( path, res['Message'] ) )
+      return res
+
+    if isFile:
+      res = catalog.getFileUserMetadata( path )
+    elif isDirectory:
+      res = catalog.getDirectoryUserMetadata( path )
+
+    if not res['OK']:
+      gLogger.error( "Failed to get User Metadata %s: %s" % ( path, res['Message'] ) )
+      return res
+    else:
+      metadatadict = res['Value']
+    metadatadict.update( usermetadatadict )
+    gLogger.info( 'Filter file with metadata:', metadatadict )
+    transIDs = self._filterFileByMetadata( metadatadict )
+    gLogger.info('Transformations passing the filter: %s' % transIDs)
+    if not transIDs:
+      return S_OK()
+    elif isFile:
+      filesToAdd.append( path )
+    elif isDirectory:
+      res = catalog.findFilesByMetadata( metadatadict, path )
+      if not res['OK']:
+        gLogger.error( "Failed to findFilesByMetadata %s: %s" % ( path, res['Message'] ) )
+        return res
+      filesToAdd.extend( res['Value'] )
+    for trans in transIDs:
+      if trans in transFiles:
+        transFiles[trans].extend( filesToAdd )
+      else:
+        transFiles[trans] = filesToAdd
+
+    # Add the files to the transformations
+    gLogger.info( 'Files to add to transformations:', filesToAdd )
+    if filesToAdd:
+      for transID, lfns in transFiles.iteritems():
+        res = self.addFilesToTransformation( transID, lfns )
+        if not res['OK']:
+          gLogger.error( "Failed to add files to transformation", "%s %s" % ( transID, res['Message'] ) )
+          return res
+
+    return S_OK()
+
+  def _filterFileByMetadata( self, metadatadict ):
+    """Pass the input metadatadict through those currently active"""
+    transIDs = []
+    queries = self.filters
+    catalog = FileCatalog()
+    gLogger.info( 'Filter file by queries', queries )
+    res = catalog.getMetadataFields()
+
+    if not res['OK']:
+      gLogger.error( "Error in getMetadataFields: %s" % res['Message'] )
+      return res
+    if not res['Value']:
+      gLogger.error( "Error: no metadata fields defined" )
+      return res
+    typeDict = res['Value']['FileMetaFields']
+    typeDict.update( res['Value']['DirectoryMetaFields'] )
+
+    for transID, query in queries:
+      mq = MetaQuery( query, typeDict )
+      gLogger.info( "Apply query %s to metadata %s" % ( mq.getMetaQuery(), metadatadict ) )
+      res = mq.applyQuery(metadatadict)
+      if not res['OK']:
+        gLogger.error( "Error in applying query: %s" % res['Message'] )
+        return res
+      elif res['Value']:
+        gLogger.info( "Apply query result is True" )
+        transIDs.append( transID )
+      else:
+        gLogger.info( "Apply query result is False" )
+
+    return transIDs

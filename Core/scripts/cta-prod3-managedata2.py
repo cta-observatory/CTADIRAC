@@ -30,7 +30,7 @@ def putAndRegisterPROD3(args):
     inputpath = args[3]
     basepath = args[4]
     start_run_nb = args[5]
-    catalogs = ['DIRACFileCatalog','CTATSCatalog']
+    catalogs = []
     
     # # Create MD structure
     prod3dm=Prod3DataManager2(catalogs)
