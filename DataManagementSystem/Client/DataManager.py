@@ -30,13 +30,12 @@ from DIRAC.ConfigurationSystem.Client.Helpers.Resources     import getRegistrati
 from DIRAC.AccountingSystem.Client.DataStoreClient import gDataStoreClient
 from DIRAC.AccountingSystem.Client.Types.DataOperation import DataOperation
 from DIRAC.DataManagementSystem.Utilities.DMSHelpers import DMSHelpers
-##### from CTADIRAC
 from CTADIRAC.Resources.Catalog.FileCatalog import FileCatalog
 from DIRAC.Resources.Storage.StorageElement import StorageElement
 from DIRAC.ResourceStatusSystem.Client.ResourceStatus import ResourceStatus
 
 # # RSCID
-__RCSID__ = "ba08dea (2016-08-17 15:05:45 +0800) cj501885963 <501885963@qq.com>"
+__RCSID__ = "f37a2f2 (2016-11-07 10:27:17 +0100) Christophe Haen <christophe.haen@cern.ch>"
 
 def _isOlderThan( stringTime, days ):
   timeDelta = timedelta( days = days )
@@ -452,7 +451,15 @@ class DataManager( object ):
     if not checksum:
       log.debug( "Checksum information not provided. Calculating adler32." )
       checksum = fileAdler( fileName )
-      log.debug( "Checksum calculated to be %s." % checksum )
+      # Make another try
+      if not checksum:
+        log.debug( "Checksum calculation failed, try again" )
+        checksum = fileAdler( fileName )
+      if checksum:
+        log.debug( "Checksum calculated to be %s." % checksum )
+      else:
+        return S_ERROR( DErrno.EBADCKS, "Unable to calculate checksum" )
+
     res = self.fc.exists( {lfn:guid} )
     if not res['OK']:
       errStr = "Completely failed to determine existence of destination LFN."
@@ -1475,7 +1482,8 @@ class DataManager( object ):
   def getActiveReplicas( self, lfns, getUrl = True, diskOnly = False, preferDisk = False ):
     """ Get all the replicas for the SEs which are in Active status for reading.
     """
-    return self.getReplicas( lfns, allStatus = False, getUrl = getUrl, diskOnly = diskOnly, preferDisk = preferDisk, active = True )
+    return self.getReplicas( lfns, allStatus = False, getUrl = getUrl, diskOnly = diskOnly,
+                             preferDisk = preferDisk, active = True )
 
   def __filterTapeReplicas( self, replicaDict, diskOnly = False ):
     """
@@ -1483,24 +1491,35 @@ class DataManager( object ):
     If there is a disk replica, removetape replicas, else keep all
     The input argument is modified
     """
-    for lfn, replicas in replicaDict['Successful'].items():  # Beware, tehre is a del below
-      self.__filterTapeSEs( replicas, diskOnly = diskOnly )
+    seList = set( se for ses in replicaDict['Successful'].itervalues() for se in ses )
+    # Get a cache of SE statuses for long list of replicas
+    seStatus = dict( ( se,
+                       ( self.__checkSEStatus( se, status = 'DiskSE' ),
+                        self.__checkSEStatus( se, status = 'TapeSE' ) ) ) for se in seList )
+    for lfn, replicas in replicaDict['Successful'].items():  # Beware, there is a del below
+      self.__filterTapeSEs( replicas, diskOnly = diskOnly, seStatus = seStatus )
       # If diskOnly, one may not have any replica in the end, set Failed
       if diskOnly and not replicas:
         del replicaDict['Successful'][lfn]
         replicaDict['Failed'][lfn] = 'No disk replicas'
     return
 
-  def __filterTapeSEs( self, replicas, diskOnly = False ):
+  def __filterTapeSEs( self, replicas, diskOnly = False, seStatus = None ):
     """ Remove the tape SEs as soon as there is one disk SE or diskOnly is requested
     The input argument is modified
     """
+    # Build the SE status cache if not existing
+    if seStatus is None:
+      seStatus = dict( ( se,
+                         ( self.__checkSEStatus( se, status = 'DiskSE' ),
+                          self.__checkSEStatus( se, status = 'TapeSE' ) ) ) for se in replicas )
+
     for se in replicas:  #  There is a del below but we then return!
       # First find a disk replica, otherwise do nothing unless diskOnly is set
-      if diskOnly or self.__checkSEStatus( se, status = 'DiskSE' ):
+      if diskOnly or seStatus[se][0]:
         # There is one disk replica, remove tape replicas and exit loop
         for se in replicas.keys():  # Beware: there is a pop below
-          if self.__checkSEStatus( se, status = 'TapeSE' ):
+          if seStatus[se][1]:
             replicas.pop( se )
         return
     return
@@ -1532,9 +1551,12 @@ class DataManager( object ):
     Check a replica dictionary for active replicas
     The input dict is modified, no returned value
     """
+    seList = set( se for ses in replicaDict['Successful'].itervalues() for se in ses )
+    # Get a cache of SE statuses for long list of replicas
+    seStatus = dict( ( se, self.__checkSEStatus( se, status = 'Read' ) ) for se in seList )
     for replicas in replicaDict['Successful'].itervalues():
       for se in replicas.keys():  # Beware: there is a pop below
-        if not self.__checkSEStatus( se, status = 'Read' ):
+        if not seStatus[se]:
           replicas.pop( se )
     return
 
