@@ -11,10 +11,18 @@ import DIRAC
 from CTADIRAC.DataManagementSystem.Client.DataManager import DataManager
 from DIRAC.ConfigurationSystem.Client.Helpers.Operations import Operations
 
+# @TODO
+# handle different OS platform for the transition to CentOS7
+# >>> import platform
+# >>> platform.linux_distribution()
+# ('CentOS Linux', '7.3.1611', 'Core')
+# >>> platform.linux_distribution()
+# ('Scientific Linux', '6.9', 'Carbon')
+
 class Prod3SoftwareManager(object) :
   """ Manage software setup for prod3
   """
-  
+
   def __init__( self, soft_category = {"corsika_simhessarray":"simulations"} ):
     """ Constructor
     """
@@ -135,7 +143,7 @@ class Prod3SoftwareManager(object) :
 
     if len( areaList ) == 0:
       DIRAC.gLogger.warn( 'No software area is available' )
-  
+
     # ## look for the package directory in the software areas
     for area in areaList:
       package_dir = os.path.join( area, arch, self.SOFT_CATEGORY_DICT[package], package, version )
