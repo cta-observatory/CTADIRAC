@@ -8,7 +8,7 @@ import os, tarfile
 
 # DIRAC imports
 import DIRAC
-from CTADIRAC.DataManagementSystem.Client.DataManager import DataManager
+from DIRAC.DataManagementSystem.Client.DataManager import DataManager
 from DIRAC.ConfigurationSystem.Client.Helpers.Operations import Operations
 
 # @TODO
