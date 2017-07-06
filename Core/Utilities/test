@@ -1,0 +1,20 @@
+
+
+
+
+
+    import json
+    from DIRAC.TransformationSystem.Client.Transformation import Transformation
+
+    t = Transformation()
+    filter = json.dumps( {'particle':'gamma_diffuse', 'zenith':{"<=": 20}} )
+    t.setFileMask( filter )
+
+
+    
+
+
+
+
+
+
