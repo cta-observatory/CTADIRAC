@@ -14,7 +14,6 @@ class ProductionClient( Client ):
   def __init__( self, **kwargs ):
     """ Simple constructor
     """
-
     Client.__init__( self, **kwargs )
     self.setServer( 'Production/ProductionManager' )
 
@@ -27,9 +26,15 @@ class ProductionClient( Client ):
     """
     pass
 
-  def addTransformation(self, transID):
+  def addTransformation( self, transformation ):
     """
           add a transformation to the production
+    """
+    pass
+
+  def addProduction( self ):
+    """
+          add a production to the system
     """
     pass
 
@@ -40,7 +45,7 @@ class ProductionClient( Client ):
     """
     pass
 
-  def getProduction( self, prodID, extraParams = False ):
+  def getProduction( self, prodID ):
     """ gets a specific production.
     """
     pass
@@ -50,20 +55,13 @@ class ProductionClient( Client ):
     """
     pass
 
-  def deleteProduction(self, prodID):
+  def deleteProduction( self, prodID ):
     """ delete the production from the system
     """
     pass
 
-  def startProduction(self, prodID ):
-    """ start the production, and set the status parameter
-        There is no analogue in the TS
-    """
-    pass
-
-  def stopProduction(self, prodID ):
-    """ stop the production, and set the status parameter
-        There is no analogue in the TSÒ
+  def setStatus( self, status ):
+    """ set the production status
     """
     pass
 
