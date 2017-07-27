@@ -42,6 +42,14 @@ class EvnDisp3RefJob( Job ) :
     self.filemetadata = {}
     self.jobGroupID = 1
 
+  def setTSTaskId(self, taskid):
+    """ Set TS task Id, dynamically resolved at job run time
+
+    Parameters:
+    taskid -- an int
+    """
+    self.ts_task_id=taskid
+
   def setPackage(self, package):
     """ Set package name : e.g. 'evndisplay'
 
@@ -186,3 +194,6 @@ class EvnDisp3RefJob( Job ) :
         lsStep['Value']['name']='Step%i_LS_End'%iStep
         lsStep['Value']['descr_short']='list files in working directory and in Data directory'
         iStep+=1
+
+    # TS Task Id as an environment variable
+    self.setExecutionEnv( {'TS_TASK_ID' : '%s' % self.ts_task_id} )

@@ -74,6 +74,7 @@ def runEvnDisp3( args = None ):
   job.setEvnDispMD( MDdict )
     
   # add the sequence of executables
+  job.setTSTaskId( '@{JOB_ID}' ) # dynamic
   job.setupWorkflow()
   
   # output
