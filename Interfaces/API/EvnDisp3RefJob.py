@@ -37,7 +37,6 @@ class EvnDisp3RefJob( Job ) :
     self.reconstructionparameter = 'EVNDISP.prod3.reconstruction.runparameter.NN'
     self.NNcleaninginputcard = 'EVNDISP.NNcleaning.dat'
     self.basepath = '/vo.cta.in2p3.fr/MC/PROD3/'
-    self.outputpattern = './Data/*evndisp-DL2.root'
     self.fcc = FileCatalogClient()
     self.metadata = collections.OrderedDict()
     self.filemetadata = {}
@@ -147,7 +146,7 @@ class EvnDisp3RefJob( Job ) :
     eivStep['Value']['descr_short'] = 'Verify EvnDisp Inputs'
     iStep += 1
 
-    # step 3
+    # step 4
     evStep = self.setExecutable( './dirac_prod3_evndisp_ref', \
                                 arguments = "--prefix %s --layout '%s' --calibration_file %s --reconstructionparameter %s --NNcleaninginputcard %s" % ( self.prefix, self.layout, self.calibration_file, self.reconstructionparameter, self.NNcleaninginputcard ), \
                                 logFile = 'EvnDisp_Log.txt' )
@@ -155,7 +154,7 @@ class EvnDisp3RefJob( Job ) :
     evStep['Value']['descr_short'] = 'Run EvnDisplay'
     iStep += 1
 
-    # step 4
+    # step 5
     # ## the order of the metadata dictionary is important, since it's used to build the directory structure
     mdjson = json.dumps( self.metadata )
     metadatafield = {'array_layout':'VARCHAR(128)', 'site':'VARCHAR(128)', 'particle':'VARCHAR(128)', \
@@ -164,19 +163,26 @@ class EvnDisp3RefJob( Job ) :
     fmdjson = json.dumps( self.filemetadata )
 
     # register Data
-    self.outputpattern = './*-evndisp-DL2.root'
-    dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
-                              arguments = "'%s' '%s' '%s' %s '%s' %s" % ( mdjson, mdfieldjson, fmdjson, self.basepath, self.outputpattern, self.package ),
+    outputpattern = './Data/*-evndisp-DL2.root'
+    dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata2.py',
+                              arguments = "'%s' '%s' '%s' %s '%s' %s" % ( mdjson, mdfieldjson, fmdjson, self.basepath, outputpattern, self.package ),
                               logFile = 'DataManagement_Log.txt' )
     dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
-    dmStep['Value']['descr_short'] = 'Save files to SE and register them in DFC'
+    dmStep['Value']['descr_short'] = 'Save data files to SE and register them in DFC'
     iStep += 1
 
     # register Log
     self.outputpattern = './*.logs.tgz'
-    dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
-                              arguments = "'%s' '%s' '%s' %s '%s' %s" % ( mdjson, mdfieldjson, fmdjson, self.basepath, self.outputpattern, self.package ),
+    dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata2.py',
+                              arguments = "'%s' '%s' '%s' %s '%s' %s Log" % ( mdjson, mdfieldjson, fmdjson, self.basepath, outputpattern, self.package ),
                               logFile = 'Log_DataManagement_Log.txt' )
     dmStep['Value']['name'] = 'Step%i_Log_DataManagement' % iStep
     dmStep['Value']['descr_short'] = 'Save log files to SE and register them in DFC'
     iStep += 1
+
+    # step 6 -- to be removed -- debug only
+    if debug:
+        lsStep = self.setExecutable( '/bin/ls -alhtr; /bin/ls -lahrt ./Data', logFile = 'LS_End_Log.txt' )
+        lsStep['Value']['name']='Step%i_LS_End'%iStep
+        lsStep['Value']['descr_short']='list files in working directory and in Data directory'
+        iStep+=1
