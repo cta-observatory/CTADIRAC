@@ -22,7 +22,7 @@ def submitTS( job, transName, mqJson ):
   """ Create a transformation executing the job workflow  """
   tc = TransformationClient()
 
-  res = tc.addTransformation( transName, 'EvnDisp3MSCW example', 'EvnDisplay analysis', 'DataReprocessing', 'Standard', 'Automatic', mqJson, groupSize = 10, body = job.workflow.toXML() )
+  res = tc.addTransformation( transName, 'EvnDisp3MSCW example', 'EvnDisplay stereo reconstruction', 'DataReprocessing', 'Standard', 'Automatic', mqJson, groupSize = 10, body = job.workflow.toXML() )
 
   transID = res['Value']
   print  transID
@@ -69,7 +69,7 @@ def runEvnDisp3( args = None ):
   # set query to add files to the transformation
   MDdict = {'MCCampaign':'PROD3', 'particle':'gamma', 'array_layout':'Baseline', \
             'site':'LaPalma', 'outputType':'Data',\
-            'calib_prog':'simtel', 'calib_prog_version':'prod3b_d20170602',\
+            'calibimgreco_prog':'evndisp', 'calibimgreco_prog_version':'prod3b_d20170602',\
             'thetaP':{"=": 20}, 'phiP':{"=": 180.0}}
   job.setEvnDispMD( MDdict )
 

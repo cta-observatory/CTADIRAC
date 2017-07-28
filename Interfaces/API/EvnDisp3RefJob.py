@@ -1,7 +1,7 @@
 """
-  Simple Wrapper on the Job class to handle EvnDisp Calibration and Reconstruction
-  Converter for DL0 to DL1
-  EvnDisp   for DL1 to DL2
+  Simple Wrapper on the Job class to handle EvnDisp calibration
+  and image analysis (single telescope reconstruction
+  Converter and EvnDisp for DL0 to DL1
   Specialized for Reference setup simulation with the Baseline layout
 """
 
@@ -118,8 +118,8 @@ class EvnDisp3RefJob( Job ) :
     self.metadata['particle'] = simtelMD['particle']
     self.metadata['phiP'] = simtelMD['phiP']['=']
     self.metadata['thetaP'] = simtelMD['thetaP']['=']
-    self.metadata['calibreco_prog'] = 'evndisp'
-    self.metadata['calibreco_prog_version'] = self.version
+    self.metadata['calibimgreco_prog'] = 'evndisp'
+    self.metadata['calibimgreco_prog_version'] = self.version
 
     # ## Set file metadata
     # self.filemetadata = {'runNumber': simtelMD['runNumber']}
@@ -171,7 +171,7 @@ class EvnDisp3RefJob( Job ) :
     fmdjson = json.dumps( self.filemetadata )
 
     # register Data
-    outputpattern = './Data/*-evndisp-DL2.root'
+    outputpattern = './Data/*-evndisp-DL1.root'
     dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata2.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s" % ( mdjson, mdfieldjson, fmdjson, self.basepath, outputpattern, self.package ),
                               logFile = 'DataManagement_Log.txt' )

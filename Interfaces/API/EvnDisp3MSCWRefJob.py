@@ -1,6 +1,6 @@
 """
-  Simple Wrapper on the Job class to handle EvnDisp Analysis
-  mscw_energy for DL2 to DL3
+  Simple Wrapper on the Job class to handle EvnDisp stereo reconstruction
+  runs mscw_energy for DL1 to DL2 using look up tables
   Specialized for Reference setup simulation with the Baseline layout
 """
 
@@ -27,7 +27,7 @@ class EvnDisp3MSCWRefJob( Job ) :
     Job.__init__( self )
     self.setCPUTime( cpuTime )
     # defaults
-    self.setName('Evndisplay_Analysis')
+    self.setName('Evndisplay_Reco')
     self.package='evndisplay'
     self.version = 'prod3b_d20170602' # or later
     self.prefix = 'CTA.prod3Nb'
@@ -133,8 +133,8 @@ class EvnDisp3MSCWRefJob( Job ) :
     self.metadata['particle'] = simtelMD['particle']
     self.metadata['phiP'] = simtelMD['phiP']['=']
     self.metadata['thetaP'] = simtelMD['thetaP']['=']
-    self.metadata['analysis_prog'] = 'evndisp'
-    self.metadata['analysis_prog_version'] = self.version
+    self.metadata['reconstruction_prog'] = 'evndisp'
+    self.metadata['reconstruction_prog_version'] = self.version
 
     # ## Set file metadata
     # self.filemetadata = {'runNumber': simtelMD['runNumber']}
@@ -184,12 +184,12 @@ class EvnDisp3MSCWRefJob( Job ) :
     # ## the order of the metadata dictionary is important, since it's used to build the directory structure
     mdjson = json.dumps( self.metadata )
     metadatafield = {'array_layout':'VARCHAR(128)', 'site':'VARCHAR(128)', 'particle':'VARCHAR(128)', \
-                         'phiP':'float', 'thetaP': 'float', 'analysis_prog':'VARCHAR(128)', 'analysis_prog_version':'VARCHAR(128)'}
+                         'phiP':'float', 'thetaP': 'float', 'reconstruction_prog':'VARCHAR(128)', 'reconstruction_prog_version':'VARCHAR(128)'}
     mdfieldjson = json.dumps( metadatafield )
     fmdjson = json.dumps( self.filemetadata )
 
     # register Data
-    outputpattern = './Data/*-evndisp-DL3.root'
+    outputpattern = './Data/*-evndisp-DL2.root'
     dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata2.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s" % ( mdjson, mdfieldjson, fmdjson, self.basepath, outputpattern, self.package ),
                               logFile = 'DataManagement_Log.txt' )

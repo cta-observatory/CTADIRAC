@@ -22,7 +22,7 @@ def submitTS( job, transName, mqJson ):
   """ Create a transformation executing the job workflow  """
   tc = TransformationClient()
 
-  res = tc.addTransformation( transName, 'EvnDisp3 example', 'EvnDisplay calib_reco', 'DataReprocessing', 'Standard', 'Automatic', mqJson, groupSize = 2, body = job.workflow.toXML() )
+  res = tc.addTransformation( transName, 'EvnDisp3 example', 'EvnDisplay calib_imgreco', 'DataReprocessing', 'Standard', 'Automatic', mqJson, groupSize = 2, body = job.workflow.toXML() )
 
   transID = res['Value']
   print  transID
