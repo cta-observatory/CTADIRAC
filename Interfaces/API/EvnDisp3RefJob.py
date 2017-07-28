@@ -171,7 +171,7 @@ class EvnDisp3RefJob( Job ) :
     fmdjson = json.dumps( self.filemetadata )
 
     # register Data
-    outputpattern = './Data/*-evndisp-DL1.root'
+    outputpattern = './Data/*DL1.root'
     dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata2.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s" % ( mdjson, mdfieldjson, fmdjson, self.basepath, outputpattern, self.package ),
                               logFile = 'DataManagement_Log.txt' )
