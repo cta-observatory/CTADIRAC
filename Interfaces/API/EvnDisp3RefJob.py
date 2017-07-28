@@ -166,7 +166,7 @@ class EvnDisp3RefJob( Job ) :
     # ## the order of the metadata dictionary is important, since it's used to build the directory structure
     mdjson = json.dumps( self.metadata )
     metadatafield = {'array_layout':'VARCHAR(128)', 'site':'VARCHAR(128)', 'particle':'VARCHAR(128)', \
-                         'phiP':'float', 'thetaP': 'float', 'calibreco_prog':'VARCHAR(128)', 'calibreco_prog_version':'VARCHAR(128)'}
+                         'phiP':'float', 'thetaP': 'float', 'calibimgreco_prog':'VARCHAR(128)', 'calibimgreco_prog_version':'VARCHAR(128)'}
     mdfieldjson = json.dumps( metadatafield )
     fmdjson = json.dumps( self.filemetadata )
 
