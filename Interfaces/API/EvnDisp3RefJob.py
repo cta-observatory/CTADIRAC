@@ -1,5 +1,5 @@
 """
-  Simple Wrapper on the Job class to handle EvnDisp Analysis
+  Simple Wrapper on the Job class to handle EvnDisp Calibration and Reconstruction
   Converter for DL0 to DL1
   EvnDisp   for DL1 to DL2
   Specialized for Reference setup simulation with the Baseline layout
@@ -15,7 +15,7 @@ from DIRAC.Interfaces.API.Job import Job
 from DIRAC.Resources.Catalog.FileCatalogClient import FileCatalogClient
 
 class EvnDisp3RefJob( Job ) :
-  """ Job extension class for EvnDisp Analysis,
+  """ Job extension class for EvnDisp Calibration and Reconstruction,
       takes care of running converter and evndisp.
   """
 
@@ -28,7 +28,7 @@ class EvnDisp3RefJob( Job ) :
     Job.__init__( self )
     self.setCPUTime( cpuTime )
     # defaults
-    self.setName('Evndisplay_Analysis')
+    self.setName('Evndisplay_CalibReco')
     self.package='evndisplay'
     self.version = 'prod3b_d20170602' # or later
     self.prefix = 'CTA.prod3Nb'
@@ -118,8 +118,8 @@ class EvnDisp3RefJob( Job ) :
     self.metadata['particle'] = simtelMD['particle']
     self.metadata['phiP'] = simtelMD['phiP']['=']
     self.metadata['thetaP'] = simtelMD['thetaP']['=']
-    self.metadata['analysis_prog'] = 'evndisp'
-    self.metadata['analysis_prog_version'] = self.version
+    self.metadata['calibreco_prog'] = 'evndisp'
+    self.metadata['calibreco_prog_version'] = self.version
 
     # ## Set file metadata
     # self.filemetadata = {'runNumber': simtelMD['runNumber']}
@@ -166,7 +166,7 @@ class EvnDisp3RefJob( Job ) :
     # ## the order of the metadata dictionary is important, since it's used to build the directory structure
     mdjson = json.dumps( self.metadata )
     metadatafield = {'array_layout':'VARCHAR(128)', 'site':'VARCHAR(128)', 'particle':'VARCHAR(128)', \
-                         'phiP':'float', 'thetaP': 'float', 'analysis_prog':'VARCHAR(128)', 'analysis_prog_version':'VARCHAR(128)'}
+                         'phiP':'float', 'thetaP': 'float', 'calibreco_prog':'VARCHAR(128)', 'calibreco_prog_version':'VARCHAR(128)'}
     mdfieldjson = json.dumps( metadatafield )
     fmdjson = json.dumps( self.filemetadata )
 

@@ -1,7 +1,6 @@
 """
-  Simple Wrapper on the Job class to handle EvnDisp Reconstruction
+  Simple Wrapper on the Job class to handle EvnDisp Analysis
   mscw_energy for DL2 to DL3
-  EvnDisp   for DL1 to DL2
   Specialized for Reference setup simulation with the Baseline layout
 """
 
@@ -15,7 +14,7 @@ from DIRAC.Interfaces.API.Job import Job
 from DIRAC.Resources.Catalog.FileCatalogClient import FileCatalogClient
 
 class EvnDisp3MSCWRefJob( Job ) :
-  """ Job extension class for EvnDisp Reconstruction,
+  """ Job extension class for EvnDisp Analysis,
       takes care of running mscw_energy.
   """
 
@@ -134,7 +133,7 @@ class EvnDisp3MSCWRefJob( Job ) :
     self.metadata['particle'] = simtelMD['particle']
     self.metadata['phiP'] = simtelMD['phiP']['=']
     self.metadata['thetaP'] = simtelMD['thetaP']['=']
-    self.metadata['analysis_prog'] = 'mscw_energy'
+    self.metadata['analysis_prog'] = 'evndisp'
     self.metadata['analysis_prog_version'] = self.version
 
     # ## Set file metadata

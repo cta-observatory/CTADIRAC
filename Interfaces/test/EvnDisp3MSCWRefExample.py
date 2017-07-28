@@ -15,14 +15,14 @@ Script.parseCommandLine()
 
 import DIRAC
 from CTADIRAC.TransformationSystem.Client.TransformationClient import TransformationClient
-from CTADIRAC.Interfaces.API.EvnDisp3RefJob import EvnDisp3RefJob
+from CTADIRAC.Interfaces.API.EvnDisp3MSCWRefJob import EvnDisp3MSCWRefJob
 from DIRAC.Interfaces.API.Dirac import Dirac
 
 def submitTS( job, transName, mqJson ):
   """ Create a transformation executing the job workflow  """
   tc = TransformationClient()
 
-  res = tc.addTransformation( transName, 'EvnDisp3 example', 'EvnDisplay calib_reco', 'DataReprocessing', 'Standard', 'Automatic', mqJson, groupSize = 2, body = job.workflow.toXML() )
+  res = tc.addTransformation( transName, 'EvnDisp3MSCW example', 'EvnDisplay analysis', 'DataReprocessing', 'Standard', 'Automatic', mqJson, groupSize = 10, body = job.workflow.toXML() )
 
   transID = res['Value']
   print  transID
@@ -42,11 +42,11 @@ def runEvnDisp3( args = None ):
   transName = args[0]
 
   ################################
-  job = EvnDisp3RefJob(cpuTime = 432000)  # to be adjusted!!
+  job = EvnDisp3MSCWRefJob(cpuTime = 432000)  # to be adjusted!!
 
   ### Main Script ###
   # override for testing
-  job.setName( 'EvnDisp3' )
+  job.setName( 'EvnDisp3MSCW' )
   ## add for testing
   job.setType('EvnDisp3')
 
@@ -55,21 +55,21 @@ def runEvnDisp3( args = None ):
   ## package and version
   # job.setPackage( 'evndisplay' )
   # job.setVersion( 'prod3b_d20170602' )
-  # job.setReconstructionParameter( 'EVNDISP.prod3.reconstruction.runparameter.NN' )
-  # job.setNNcleaninginputcard( 'EVNDISP.NNcleaning.dat' )
 
   # change here for Paranal or La Palma
   job.setPrefix( "CTA.prod3Nb" )
-
+  job.setPointing(180)
+  job.setDispSubDir('BDTdisp.Nb.3AL4-BN15.T1')
+  job.setRecId('0,1,2') # 0 = all teltescopes, 1 = LST only, 2 = MST only
   #  set calibration file and parameters file
-  job.setCalibrationFile( 'gamma_20deg_180deg_run3___cta-prod3-lapalma3-2147m-LaPalma.ped.root' ) # for La Palma
+  job.setTableFile( 'tables_CTA-prod3b-LaPalma-NNq05-NN-ID0_0deg-d20160925m4-Nb.3AL4-BN15.root' ) # for La Palma
 
 
   ### set meta-data to the product of the transformation
   # set query to add files to the transformation
   MDdict = {'MCCampaign':'PROD3', 'particle':'gamma', 'array_layout':'Baseline', \
             'site':'LaPalma', 'outputType':'Data',\
-            'tel_sim_prog':'simtel', 'tel_sim_prog_version':'2017-04-19',\
+            'calib_prog':'simtel', 'calib_prog_version':'prod3b_d20170602',\
             'thetaP':{"=": 20}, 'phiP':{"=": 180.0}}
   job.setEvnDispMD( MDdict )
 
