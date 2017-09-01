@@ -20,10 +20,13 @@ from DIRAC.Interfaces.API.Dirac import Dirac
 
 def submitTS( job, transName, mqJson ):
   """ Create a transformation executing the job workflow  """
+  DIRAC.gLogger.notice( 'submitTS' )
+  
   tc = TransformationClient()
 
   res = tc.addTransformation( transName, 'EvnDisp3 example', 'EvnDisplay calib_imgreco', 'DataReprocessing', 'Standard', 'Automatic', mqJson, groupSize = 2, body = job.workflow.toXML() )
 
+  print(res)  
   transID = res['Value']
   print  transID
 
@@ -38,6 +41,7 @@ def runEvnDisp3( args = None ):
       Parameters:
       args -- infile mode
   """
+  DIRAC.gLogger.notice( 'runEvnDisp3' )
   # get arguments
   transName = args[0]
 
@@ -70,7 +74,7 @@ def runEvnDisp3( args = None ):
   MDdict = {'MCCampaign':'PROD3', 'particle':'gamma', 'array_layout':'Baseline', \
             'site':'LaPalma', 'outputType':'Data',\
             'tel_sim_prog':'simtel', 'tel_sim_prog_version':'2017-04-19',\
-            'thetaP':{"=": 20}, 'phiP':{"=": 180.0}}
+            'thetaP':{"=": 20}, 'phiP':{"=": 0.0}}
   job.setEvnDispMD( MDdict )
 
   # add the sequence of executables
