@@ -180,7 +180,7 @@ class EvnDisp3RefJob( Job ) :
     iStep += 1
 
     # register Log
-    self.outputpattern = './*.logs.tgz'
+    outputpattern = './*.logs.tgz'
     dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata2.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s Log" % ( mdjson, mdfieldjson, fmdjson, self.basepath, outputpattern, self.package ),
                               logFile = 'Log_DataManagement_Log.txt' )
