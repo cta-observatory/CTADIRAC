@@ -21,8 +21,12 @@ def getRunNumber( filename, package ):
   if package in ['chimp', 'mars', 'corsika_simhessarray']:
     run_number = filename.split( 'run' )[1].split( '___cta' )[0]
   if package == 'evndisplay':
-    run_number = filename.split( '-' )[0]
-  return run_number
+    try:
+        run_number = int(filename.split( '-' )[0])
+    except:
+        DIRAC.gLogger.info( 'Trying EvnDisplay DL file format to get run number' )
+        run_number = int(filename.split( 'run' )[1].split( '___cta' )[0])
+  return str(run_number)
 
 ####################################################
 def putAndRegisterPROD3( args ):
