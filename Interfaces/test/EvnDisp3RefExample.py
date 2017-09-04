@@ -82,7 +82,7 @@ def runEvnDisp3( args = None ):
 
   # add the sequence of executables
   job.setTSTaskId( '@{JOB_ID}' ) # dynamic
-  job.setupWorkflow()
+  job.setupWorkflow(debug=True)
 
   # output
   job.setOutputSandbox( ['*Log.txt'] )
