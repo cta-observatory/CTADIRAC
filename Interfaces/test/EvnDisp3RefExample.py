@@ -14,7 +14,7 @@ Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
 Script.parseCommandLine()
 
 import DIRAC
-from CTADIRAC.TransformationSystem.Client.TransformationClient import TransformationClient
+from DIRAC.TransformationSystem.Client.TransformationClient import TransformationClient
 from CTADIRAC.Interfaces.API.EvnDisp3RefJob import EvnDisp3RefJob
 from DIRAC.Interfaces.API.Dirac import Dirac
 
