@@ -1,0 +1,249 @@
+#!/bin/sh
+
+if [ "$1" = "--help" ]; then
+   echo "Syntax:"
+   echo "    ./build_all [qgs2|sibyll]"
+   echo "    ./build_all cta [qgs2|sibyll]"
+   echo "    ./build_all ultra [qgs2|sibyll]"
+   echo "    ./build_all max [qgs2|sibyll]"
+   echo "    ./build_all sc [qgs2|sibyll]"
+   echo "    ./build_all sc2 [qgs2|sibyll]"
+   echo "    ./build_all sc3 [qgs2|sibyll]"
+   echo "    ./build_all sc4 [qgs2|sibyll]"
+   echo "    ./build_all prod2 [qgs2|sibyll]"
+   echo "The 'cta' variant (-DCTA) is for up to 99 telescopes of up to 4095 pixels."
+   echo "The 'ultra' variant (-DCTA_ULTRA) is for up to 275 telescopes but fewer pixels."
+   echo "The 'max' variant (-DCT_MAX) allows up to 500 tepescopes of up to 4095 pixels."
+   echo "The 'sc' variant (-DCTA_SC) allows only up to 61 telescopes but with up to 14336 pixels."
+   echo "The 'sc2' variant (-DCTA_SC=2) allows only up to 61 telescopes but with up to 11328 pixels (16-bit, single channel)."
+   echo "The 'sc3' variant (-DCTA_SC=3) allows only up to 111 telescopes but with up to 11328 pixels (16-bit, single channel)."
+   echo "The 'sc4' variant (-DCTA_SC=4) is like sc2 but allows for two gains (as sc2 used to be for hybrid-1)."
+   echo "The 'prod2' variant (-DCTA_PROD2) allows up 197 telescopes with up to 2048 pixels (16-bit, single channel)."
+   echo "The 'qgs2' option activates the QGSJET-II/URQMD interaction models."
+   echo "  You will also need the qgsdat-II-03 file in that case."
+   echo "  Otherwise you get the QGSJET01c/URQMD interaction models."
+   echo "The 'sibyll' option activates the SIBYLL/URQMD interaction models."
+   echo "Without interaction option, the default is QGSJET01c/URQMD."
+   echo "Use EXTRA_DEFINES for any additional sim_telarray + hessioxxx definitions."
+   exit 1
+fi
+
+bfile=$(/bin/ls bernlohr-*.tar.gz | sort | tail -1)
+bvers=$(echo $bfile | sed 's/bernlohr-\(1.[0-9][0-9]\).tar.gz/\1/')
+cfile=$(/bin/ls corsika-*.tar.gz | sort | tail -1)
+cvers=$(echo $cfile | sed 's/corsika-\([0-9]*\).tar.gz/\1/')
+
+arraysim_package="$(/bin/ls -t -r sim_hessarray.tar.gz sim_telarray.tar.gz sim_*array_20*.tar.gz 2>/dev/null | tail -1)"
+config_package="sim_telarray_config.tar.gz"
+
+# A '-DCTA' is appropriate for CTA benchmark, HESS, and 'Phase3' simulations.
+defs="-DCTA"
+
+# A '-DCTA_MAX' is OK for all available simulations but needs LOTS of memory.
+# defs="-DCTA_MAX"
+
+if [ ! -z "$CTA_ULTRA" ]; then
+   defs="-DCTA -DCTA_ULTRA"
+fi
+if [ ! -z "$CTA_MAX" ]; then
+   defs="-DCTA -DCTA_MAX"
+fi
+if [ ! -z "$CTA_SC" ]; then
+   defs="-DCTA -DCTA_SC=${CTA_SC}"
+fi
+if [ "$1" = "CTA" -o "$1" = "cta" ]; then 
+   defs="-DCTA"
+   shift
+fi
+if [ "$1" = "CTA_ULTRA" -o "$1" = "cta_ultra" -o "$1" = "ultra" -o "$1" = "prod1" ]; then 
+   defs="-DCTA -DCTA_ULTRA"
+   shift
+fi
+if [ "$1" = "CTA_MAX" -o "$1" = "cta_max" -o "$1" = "max" ]; then 
+   defs="-DCTA -DCTA_MAX"
+   shift
+fi
+if [ "$1" = "CTA_SC" -o "$1" = "cta_sc" -o "$1" = "sc" ]; then 
+   defs="-DCTA -DCTA_SC"
+   shift
+fi
+if [ "$1" = "CTA_SC2" -o "$1" = "cta_sc2" -o "$1" = "sc2" ]; then 
+   defs="-DCTA -DCTA_SC=2"
+   shift
+fi
+if [ "$1" = "CTA_SC3" -o "$1" = "cta_sc3" -o "$1" = "sc3" ]; then 
+   defs="-DCTA -DCTA_SC=3"
+   shift
+fi
+if [ "$1" = "CTA_SC4" -o "$1" = "cta_sc4" -o "$1" = "sc4" ]; then 
+   defs="-DCTA -DCTA_SC=4"
+   shift
+fi
+if [ "$1" = "CTA_PROD2" -o "$1" = "cta_prod2" -o "$1" = "prod2" ]; then 
+   defs="-DCTA -DCTA_PROD2"
+   shift
+fi
+if [ "$1" = "CTA_ULTRA5" -o "$1" = "cta_ultra5" -o "$1" = "ultra5" ]; then 
+   defs="-DCTA -DCTA_ULTRA5"
+   shift
+fi
+
+if [ ! -z "${EXTRA_DEFINES}" ]; then
+   defs="${defs} ${EXTRA_DEFINES}"
+fi
+
+echo "Building CORSIKA version $cvers with IACT/ATMO package version $bvers."
+echo "Building hessio+sim_telarray with these definitions: $defs"
+
+# bvers=1.44
+# cvers=6980
+interact="qgsjet01c"
+
+if [ "$1" = "sibyll" ]; then
+   interact="sibyll"
+   shift
+else
+ if [ "$1" = "qgs2" ]; then
+   interact="qgs2"
+   shift
+ else
+   interact="qgsjet01c"
+ fi
+fi
+
+generic=""
+if [ "$1" = "generic" ]; then
+   generic="generic"
+   shift
+fi
+if [ "$1" = "native" ]; then
+   generic="native"
+   shift
+fi
+
+debug=""
+cdebugflags="-g -O2"
+if [ "$1" = "debug" ]; then
+   debug="debug"
+   cdebugflags="-g -O0"
+   shift
+fi
+
+if [ ! -z "${CDEBUGFLAGS}" ]; then
+   cdebugflags="${CDEBUGFLAGS}"
+fi
+
+
+echo "Interaction model to be used : ${interact}"
+sleep 1
+
+set -x
+
+buildir="."
+if [ ! -z "$1" ]; then
+    buildir=`/bin/pwd`/"$1"
+    if [ ! -d "${buildir}" ]; then
+	mkdir "${buildir}"
+    fi
+fi
+
+# -------------------- CORSIKA ---------------------------
+
+# Install the original CORSIKA code.
+# tar zxf corsika-${cvers}.tar.gz || exit 1
+
+# The IACT/ATMO package coming with CORSIKA is outdated.
+# (cd corsika-${cvers}/bernlohr && tar zxf ../../bernlohr-${bvers}.tar.gz) || exit 1
+
+# There may be patches needed to get CORSIKA compiled.
+# if [ -f corsika-${cvers}.patch ]; then
+#    (cd corsika-${cvers} && patch -p1 < ../corsika-${cvers}.patch) || exit 1
+# fi
+
+# Now go and compile CORSIKA.
+# (cd corsika-${cvers} && \
+#  ../corsika_build_script "${interact}" "${generic}" "${debug}") || \
+#    ( if [ -x corsika-${cvers}/src/corsika ]; then \
+#       /usr/bin/install -c corsika-${cvers}/src/corsika corsika-${cvers}/run/corsika${cvers}`uname`__ && \
+#       echo "Tried to recover from an incomplete corsika_build_script execution." && \
+#       echo "Check that a working CORSIKA binary (corsika${cvers}`uname`) got installed in corsika-${cvers}/run"; \
+#      else exit 1; fi ) || \
+#    exit 1
+
+# Since the default interaction model is now (maybe) QGS2, we should better
+# have the data file, or our first example will need days rather than
+# minutes.
+# if [ -f qgsdat-II-03.gz ]; then
+#    gunzip qgsdat-II-03.gz
+# fi
+# if [ ! -f qgsdat-II-03 ]; then
+#    dtn=$(/bin/ls ~/[Cc]orsika*/qgsdat-II-03 ${HESSROOT}/corsika*/qgsdat-II-03 | tail -1)
+#    if [ ! -z "$dtn" ]; then
+#       ln -s "$dtn"
+#    fi
+# fi
+# if [ -f qgsdat-II-03 ]; then
+#    (cd corsika-${cvers}/run && ln -sf ../../qgsdat-II-03)
+# fi
+
+# if [ ! -f "qgsdat-II-03" ]; then
+#  if [ ! -f "corsika-${cvers}/run/qgsdat-II-03" ]; then
+#    echo "Warning: The data file qgsdat-II-03 is missing."
+#    echo "You should better get this file before you start with the examples."
+#    echo "As an alternative you may compile CORSIKA with another interaction model."
+#  fi
+# fi
+
+# -------------------- hessio ------------------------
+
+unset HESSROOT
+export HESSROOT
+
+# If the code was already there, we just clean but do not remove it.
+if [ -d "hessioxxx" ]; then
+   (cd hessioxxx && make clean)
+fi
+
+# Install the stand-alone hessio library and client code.
+tar zxvf hessioxxx.tar.gz || exit 1
+
+# Build the hessio library and programs.
+(cd hessioxxx && make CDEBUGFLAGS="${cdebugflags}" DEFINES="$defs" && cp -r bin lib include "${buildir}/" ) || exit 1
+
+# ---------------------- sim_telarray -----------------
+
+# If the code was already there, we just clean but do not remove it.
+if [ -d "sim_telarray" ]; then
+   (cd sim_telarray && make clean)
+fi
+
+# Install the sim_hessarray/sim_telarray code.
+tar zxvf ${arraysim_package} || exit 1
+
+# If you do not want the configuration files to be installed, set the NO_CONFIG variable first.
+if [ -z "${NO_CONFIG}" ]; then
+   if [ -f "${config_package}" ]; then
+      tar zxvf ${config_package} || exit 1
+   fi
+fi
+
+# Build sim_hessarray and the helper programs.
+(cd sim_telarray && make CDEBUGFLAGS="${cdebugflags}" EXTRA_DEFINES="$defs" install && cp -r bin cfg multi "${buildir}/" ) || exit 1
+
+set +x
+
+# ------------------ examples -------------------------
+
+# tar zxvf examples-with-data.tar.gz
+# echo "The following examples are available:"
+# /bin/ls example[0-9]*
+
+# echo "Preparing directories needed to run the examples:"
+# ./prepare_for_examples
+
+# --------------------- done --------------------------
+
+echo ''
+echo 'Everything built, and multi and cfg subdirs copied into '$1
+echo ''
+
