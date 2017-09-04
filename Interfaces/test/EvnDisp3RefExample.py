@@ -26,9 +26,12 @@ def submitTS( job, transName, mqJson ):
 
   res = tc.addTransformation( transName, 'EvnDisp3 example', 'EvnDisplay calib_imgreco', 'DataReprocessing', 'Standard', 'Automatic', mqJson, groupSize = 2, body = job.workflow.toXML() )
 
-  print(res)  
-  transID = res['Value']
-  print  transID
+  if not res['OK']:
+    DIRAC.gLogger.error ( res['Message'] )
+    DIRAC.exit( -1 )
+  else:
+    transID = res['Value']
+    print(transID)
 
   return res
 
