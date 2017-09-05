@@ -280,3 +280,7 @@ CHANGE: Start to remove some old files
 [v1r43p1]
 * JB
 CHANGE: Remove Prod3DataManager2, CTATSFileCatalog, cta-analysis-managedata2
+
+[v1r43p2]
+* JB
+FIX : initialize JOB_ID in Examples
