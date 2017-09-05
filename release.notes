@@ -277,3 +277,6 @@ NEW: TransformationSystem removed
      New scripts for Baseline simulation, converter+evendisp and mscw_energy
 CHANGE: Start to remove some old files
 
+[v1r43p1]
+* JB
+CHANGE: Remove Prod3DataManager2, CTATSFileCatalog, cta-analysis-managedata2

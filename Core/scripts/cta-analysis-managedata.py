@@ -47,7 +47,7 @@ def putAndRegisterPROD3( args ):
       outputType='Log'
 
 
-    catalogs = ['DIRACFileCatalog','CTATSCatalog']
+    catalogs = ['DIRACFileCatalog']
 
     # # Create MD structure
     prod3dm = Prod3DataManager( catalogs )

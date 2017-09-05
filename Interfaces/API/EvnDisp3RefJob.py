@@ -172,7 +172,7 @@ class EvnDisp3RefJob( Job ) :
 
     # register Data
     outputpattern = './Data/*DL1.root'
-    dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata2.py',
+    dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s" % ( mdjson, mdfieldjson, fmdjson, self.basepath, outputpattern, self.package ),
                               logFile = 'DataManagement_Log.txt' )
     dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
@@ -181,7 +181,7 @@ class EvnDisp3RefJob( Job ) :
 
     # register Log
     outputpattern = './*.logs.tgz'
-    dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata2.py',
+    dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s Log" % ( mdjson, mdfieldjson, fmdjson, self.basepath, outputpattern, self.package ),
                               logFile = 'Log_DataManagement_Log.txt' )
     dmStep['Value']['name'] = 'Step%i_Log_DataManagement' % iStep
