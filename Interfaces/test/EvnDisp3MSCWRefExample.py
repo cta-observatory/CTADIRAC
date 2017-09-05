@@ -17,10 +17,14 @@ import DIRAC
 from DIRAC.TransformationSystem.Client.TransformationClient import TransformationClient
 from CTADIRAC.Interfaces.API.EvnDisp3MSCWRefJob import EvnDisp3MSCWRefJob
 from DIRAC.Interfaces.API.Dirac import Dirac
+from DIRAC.Core.Workflow.Parameter import Parameter
 
 def submitTS( job, transName, mqJson ):
   """ Create a transformation executing the job workflow  """
   tc = TransformationClient()
+
+  # Initialize JOB_ID
+  job.workflow.addParameter( Parameter( "JOB_ID", "000000", "string", "", "", True, False, "Temporary fix" ) )
 
   res = tc.addTransformation( transName, 'EvnDisp3MSCW example', 'EvnDisplay stereo reconstruction', 'DataReprocessing', 'Standard', 'Automatic', mqJson, groupSize = 10, body = job.workflow.toXML() )
 

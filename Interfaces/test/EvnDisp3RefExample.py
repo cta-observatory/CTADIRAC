@@ -17,10 +17,14 @@ import DIRAC
 from DIRAC.TransformationSystem.Client.TransformationClient import TransformationClient
 from CTADIRAC.Interfaces.API.EvnDisp3RefJob import EvnDisp3RefJob
 from DIRAC.Interfaces.API.Dirac import Dirac
+from DIRAC.Core.Workflow.Parameter import Parameter
 
 def submitTS( job, transName, mqJson ):
   """ Create a transformation executing the job workflow  """
   DIRAC.gLogger.notice( 'submitTS' )
+
+  # Initialize JOB_ID
+  job.workflow.addParameter( Parameter( "JOB_ID", "000000", "string", "", "", True, False, "Temporary fix" ) )
   
   tc = TransformationClient()
 
