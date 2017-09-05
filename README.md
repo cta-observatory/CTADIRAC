@@ -3,7 +3,7 @@ CTADIRAC projet
 * add things, need add a licence GPLv3 ?
 
 Authors from svn
-adria@ecm.ub.es = Adrian Casajus <adria@ecm.ub.es>
+adria@ecm.ub.es = Adrian Casajus <adria@ecm.ub.es> <br>
 arrabito = Luisa Arrabito <arrabito@in2p3.fr>
 arrabito@in2p3.fr = Luisa Arrabito <arrabito@in2p3.fr>
 arrabito.luisa@gmail.com = Luisa Arrabito <arrabito@in2p3.fr>
