@@ -269,3 +269,11 @@ NEW: add scripts for sw installation/removal
 [v1r36p4]
 *JB
 NEW: add scripts to run PROD3 3HB89 merging jobs
+
+[v1r43p0]
+* JB
+NEW: TransformationSystem removed
+     sync DataManager with DIRAC v6r17
+     New scripts for Baseline simulation, converter+evendisp and mscw_energy
+CHANGE: Start to remove some old files
+
