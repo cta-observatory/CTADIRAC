@@ -2,7 +2,7 @@ CTADIRAC project:
 * moved to git on Septembre 5th 2017
 * add things, need add a licence GPLv3 ?
 
-Authors from svn:
+Authors from svn:<br>
 Adrian Casajus <adria@ecm.ub.es> <br>
 Luisa Arrabito <arrabito@in2p3.fr> <br>
 Johan Bregeon <johan.bregeon@lupm.in2p3.fr> <br>
