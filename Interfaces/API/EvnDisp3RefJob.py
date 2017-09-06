@@ -181,8 +181,9 @@ class EvnDisp3RefJob( Job ) :
 
     # register Log
     outputpattern = './*.logs.tgz'
-    dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
-                              arguments = "'%s' '%s' '%s' %s '%s' %s Log" % ( mdjson, mdfieldjson, fmdjson, self.basepath, outputpattern, self.package ),
+    dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
+                              arguments = "'%s' '%s' '%s' %s '%s' %s Log" % \
+                              ( mdjson, mdfieldjson, fmdjson, self.basepath, outputpattern, self.package ),
                               logFile = 'Log_DataManagement_Log.txt' )
     dmStep['Value']['name'] = 'Step%i_Log_DataManagement' % iStep
     dmStep['Value']['descr_short'] = 'Save log files to SE and register them in DFC'
@@ -190,7 +191,9 @@ class EvnDisp3RefJob( Job ) :
 
     # step 6 -- to be removed -- debug only
     if debug:
-        lsStep = self.setExecutable( '/bin/ls -alhtr; /bin/ls -lahrt ./Data', logFile = 'LS_End_Log.txt' )
+        lsStep = self.setExecutable('/bin/ls',
+                                    arguments = " -alhtr; /bin/ls -lahrt ./Data",
+                                    logFile = 'LS_End_Log.txt')
         lsStep['Value']['name']='Step%i_LS_End'%iStep
         lsStep['Value']['descr_short']='list files in working directory and in Data directory'
         iStep+=1
