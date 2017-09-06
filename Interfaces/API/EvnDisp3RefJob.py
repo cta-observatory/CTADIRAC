@@ -156,7 +156,12 @@ class EvnDisp3RefJob( Job ) :
 
     # step 4
     evStep = self.setExecutable( './dirac_prod3_evndisp_ref', \
-                                arguments = "--prefix %s --layout '%s' --calibration_file %s --reconstructionparameter %s --NNcleaninginputcard %s" % ( self.prefix, self.layout, self.calibration_file, self.reconstructionparameter, self.NNcleaninginputcard ), \
+                                arguments = "--prefix %s --layout '%s' \
+                                --calibration_file %s --reconstructionparameter %s \
+                                --NNcleaninginputcard %s --taskid %s" % \
+                                ( self.prefix, self.layout, self.calibration_file,
+                                 self.reconstructionparameter, self.NNcleaninginputcard,
+                                 self.ts_task_id), \
                                 logFile = 'EvnDisp_Log.txt' )
     evStep['Value']['name'] = 'Step%i_EvnDisplay' % iStep
     evStep['Value']['descr_short'] = 'Run EvnDisplay'
@@ -197,6 +202,3 @@ class EvnDisp3RefJob( Job ) :
         lsStep['Value']['name']='Step%i_LS_End'%iStep
         lsStep['Value']['descr_short']='list files in working directory and in Data directory'
         iStep+=1
-
-    # TS Task Id as an environment variable
-    self.setExecutionEnv( {'TS_TASK_ID' : '%s' % self.ts_task_id} )
