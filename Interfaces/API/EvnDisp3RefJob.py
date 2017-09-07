@@ -8,7 +8,7 @@
 __RCSID__ = "$Id$"
 
 # generic imports
-import os, json, collections
+import json, collections
 # DIRAC imports
 import DIRAC
 from DIRAC.Interfaces.API.Job import Job
@@ -172,10 +172,10 @@ class EvnDisp3RefJob( Job ) :
     # step 5
     # ## the order of the metadata dictionary is important, since it's used to build the directory structure
     mdjson = json.dumps( self.metadata )
-    metadatafield = {'array_layout':'VARCHAR(128)', 'site':'VARCHAR(128)',\
-                     'particle':'VARCHAR(128)', 'phiP':'float',\
-                     'thetaP': 'float', 'calibimgreco_prog':'VARCHAR(128)',\
-                     'calibimgreco_prog_version':'VARCHAR(128)',\
+    metadatafield = {'array_layout':'VARCHAR(128)', 'site':'VARCHAR(128)',
+                     'particle':'VARCHAR(128)', 'phiP':'float',
+                     'thetaP': 'float', 'calibimgreco_prog':'VARCHAR(128)',
+                     'calibimgreco_prog_version':'VARCHAR(128)',
                      'data_level':'int'}
     mdfieldjson = json.dumps(metadatafield)
     fmdjson = json.dumps(self.filemetadata)
