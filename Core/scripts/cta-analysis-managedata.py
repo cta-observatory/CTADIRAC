@@ -18,15 +18,19 @@ Script.parseCommandLine()
 from CTADIRAC.Core.Workflow.Modules.Prod3DataManager import Prod3DataManager
 
 def getRunNumber( filename, package ):
-  if package in ['chimp', 'mars', 'corsika_simhessarray']:
-    run_number = filename.split( 'run' )[1].split( '___cta' )[0]
-  if package == 'evndisplay':
-    try:
-        run_number = int(filename.split( '-' )[0])
-    except:
-        DIRAC.gLogger.info( 'Trying EvnDisplay DL file format to get run number' )
+    if filename[-9:] == '.logs.tgz':
+        run_number = int(filename.split('/')[-1].split('_')[1].split('.')[0])       
+    elif package in ['chimp', 'mars', 'corsika_simhessarray']:
         run_number = int(filename.split( 'run' )[1].split( '___cta' )[0])
-  return str(run_number)
+    elif package == 'evndisplay':            
+        try:            
+            run_number = int(filename.split( '-' )[0])
+        except:
+            run_number = int(filename.split( 'run' )[1].split( '___cta' )[0])
+    else:
+        DIRAC.gLogger.error ('Could not get run number for file %s'%filename)
+        DIRAC.exit(-1)
+    return str(run_number)
 
 ####################################################
 def putAndRegisterPROD3( args ):
