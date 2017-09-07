@@ -7,7 +7,7 @@
 __RCSID__ = "$Id$"
 
 # generic imports
-import os, json, collections
+import json, collections
 # DIRAC imports
 import DIRAC
 from DIRAC.Interfaces.API.Job import Job
@@ -29,6 +29,7 @@ class EvnDisp3MSCWRefJob( Job ) :
     # defaults
     self.setName('Evndisplay_Reco')
     self.package='evndisplay'
+    self.program_category='reconstruction'
     self.version = 'prod3b_d20170602' # or later
     self.prefix = 'CTA.prod3Nb'
     self.layout = 'Baseline'
@@ -133,8 +134,9 @@ class EvnDisp3MSCWRefJob( Job ) :
     self.metadata['particle'] = simtelMD['particle']
     self.metadata['phiP'] = simtelMD['phiP']['=']
     self.metadata['thetaP'] = simtelMD['thetaP']['=']
-    self.metadata['reconstruction_prog'] = 'evndisp'
-    self.metadata['reconstruction_prog_version'] = self.version
+    self.metadata[self.program_category+'_prog'] = 'evndisp'
+    self.metadata[self.program_category+'_prog_version'] = self.version
+    self.metadata['data_level'] = 2
 
     # ## Set file metadata
     # self.filemetadata = {'runNumber': simtelMD['runNumber']}
@@ -172,9 +174,9 @@ class EvnDisp3MSCWRefJob( Job ) :
     # step 4
     evStep = self.setExecutable( './dirac_prod3_evndisp_mscw_ref', \
         arguments = "--prefix %s --layout '%s' --pointing %s --table_file %s\
-                     --disp_subdir_name %s --recid '%s'" %\
+                     --disp_subdir_name %s --recid '%s' --taskid %s" %\
                     ( self.prefix, self.layout, self.pointing, self.table_file,\
-                      self.disp_subdir_name, self.recid),\
+                      self.disp_subdir_name, self.recid, self.ts_task_id),\
         logFile = 'EvnDisp_MSCW_Log.txt' )
     evStep['Value']['name'] = 'Step%i_EvnDisplay_MSMCW' % iStep
     evStep['Value']['descr_short'] = 'Run EvnDisplay mscw_energy'
@@ -183,35 +185,42 @@ class EvnDisp3MSCWRefJob( Job ) :
     # step 5
     # ## the order of the metadata dictionary is important, since it's used to build the directory structure
     mdjson = json.dumps( self.metadata )
-    metadatafield = {'array_layout':'VARCHAR(128)', 'site':'VARCHAR(128)', 'particle':'VARCHAR(128)', \
-                         'phiP':'float', 'thetaP': 'float', 'reconstruction_prog':'VARCHAR(128)', 'reconstruction_prog_version':'VARCHAR(128)'}
+    metadatafield = {'array_layout':'VARCHAR(128)', 'site':'VARCHAR(128)',
+                     'particle':'VARCHAR(128)', 'phiP':'float',
+                     'thetaP': 'float', 'reconstruction_prog':'VARCHAR(128)',
+                     'reconstruction_prog_version':'VARCHAR(128)',
+                     'data_level':'int'}
     mdfieldjson = json.dumps( metadatafield )
     fmdjson = json.dumps( self.filemetadata )
 
     # register Data
-    outputpattern = './Data/*-evndisp-DL2.root'
-    dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
-                              arguments = "'%s' '%s' '%s' %s '%s' %s" % ( mdjson, mdfieldjson, fmdjson, self.basepath, outputpattern, self.package ),
-                              logFile = 'DataManagement_Log.txt' )
+    outputpattern = './Data/*DL2.root'
+    dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
+                               arguments = "'%s' '%s' '%s' %s '%s' %s %s" % \
+                               (mdjson, mdfieldjson, fmdjson, self.basepath,
+                                outputpattern, self.package, self.program_category),
+                               logFile = 'DataManagement_Log.txt' )
     dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
     dmStep['Value']['descr_short'] = 'Save data files to SE and register them in DFC'
     iStep += 1
 
     # register Log
     self.outputpattern = './*.logs.tgz'
-    dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
-                              arguments = "'%s' '%s' '%s' %s '%s' %s Log" % ( mdjson, mdfieldjson, fmdjson, self.basepath, outputpattern, self.package ),
-                              logFile = 'Log_DataManagement_Log.txt' )
+    dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
+                              arguments = "'%s' '%s' '%s' %s '%s' %s %s Log" % \
+                              (mdjson, mdfieldjson, fmdjson, self.basepath,
+                               outputpattern, self.package, self.program_category),
+                              logFile = 'Log_DataManagement_Log.txt')
     dmStep['Value']['name'] = 'Step%i_Log_DataManagement' % iStep
     dmStep['Value']['descr_short'] = 'Save log files to SE and register them in DFC'
     iStep += 1
 
     # step 6 -- to be removed -- debug only
     if debug:
-        lsStep = self.setExecutable( '/bin/ls -alhtr; /bin/ls -lahrt ./Data', logFile = 'LS_End_Log.txt' )
+        lsStep = self.setExecutable('/bin/ls',
+                                    arguments = " -alhtr; /bin/ls -lahrt ./Data",
+                                    logFile = 'LS_End_Log.txt')
         lsStep['Value']['name']='Step%i_LS_End'%iStep
         lsStep['Value']['descr_short']='list files in working directory and in Data directory'
         iStep+=1
 
-    # TS Task Id as an environment variable
-    self.setExecutionEnv( {'TS_TASK_ID' : '%s' % self.ts_task_id} )

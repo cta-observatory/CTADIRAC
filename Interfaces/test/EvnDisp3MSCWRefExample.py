@@ -21,15 +21,21 @@ from DIRAC.Core.Workflow.Parameter import Parameter
 
 def submitTS( job, transName, mqJson ):
   """ Create a transformation executing the job workflow  """
-  tc = TransformationClient()
+  DIRAC.gLogger.notice( 'submitTS' )
 
   # Initialize JOB_ID
   job.workflow.addParameter( Parameter( "JOB_ID", "000000", "string", "", "", True, False, "Temporary fix" ) )
+  
+  tc = TransformationClient()
 
   res = tc.addTransformation( transName, 'EvnDisp3MSCW example', 'EvnDisplay stereo reconstruction', 'DataReprocessing', 'Standard', 'Automatic', mqJson, groupSize = 10, body = job.workflow.toXML() )
 
-  transID = res['Value']
-  print  transID
+  if not res['OK']:
+    DIRAC.gLogger.error ( res['Message'] )
+    DIRAC.exit( -1 )
+  else:
+    transID = res['Value']
+    print(transID)
 
   return res
 
@@ -71,15 +77,17 @@ def runEvnDisp3( args = None ):
 
   ### set meta-data to the product of the transformation
   # set query to add files to the transformation
-  MDdict = {'MCCampaign':'PROD3', 'particle':'gamma', 'array_layout':'Baseline', \
-            'site':'LaPalma', 'outputType':'Data',\
-            'calibimgreco_prog':'evndisp', 'calibimgreco_prog_version':'prod3b_d20170602',\
+  MDdict = {'MCCampaign':'PROD3', 'particle':'gamma',
+            'array_layout':'Baseline', 
+            'site':'LaPalma', 'outputType':'Data', 'data_level':1,
+            'calibimgreco_prog':'evndisp', 
+            'calibimgreco_prog_version':'prod3b_d20170602',
             'thetaP':{"=": 20}, 'phiP':{"=": 180.0}}
   job.setEvnDispMD( MDdict )
 
   # add the sequence of executables
   job.setTSTaskId( '@{JOB_ID}' ) # dynamic
-  job.setupWorkflow()
+  job.setupWorkflow(debug=True)
 
   # output
   job.setOutputSandbox( ['*Log.txt'] )
