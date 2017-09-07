@@ -45,7 +45,8 @@ def putAndRegisterPROD3( args ):
     basepath = args[3]
     outputpattern = args[4]
     package = args[5]
-    if len(args)==6:
+    program_category = args[6]
+    if len(args)==7:
       outputType='Data'
     else:
       outputType='Log'
@@ -55,7 +56,8 @@ def putAndRegisterPROD3( args ):
 
     # # Create MD structure
     prod3dm = Prod3DataManager( catalogs )
-    res = prod3dm.createMDStructure( metadata, metadatafield, basepath, 'analysis')
+    #res = prod3dm.createMDStructure( metadata, metadatafield, basepath, 'analysis')
+    res = prod3dm.createMDStructure( metadata, metadatafield, basepath, program_category)
     if res['OK']:
       path = res['Value']
     else:

@@ -30,6 +30,7 @@ class EvnDisp3RefJob( Job ) :
     # defaults
     self.setName('Evndisplay_CalibReco')
     self.package='evndisplay'
+    self.program_category='calibimgreco'
     self.version = 'prod3b_d20170602' # or later
     self.prefix = 'CTA.prod3Nb'
     self.layout = 'Baseline'
@@ -118,8 +119,8 @@ class EvnDisp3RefJob( Job ) :
     self.metadata['particle'] = simtelMD['particle']
     self.metadata['phiP'] = simtelMD['phiP']['=']
     self.metadata['thetaP'] = simtelMD['thetaP']['=']
-    self.metadata['calibimgreco_prog'] = 'evndisp'
-    self.metadata['calibimgreco_prog_version'] = self.version
+    self.metadata[self.program_category+'_prog'] = 'evndisp'
+    self.metadata[self.program_category+'_prog_version'] = self.version
 
     # ## Set file metadata
     # self.filemetadata = {'runNumber': simtelMD['runNumber']}
@@ -178,7 +179,9 @@ class EvnDisp3RefJob( Job ) :
     # register Data
     outputpattern = './Data/*DL1.root'
     dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
-                              arguments = "'%s' '%s' '%s' %s '%s' %s" % ( mdjson, mdfieldjson, fmdjson, self.basepath, outputpattern, self.package ),
+                              arguments = "'%s' '%s' '%s' %s '%s' %s %s" %\
+                              (mdjson, mdfieldjson, fmdjson, self.basepath,
+                               outputpattern, self.package, self.program_category),
                               logFile = 'DataManagement_Log.txt' )
     dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
     dmStep['Value']['descr_short'] = 'Save data files to SE and register them in DFC'
@@ -187,8 +190,9 @@ class EvnDisp3RefJob( Job ) :
     # register Log
     outputpattern = './*.logs.tgz'
     dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
-                              arguments = "'%s' '%s' '%s' %s '%s' %s Log" % \
-                              ( mdjson, mdfieldjson, fmdjson, self.basepath, outputpattern, self.package ),
+                              arguments = "'%s' '%s' '%s' %s '%s' %s %s Log" % \
+                              (mdjson, mdfieldjson, fmdjson, self.basepath,
+                               outputpattern, self.package, self.program_category),
                               logFile = 'Log_DataManagement_Log.txt' )
     dmStep['Value']['name'] = 'Step%i_Log_DataManagement' % iStep
     dmStep['Value']['descr_short'] = 'Save log files to SE and register them in DFC'
