@@ -121,6 +121,7 @@ class EvnDisp3RefJob( Job ) :
     self.metadata['thetaP'] = simtelMD['thetaP']['=']
     self.metadata[self.program_category+'_prog'] = 'evndisp'
     self.metadata[self.program_category+'_prog_version'] = self.version
+    self.metadata['data_level'] = 1
 
     # ## Set file metadata
     # self.filemetadata = {'runNumber': simtelMD['runNumber']}
@@ -171,18 +172,21 @@ class EvnDisp3RefJob( Job ) :
     # step 5
     # ## the order of the metadata dictionary is important, since it's used to build the directory structure
     mdjson = json.dumps( self.metadata )
-    metadatafield = {'array_layout':'VARCHAR(128)', 'site':'VARCHAR(128)', 'particle':'VARCHAR(128)', \
-                         'phiP':'float', 'thetaP': 'float', 'calibimgreco_prog':'VARCHAR(128)', 'calibimgreco_prog_version':'VARCHAR(128)'}
-    mdfieldjson = json.dumps( metadatafield )
-    fmdjson = json.dumps( self.filemetadata )
+    metadatafield = {'array_layout':'VARCHAR(128)', 'site':'VARCHAR(128)',\
+                     'particle':'VARCHAR(128)', 'phiP':'float',\
+                     'thetaP': 'float', 'calibimgreco_prog':'VARCHAR(128)',\
+                     'calibimgreco_prog_version':'VARCHAR(128)',\
+                     'data_level':'int'}
+    mdfieldjson = json.dumps(metadatafield)
+    fmdjson = json.dumps(self.filemetadata)
 
     # register Data
     outputpattern = './Data/*DL1.root'
-    dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
+    dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s %s" %\
                               (mdjson, mdfieldjson, fmdjson, self.basepath,
                                outputpattern, self.package, self.program_category),
-                              logFile = 'DataManagement_Log.txt' )
+                              logFile = 'DataManagement_Log.txt')
     dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
     dmStep['Value']['descr_short'] = 'Save data files to SE and register them in DFC'
     iStep += 1
