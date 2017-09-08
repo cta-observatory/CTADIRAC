@@ -121,10 +121,6 @@ class EvnDisp3RefJob( Job ) :
     self.metadata['thetaP'] = simtelMD['thetaP']['=']
     self.metadata[self.program_category+'_prog'] = 'evndisp'
     self.metadata[self.program_category+'_prog_version'] = self.version
-    self.metadata['data_level'] = 1
-
-    # ## Set file metadata
-    # self.filemetadata = {'runNumber': simtelMD['runNumber']}
 
   def setupWorkflow(self, debug=False):
     """ Setup job workflow by defining the sequence of all executables
@@ -178,13 +174,14 @@ class EvnDisp3RefJob( Job ) :
                      'calibimgreco_prog_version':'VARCHAR(128)',
                      'data_level':'int'}
     mdfieldjson = json.dumps(metadatafield)
-    fmdjson = json.dumps(self.filemetadata)
 
     # register Data
     outputpattern = './Data/*DL1.root'
+    filemetadata = {'data_level': 1}
+    file_md_json = json.dumps(filemetadata)
     dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s %s" %\
-                              (mdjson, mdfieldjson, fmdjson, self.basepath,
+                              (mdjson, mdfieldjson, file_md_json, self.basepath,
                                outputpattern, self.package, self.program_category),
                               logFile = 'DataManagement_Log.txt')
     dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
@@ -193,9 +190,11 @@ class EvnDisp3RefJob( Job ) :
 
     # register Log
     outputpattern = './*.logs.tgz'
+    filemetadata = {}
+    file_md_json = json.dumps(filemetadata)
     dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s %s Log" % \
-                              (mdjson, mdfieldjson, fmdjson, self.basepath,
+                              (mdjson, mdfieldjson, file_md_json, self.basepath,
                                outputpattern, self.package, self.program_category),
                               logFile = 'Log_DataManagement_Log.txt' )
     dmStep['Value']['name'] = 'Step%i_Log_DataManagement' % iStep
