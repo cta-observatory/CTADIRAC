@@ -28,7 +28,7 @@ def submitTS( job, transName, mqJson ):
   
   tc = TransformationClient()
 
-  res = tc.addTransformation( transName, 'EvnDisp3 example', 'EvnDisplay calib_imgreco', 'DataReprocessing', 'Standard', 'Automatic', mqJson, groupSize = 2, body = job.workflow.toXML() )
+  res = tc.addTransformation( transName, 'EvnDisp3 example', 'EvnDisplay calib_imgreco', 'DataReprocessing', 'Standard', 'Automatic', mqJson, groupSize = 5, body = job.workflow.toXML() )
 
   if not res['OK']:
     DIRAC.gLogger.error ( res['Message'] )
