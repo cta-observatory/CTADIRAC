@@ -81,6 +81,7 @@ def runEvnDisp3MSCW( args = None ):
   MDdict = {'MCCampaign':'PROD3', 'particle':'gamma',
             'array_layout':'Baseline', 
             'site':'LaPalma', 'outputType':'Data', 'data_level':1,
+            'configuration_id':0,
             'calibimgreco_prog':'evndisp', 
             'calibimgreco_prog_version':'prod3b_d20170602',
             'thetaP':{"=": 20}, 'phiP':{"=": 0.0}}
