@@ -41,13 +41,14 @@ def submitTS( job, transName, mqJson ):
 
 #########################################################
 
-def runEvnDisp3( args = None ):
+def runEvnDisp3MSCW( args = None ):
   """ Simple wrapper to create a EvnDisp3RefJob and setup parameters
       from positional arguments given on the command line.
 
       Parameters:
       args -- infile mode
   """
+  DIRAC.gLogger.notice( 'runEvnDisp3MSCW' )
   # get arguments
   transName = args[0]
 
@@ -104,7 +105,7 @@ if __name__ == '__main__':
   if ( len( args ) != 1 ):
     Script.showHelp()
   try:
-    res = runEvnDisp3( args )
+    res = runEvnDisp3MSCW( args )
     if not res['OK']:
       DIRAC.gLogger.error ( res['Message'] )
       DIRAC.exit( -1 )
