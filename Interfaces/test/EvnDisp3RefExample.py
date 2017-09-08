@@ -78,9 +78,9 @@ def runEvnDisp3( args = None ):
 
   ### set meta-data to the product of the transformation
   # set query to add files to the transformation
-  MDdict = {'MCCampaign':'PROD3', 'particle':'gamma', 'array_layout':'Baseline', \
-            'site':'LaPalma', 'outputType':'Data',\
-            'tel_sim_prog':'simtel', 'tel_sim_prog_version':'2017-04-19',\
+  MDdict = {'MCCampaign':'PROD3', 'particle':'gamma', 'array_layout':'Baseline', 
+            'site':'LaPalma', 'outputType':'Data',
+            'tel_sim_prog':'simtel', 'tel_sim_prog_version':'2017-04-19',
             'thetaP':{"=": 20}, 'phiP':{"=": 0.0}}
   job.setEvnDispMD( MDdict )
 
