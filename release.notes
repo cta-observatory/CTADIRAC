@@ -293,3 +293,4 @@ FIX : fix meta data
 * JB
 NEW : add data level meta data
       improve get run number for log files
+      sync EvnDispJob classes
