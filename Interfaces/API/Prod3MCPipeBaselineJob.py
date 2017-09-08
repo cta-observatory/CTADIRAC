@@ -32,6 +32,8 @@ class Prod3MCPipeBaselineJob( Job ) :
     self.setName('Prod3MC_Generation')
     self.package='corsika_simhessarray'
     self.version='2017-04-19'
+    self.configuration_id = 0
+    self.output_data_level=0
     self.nShower=100
     self.start_run_number = '0'
     self.run_number = '10'
@@ -220,7 +222,9 @@ class Prod3MCPipeBaselineJob( Job ) :
 
     mdfieldjson = json.dumps( metadatafield )
 
-    filemetadata = {'runNumber': self.run_number }
+    filemetadata = {'runNumber': self.run_number,
+                    'data_level': self.output_data_level,
+                    'configuration_id':self.configuration_id}
 
     fmdjson = json.dumps( filemetadata )
 

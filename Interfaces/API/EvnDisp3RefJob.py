@@ -33,6 +33,7 @@ class EvnDisp3RefJob( Job ) :
     self.program_category='calibimgreco'
     self.output_data_level=1
     self.version = 'prod3b_d20170602' # or later
+    self.configuration_id = 0
     self.prefix = 'CTA.prod3Nb'
     self.layout = 'Baseline'
     self.calibration_file = 'gamma_20deg_180deg_run3___cta-prod3-lapalma3-2147m-LaPalma.ped.root'
@@ -178,7 +179,8 @@ class EvnDisp3RefJob( Job ) :
 
     # register Data
     outputpattern = './Data/*DL%01d.root'%self.output_data_level
-    filemetadata = {'data_level': self.output_data_level}
+    filemetadata = {'data_level': self.output_data_level,
+                    'configuration_id': self.configuration_id}
     file_md_json = json.dumps(filemetadata)
     dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s %s" %\

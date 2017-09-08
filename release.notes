@@ -294,3 +294,5 @@ FIX : fix meta data
 NEW : add data level meta data
       improve get run number for log files
       sync EvnDispJob classes
+      add configuration_id as file meta data in corsika, evndisp, mscw job
+      classes

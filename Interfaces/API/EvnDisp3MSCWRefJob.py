@@ -32,6 +32,7 @@ class EvnDisp3MSCWRefJob( Job ) :
     self.program_category='reconstruction'
     self.output_data_level=2
     self.version = 'prod3b_d20170602' # or later
+    self.configuration_id = 0
     self.prefix = 'CTA.prod3Nb'
     self.layout = 'Baseline'
     self.pointing = '180'
@@ -191,7 +192,8 @@ class EvnDisp3MSCWRefJob( Job ) :
 
     # register Data
     outputpattern = './Data/*DL%01d.root'%self.output_data_level
-    filemetadata = {'data_level': self.output_data_level}
+    filemetadata = {'data_level': self.output_data_level,
+                    'configuration_id':self.configuration_id}
     file_md_json = json.dumps(filemetadata)
     dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s %s" %\
