@@ -30,6 +30,7 @@ class EvnDisp3MSCWRefJob( Job ) :
     self.setName('Evndisplay_Reco')
     self.package='evndisplay'
     self.program_category='reconstruction'
+    self.output_data_level=2
     self.version = 'prod3b_d20170602' # or later
     self.prefix = 'CTA.prod3Nb'
     self.layout = 'Baseline'
@@ -136,10 +137,6 @@ class EvnDisp3MSCWRefJob( Job ) :
     self.metadata['thetaP'] = simtelMD['thetaP']['=']
     self.metadata[self.program_category+'_prog'] = 'evndisp'
     self.metadata[self.program_category+'_prog_version'] = self.version
-    self.metadata['data_level'] = 2
-
-    # ## Set file metadata
-    # self.filemetadata = {'runNumber': simtelMD['runNumber']}
 
   def setupWorkflow(self, debug=False):
     """ Setup job workflow by defining the sequence of all executables
@@ -187,28 +184,31 @@ class EvnDisp3MSCWRefJob( Job ) :
     mdjson = json.dumps( self.metadata )
     metadatafield = {'array_layout':'VARCHAR(128)', 'site':'VARCHAR(128)',
                      'particle':'VARCHAR(128)', 'phiP':'float',
-                     'thetaP': 'float', 'reconstruction_prog':'VARCHAR(128)',
-                     'reconstruction_prog_version':'VARCHAR(128)',
-                     'data_level':'int'}
-    mdfieldjson = json.dumps( metadatafield )
-    fmdjson = json.dumps( self.filemetadata )
+		     'thetaP': 'float',
+		     self.program_category+'_prog':'VARCHAR(128)',
+		     self.program_category+'_prog_version':'VARCHAR(128)'}
+    mdfieldjson = json.dumps(metadatafield)
 
     # register Data
-    outputpattern = './Data/*DL2.root'
+    outputpattern = './Data/*DL%01d.root'%self.output_data_level
+    filemetadata = {'data_level': self.output_data_level}
+    file_md_json = json.dumps(filemetadata)
     dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
-                               arguments = "'%s' '%s' '%s' %s '%s' %s %s" % \
-                               (mdjson, mdfieldjson, fmdjson, self.basepath,
-                                outputpattern, self.package, self.program_category),
-                               logFile = 'DataManagement_Log.txt' )
+                              arguments = "'%s' '%s' '%s' %s '%s' %s %s" %\
+                              (mdjson, mdfieldjson, file_md_json, self.basepath,
+                               outputpattern, self.package, self.program_category),
+                              logFile = 'DataManagement_Log.txt')
     dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
     dmStep['Value']['descr_short'] = 'Save data files to SE and register them in DFC'
     iStep += 1
 
     # register Log
-    self.outputpattern = './*.logs.tgz'
+    outputpattern = './*.logs.tgz'
+    filemetadata = {}
+    file_md_json = json.dumps(filemetadata)
     dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s %s Log" % \
-                              (mdjson, mdfieldjson, fmdjson, self.basepath,
+                              (mdjson, mdfieldjson, file_md_json, self.basepath,
                                outputpattern, self.package, self.program_category),
                               logFile = 'Log_DataManagement_Log.txt')
     dmStep['Value']['name'] = 'Step%i_Log_DataManagement' % iStep
@@ -223,4 +223,3 @@ class EvnDisp3MSCWRefJob( Job ) :
         lsStep['Value']['name']='Step%i_LS_End'%iStep
         lsStep['Value']['descr_short']='list files in working directory and in Data directory'
         iStep+=1
-

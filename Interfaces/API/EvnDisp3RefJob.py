@@ -31,6 +31,7 @@ class EvnDisp3RefJob( Job ) :
     self.setName('Evndisplay_CalibReco')
     self.package='evndisplay'
     self.program_category='calibimgreco'
+    self.output_data_level=1
     self.version = 'prod3b_d20170602' # or later
     self.prefix = 'CTA.prod3Nb'
     self.layout = 'Baseline'
@@ -170,14 +171,14 @@ class EvnDisp3RefJob( Job ) :
     mdjson = json.dumps( self.metadata )
     metadatafield = {'array_layout':'VARCHAR(128)', 'site':'VARCHAR(128)',
                      'particle':'VARCHAR(128)', 'phiP':'float',
-                     'thetaP': 'float', 'calibimgreco_prog':'VARCHAR(128)',
-                     'calibimgreco_prog_version':'VARCHAR(128)',
-                     'data_level':'int'}
+		     'thetaP': 'float',
+		     self.program_category+'_prog':'VARCHAR(128)',
+		     self.program_category+'_prog_version':'VARCHAR(128)'}
     mdfieldjson = json.dumps(metadatafield)
 
     # register Data
-    outputpattern = './Data/*DL1.root'
-    filemetadata = {'data_level': 1}
+    outputpattern = './Data/*DL%01d.root'%self.output_data_level
+    filemetadata = {'data_level': self.output_data_level}
     file_md_json = json.dumps(filemetadata)
     dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s %s" %\
@@ -196,7 +197,7 @@ class EvnDisp3RefJob( Job ) :
                               arguments = "'%s' '%s' '%s' %s '%s' %s %s Log" % \
                               (mdjson, mdfieldjson, file_md_json, self.basepath,
                                outputpattern, self.package, self.program_category),
-                              logFile = 'Log_DataManagement_Log.txt' )
+                              logFile = 'Log_DataManagement_Log.txt')
     dmStep['Value']['name'] = 'Step%i_Log_DataManagement' % iStep
     dmStep['Value']['descr_short'] = 'Save log files to SE and register them in DFC'
     iStep += 1
