@@ -83,7 +83,7 @@ def runEvnDisp3MSCW( args = None ):
             'site':'LaPalma', 'outputType':'Data', 'data_level':1,
             'calibimgreco_prog':'evndisp', 
             'calibimgreco_prog_version':'prod3b_d20170602',
-            'thetaP':{"=": 20}, 'phiP':{"=": 180.0}}
+            'thetaP':{"=": 20}, 'phiP':{"=": 0.0}}
   job.setEvnDispMD( MDdict )
 
   # add the sequence of executables
