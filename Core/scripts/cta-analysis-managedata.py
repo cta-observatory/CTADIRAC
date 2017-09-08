@@ -19,7 +19,7 @@ from CTADIRAC.Core.Workflow.Modules.Prod3DataManager import Prod3DataManager
 
 def getRunNumber( filename, package ):
     if filename[-9:] == '.logs.tgz':
-        run_number = int(filename.split('/')[-1].split('_')[1].split('.')[0])       
+        run_number = int(filename.split('/')[-1].split('_')[-1].split('.')[0])       
     elif package in ['chimp', 'mars', 'corsika_simhessarray']:
         run_number = int(filename.split( 'run' )[1].split( '___cta' )[0])
     elif package == 'evndisplay':            
