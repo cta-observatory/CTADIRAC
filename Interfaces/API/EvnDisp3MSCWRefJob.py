@@ -30,9 +30,9 @@ class EvnDisp3MSCWRefJob( Job ) :
     self.setName('Evndisplay_Reco')
     self.package='evndisplay'
     self.program_category='reconstruction'
-    self.output_data_level=2
     self.version = 'prod3b_d20170602' # or later
     self.configuration_id = 0
+    self.output_data_level=2
     self.prefix = 'CTA.prod3Nb'
     self.layout = 'Baseline'
     self.pointing = '180'
@@ -138,6 +138,9 @@ class EvnDisp3MSCWRefJob( Job ) :
     self.metadata['thetaP'] = simtelMD['thetaP']['=']
     self.metadata[self.program_category+'_prog'] = 'evndisp'
     self.metadata[self.program_category+'_prog_version'] = self.version
+    self.metadata['data_level'] = self.output_data_level
+    self.metadata['configuration_id'] = self.configuration_id
+    
 
   def setupWorkflow(self, debug=False):
     """ Setup job workflow by defining the sequence of all executables
@@ -185,9 +188,10 @@ class EvnDisp3MSCWRefJob( Job ) :
     mdjson = json.dumps( self.metadata )
     metadatafield = {'array_layout':'VARCHAR(128)', 'site':'VARCHAR(128)',
                      'particle':'VARCHAR(128)', 'phiP':'float',
-		     'thetaP': 'float',
-		     self.program_category+'_prog':'VARCHAR(128)',
-		     self.program_category+'_prog_version':'VARCHAR(128)'}
+		          'thetaP': 'float',
+		          self.program_category+'_prog':'VARCHAR(128)',
+		          self.program_category+'_prog_version':'VARCHAR(128)',
+                     'data_level': 'int', 'configuration_id': 'int'}
     mdfieldjson = json.dumps(metadatafield)
 
     # register Data

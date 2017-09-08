@@ -31,9 +31,9 @@ class EvnDisp3RefJob( Job ) :
     self.setName('Evndisplay_CalibReco')
     self.package='evndisplay'
     self.program_category='calibimgreco'
-    self.output_data_level=1
     self.version = 'prod3b_d20170602' # or later
     self.configuration_id = 0
+    self.output_data_level=1
     self.prefix = 'CTA.prod3Nb'
     self.layout = 'Baseline'
     self.calibration_file = 'gamma_20deg_180deg_run3___cta-prod3-lapalma3-2147m-LaPalma.ped.root'
@@ -123,6 +123,8 @@ class EvnDisp3RefJob( Job ) :
     self.metadata['thetaP'] = simtelMD['thetaP']['=']
     self.metadata[self.program_category+'_prog'] = 'evndisp'
     self.metadata[self.program_category+'_prog_version'] = self.version
+    self.metadata['data_level'] = self.output_data_level
+    self.metadata['configuration_id'] = self.configuration_id
 
   def setupWorkflow(self, debug=False):
     """ Setup job workflow by defining the sequence of all executables
@@ -172,15 +174,15 @@ class EvnDisp3RefJob( Job ) :
     mdjson = json.dumps( self.metadata )
     metadatafield = {'array_layout':'VARCHAR(128)', 'site':'VARCHAR(128)',
                      'particle':'VARCHAR(128)', 'phiP':'float',
-		     'thetaP': 'float',
-		     self.program_category+'_prog':'VARCHAR(128)',
-		     self.program_category+'_prog_version':'VARCHAR(128)'}
+                     'thetaP': 'float',
+		          self.program_category+'_prog':'VARCHAR(128)',
+		          self.program_category+'_prog_version':'VARCHAR(128)',
+                     'data_level': 'int', 'configuration_id': 'int'}
     mdfieldjson = json.dumps(metadatafield)
 
     # register Data
     outputpattern = './Data/*DL%01d.root'%self.output_data_level
-    filemetadata = {'data_level': self.output_data_level,
-                    'configuration_id': self.configuration_id}
+    filemetadata = {}
     file_md_json = json.dumps(filemetadata)
     dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s %s" %\

@@ -214,17 +214,20 @@ class Prod3MCPipeBaselineJob( Job ) :
     metadata['thetaP'] = float( self.zenith_angle )
     metadata['tel_sim_prog'] = 'simtel'
     metadata['tel_sim_prog_version'] = self.version
-
+    metadata['data_level'] = self.output_data_level
+    metadata['configuration_id'] = self.configuration_id
     mdjson = json.dumps( metadata )
 
-    metadatafield = {'array_layout':'VARCHAR(128)', 'site':'VARCHAR(128)', 'particle':'VARCHAR(128)', \
-                         'phiP':'float', 'thetaP': 'float', 'tel_sim_prog':'VARCHAR(128)', 'tel_sim_prog_version':'VARCHAR(128)'}
+    metadatafield = {'array_layout':'VARCHAR(128)', 'site':'VARCHAR(128)',
+                     'particle':'VARCHAR(128)', 'phiP':'float',
+                     'thetaP': 'float',
+                     'tel_sim_prog':'VARCHAR(128)',
+                     'tel_sim_prog_version':'VARCHAR(128)',
+                     'data_level': 'int', 'configuration_id': 'int'}
 
     mdfieldjson = json.dumps( metadatafield )
 
-    filemetadata = {'runNumber': self.run_number,
-                    'data_level': self.output_data_level,
-                    'configuration_id':self.configuration_id}
+    filemetadata = {'runNumber': self.run_number}
 
     fmdjson = json.dumps( filemetadata )
 
