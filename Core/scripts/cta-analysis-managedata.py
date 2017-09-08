@@ -22,14 +22,13 @@ def getRunNumber( filename, package ):
         run_number = int(filename.split('/')[-1].split('_')[-1].split('.')[0])       
     elif package in ['chimp', 'mars', 'corsika_simhessarray']:
         run_number = int(filename.split( 'run' )[1].split( '___cta' )[0])
-    elif package == 'evndisplay':            
-        try:            
-            run_number = int(filename.split( '-' )[0])
-        except:
+    elif package == 'evndisplay':
+        if filename[-8:] == 'DL1.root':
             run_number = int(filename.split( 'run' )[1].split( '___cta' )[0])
-    else:
-        DIRAC.gLogger.error ('Could not get run number for file %s'%filename)
-        DIRAC.exit(-1)
+        elif filename[-8:] == 'DL2.root':
+            run_number = int(filename.split( 'tid' )[1].split( '___cta' )[0])
+        else:         
+            run_number = int(filename.split( '-' )[0]) # old default
     return str(run_number)
 
 ####################################################
