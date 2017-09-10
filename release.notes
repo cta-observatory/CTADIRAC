@@ -296,3 +296,9 @@ NEW : add data level meta data
       sync EvnDispJob classes
       add configuration_id as file meta data in corsika, evndisp, mscw job
       classes
+
+[v1r43p5]
+*JB
+CHANGE : introduce FileMask in Transformation instead of just adding files
+         in EvnDisp3MSCWRefExample.py EvnDisp3RefExample.py
+         and Prod3MCPipeBaselineExample.py
