@@ -270,6 +270,35 @@ NEW: add scripts for sw installation/removal
 *JB
 NEW: add scripts to run PROD3 3HB89 merging jobs
 
-[test_dev]
-*LA
-NEW: This is a test
+[v1r43p0]
+* JB
+NEW: TransformationSystem removed
+     sync DataManager with DIRAC v6r17
+     New scripts for Baseline simulation, converter+evendisp and mscw_energy
+CHANGE: Start to remove some old files
+
+[v1r43p1]
+* JB
+CHANGE: Remove Prod3DataManager2, CTATSFileCatalog, cta-analysis-managedata2
+
+[v1r43p2]
+* JB
+FIX : initialize JOB_ID in Examples
+
+[v1r43p3]
+* JB
+FIX : fix meta data
+
+[v1r43p4]
+* JB
+NEW : add data level meta data
+      improve get run number for log files and DL2
+      sync EvnDispJob classes
+      add configuration_id as file meta data in corsika, evndisp, mscw job
+      classes
+
+[v1r43p5]
+*JB
+CHANGE : introduce FileMask in Transformation instead of just adding files
+         in EvnDisp3MSCWRefExample.py EvnDisp3RefExample.py
+         and Prod3MCPipeBaselineExample.py

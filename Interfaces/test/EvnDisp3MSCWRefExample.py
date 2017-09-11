@@ -14,30 +14,69 @@ Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
 Script.parseCommandLine()
 
 import DIRAC
-from CTADIRAC.TransformationSystem.Client.TransformationClient import TransformationClient
+from DIRAC.TransformationSystem.Client.TransformationClient import TransformationClient
+from DIRAC.TransformationSystem.Client.Transformation import Transformation
 from CTADIRAC.Interfaces.API.EvnDisp3MSCWRefJob import EvnDisp3MSCWRefJob
 from DIRAC.Interfaces.API.Dirac import Dirac
+from DIRAC.Core.Workflow.Parameter import Parameter
 
-def submitTS( job, transName, mqJson ):
+def submitTSold( job, transName, mqJson ):
   """ Create a transformation executing the job workflow  """
+  DIRAC.gLogger.notice( 'submitTS' )
+
+  # Initialize JOB_ID
+  job.workflow.addParameter( Parameter( "JOB_ID", "000000", "string", "", "", True, False, "Temporary fix" ) )
+  
   tc = TransformationClient()
 
-  res = tc.addTransformation( transName, 'EvnDisp3MSCW example', 'EvnDisplay stereo reconstruction', 'DataReprocessing', 'Standard', 'Automatic', mqJson, groupSize = 10, body = job.workflow.toXML() )
+  res = tc.addTransformation( transName, 'EvnDisp3MSCW example',
+                             'EvnDisplay stereo reconstruction',
+                             'DataReprocessing', 'Standard', 'Automatic',
+                             mqJson, groupSize = 10,
+                             body = job.workflow.toXML())
 
-  transID = res['Value']
-  print  transID
+  if not res['OK']:
+    DIRAC.gLogger.error ( res['Message'] )
+    DIRAC.exit( -1 )
+  else:
+    transID = res['Value']
+    print(transID)
 
   return res
 
+def submitTS( job, transName, mqJson ):
+    """ Create a transformation executing the job workflow
+    This is using a file mask so that files be added on the fly.    
+    """
+    DIRAC.gLogger.notice( 'submitTS' )
+
+    # Initialize JOB_ID
+    job.workflow.addParameter( Parameter( "JOB_ID", "000000", "string", "", "",
+                                       True, False, "Temporary fix" ) )
+   
+    t = Transformation( )
+    t.setTransformationName(transName) # this must be unique
+    t.setType("DataReprocessing")
+    t.setDescription("EvnDisp3MSCW example")
+    t.setLongDescription( "EvnDisplay stereo reconstruction") # mandatory    
+    t.setBody(job.workflow.toXML())    
+    t.setGroupSize(10)
+    t.setFileMask(mqJson) # catalog query is defined here
+    t.addTransformation() # transformation is created here
+    t.setStatus("Active")
+    t.setAgentType("Automatic")
+
+    return
 #########################################################
 
-def runEvnDisp3( args = None ):
+def runEvnDisp3MSCW( args = None ):
   """ Simple wrapper to create a EvnDisp3RefJob and setup parameters
       from positional arguments given on the command line.
 
       Parameters:
       args -- infile mode
   """
+  DIRAC.gLogger.notice( 'runEvnDisp3MSCW' )
   # get arguments
   transName = args[0]
 
@@ -67,15 +106,18 @@ def runEvnDisp3( args = None ):
 
   ### set meta-data to the product of the transformation
   # set query to add files to the transformation
-  MDdict = {'MCCampaign':'PROD3', 'particle':'gamma', 'array_layout':'Baseline', \
-            'site':'LaPalma', 'outputType':'Data',\
-            'calibimgreco_prog':'evndisp', 'calibimgreco_prog_version':'prod3b_d20170602',\
-            'thetaP':{"=": 20}, 'phiP':{"=": 180.0}}
+  MDdict = {'MCCampaign':'PROD3', 'particle':'gamma',
+            'array_layout':'Baseline', 'site':'LaPalma',
+            'outputType':'Data', 'data_level':{"=": 1},
+            'configuration_id':{"=": 0},
+            'calibimgreco_prog':'evndisp', 
+            'calibimgreco_prog_version':'prod3b_d20170602',
+            'thetaP':{"=": 20}, 'phiP':{"=": 0.0}}
   job.setEvnDispMD( MDdict )
 
   # add the sequence of executables
   job.setTSTaskId( '@{JOB_ID}' ) # dynamic
-  job.setupWorkflow()
+  job.setupWorkflow(debug=True)
 
   # output
   job.setOutputSandbox( ['*Log.txt'] )
@@ -91,13 +133,6 @@ if __name__ == '__main__':
   args = Script.getPositionalArgs()
   if ( len( args ) != 1 ):
     Script.showHelp()
-  try:
-    res = runEvnDisp3( args )
-    if not res['OK']:
-      DIRAC.gLogger.error ( res['Message'] )
-      DIRAC.exit( -1 )
-    else:
-      DIRAC.gLogger.notice( 'Done' )
-  except Exception:
-    DIRAC.gLogger.exception()
-    DIRAC.exit( -1 )
+  
+  runEvnDisp3MSCW( args )
+    

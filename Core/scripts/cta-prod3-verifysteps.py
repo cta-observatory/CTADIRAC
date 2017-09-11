@@ -59,7 +59,7 @@ def verifyCorsika( nbFiles = 6, minSize = 50. ):
             DIRAC.gLogger.error( '%s\n File size too small : %s < %s kb' % ( afile, sizekb, minSize ) )
             cleanFiles( outputFiles )
             return DIRAC.S_ERROR()
-
+    DIRAC.gLogger.info( 'Good files found:\n%s'%'\n'.join(outputFiles) )
     return DIRAC.S_OK()
 
 
@@ -88,7 +88,7 @@ def verifySimtel(nbFiles=31, minSize=50.):
             DIRAC.gLogger.error( '%s\n File size too small : %s < %s kb' % ( afile, sizekb, minSize ) )
             cleanFiles( outputFiles )
             return DIRAC.S_ERROR()
-
+    DIRAC.gLogger.info( 'Good files found:\n%s'%'\n'.join(outputFiles) )
     return DIRAC.S_OK()
 
 
@@ -118,7 +118,7 @@ def verifyMerging(nbFiles=10, minSize=5000.):
             DIRAC.gLogger.error( '%s\n File size too small : %s < %s kb' % ( afile, sizekb, minSize ) )
             cleanFiles( outputFiles )
             return DIRAC.S_ERROR()
-            
+    DIRAC.gLogger.info( 'Good files found:\n%s'%'\n'.join(outputFiles) )            
     return DIRAC.S_OK()
 
 def verifyAnalysisInputs( minSize = 50. ):
@@ -139,7 +139,8 @@ def verifyAnalysisInputs( minSize = 50. ):
             DIRAC.gLogger.warn( '%s\n File size too small : %s < %s kb' % ( afile, sizekb, minSize ) )
             DIRAC.gLogger.warn( 'Remove local File %s' % ( afile ) )
             os.remove( afile )
-
+            outputFiles.remove(afile) # remove from list of files processed
+    DIRAC.gLogger.info( 'Good files found:\n%s'%'\n'.join(outputFiles) )
     return DIRAC.S_OK()
 
 def verifyGeneric(nbFiles=1, minSize=50., path = 'Data/*'):
@@ -168,7 +169,7 @@ def verifyGeneric(nbFiles=1, minSize=50., path = 'Data/*'):
             DIRAC.gLogger.error( '%s\n File size too small : %s < %s kb' % ( afile, sizekb, minSize ) )
             cleanFiles( outputFiles )
             return DIRAC.S_ERROR()
-
+    DIRAC.gLogger.info( 'Good files found:\n%s'%'\n'.join(outputFiles) )
     return DIRAC.S_OK()
 
 

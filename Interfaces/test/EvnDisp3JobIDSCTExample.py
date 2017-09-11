@@ -15,7 +15,7 @@ Script.parseCommandLine()
 
 import DIRAC
 from DIRAC.TransformationSystem.Client.Transformation import Transformation
-from CTADIRAC.TransformationSystem.Client.TransformationClient import TransformationClient 
+from DIRAC.TransformationSystem.Client.TransformationClient import TransformationClient 
 from CTADIRAC.Interfaces.API.EvnDisp3JobIDSCT import EvnDisp3JobIDSCT
 from DIRAC.Interfaces.API.Dirac import Dirac
 

@@ -7,7 +7,7 @@
 __RCSID__ = "$Id$"
 
 # generic imports
-import os, glob, json
+import os, glob
 
 # DIRAC imports
 import DIRAC
@@ -18,11 +18,18 @@ Script.parseCommandLine()
 from CTADIRAC.Core.Workflow.Modules.Prod3DataManager import Prod3DataManager
 
 def getRunNumber( filename, package ):
-  if package in ['chimp', 'mars', 'corsika_simhessarray']:
-    run_number = filename.split( 'run' )[1].split( '___cta' )[0]
-  if package == 'evndisplay':
-    run_number = filename.split( '-' )[0]
-  return run_number
+    if filename[-9:] == '.logs.tgz':
+        run_number = int(filename.split('/')[-1].split('_')[-1].split('.')[0])       
+    elif package in ['chimp', 'mars', 'corsika_simhessarray']:
+        run_number = int(filename.split( 'run' )[1].split( '___cta' )[0])
+    elif package == 'evndisplay':
+        if filename[-8:] == 'DL1.root':
+            run_number = int(filename.split( 'run' )[1].split( '___cta' )[0])
+        elif filename[-8:] == 'DL2.root':
+            run_number = int(filename.split( 'tid' )[1].split( '___cta' )[0])
+        else:         
+            run_number = int(filename.split( '-' )[0]) # old default
+    return str(run_number)
 
 ####################################################
 def putAndRegisterPROD3( args ):
@@ -37,7 +44,8 @@ def putAndRegisterPROD3( args ):
     basepath = args[3]
     outputpattern = args[4]
     package = args[5]
-    if len(args)==6:
+    program_category = args[6]
+    if len(args)==7:
       outputType='Data'
     else:
       outputType='Log'
@@ -47,7 +55,8 @@ def putAndRegisterPROD3( args ):
 
     # # Create MD structure
     prod3dm = Prod3DataManager( catalogs )
-    res = prod3dm.createMDStructure( metadata, metadatafield, basepath, 'analysis')
+    #res = prod3dm.createMDStructure( metadata, metadatafield, basepath, 'analysis')
+    res = prod3dm.createMDStructure( metadata, metadatafield, basepath, program_category)
     if res['OK']:
       path = res['Value']
     else:

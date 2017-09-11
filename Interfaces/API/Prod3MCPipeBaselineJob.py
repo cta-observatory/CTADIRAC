@@ -32,6 +32,8 @@ class Prod3MCPipeBaselineJob( Job ) :
     self.setName('Prod3MC_Generation')
     self.package='corsika_simhessarray'
     self.version='2017-04-19'
+    self.configuration_id = 0
+    self.output_data_level=0
     self.nShower=100
     self.start_run_number = '0'
     self.run_number = '10'
@@ -212,22 +214,24 @@ class Prod3MCPipeBaselineJob( Job ) :
     metadata['thetaP'] = float( self.zenith_angle )
     metadata['tel_sim_prog'] = 'simtel'
     metadata['tel_sim_prog_version'] = self.version
-
+    metadata['data_level'] = self.output_data_level
+    metadata['configuration_id'] = self.configuration_id
     mdjson = json.dumps( metadata )
 
-    metadatafield = {'array_layout':'VARCHAR(128)', 'site':'VARCHAR(128)', 'particle':'VARCHAR(128)', \
-                         'phiP':'float', 'thetaP': 'float', 'tel_sim_prog':'VARCHAR(128)', 'tel_sim_prog_version':'VARCHAR(128)'}
+    metadatafield = {'array_layout':'VARCHAR(128)', 'site':'VARCHAR(128)',
+                     'particle':'VARCHAR(128)', 'phiP':'float',
+                     'thetaP': 'float',
+                     'tel_sim_prog':'VARCHAR(128)',
+                     'tel_sim_prog_version':'VARCHAR(128)',
+                     'data_level': 'int', 'configuration_id': 'int'}
 
     mdfieldjson = json.dumps( metadatafield )
 
-    filemetadata = {'runNumber': self.run_number }
+    filemetadata = {'runNumber': self.run_number}
 
     fmdjson = json.dumps( filemetadata )
 
-    ### Temporary fix: since the deployed script does not have the correct format for arguments
-    # dmStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-managedata',
-    ### USE cta-prod3-managedata2.py to enable the Input-Data driven waiting to update to v6r17
-    dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-prod3-managedata2.py',
+    dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-prod3-managedata.py',
                               arguments = "'%s' '%s' '%s' %s %s %s" % ( mdjson, mdfieldjson, fmdjson, self.inputpath, self.basepath, self.start_run_number ),
                               logFile = 'DataManagement_Log.txt' )
     dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
