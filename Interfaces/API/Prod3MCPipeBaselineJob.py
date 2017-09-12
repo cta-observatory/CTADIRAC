@@ -46,6 +46,7 @@ class Prod3MCPipeBaselineJob( Job ) :
     #self.inputpath = 'Data/sim_telarray/cta-prod3-%s/0.0deg'%self.array_layout.lower()
     self.inputpath = 'Data/sim_telarray/cta-prod3-demo/0.0deg'
     self.basepath = '/vo.cta.in2p3.fr/MC/PROD3/'
+    self.catalogs = ["DIRACFileCatalog","TSCatalog"]
 
   def setPackage(self, package):
     """ Set package name : e.g. 'corsika_simhessarray'
@@ -232,7 +233,7 @@ class Prod3MCPipeBaselineJob( Job ) :
     fmdjson = json.dumps( filemetadata )
 
     dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-prod3-managedata.py',
-                              arguments = "'%s' '%s' '%s' %s %s %s" % ( mdjson, mdfieldjson, fmdjson, self.inputpath, self.basepath, self.start_run_number ),
+                              arguments = "'%s' '%s' '%s' %s %s %s '%s'" % ( mdjson, mdfieldjson, fmdjson, self.inputpath, self.basepath, self.start_run_number, self.catalogs ),
                               logFile = 'DataManagement_Log.txt' )
     dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
     dmStep['Value']['descr_short'] = 'Save files to SE and register them in DFC'
