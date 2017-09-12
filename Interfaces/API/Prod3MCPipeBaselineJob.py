@@ -9,7 +9,8 @@
 __RCSID__ = "$Id$"
 
 # generic imports
-import json, collections
+import json
+import collections
 # DIRAC imports
 import DIRAC
 from DIRAC.Interfaces.API.Job import Job
@@ -46,7 +47,7 @@ class Prod3MCPipeBaselineJob( Job ) :
     #self.inputpath = 'Data/sim_telarray/cta-prod3-%s/0.0deg'%self.array_layout.lower()
     self.inputpath = 'Data/sim_telarray/cta-prod3-demo/0.0deg'
     self.basepath = '/vo.cta.in2p3.fr/MC/PROD3/'
-    self.catalogs = ["DIRACFileCatalog","TSCatalog"]
+    self.catalogs = json.dumps(['DIRACFileCatalog','TSCatalog'])
 
   def setPackage(self, package):
     """ Set package name : e.g. 'corsika_simhessarray'

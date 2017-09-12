@@ -8,7 +8,8 @@
 __RCSID__ = "$Id$"
 
 # generic imports
-import json, collections
+import json
+import collections
 # DIRAC imports
 import DIRAC
 from DIRAC.Interfaces.API.Job import Job
@@ -43,8 +44,7 @@ class EvnDisp3RefJob( Job ) :
     self.fcc = FileCatalogClient()
     self.metadata = collections.OrderedDict()
     self.filemetadata = {}
-    self.jobGroupID = 1
-    self.catalogs = ["DIRACFileCatalog","TSCatalog"]
+    self.catalogs = json.dumps(['DIRACFileCatalog','TSCatalog'])
 
   def setTSTaskId(self, taskid):
     """ Set TS task Id, dynamically resolved at job run time

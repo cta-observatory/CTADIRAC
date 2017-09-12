@@ -43,8 +43,7 @@ class EvnDisp3MSCWRefJob( Job ) :
     self.fcc = FileCatalogClient()
     self.metadata = collections.OrderedDict()
     self.filemetadata = {}
-    self.jobGroupID = 10
-    self.catalogs = ["DIRACFileCatalog","TSCatalog"]
+    self.catalogs = json.dumps(['DIRACFileCatalog','TSCatalog'])
 
   def setTSTaskId(self, taskid):
     """ Set TS task Id, dynamically resolved at job run time
