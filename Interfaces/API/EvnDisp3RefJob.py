@@ -44,6 +44,7 @@ class EvnDisp3RefJob( Job ) :
     self.metadata = collections.OrderedDict()
     self.filemetadata = {}
     self.jobGroupID = 1
+    self.catalogs = ["DIRACFileCatalog","TSCatalog"]
 
   def setTSTaskId(self, taskid):
     """ Set TS task Id, dynamically resolved at job run time
@@ -185,9 +186,9 @@ class EvnDisp3RefJob( Job ) :
     filemetadata = {}
     file_md_json = json.dumps(filemetadata)
     dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
-                              arguments = "'%s' '%s' '%s' %s '%s' %s %s" %\
+                              arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s'" %\
                               (mdjson, mdfieldjson, file_md_json, self.basepath,
-                               outputpattern, self.package, self.program_category),
+                               outputpattern, self.package, self.program_category, self.catalogs),
                               logFile = 'DataManagement_Log.txt')
     dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
     dmStep['Value']['descr_short'] = 'Save data files to SE and register them in DFC'
@@ -198,9 +199,9 @@ class EvnDisp3RefJob( Job ) :
     filemetadata = {}
     file_md_json = json.dumps(filemetadata)
     dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
-                              arguments = "'%s' '%s' '%s' %s '%s' %s %s Log" % \
+                              arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s' Log" % \
                               (mdjson, mdfieldjson, file_md_json, self.basepath,
-                               outputpattern, self.package, self.program_category),
+                               outputpattern, self.package, self.program_category, self.catalogs),
                               logFile = 'Log_DataManagement_Log.txt')
     dmStep['Value']['name'] = 'Step%i_Log_DataManagement' % iStep
     dmStep['Value']['descr_short'] = 'Save log files to SE and register them in DFC'

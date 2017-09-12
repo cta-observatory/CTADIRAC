@@ -30,10 +30,11 @@ def putAndRegisterPROD3(args):
     inputpath = args[3]
     basepath = args[4]
     start_run_nb = args[5]
-    catalogs = ['DIRACFileCatalog']
+    catalogs = args[6]
+    catalogsjson = json.loads( catalogs )
     
     # # Create MD structure
-    prod3dm=Prod3DataManager(catalogs)
+    prod3dm=Prod3DataManager( catalogsjson )
     res = prod3dm.createMDStructure( metadata, metadatafield, basepath, 'tel_sim' )
     if res['OK']:
       path = res['Value']

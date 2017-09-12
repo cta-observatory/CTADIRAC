@@ -7,7 +7,9 @@
 __RCSID__ = "$Id$"
 
 # generic imports
-import os, glob
+import os
+import glob
+import json
 
 # DIRAC imports
 import DIRAC
@@ -45,16 +47,15 @@ def putAndRegisterPROD3( args ):
     outputpattern = args[4]
     package = args[5]
     program_category = args[6]
-    if len(args)==7:
+    catalogs = args[7]
+    catalogsjson = json.loads( catalogs )
+    if len(args)==8:
       outputType='Data'
     else:
       outputType='Log'
 
-
-    catalogs = ['DIRACFileCatalog']
-
     # # Create MD structure
-    prod3dm = Prod3DataManager( catalogs )
+    prod3dm = Prod3DataManager( catalogsjson )
     #res = prod3dm.createMDStructure( metadata, metadatafield, basepath, 'analysis')
     res = prod3dm.createMDStructure( metadata, metadatafield, basepath, program_category)
     if res['OK']:
