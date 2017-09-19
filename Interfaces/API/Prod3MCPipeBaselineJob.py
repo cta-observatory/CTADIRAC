@@ -46,6 +46,7 @@ class Prod3MCPipeBaselineJob( Job ) :
     self.zenith_angle = 20.
     #self.inputpath = 'Data/sim_telarray/cta-prod3-%s/0.0deg'%self.array_layout.lower()
     self.inputpath = 'Data/sim_telarray/cta-prod3-demo/0.0deg'
+    self.N_output_files = 1
     self.basepath = '/vo.cta.in2p3.fr/MC/PROD3/'
     self.catalogs = json.dumps(['DIRACFileCatalog','TSCatalog'])
 
@@ -148,6 +149,15 @@ class Prod3MCPipeBaselineJob( Job ) :
     """
     self.zenith_angle = zenith
 
+  def setnOutputFiles(self, N):
+    """ Set the number of expected output data files 
+
+    Parameters:
+    N -- an int for the number of data files 
+    """
+    self.N_output_files = N
+
+
   def setupWorkflow(self, debug=False):
     """ Setup job workflow by defining the sequence of all executables
         All parameters shall have been defined before that method is called.
@@ -190,7 +200,8 @@ class Prod3MCPipeBaselineJob( Job ) :
 
     # step 4 verify merged data
     mgvStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-verifysteps', \
-                              arguments = "generic 1 1000 '%s/Data/*.simtel.gz'"%self.inputpath,\
+                              arguments = "generic %0d 1000 '%s/Data/*.simtel.gz'"%\
+                                          (self.N_output_files, self.inputpath),\
                               logFile='Verify_Simtel_Log.txt')
     mgvStep['Value']['name']='Step%i_VerifySimtel'%iStep
     mgvStep['Value']['descr_short'] = 'Verify simtel files'
