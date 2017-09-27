@@ -21,7 +21,7 @@ Script.parseCommandLine()
 import DIRAC
 from DIRAC.TransformationSystem.Client.Transformation import Transformation
 from DIRAC.Core.Workflow.Parameter import Parameter
-from CTADIRAC.Interfaces.API.Prod3MCPipeBaselineJob import Prod3MCPipeBaselineJob
+from CTADIRAC.Interfaces.API.Prod3MCPipeBaselineNSBJob import Prod3MCPipeBaselineNSBJob
 #from Prod3MCPipeBaselineJob import Prod3MCPipeBaselineJob
 #from DIRAC.Interfaces.API.Dirac import Dirac
 
@@ -71,7 +71,7 @@ def runProd3( args = None ):
   nShower= args[5]
 
     ### Main Script ###
-  job = Prod3MCPipeBaselineJob()
+  job = Prod3MCPipeBaselineNSBJob()
 
   # override for testing
   job.setName('BL_NSB_Test_Paranal_20deg_%s'%particle)
@@ -98,9 +98,6 @@ def runProd3( args = None ):
 
   # set run number for TS submission: JOB_ID variable left for dynamic resolution during the Job. It corresponds to the Task_ID
   job.setRunNumber( '@{JOB_ID}' )
-
-  # set the number of expected output data files
-  job.setnOutputFiles(3)
 
   # get dirac log files
   job.setOutputSandbox( ['*Log.txt'] )
