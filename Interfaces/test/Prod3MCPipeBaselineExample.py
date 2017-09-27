@@ -74,7 +74,7 @@ def runProd3( args = None ):
   job = Prod3MCPipeBaselineJob()
 
   # override for testing
-  job.setName('BLTest_LaPalma_20deg_%s'%particle)
+  job.setName('BL_LaPalma_20deg_%s'%particle)
   
   # package and version
   job.setPackage('corsika_simhessarray')
