@@ -7,13 +7,13 @@
 """
 
 __RCSID__ = "$Id$"
-
 # generic imports
 import json
 import collections
 # DIRAC imports
 import DIRAC
-from DIRAC.Interfaces.API.Job import Job
+# Base class
+from CTADIRAC.Interfaces.API.Prod3MCPipeBaselineJob import Prod3MCPipeBaselineJob
 
 
 class Prod3MCPipeBaselineNSBJob(Prod3MCPipeBaselineJob):
@@ -22,13 +22,14 @@ class Prod3MCPipeBaselineNSBJob(Prod3MCPipeBaselineJob):
       3 output files are created
       Most code is inherited from the Prod3MCPipeBaselineJob class
   """
-def __init__(self, cpuTime = 259200):
+  def __init__(self, cpuTime=259200):
     """ Constructor takes almosst everything from base class
 
     Keyword arguments:
     cpuTime -- max cpu time allowed for the job
     """
-    super(Prod3MCPipeBaselineJob, self).__init__(cpuTime = 259200)
+#    super(Prod3MCPipeBaselineJob, self).__init__()
+    Prod3MCPipeBaselineJob.__init__(self, cpuTime)
 #    self.inputpath = 'Data/sim_telarray/cta-prod3-demo/0.0deg'
     self.N_output_files = 3
 
