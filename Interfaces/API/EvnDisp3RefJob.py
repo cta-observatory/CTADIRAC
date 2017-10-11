@@ -183,8 +183,7 @@ class EvnDisp3RefJob( Job ) :
 
     # register Data
     outputpattern = './Data/*DL%01d.root'%self.output_data_level
-    filemetadata = {}
-    file_md_json = json.dumps(filemetadata)
+    file_md_json = json.dumps(self.filemetadata)
     dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s'" %\
                               (mdjson, mdfieldjson, file_md_json, self.basepath,
