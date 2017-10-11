@@ -1,3 +1,11 @@
+[v1r44p0]
+Start top posting release notes
+*JB
+NEW : Job class and Script to run NSB simulation
+      corsika pipe simtel file registration via cta-analysis-manage-data.py
+      Job class and script to run zstd compression test simulation
+      
+################################################
 [v1r18p2]
 
 *JB
@@ -303,7 +311,3 @@ CHANGE : introduce FileMask in Transformation instead of just adding files
          in EvnDisp3MSCWRefExample.py EvnDisp3RefExample.py
          and Prod3MCPipeBaselineExample.py
 
-[v1r44p0]
-*JB
-NEW : Job class and Script to run NSB simulation
-      corsika pipe simtel file registration via cta-analysis-manage-data.py
