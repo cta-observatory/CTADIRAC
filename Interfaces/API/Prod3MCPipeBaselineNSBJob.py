@@ -121,7 +121,7 @@ class Prod3MCPipeBaselineNSBJob(Prod3MCPipeBaselineJob):
     filemetadata = {'runNumber': self.run_number, 'nsb':1}
     file_md_json = json.dumps(filemetadata)
     outputpattern = './Data/sim_telarray/*/*/Data/*baseline.simtel.gz'
-    if self.particle is "gamma-diffuse":
+    if self.particle == 'gamma-diffuse':
         outputpattern = './Data/sim_telarray/*/*/Data/*baseline_cone10.simtel.gz'
     dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s'" %\
@@ -133,7 +133,7 @@ class Prod3MCPipeBaselineNSBJob(Prod3MCPipeBaselineJob):
     iStep += 1
     ## log file
     outputpattern = './Data/sim_telarray/*/*/Log/*baseline.log.gz'
-    if self.particle is "gamma-diffuse":
+    if self.particle == 'gamma-diffuse':
         outputpattern = './Data/sim_telarray/*/*/Log/*baseline_cone10.log.gz'
     dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s' Log" % \
@@ -145,7 +145,7 @@ class Prod3MCPipeBaselineNSBJob(Prod3MCPipeBaselineJob):
     iStep += 1
     ## histogram
     outputpattern = './Data/sim_telarray/*/*/Histograms/*baseline.hdata.gz'
-    if self.particle is "gamma-diffuse":
+    if self.particle == 'gamma-diffuse':
         outputpattern = './Data/sim_telarray/*/*/Histograms/*baseline_cone10.hdata.gz'
     dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s' Histograms" % \
