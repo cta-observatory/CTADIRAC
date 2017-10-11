@@ -121,6 +121,8 @@ class Prod3MCPipeBaselineNSBJob(Prod3MCPipeBaselineJob):
     filemetadata = {'runNumber': self.run_number, 'nsb':1}
     file_md_json = json.dumps(filemetadata)
     outputpattern = './Data/sim_telarray/*/*/Data/*baseline.simtel.gz'
+    if self.particle is "gamma-diffuse":
+        outputpattern = './Data/sim_telarray/*/*/Data/*baseline_cone10.simtel.gz'
     dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s'" %\
                               (mdjson, mdfieldjson, file_md_json, self.basepath,
@@ -131,6 +133,8 @@ class Prod3MCPipeBaselineNSBJob(Prod3MCPipeBaselineJob):
     iStep += 1
     ## log file
     outputpattern = './Data/sim_telarray/*/*/Log/*baseline.log.gz'
+    if self.particle is "gamma-diffuse":
+        outputpattern = './Data/sim_telarray/*/*/Log/*baseline_cone10.log.gz'
     dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s' Log" % \
                               (mdjson, mdfieldjson, file_md_json, self.basepath,
@@ -141,6 +145,8 @@ class Prod3MCPipeBaselineNSBJob(Prod3MCPipeBaselineJob):
     iStep += 1
     ## histogram
     outputpattern = './Data/sim_telarray/*/*/Histograms/*baseline.hdata.gz'
+    if self.particle is "gamma-diffuse":
+        outputpattern = './Data/sim_telarray/*/*/Histograms/*baseline_cone10.hdata.gz'
     dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s' Histograms" % \
                               (mdjson, mdfieldjson, file_md_json, self.basepath,
@@ -155,7 +161,7 @@ class Prod3MCPipeBaselineNSBJob(Prod3MCPipeBaselineJob):
     ## file meta data
     filemetadata = {'runNumber': self.run_number, 'nsb':5}
     file_md_json = json.dumps(filemetadata)
-    outputpattern = './Data/sim_telarray/*/*/Data/*baseline-5x.simtel.gz'
+    outputpattern = './Data/sim_telarray/*/*/Data/*baseline-5x*.simtel.gz'
     dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s'" %\
                               (mdjson, mdfieldjson, file_md_json, self.basepath,
@@ -165,7 +171,7 @@ class Prod3MCPipeBaselineNSBJob(Prod3MCPipeBaselineJob):
     dmStep['Value']['descr_short'] = 'Save data files to SE and register them in DFC'
     iStep += 1
     ## log file
-    outputpattern = './Data/sim_telarray/*/*/Log/*baseline-5x.log.gz'
+    outputpattern = './Data/sim_telarray/*/*/Log/*baseline-5x*.log.gz'
     dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s' Log" % \
                               (mdjson, mdfieldjson, file_md_json, self.basepath,
@@ -175,7 +181,7 @@ class Prod3MCPipeBaselineNSBJob(Prod3MCPipeBaselineJob):
     dmStep['Value']['descr_short'] = 'Save log files to SE and register them in DFC'
     iStep += 1
     ## histogram
-    outputpattern = './Data/sim_telarray/*/*/Histograms/*baseline-5x.hdata.gz'
+    outputpattern = './Data/sim_telarray/*/*/Histograms/*baseline-5x*.hdata.gz'
     dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s' Histograms" % \
                               (mdjson, mdfieldjson, file_md_json, self.basepath,
@@ -189,7 +195,7 @@ class Prod3MCPipeBaselineNSBJob(Prod3MCPipeBaselineJob):
     ## file meta data
     filemetadata = {'runNumber': self.run_number, 'nsb':30}
     file_md_json = json.dumps(filemetadata)
-    outputpattern = './Data/sim_telarray/*/*/Data/*baseline-30x.simtel.gz'
+    outputpattern = './Data/sim_telarray/*/*/Data/*baseline-30x*.simtel.gz'
     dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s'" %\
                               (mdjson, mdfieldjson, file_md_json, self.basepath,
@@ -199,7 +205,7 @@ class Prod3MCPipeBaselineNSBJob(Prod3MCPipeBaselineJob):
     dmStep['Value']['descr_short'] = 'Save data files to SE and register them in DFC'
     iStep += 1
     ## log file
-    outputpattern = './Data/sim_telarray/*/*/Log/*baseline-30x.log.gz'
+    outputpattern = './Data/sim_telarray/*/*/Log/*baseline-30x*.log.gz'
     dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s' Log" % \
                               (mdjson, mdfieldjson, file_md_json, self.basepath,
@@ -209,7 +215,7 @@ class Prod3MCPipeBaselineNSBJob(Prod3MCPipeBaselineJob):
     dmStep['Value']['descr_short'] = 'Save log files to SE and register them in DFC'
     iStep += 1
     ## histogram
-    outputpattern = './Data/sim_telarray/*/*/Histograms/*baseline-30x.hdata.gz'
+    outputpattern = './Data/sim_telarray/*/*/Histograms/*baseline-30x*.hdata.gz'
     dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s' Histograms" % \
                               (mdjson, mdfieldjson, file_md_json, self.basepath,
