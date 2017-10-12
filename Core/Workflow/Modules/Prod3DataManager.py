@@ -237,7 +237,7 @@ class Prod3DataManager(object) :
       res = self.fcc.getFileUserMetadata( lfn )
       if DataType == 'SimtelProd' and res['Value']['outputType'] == 'Data':
         fmd.update( {'sct':sct} )
-      res = self.fcc.setMetadata( lfn, fmd )
+      res = self.fc.setMetadata( lfn, fmd )
       if not res['OK']:
         return res
 
