@@ -4,6 +4,8 @@ Start top posting release notes
 NEW : Job class and Script to run NSB simulation
       corsika pipe simtel file registration via cta-analysis-manage-data.py
       Job class and script to run zstd compression test simulation
+*LA
+BUGFIX: Prod3DataManager always use the file catalog client for file meta data to be used in meta filters
       
 ################################################
 [v1r18p2]
