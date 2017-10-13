@@ -32,6 +32,7 @@ class Prod3MCPipeBaselineJob( Job ) :
     # defaults
     self.setName('Prod3MC_Generation')
     self.package='corsika_simhessarray'
+    self.program_category='tel_sim'
     self.version='2017-04-19'
     self.configuration_id = 0
     self.output_data_level=0
@@ -150,10 +151,10 @@ class Prod3MCPipeBaselineJob( Job ) :
     self.zenith_angle = zenith
 
   def setnOutputFiles(self, N):
-    """ Set the number of expected output data files 
+    """ Set the number of expected output data files
 
     Parameters:
-    N -- an int for the number of data files 
+    N -- an int for the number of data files
     """
     self.N_output_files = N
 

@@ -1,5 +1,5 @@
 """ Prod3 MC Pipe Script to create a Transformation
-          JB, LA April 2017
+          JB, LA September 2017
 """
 
 from DIRAC.Core.Base import Script
@@ -21,7 +21,7 @@ Script.parseCommandLine()
 import DIRAC
 from DIRAC.TransformationSystem.Client.Transformation import Transformation
 from DIRAC.Core.Workflow.Parameter import Parameter
-from CTADIRAC.Interfaces.API.Prod3MCPipeBaselineNSBJob import Prod3MCPipeBaselineNSBJob
+from CTADIRAC.Interfaces.API.Prod3MCPipeBaselineZstdJob import Prod3MCPipeBaselineZstdJob
 #from Prod3MCPipeBaselineJob import Prod3MCPipeBaselineJob
 #from DIRAC.Interfaces.API.Dirac import Dirac
 
@@ -71,15 +71,15 @@ def runProd3( args = None ):
   nShower= args[5]
 
     ### Main Script ###
-  job = Prod3MCPipeBaselineNSBJob()
+  job = Prod3MCPipeBaselineZstdJob()
 
   # override for testing
-  job.setName('BL_NSB_Test_Paranal_20deg_%s'%particle)
+  job.setName('BL_Zstd_Test_Paranal_20deg_%s'%particle)
 
   # package and version
   job.setPackage('corsika_simhessarray')
-  job.setVersion( '2017-09-01' )  # final with fix for gamma-diffuse
-  job.configuration_id=1 # 0 exists already
+  job.setVersion( '2017-09-28_zstd' )  # final with fix for gamma-diffuse
+  job.configuration_id=2 # 0 exists already
 
   # layout, site, particle, pointing direction, zenith angle
   # demo, LaPalma,  gamma, South,  20
