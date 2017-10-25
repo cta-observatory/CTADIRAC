@@ -54,6 +54,9 @@ def runEvnDisp3( args = None ):
   DIRAC.gLogger.notice( 'runEvnDisp3' )
   # get arguments
   transName = args[0]
+  particle  = args[1]
+  nsb_level = int(args[2])
+  
 
   ################################
   job = EvnDisp3RefJob(cpuTime = 432000)  # to be adjusted!!
@@ -76,9 +79,6 @@ def runEvnDisp3( args = None ):
   # change here for Paranal or La Palma
   job.setPrefix( "CTA.prod3Sb" )
 
-  # NSB level
-  nsb_level=5
-
   #  set calibration file and parameters file
   # pedestals_KB_NSB30x.root, pedestals_KB_NSB5x.root, pedestals_KB_NSB1x.root
   job.setCalibrationFile('pedestals_KB_NSB%dx.root'%nsb_level)
@@ -86,12 +86,12 @@ def runEvnDisp3( args = None ):
 
   ### set meta-data to the product of the transformation
   # set query to add files to the transformation
-  MDdict = {'MCCampaign':'PROD3', 'particle':'gamma',
+  MDdict = {'MCCampaign':'PROD3', 'particle': particle,
             'array_layout':'Baseline', 'site':'Paranal',
             'outputType':'Data', 'data_level':{"=": 0},
             'configuration_id':{"=": 1},
             'tel_sim_prog':'simtel', 'tel_sim_prog_version':'2017-09-01',
-            'thetaP':{"=": 20}, 'phiP':{"=": 0.0}, 'nsb':{"=": nsb_level}}
+            'thetaP':{"=": 20}, 'phiP':{"=": 180.0}, 'nsb':{"=": nsb_level}}
 
   job.setEvnDispMD(MDdict)
 
@@ -99,7 +99,7 @@ def runEvnDisp3( args = None ):
   job.filemetadata={'nsb':nsb_level}
   # add the sequence of executables
   job.setTSTaskId( '@{JOB_ID}' ) # dynamic
-  job.setupWorkflow(debug=True)
+  job.setupWorkflow(debug=False)
 
   # output
   job.setOutputSandbox( ['*Log.txt'] )
@@ -113,7 +113,7 @@ def runEvnDisp3( args = None ):
 if __name__ == '__main__':
 
   args = Script.getPositionalArgs()
-  if ( len( args ) != 1 ):
+  if ( len( args ) != 3 ):
     Script.showHelp()
   
   runEvnDisp3(args)
