@@ -1,9 +1,8 @@
 """
   Wrapper on the Job class to handle Prod3 MC
-  piping corsika into 3 simtels
-  created for Prod3 NSB tests with reference base line
-  for both Paranal
-			JB,LA September 2017
+  Paranal simulation with baseline layout, using zstd compression
+  for simtel output files
+			JB,LA October 2017
 """
 
 __RCSID__ = "$Id$"
