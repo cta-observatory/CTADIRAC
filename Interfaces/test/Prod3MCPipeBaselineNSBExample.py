@@ -4,16 +4,17 @@
 
 from DIRAC.Core.Base import Script
 Script.setUsageMessage('\n'.join([__doc__.split('\n')[1],
-                                     'Usage:',
-                                     '  %s array_layout site particle pointing_dir zenith_angle nShower' % Script.scriptName,
-                                     'Arguments:',
-                                     '  array_layout: demo',
-                                     '  site: Paranal or LaPalma',
-                                     '  particle: gamma, proton, electron',
-                                     '  pointing_dir: North or South',
-                                     '  zenith_agle: 20',
-                                     '  nShower: from 5 to 25000',
-                                     '\ne.g: %s Baseline Paranal gamma South 20 5'% Script.scriptName,
+                                  'Usage:',
+                                  '  %s array_layout site particle pointing_dir\
+                                   zenith_angle nShower' % Script.scriptName,
+                                  'Arguments:',
+                                  '  array_layout: demo',
+                                  '  site: Paranal or LaPalma',
+                                  '  particle: gamma, proton, electron',
+                                  '  pointing_dir: North or South',
+                                  '  zenith_agle: 20',
+                                  '  nShower: from 5 to 25000',
+                                  '\ne.g: %s Baseline Paranal gamma South 20 5'% Script.scriptName,
                                  ]))
 
 Script.parseCommandLine()
@@ -25,7 +26,7 @@ from CTADIRAC.Interfaces.API.Prod3MCPipeBaselineNSBJob import Prod3MCPipeBaselin
 #from Prod3MCPipeBaselineNSBJob import Prod3MCPipeBaselineNSBJob
 
 
-def submitTS(job):
+def submit_ts(job):
     """ Create a transformation executing the job workflow
     """
     # Temporary fix to initialize JOB_ID #######
@@ -35,29 +36,29 @@ def submitTS(job):
                                         "", "", True, False, "Temporary fix"))
     job.setType('MCSimulation')  # Used for the JobType plugin
 
-    t = Transformation()
+    trans = Transformation()
     # This must be unique. If not set it's asked in the prompt
     # t.setTransformationName("Prod3Exemple")
-    t.setType("MCSimulation")
-    t.setDescription("MC Prod3 BaseLine NSB test")
-    t.setLongDescription("corsika-simtel production")  # mandatory
-    t.setBody(job.workflow.toXML())
+    trans.setType("MCSimulation")
+    trans.setDescription("MC Prod3 BaseLine NSB test")
+    trans.setLongDescription("corsika-simtel production")  # mandatory
+    trans.setBody(job.workflow.toXML())
 
-    res = t.addTransformation()  # Transformation is created here
+    res = trans.addTransformation()  # Transformation is created here
 
     if not res['OK']:
         print(res['Message'])
         DIRAC.exit(-1)
 
-    t.setStatus("Active")
-    t.setAgentType("Automatic")
+    trans.setStatus("Active")
+    trans.setAgentType("Automatic")
 
     return res
 
 #########################################################
 
 
-def runProd3(args=None):
+def run_prod3(args=None):
     """ Simple wrapper to create a Prod3MCPipeBaselineJob and setup parameters
     from positional arguments given on the command line.
 
@@ -72,7 +73,7 @@ def runProd3(args=None):
     particle = args[2]
     pointing = args[3]
     zenith = args[4]
-    nShower = args[5]
+    n_shower = args[5]
 
     # Main Script ###
     job = Prod3MCPipeBaselineNSBJob()
@@ -95,11 +96,11 @@ def runProd3(args=None):
     job.setZenithAngle(zenith)
 
     # 5 is enough for testing
-    job.setNShower(nShower)
+    job.setNShower(n_shower)
 
     # Set the startrunNb here (it will be added to the Task_ID)
-    startrunNb = '0'
-    job.setStartRunNumber(startrunNb)
+    start_run_nb = '0'
+    job.setStartRunNumber(start_run_nb)
 
     # set run number for TS submission: JOB_ID variable left for
     # dynamic resolution during the Job. It corresponds to the Task_ID
@@ -112,7 +113,7 @@ def runProd3(args=None):
     job.setupWorkflow(debug=True)
 
     # submit to the Transformation System
-    res = submitTS(job)
+    res = submit_ts(job)
 
     # debug
     Script.gLogger.info(job.workflow)
@@ -124,16 +125,16 @@ def runProd3(args=None):
 if __name__ == '__main__':
     """ Do things
     """
-    args = Script.getPositionalArgs()
-    if (len(args) != 6):
+    ARGS = Script.getPositionalArgs()
+    if len(ARGS) != 6:
         Script.showHelp()
     try:
-        res = runProd3(args)
-        if not res['OK']:
-            DIRAC.gLogger.error(res['Message'])
+        RES = run_prod3(ARGS)
+        if not RES['OK']:
+            DIRAC.gLogger.error(RES['Message'])
             DIRAC.exit(-1)
         else:
             DIRAC.gLogger.notice('Done')
-    except Exception:
+    except RuntimeError:
         DIRAC.gLogger.exception()
         DIRAC.exit(-1)
