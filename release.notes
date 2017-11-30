@@ -1,7 +1,8 @@
 [v1r44p1]
 *JB
 CHANGE : EvnDisp3RefNSBExample.py add nsb_level and particle as parameters
- 
+         Prod3MCPipeBaselineNSBJob.py prep for LaPalma NSB
+
 [v1r44p0]
 Start top posting release notes
 *JB
@@ -10,13 +11,13 @@ NEW : Job class and Script to run NSB simulation
       Job class and script to run zstd compression test simulation
 *LA
 BUGFIX: Prod3DataManager always use the file catalog client for file meta data to be used in meta filters
-      
+
 ################################################
 [v1r18p2]
 
 *JB
 NEW: add release.note file according to issue #5895
-CHANGE: relax the check on the nb of events from 2 to 20 missing events in cta-corsikasimtelprod.py 
+CHANGE: relax the check on the nb of events from 2 to 20 missing events in cta-corsikasimtelprod.py
 BUGFIX:
 
 [v1r19]
@@ -54,7 +55,7 @@ BUGFIX: in cta-evndisp.py. To be used for the Pilot
 
 *LA
 CHANGE: Separate config. and source code in cta-evndisp.py.
-CHANGE: Add JOBID in output file names in cta-evndisp.py. 
+CHANGE: Add JOBID in output file names in cta-evndisp.py.
 To be used for the Pilot
 
 [v1r19p7]
@@ -71,7 +72,7 @@ To be used for the Pilot
 [v1r20]
 *LA
 NEW: Add Re-processing Transformations
-BUGFIX: seList in cta-prodts.py 
+BUGFIX: seList in cta-prodts.py
 To be used for client
 
 [v1r20p1]
@@ -108,7 +109,7 @@ To be used for Client: Depends on v6r11p4
 
 [v1r21p3]
 *LA
-Add outputType for corsika and dst everywhere 
+Add outputType for corsika and dst everywhere
 To be used for Pilot
 
 [v1r21p4]
@@ -316,4 +317,3 @@ NEW : add data level meta data
 CHANGE : introduce FileMask in Transformation instead of just adding files
          in EvnDisp3MSCWRefExample.py EvnDisp3RefExample.py
          and Prod3MCPipeBaselineExample.py
-
