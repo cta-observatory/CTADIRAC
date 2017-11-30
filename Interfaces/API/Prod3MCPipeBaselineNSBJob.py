@@ -186,44 +186,47 @@ class Prod3MCPipeBaselineNSBJob(Prod3MCPipeBaselineJob):
                               arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s' Histograms" % \
                               (mdjson, mdfieldjson, file_md_json, self.basepath,
                                outputpattern, self.package, self.program_category, self.catalogs),
-                              logFile = 'Histo_DataManagement_NSB5x_Log.txt')
+                              logFile='Histo_DataManagement_NSB5x_Log.txt')
     dmStep['Value']['name'] = 'Step%i_Histo_DataManagement' % iStep
-    dmStep['Value']['descr_short'] = 'Save histogram files to SE and register them in DFC'
+    dmStep['Value']['descr_short'] = 'Save histogram files to SE and register \
+                                      them in DFC'
     iStep += 1
 
-    # register Data NSB 30x
-    ## file meta data
-    filemetadata = {'runNumber': self.run_number, 'nsb':30}
-    file_md_json = json.dumps(filemetadata)
-    outputpattern = './Data/sim_telarray/*/*/Data/*baseline-30x*.simtel.gz'
-    dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
-                              arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s'" %\
-                              (mdjson, mdfieldjson, file_md_json, self.basepath,
-                               outputpattern, self.package, self.program_category, self.catalogs),
-                              logFile = 'DataManagement_NSB30x_Log.txt')
-    dmStep['Value']['name'] = 'Step%i_DataManagement_1' % iStep
-    dmStep['Value']['descr_short'] = 'Save data files to SE and register them in DFC'
-    iStep += 1
-    ## log file
-    outputpattern = './Data/sim_telarray/*/*/Log/*baseline-30x*.log.gz'
-    dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
-                              arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s' Log" % \
-                              (mdjson, mdfieldjson, file_md_json, self.basepath,
-                               outputpattern, self.package, self.program_category, self.catalogs),
-                              logFile = 'Log_DataManagement_NSB30x_Log.txt')
-    dmStep['Value']['name'] = 'Step%i_Log_DataManagement' % iStep
-    dmStep['Value']['descr_short'] = 'Save log files to SE and register them in DFC'
-    iStep += 1
-    ## histogram
-    outputpattern = './Data/sim_telarray/*/*/Histograms/*baseline-30x*.hdata.gz'
-    dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
-                              arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s' Histograms" % \
-                              (mdjson, mdfieldjson, file_md_json, self.basepath,
-                               outputpattern, self.package, self.program_category, self.catalogs),
-                              logFile = 'Histo_DataManagement_NSB30x_Log.txt')
-    dmStep['Value']['name'] = 'Step%i_Histo_DataManagement' % iStep
-    dmStep['Value']['descr_short'] = 'Save histograms files to SE and register them in DFC'
-    iStep += 1
+    # register Data NSB 30x for Paranal only
+    if self.cta_site == 'Paranal':
+        # file meta data
+        filemetadata = {'runNumber': self.run_number, 'nsb': 30}
+        file_md_json = json.dumps(filemetadata)
+        outputpattern = './Data/sim_telarray/*/*/Data/*baseline-30x*.simtel.gz'
+        dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
+                                  arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s'" %\
+                                  (mdjson, mdfieldjson, file_md_json, self.basepath,
+                                   outputpattern, self.package, self.program_category, self.catalogs),
+                                  logFile = 'DataManagement_NSB30x_Log.txt')
+        dmStep['Value']['name'] = 'Step%i_DataManagement_1' % iStep
+        dmStep['Value']['descr_short'] = 'Save data files to SE and register them in DFC'
+        iStep += 1
+        # log file
+        outputpattern = './Data/sim_telarray/*/*/Log/*baseline-30x*.log.gz'
+        dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
+                                  arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s' Log" % \
+                                  (mdjson, mdfieldjson, file_md_json, self.basepath,
+                                   outputpattern, self.package, self.program_category, self.catalogs),
+                                  logFile = 'Log_DataManagement_NSB30x_Log.txt')
+        dmStep['Value']['name'] = 'Step%i_Log_DataManagement' % iStep
+        dmStep['Value']['descr_short'] = 'Save log files to SE and register them in DFC'
+        iStep += 1
+        ## histogram
+        outputpattern = './Data/sim_telarray/*/*/Histograms/*baseline-30x*.hdata.gz'
+        dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
+                                  arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s' Histograms" % \
+                                  (mdjson, mdfieldjson, file_md_json, self.basepath,
+                                   outputpattern, self.package, self.program_category, self.catalogs),
+                                  logFile='Histo_DataManagement_NSB30x_Log.txt')
+        dmStep['Value']['name'] = 'Step%i_Histo_DataManagement' % iStep
+        dmStep['Value']['descr_short'] = 'Save histograms files to SE and\
+                                          register them in DFC'
+        iStep += 1
 
     # Number of showers is passed via an environment variable
-    self.setExecutionEnv( {'NSHOW'        : '%s' % self.nShower} )
+    self.setExecutionEnv({'NSHOW': '%s' % self.nShower})
