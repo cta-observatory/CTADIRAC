@@ -1,7 +1,7 @@
 #!/bin/env python
 """
   Simple terminal job monitoring
-  
+
 """
 
 owner=""
@@ -10,7 +10,7 @@ nHours=24
 
 def highlight(string):
     return '\x1b[31;1m%s\x1b[0m' % (string)
-    
+
 import os, copy
 from DIRAC.Core.Base import Script
 from DIRAC.Core.Utilities.Time import toString, date, day
@@ -71,7 +71,9 @@ status=dirac.status(jobsList)
 #print dirac.getJobSummary(3075536)
 
 # print out my favourite tables
-BASE_STATUS_DIR={'Received':0, 'Matched':0, 'Waiting':0, 'Running':0, 'Failed':0, 'Stalled':0, 'Rescheduled':0, 'Checking':0, 'Done':0, 'Completed':0, 'Killed':0, 'Total':0}
+BASE_STATUS_DIR={'Received':0, 'Matched':0, 'Waiting':0, 'Running':0,
+                 'Failed':0, 'Stalled':0, 'Rescheduled':0, 'Checking':0,
+                 'Done':0, 'Completed':0, 'Killed':0, 'Total':0}
 SitesDict={}
 StatusDict=copy.copy(BASE_STATUS_DIR)
 
@@ -87,7 +89,7 @@ for job in jobsList:
     StatusDict['Total']+=1
     if site not in SitesDict.keys():
         if site.find('.')==-1:
-	    site='    None' # note that blank spaces are needed
+            site='    None' # note that blank spaces are needed
         SitesDict[site]=copy.copy(BASE_STATUS_DIR)
         SitesDict[site][majstatus]=1
         SitesDict[site]["Total"]=1
@@ -98,19 +100,21 @@ for job in jobsList:
         else:
             SitesDict[site][majstatus]+=1
 
-Script.gLogger.notice("%12s\tWaiting\tRunning\tFailed\tStalled\tDone\tTotal"%"Site")
+Script.gLogger.notice("%16s\tWaiting\tRunning\tFailed\tStalled\tDone\tTotal"%"Site")
 for key,val in SitesDict.items():
-    txt="%12s\t%s\t%s\t%s\t%s\t%s\t%s"%\
-          (key[4:], val['Waiting'], val['Running'], val['Failed'], val['Stalled'], val['Done'], val['Total'])
+    txt="%16s\t%s\t%s\t%s\t%s\t%s\t%s"%\
+          (key.split('LCG.')[-1], val['Waiting'], val['Running'], val['Failed'],
+           val['Stalled'], val['Done'], val['Total'])
     if float(val['Done'])>0.:
         # More than 10% crash, print bold red
         if float(val['Failed'])/float(val['Done'])>0.1:
-            txt=highlight(txt)
+            txt = highlight(txt)
     Script.gLogger.notice(txt)
 
-Script.gLogger.notice("%12s\t%s\t%s\t%s\t%s\t%s\t%s"%
-          ('Total', StatusDict['Waiting'], StatusDict['Running'], StatusDict['Failed'], StatusDict['Stalled'],
-            StatusDict['Done'], StatusDict['Total']))
+Script.gLogger.notice("%16s\t%s\t%s\t%s\t%s\t%s\t%s"%
+                      ('Total', StatusDict['Waiting'], StatusDict['Running'],
+                       StatusDict['Failed'], StatusDict['Stalled'],
+                       StatusDict['Done'], StatusDict['Total']))
 
 
 # print failed
@@ -122,4 +126,3 @@ if SaveFailed:
     if majstatus=="Failed":
         txt+=str(dirac.getJobSummary(int(job)))+'\n'
   open('failed.txt','w').write(txt)
-
