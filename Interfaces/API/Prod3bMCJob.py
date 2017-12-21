@@ -161,7 +161,7 @@ class Prod3bMCJob( Job ) :
         iStep+=1
 
     # step 2  
-    swStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-setupsw',
+    swStep = self.setExecutable( 'cta-prod3-setupsw',
                               arguments='%s %s'% (self.package, self.version),\
                               logFile='SetupSoftware_Log.txt')
     swStep['Value']['name'] = 'Step%i_SetupSoftware' % iStep
@@ -189,7 +189,7 @@ class Prod3bMCJob( Job ) :
     iStep+=1
 
     # step 4  
-    csvStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-verifysteps', \
+    csvStep = self.setExecutable( 'cta-prod3-verifysteps', \
                               arguments='corsika 2 100',\
                               logFile='Verify_Corsika_Log.txt')
     csvStep['Value']['name']='Step%i_VerifyCorsika'%iStep
@@ -208,7 +208,7 @@ class Prod3bMCJob( Job ) :
     iStep+=1
 
     # step 6 verify non SCT data
-    stvStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-verifysteps', \
+    stvStep = self.setExecutable( 'cta-prod3-verifysteps', \
                               arguments = "generic 3 1000 'Data/tmp/TmpData/Data/*simtel.gz'",\
                               logFile='Verify_Simtel_noSCT_Log.txt')
     stvStep['Value']['name']='Step%i_VerifySimtel'%iStep
@@ -217,7 +217,7 @@ class Prod3bMCJob( Job ) :
 
     # step 6b verify SCT data
     if not self.no_sct:    
-        stvStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-verifysteps', \
+        stvStep = self.setExecutable( 'cta-prod3-verifysteps', \
                                       arguments = "generic 1 1000 'Data/sim_telarray/cta-prod3/0.0deg/Data/*SCT*.simtel.gz'",\
                                       logFile='Verify_Simtel_SCT_Log.txt')
         stvStep['Value']['name']='Step%i_VerifySimtelSCT'%iStep
@@ -225,7 +225,7 @@ class Prod3bMCJob( Job ) :
         iStep += 1
 
     # step 7
-    cleanStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-cleandata',
+    cleanStep = self.setExecutable( 'cta-prod3-cleandata',
                               arguments = "%s %s" % ( 'Data/corsika' , '*/*.corsika.gz' ),
                               logFile = 'CleanData_Log.txt' )
     cleanStep['Value']['name'] = 'Step%i_CleanData' % iStep
@@ -242,7 +242,7 @@ class Prod3bMCJob( Job ) :
     iStep+=1
     
     # step 9 verify merged data
-    mgvStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-verifysteps', \
+    mgvStep = self.setExecutable( 'cta-prod3-verifysteps', \
                               arguments = "generic 1 1000 'Data/sim_telarray/cta-prod3/0.0deg/Data/*merged*.simtel.gz'",\
                               logFile='Verify_Merging_Log.txt')
     mgvStep['Value']['name']='Step%i_VerifyMerging'%iStep
@@ -275,8 +275,8 @@ class Prod3bMCJob( Job ) :
     fmdjson = json.dumps( filemetadata )
 
     ### Temporary fix: since the deployed script does not have the correct format for arguments
-    #dmStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-managedata',
-    dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-prod3-managedata.py',
+    dmStep = self.setExecutable( 'cta-prod3-managedata',
+#    dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-prod3-managedata.py',
                               arguments = "'%s' '%s' '%s' %s %s %s" % ( mdjson, mdfieldjson, fmdjson, self.inputpath, self.basepath, self.start_run_number ),
                               logFile = 'DataManagement_Log.txt' )
     dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep

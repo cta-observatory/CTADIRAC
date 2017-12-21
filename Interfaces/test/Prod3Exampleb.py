@@ -48,7 +48,7 @@ def submitTS( job ):
 
   t.setStatus( "Active" )
   t.setAgentType( "Automatic" )
-  
+
   return res
 
 #########################################################
@@ -56,10 +56,10 @@ def submitTS( job ):
 def runProd3( args = None ):
   """ Simple wrapper to create a Prod3MCJob and setup parameters
       from positional arguments given on the command line.
-      
+
       Parameters:
       args -- a list of 6 strings corresponding to job arguments
-              array_layout site particle pointing_dir zenith_angle nShower             
+              array_layout site particle pointing_dir zenith_angle nShower
   """
   # get arguments
   layout = args[0]
@@ -73,11 +73,11 @@ def runProd3( args = None ):
   job = Prod3bMCJob()
 
   # override for testing
-  job.setName('Prod3Test_%s'%particle)
-  
+  job.setName('Prod3bParanal_%s'%particle)
+
   # package and version
   job.setPackage('corsika_simhessarray')
-  job.setVersion( '2016-06-28-p2' )  # final with fix for gamma-diffuse
+  job.setVersion( '2016-06-28-p3' )  # final with fix for gamma-diffuse
 
   # layout, site, particle, pointing direction, zenith angle
   # hex,  Paranal,  gamma, South,  20
@@ -107,7 +107,7 @@ def runProd3( args = None ):
 
   # submit to the Transformation System
   res = submitTS( job )
-    
+
   # debug
   Script.gLogger.info( job.workflow )
 
