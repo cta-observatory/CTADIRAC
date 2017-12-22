@@ -15,10 +15,10 @@ class Prod3bMCJob( Job ) :
       takes care of running corsika, 31 simtels and merging
       into 5 data files and 3 tar ball for log files.
   """
-        
+
   def __init__( self, cpuTime = 432000 ):
     """ Constructor
-    
+
     Keyword arguments:
     cpuTime -- max cpu time allowed for the job
     """
@@ -40,10 +40,11 @@ class Prod3bMCJob( Job ) :
     self.no_sct=True
     self.inputpath = 'Data/sim_telarray/cta-prod3/0.0deg'
     self.basepath = '/vo.cta.in2p3.fr/MC/PROD3/scratch'
+    self.catalogs = json.dumps(['DIRACFileCatalog','TSCatalog'])
 
   def setPackage(self, package):
     """ Set package name : e.g. 'corsika_simhessarray'
-    
+
     Parameters:
     package -- corsika_simhessarray
     """
@@ -51,7 +52,7 @@ class Prod3bMCJob( Job ) :
 
   def setVersion(self, version):
     """ Set software version number : e.g. 2015-07-21
-    
+
     Parameters:
     version -- corsika+simtel package version number
     """
@@ -61,16 +62,16 @@ class Prod3bMCJob( Job ) :
     """ Set the number of corsika showers,
         5 is enough for testing
         20000 in production usually.
-    
+
     Parameters:
     nshow -- number of corsika primary showers to generate
     """
     self.nShower=nshow
-    
+
   def setRunNumber(self, runNb):
     """ Set the corsika run number, passed as a string
         because may be a TS parameter
-    
+
     Parameters:
     runNb -- run number as a string, used as a corsika seed
     """
@@ -87,7 +88,7 @@ class Prod3bMCJob( Job ) :
 
   def setArrayLayout(self, layout):
     """ Set the array layout type
-    
+
     Parameters:
     layout -- a string for the array layout, hex or square
     """
@@ -100,7 +101,7 @@ class Prod3bMCJob( Job ) :
 
   def setSite(self, site):
     """ Set the site to simulate
-    
+
     Parameters:
     site -- a string for the site name (Paranal)
     """
@@ -108,7 +109,7 @@ class Prod3bMCJob( Job ) :
 
   def setParticle(self, particle):
     """ Set the corsika primary particle
-    
+
     Parameters:
     particle -- a string for the particle type/name
     """
@@ -121,7 +122,7 @@ class Prod3bMCJob( Job ) :
 
   def setPointingDir(self, pointing):
     """ Set the pointing direction, North or South
-    
+
     Parameters:
     pointing -- a string for the pointing direction
     """
@@ -160,7 +161,7 @@ class Prod3bMCJob( Job ) :
         lsStep['Value']['descr_short']='list files in working directory'
         iStep+=1
 
-    # step 2  
+    # step 2
     swStep = self.setExecutable( 'cta-prod3-setupsw',
                               arguments='%s %s'% (self.package, self.version),\
                               logFile='SetupSoftware_Log.txt')
@@ -174,7 +175,7 @@ class Prod3bMCJob( Job ) :
         corsika_args= ''
     else:
         corsika_args= '--with-sct'
-        
+
     corsika_args += ' --start_run %s --run %s %s %s %s %s %s' % \
                     ( self.start_run_number, self.run_number, \
                       self.array_layout, self.cta_site,\
@@ -183,12 +184,12 @@ class Prod3bMCJob( Job ) :
     csStep = self.setExecutable( './dirac_prod3b_corsika', \
                               arguments = corsika_args, \
                               logFile='Corsika_Log.txt')
-    
+
     csStep['Value']['name']='Step%i_Corsika'%iStep
     csStep['Value']['descr_short']='Run Corsika'
     iStep+=1
 
-    # step 4  
+    # step 4
     csvStep = self.setExecutable( 'cta-prod3-verifysteps', \
                               arguments='corsika 2 100',\
                               logFile='Verify_Corsika_Log.txt')
@@ -216,7 +217,7 @@ class Prod3bMCJob( Job ) :
     iStep += 1
 
     # step 6b verify SCT data
-    if not self.no_sct:    
+    if not self.no_sct:
         stvStep = self.setExecutable( 'cta-prod3-verifysteps', \
                                       arguments = "generic 1 1000 'Data/sim_telarray/cta-prod3/0.0deg/Data/*SCT*.simtel.gz'",\
                                       logFile='Verify_Simtel_SCT_Log.txt')
@@ -240,7 +241,7 @@ class Prod3bMCJob( Job ) :
     mgStep['Value']['name']='Step%i_Merging'%iStep
     mgStep['Value']['descr_short']='Merge simtel output'
     iStep+=1
-    
+
     # step 9 verify merged data
     mgvStep = self.setExecutable( 'cta-prod3-verifysteps', \
                               arguments = "generic 1 1000 'Data/sim_telarray/cta-prod3/0.0deg/Data/*merged*.simtel.gz'",\
@@ -248,7 +249,7 @@ class Prod3bMCJob( Job ) :
     mgvStep['Value']['name']='Step%i_VerifyMerging'%iStep
     mgvStep['Value']['descr_short'] = 'Verify merging of simtel files'
     iStep += 1
-    
+
     # step 11
     # ## the order of the metadata dictionary is important, since it's used to build the directory structure
     metadata = collections.OrderedDict()
@@ -275,10 +276,12 @@ class Prod3bMCJob( Job ) :
     fmdjson = json.dumps( filemetadata )
 
     ### Temporary fix: since the deployed script does not have the correct format for arguments
-    dmStep = self.setExecutable( 'cta-prod3-managedata',
-#    dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-prod3-managedata.py',
-                              arguments = "'%s' '%s' '%s' %s %s %s" % ( mdjson, mdfieldjson, fmdjson, self.inputpath, self.basepath, self.start_run_number ),
-                              logFile = 'DataManagement_Log.txt' )
+#    dmStep = self.setExecutable( 'cta-prod3-managedata',
+    dmStep = self.setExecutable('../CTADIRAC/Core/scripts/cta-prod3-managedata.py',
+                                arguments="'%s' '%s' '%s' %s %s %s '%s'" %
+                                (mdjson, mdfieldjson, fmdjson, self.inputpath,
+                                 self.basepath, self.start_run_number, self.catalogs),
+                                logFile='DataManagement_Log.txt')
     dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
     dmStep['Value']['descr_short'] = 'Save files to SE and register them in DFC'
 
@@ -286,4 +289,4 @@ class Prod3bMCJob( Job ) :
     if self.no_sct:
         self.setExecutionEnv( {'NSHOW': '%s' % self.nShower} )
     else:
-        self.setExecutionEnv( {'NSHOW': '%s' % self.nShower, 'WITH_SCT': 1} )        
+        self.setExecutionEnv( {'NSHOW': '%s' % self.nShower, 'WITH_SCT': 1} )
