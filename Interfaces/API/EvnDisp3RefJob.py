@@ -141,7 +141,7 @@ class EvnDisp3RefJob( Job ) :
         iStep+=1
 
     # step 2
-    swStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-setupsw',
+    swStep = self.setExecutable( 'cta-prod3-setupsw',
                               arguments='%s %s'% (self.package, self.version),\
                               logFile='SetupSoftware_Log.txt')
     swStep['Value']['name'] = 'Step%i_SetupSoftware' % iStep
@@ -150,7 +150,7 @@ class EvnDisp3RefJob( Job ) :
 
     # step 3
     # arguments are nbFiles=0 (not used) and fileSize=100kB
-    eivStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-verifysteps', \
+    eivStep = self.setExecutable( 'cta-prod3-verifysteps', \
                               arguments = 'analysisinputs 0 100', \
                               logFile = 'Verify_EvnDispInputs_Log.txt' )
     eivStep['Value']['name'] = 'Step%i_VerifyEvnDispInputs' % iStep
@@ -184,7 +184,7 @@ class EvnDisp3RefJob( Job ) :
     # register Data
     outputpattern = './Data/*DL%01d.root'%self.output_data_level
     file_md_json = json.dumps(self.filemetadata)
-    dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
+    dmStep = self.setExecutable('../CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s'" %\
                               (mdjson, mdfieldjson, file_md_json, self.basepath,
                                outputpattern, self.package, self.program_category, self.catalogs),
@@ -197,7 +197,7 @@ class EvnDisp3RefJob( Job ) :
     outputpattern = './*.logs.tgz'
     filemetadata = {}
     file_md_json = json.dumps(filemetadata)
-    dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
+    dmStep = self.setExecutable('../CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s' Log" % \
                               (mdjson, mdfieldjson, file_md_json, self.basepath,
                                outputpattern, self.package, self.program_category, self.catalogs),
