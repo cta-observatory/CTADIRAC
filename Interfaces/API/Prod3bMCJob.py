@@ -265,14 +265,19 @@ class Prod3bMCJob(Job) :
         metadata['thetaP'] = float(self.zenith_angle)
         metadata['tel_sim_prog'] = 'simtel'
         metadata['tel_sim_prog_version'] = self.version
-
+        # new meta data introduced after Prod3b
+        metadata['data_level'] = 0
+        metadata['configuration_id'] = -1
         mdjson = json.dumps(metadata)
 
-        metadatafield = {'array_layout':'VARCHAR(128)', 'site':'VARCHAR(128)',
-                         'particle':'VARCHAR(128)', 'phiP':'float',
-                         'thetaP': 'float', 'tel_sim_prog':'VARCHAR(128)',
-                         'tel_sim_prog_version':'VARCHAR(128)'}
-
+        metadatafield = {'array_layout': 'VARCHAR(128)',
+                         'site': 'VARCHAR(128)',
+                         'particle': 'VARCHAR(128)', 'phiP': 'float',
+                         'thetaP': 'float',
+                         'tel_sim_prog': 'VARCHAR(128)',
+                         'tel_sim_prog_version': 'VARCHAR(128)',
+                         'data_level': 'int', 'configuration_id': 'int'}
+    
         mdfieldjson = json.dumps(metadatafield)
 
         filemetadata = {'runNumber': self.run_number }
