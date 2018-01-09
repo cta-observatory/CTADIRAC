@@ -1,4 +1,10 @@
-[v1r44p1]
+[v1r46p1]
+* JB : final fixes for La Palma NSB and Paranal 60 deg
+
+[v1r46]
+* JB, LA : fixes for Dirac upgrade
+
+[v1r45p1]
 *JB
 CHANGE : EvnDisp3RefNSBExample.py add nsb_level and particle as parameters
          Prod3MCPipeBaselineNSBJob.py prep for LaPalma NSB
