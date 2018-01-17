@@ -70,7 +70,8 @@ def runProd3( args = None ):
   nShower= args[5]
 
     ### Main Script ###
-  job = Prod3bMCJob()
+  cpuTime = 432000*3 # 432000 ~ 7 hours
+  job = Prod3bMCJob(cpuTime)
 
   # override for testing
   job.setName('Prod3bParanal_%s'%particle)
