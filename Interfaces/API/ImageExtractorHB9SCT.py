@@ -119,7 +119,7 @@ class ImageExtractorHB9SCT(Job) :
             iStep+=1
 
         # step 2
-        swStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-setupsw',
+        swStep = self.setExecutable( 'cta-prod3-setupsw',
                                   arguments='%s %s'% (self.package, self.version),\
                                   logFile='SetupSoftware_Log.txt')
         swStep['Value']['name'] = 'Step%i_SetupSoftware' % iStep
@@ -128,7 +128,7 @@ class ImageExtractorHB9SCT(Job) :
 
         # step 2bis
         # arguments are nbFiles=0 (not used) and fileSize=100kB
-        eivStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-verifysteps', \
+        eivStep = self.setExecutable( 'cta-prod3-verifysteps', \
                                   arguments = 'analysisinputs 0 100', \
                                   logFile = 'Verify_EvnDispInputs_Log.txt' )
         eivStep['Value']['name'] = 'Step%i_VerifyEvnDispInputs' % iStep
@@ -137,46 +137,64 @@ class ImageExtractorHB9SCT(Job) :
 
         # step 3 - download SCT files corresponding to no-SCT merged input
         #    rctaStep = self.setExecutable( 'python ./cta-prod3-get-matching-data.py HB9SCT',\
-        #    rctaStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-get-matching-data HB9SCT',\
-        rctaStep = self.setExecutable( 'python ./cta-prod3-get-matching-data.py HB9SCT',\
+        rctaStep = self.setExecutable( 'cta-prod3-get-matching-data HB9SCT',\
                                     logFile = 'Download_Files_Log.txt' )
         rctaStep['Value']['name'] = 'Step%i_Download_Files' % iStep
         rctaStep['Value']['descr_short'] = 'Download SCT Files'
         iStep += 1
 
-        # step 4 -- arguments hard coded !
-        evStep = self.setExecutable( './dirac_prod3b_evndisp_SCT',
-                                    logFile = 'EvnDisp_SCT_Log.txt' )
-        evStep['Value']['name'] = 'Step%i_EvnDisplay' % iStep
-        evStep['Value']['descr_short'] = 'Run EvnDisplay'
-        iStep += 1
+        # step 4 - create the file "current_runs.list"
 
         # step 5
-        # ## the order of the metadata dictionary is important, since it's used to build the directory structure
-        mdjson = json.dumps( self.metadata )
+        evStep = self.setExecutable( 'python process_dataset.py current_runs.list \
+                                        process_dataset.ini --out ./Data',
+                                    logFile = 'IE_SCT_Log.txt' )
+        evStep['Value']['name'] = 'Step%i_ImageExtractor' % iStep
+        evStep['Value']['descr_short'] = 'Run the Image Extractor'
+        iStep += 1
 
-        metadatafield = {'array_layout':'VARCHAR(128)', 'site':'VARCHAR(128)', 'particle':'VARCHAR(128)', \
-                         'phiP':'float', 'thetaP': 'float', \
-                         'analysis_prog':'VARCHAR(128)', 'analysis_prog_version':'VARCHAR(128)'}
-
-        mdfieldjson = json.dumps( metadatafield )
-
-        fmdjson = json.dumps( self.filemetadata )
+        # step 6
+        # ## the order of the metadata dictionary is important,
+        # since it's used to build the directory structure
+        mdjson = json.dumps(self.metadata)
+        metadatafield = {'array_layout':'VARCHAR(128)', 'site':'VARCHAR(128)',
+                         'particle':'VARCHAR(128)', 'phiP':'float',
+                         'thetaP': 'float',
+    		             self.program_category+'_prog':'VARCHAR(128)',
+    		             self.program_category+'_prog_version':'VARCHAR(128)',
+                         'data_level': 'int', 'configuration_id': 'int'}
+        mdfieldjson = json.dumps(metadatafield)
 
         # register Data
-        self.outputpattern = './*SCT_evndisp.tar'
-        dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
-                                  arguments = "'%s' '%s' '%s' %s '%s' %s" % ( mdjson, mdfieldjson, fmdjson, self.basepath, self.outputpattern, self.package ),
-                                  logFile = 'Data_DataManagement_Log.txt' )
-        dmStep['Value']['name'] = 'Step%i_Data_DataManagement' % iStep
+        outputpattern = '*./Data/*DL%01d.hdf5'%self.output_data_level
+        file_md_json = json.dumps(self.filemetadata)
+        dmStep = self.setExecutable('../CTADIRAC/Core/scripts/cta-analysis-managedata.py',
+                                  arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s'" %\
+                                  (mdjson, mdfieldjson, file_md_json, self.basepath,
+                                   outputpattern, self.package, self.program_category, self.catalogs),
+                                  logFile = 'DataManagement_Log.txt')
+        dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
         dmStep['Value']['descr_short'] = 'Save data files to SE and register them in DFC'
         iStep += 1
 
         # register Log
-        self.outputpattern = './*SCT_evndisp.logs.tar'
-        dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
-                                  arguments = "'%s' '%s' '%s' %s '%s' %s" % ( mdjson, mdfieldjson, fmdjson, self.basepath, self.outputpattern, self.package ),
-                                  logFile = 'Log_DataManagement_Log.txt' )
-        dmStep['Value']['name'] = 'Step%i_Log_DataManagement' % iStep
-        dmStep['Value']['descr_short'] = 'Save log files to SE and register them in DFC'
-        iStep += 1
+        # outputpattern = './*.logs.tgz'
+        # filemetadata = {}
+        # file_md_json = json.dumps(filemetadata)
+        # dmStep = self.setExecutable('../CTADIRAC/Core/scripts/cta-analysis-managedata.py',
+        #                           arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s' Log" % \
+        #                           (mdjson, mdfieldjson, file_md_json, self.basepath,
+        #                            outputpattern, self.package, self.program_category, self.catalogs),
+        #                           logFile = 'Log_DataManagement_Log.txt')
+        # dmStep['Value']['name'] = 'Step%i_Log_DataManagement' % iStep
+        # dmStep['Value']['descr_short'] = 'Save log files to SE and register them in DFC'
+        # iStep += 1
+
+        # step 6 -- to be removed -- debug only
+        if debug:
+            lsStep = self.setExecutable('/bin/ls',
+                                        arguments = " -alhtr; /bin/ls -lahrt ./Data",
+                                        logFile = 'LS_End_Log.txt')
+            lsStep['Value']['name']='Step%i_LS_End'%iStep
+            lsStep['Value']['descr_short']='list files in working directory and in Data directory'
+            iStep+=1
