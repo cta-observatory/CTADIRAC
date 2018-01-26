@@ -14,7 +14,7 @@ from DIRAC.Interfaces.API.Job import Job
 from DIRAC.Resources.Catalog.FileCatalogClient import FileCatalogClient
 
 
-class ImageExtractorHB9SCT(Job):
+class ImageExtractorHB9SCTJob(Job):
     """ Job extension class for ImageExtractor DL0->DL1 reduction of HB9 SCT
       takes care of running SCT extraction and merging, and DL0->DL1 HDF5
       conversion for Machine Learning fans
@@ -84,7 +84,7 @@ class ImageExtractorHB9SCT(Job):
         """
         self.layout = layout
 
-    def set_ie_metadata(self, path):
+    def set_metadata(self, path):
         """ Set image_extractor meta data starting from path metadata
 
         Parameters:
