@@ -141,7 +141,6 @@ class ImageExtractorHB9SCTJob(Job):
         iStep += 1
 
         # step 3 - download SCT files corresponding to no-SCT merged input
-        #    rctaStep = self.setExecutable( 'python ./cta-prod3-get-matching-data.py HB9SCT',\
         rctaStep = self.setExecutable('cta-prod3-get-matching-data HB9SCT',
                                       logFile='Download_Files_Log.txt')
         rctaStep['Value']['name'] = 'Step%i_Download_Files' % iStep
@@ -149,8 +148,7 @@ class ImageExtractorHB9SCTJob(Job):
         iStep += 1
 
         # step 4 - create the file "current_runs.list"
-        runStep = self.setExecutable('/bin/ls',
-                                     arguments=' -1 *.simtel.gz > current_runs.list',
+        runStep = self.setExecutable('./dirac_create_run_list',
                                      logFile='Create_Runs_Log.txt')
         runStep['Value']['name'] = 'Step%i_RunList' % iStep
         runStep['Value']['descr_short'] = 'Create list of available runs'
