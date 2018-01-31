@@ -155,8 +155,7 @@ class ImageExtractorHB9SCTJob(Job):
         iStep += 1
 
         # step 5
-        evStep = self.setExecutable('python process_dataset.py current_runs.list \
-                                        process_dataset.ini --out ./Data',
+        evStep = self.setExecutable('./dirac_process_runs',
                                     logFile='IE_SCT_Log.txt')
         evStep['Value']['name'] = 'Step%i_ImageExtractor' % iStep
         evStep['Value']['descr_short'] = 'Run the Image Extractor'
