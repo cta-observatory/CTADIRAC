@@ -16,7 +16,8 @@ Script.parseCommandLine()
 import DIRAC
 from DIRAC.TransformationSystem.Client.Transformation import Transformation
 from DIRAC.TransformationSystem.Client.TransformationClient import TransformationClient 
-from CTADIRAC.Interfaces.API.ImageExtractorHB9SCTJob import ImageExtractorHB9SCTJob
+#from CTADIRAC.Interfaces.API.ImageExtractorHB9SCTJob import ImageExtractorHB9SCTJob
+from ImageExtractorHB9SCTJob import ImageExtractorHB9SCTJob
 from DIRAC.Interfaces.API.Dirac import Dirac
 from DIRAC.Core.Workflow.Parameter import Parameter
 
@@ -104,9 +105,10 @@ def run_IE_HB9SCT(args):
             infileList.append(infile)
 
     # create and configure job
-    job = ImageExtractorHB9SCTJob(cpuTime=36000)
+    job = ImageExtractorHB9SCTJob(cpuTime=432000)
     job.setType('DataReprocessing')
     job.setVersion('v0.5.1')
+    print(infileList[0])
     job.set_metadata(infileList[0])
     job.setOutputSandbox(['*Log.txt'])
     job.setupWorkflow(debug=True)
@@ -115,6 +117,7 @@ def run_IE_HB9SCT(args):
     # res = submit_TS_no_MQ(job, infileList[:10])
 
     # or to the WMS for debug
+    job.setDestination('LCG.IN2P3-CC.fr')
     res = submit_WMS(job, infileList[:2])
 
     return res
