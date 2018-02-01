@@ -27,6 +27,7 @@ class EvnDisp3Job( Job ) :
     # defaults
     self.setName('Evndisplay_Analysis')
     self.package='evndisplay'
+    self.program_category = 'analysis' #'calibimgreco'
     self.version = 'prod3_d20150831b'
     self.prefix = 'CTA.prod3S'
     self.layout_list = '3HB1 3HB2 3HB3 3HD1 3HD2 3HI1'
@@ -38,6 +39,7 @@ class EvnDisp3Job( Job ) :
     self.fcc = FileCatalogClient()
     self.metadata = collections.OrderedDict()
     self.filemetadata = {}
+    self.catalogs = json.dumps(['DIRACFileCatalog', 'TSCatalog'])
     self.jobGroupID = 1
 
   def setPackage(self, package):
@@ -115,11 +117,15 @@ class EvnDisp3Job( Job ) :
     # self.metadata['process_program'] = 'evndisp' + '_' + self.version
     self.metadata['analysis_prog'] = 'evndisp'
     self.metadata['analysis_prog_version'] = self.version
+    self.metadata['data_level'] = 1
+    self.metadata['configuration_id'] = -1
+    # here hardcode that we have SCTs
+    self.metadata['sct'] = 'False'
 
     # ## Set file metadata
     # self.filemetadata = {'runNumber': simtelMD['runNumber']}
 
-  def setupWorkflow(self, debug=False):
+  def setupWorkflow(self, debug=True):
     """ Setup job workflow by defining the sequence of all executables
         All parameters shall have been defined before that method is called.
     """
@@ -133,7 +139,7 @@ class EvnDisp3Job( Job ) :
         iStep+=1
       
     # step 2  
-    swStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-setupsw',
+    swStep = self.setExecutable( 'cta-prod3-setupsw',
                               arguments='%s %s'% (self.package, self.version),\
                               logFile='SetupSoftware_Log.txt')
     swStep['Value']['name'] = 'Step%i_SetupSoftware' % iStep
@@ -142,7 +148,7 @@ class EvnDisp3Job( Job ) :
 
     # step 2bis
     # arguments are nbFiles=0 (not used) and fileSize=100kB
-    eivStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-verifysteps', \
+    eivStep = self.setExecutable( 'cta-prod3-verifysteps', \
                               arguments = 'analysisinputs 0 100', \
                               logFile = 'Verify_EvnDispInputs_Log.txt' )
     eivStep['Value']['name'] = 'Step%i_VerifyEvnDispInputs' % iStep
@@ -150,8 +156,10 @@ class EvnDisp3Job( Job ) :
     iStep += 1
 
     evStep = self.setExecutable( './dirac_prod3_evndisp', \
-                                arguments = "--prefix %s --layout_list '%s' --calibration_file %s --reconstructionparameter %s --NNcleaninginputcard %s" % ( self.prefix, self.layout_list, self.calibration_file, self.reconstructionparameter, self.NNcleaninginputcard ), \
+                                arguments = "--prefix %s --layout_list '%s' --telescopetype_combination_list 'FA FD FG NA ND NG' --calibration_file %s --reconstructionparameter %s --NNcleaninginputcard %s" % ( self.prefix, self.layout_list, self.calibration_file, self.reconstructionparameter, self.NNcleaninginputcard ), \
                                 logFile = 'EvnDisp_Log.txt' )
+#                                arguments = "--prefix %s --layout_list '%s' --calibration_file %s --reconstructionparameter %s --NNcleaninginputcard %s" % ( self.prefix, self.layout_list, self.calibration_file, self.reconstructionparameter, self.NNcleaninginputcard ), \
+#                                logFile = 'EvnDisp_Log.txt' )
     evStep['Value']['name'] = 'Step%i_EvnDisplay' % iStep
     evStep['Value']['descr_short'] = 'Run EvnDisplay'
     iStep += 1
@@ -164,12 +172,19 @@ class EvnDisp3Job( Job ) :
                          'phiP':'float', 'thetaP': 'float', 'analysis_prog':'VARCHAR(128)', 'analysis_prog_version':'VARCHAR(128)'}
 
     mdfieldjson = json.dumps( metadatafield )
-
-    fmdjson = json.dumps( self.filemetadata )
-
-    dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
-                              arguments = "'%s' '%s' '%s' %s '%s' %s" % ( mdjson, mdfieldjson, fmdjson, self.basepath, self.outputpattern, self.package ),
-                              logFile = 'DataManagement_Log.txt' )
+    file_md_json = json.dumps( self.filemetadata )
+    scripts = '../CTADIRAC/Core/scripts'
+    dmStep = self.setExecutable(scripts + '/cta-analysis-managedata.py',
+                        arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s'" %\
+                        (mdjson, mdfieldjson, file_md_json, self.basepath,
+                        self.outputpattern, self.package, self.program_category,
+                        self.catalogs),
+                        logFile='DataManagement_Log.txt')
+#    dmStep = self.setExecutable('../CTADIRAC/Core/scripts/cta-analysis-managedata.py',
+#                              arguments = "'%s' '%s' '%s' %s '%s' %s" %
+#                              ( mdjson, mdfieldjson, fmdjson, self.basepath,
+#                               self.outputpattern, self.package ),
+#                              logFile = 'DataManagement_Log.txt' )
     dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
     dmStep['Value']['descr_short'] = 'Save files to SE and register them in DFC'
     iStep += 1
