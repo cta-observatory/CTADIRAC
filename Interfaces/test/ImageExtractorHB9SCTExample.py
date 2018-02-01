@@ -71,7 +71,7 @@ def submit_TS(job, transName, mqJson):
     t.setStatus("Active")
     t.setAgentType("Automatic")
 
-    return
+    return t
 
 
 # Submit WMS
@@ -111,14 +111,16 @@ def run_IE_HB9SCT(args):
     print(infileList[0])
     job.set_metadata(infileList[0])
     job.setOutputSandbox(['*Log.txt'])
-    job.setupWorkflow(debug=True)
+    job.setupWorkflow(debug=False)
 
     # submit to the Transformation System
-    # res = submit_TS_no_MQ(job, infileList[:10])
+    res = submit_TS_no_MQ(job, infileList[:100])
 
     # or to the WMS for debug
-    job.setDestination('LCG.IN2P3-CC.fr')
-    res = submit_WMS(job, infileList[:2])
+    # job.setDestination('LCG.IN2P3-CC.fr')
+    # job.setDestination('LCG.DESY-ZEUTHEN.de')
+    # job.setDestination('LCG.GRIF.fr')
+    # res = submit_WMS(job, infileList[:2])
 
     return res
 
