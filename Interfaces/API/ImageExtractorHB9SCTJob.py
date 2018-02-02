@@ -176,7 +176,7 @@ class ImageExtractorHB9SCTJob(Job):
 
         # register Data
 #        outputpattern = '*./Data/*DL%01d.hdf5' % self.output_data_level
-        outputpattern = '*./Data/*.hdf5'
+        outputpattern = '*./Data/*.h5'
         file_md_json = json.dumps(self.filemetadata)
         scripts = '../CTADIRAC/Core/scripts'
         dmStep = self.setExecutable(scripts + '/cta-analysis-managedata.py',
