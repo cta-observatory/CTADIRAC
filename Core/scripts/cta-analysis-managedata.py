@@ -19,18 +19,21 @@ Script.parseCommandLine()
 # Specific DIRAC imports
 from CTADIRAC.Core.Workflow.Modules.Prod3DataManager import Prod3DataManager
 
-def getRunNumber( filename, package ):
+
+def getRunNumber(filename, package):
     if filename[-9:] == '.logs.tgz':
-        run_number = int(filename.split('/')[-1].split('_')[-1].split('.')[0])       
+        run_number = int(filename.split('/')[-1].split('_')[-1].split('.')[0])
     elif package in ['chimp', 'mars', 'corsika_simhessarray']:
-        run_number = int(filename.split( 'run' )[1].split( '___cta' )[0])
+        run_number = int(filename.split('run')[1].split('___cta')[0])
     elif package == 'evndisplay':
         if filename[-8:] == 'DL1.root':
-            run_number = int(filename.split( 'run' )[1].split( '___cta' )[0])
+            run_number = int(filename.split('run')[1].split('___cta')[0])
         elif filename[-8:] == 'DL2.root':
-            run_number = int(filename.split( 'tid' )[1].split( '___cta' )[0])
-        else:         
-            run_number = int(filename.split( '-' )[0]) # old default
+            run_number = int(filename.split('tid')[1].split('___cta')[0])
+        else:
+            run_number = int(filename.split('-')[0])  # old default
+    elif package == 'image_extractor':
+        run_number = int(filename.split('srun')[1].split('-')[0])
     return str(run_number)
 
 ####################################################
