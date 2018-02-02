@@ -1,3 +1,7 @@
+[v1r47p1]
+* JB : image extractor now works
+       working version of EvnDisp3Job to process Paranal 60 deg
+
 [v1r47p0]
 * JB : new code to run the image extractor
        update of EvnDisp3Job to process Paranal 60 deg
