@@ -332,3 +332,8 @@ NEW : add data level meta data
 CHANGE : introduce FileMask in Transformation instead of just adding files
          in EvnDisp3MSCWRefExample.py EvnDisp3RefExample.py
          and Prod3MCPipeBaselineExample.py
+
+[v1r47p2]
+*LA
+FIX : update parametric method according due to upgrade of server version
+
