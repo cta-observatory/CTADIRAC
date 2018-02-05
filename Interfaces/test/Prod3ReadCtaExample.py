@@ -20,8 +20,7 @@ def submitWMS( job, infileList ):
   """ Submit the job locally or to the WMS  """
 
   dirac = Dirac()
-
-  job.setParametricInputData( infileList )
+  job.setParameterSequence( 'InputData', infileList, addToWorkflow = 'ParametricInputData' )
   job.setOutputData( ['*simtel-dst0.gz'] )
   job.setName( 'readctajob' )
 
