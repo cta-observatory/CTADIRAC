@@ -21,8 +21,7 @@ def submitWMS( job, infileList ):
   """ Submit the job to the WMS  """
 
   dirac = Dirac()
-
-  job.setParametricInputData( infileList )
+  job.setParameterSequence( 'InputData', infileList, addToWorkflow = 'ParametricInputData' )
   job.setOutputData( ['./*evndisp.tar.gz'] ) # to be used if DataManagement step in EvnDisp3UserJob is commented
 
   #job.setJobGroup( 'EvnDisp-proton' )
