@@ -18,8 +18,8 @@ from DIRAC.Interfaces.API.Dirac import Dirac
 
 def submitWMS( job, infileList ):
   """ Submit the job locally or to the WMS  """
-
-  job.setParametricInputData( infileList )
+  
+  job.setParameterSequence( 'InputData', infileList, addToWorkflow = 'ParametricInputData' )
   job.setOutputData( ['*simtel.gz'] )
   job.setOutputSandbox( ['*Log.txt'] )
   job.setInputSandbox( ['mycfg'] )
