@@ -51,7 +51,7 @@ def runEvnDisp3( args = None ):
   transName = args[0]
 
   ################################
-  job = EvnDisp3RefJob(cpuTime = 432000)  # to be adjusted!!
+  job = EvnDisp3RefTS2Job(cpuTime = 432000)  # to be adjusted!!
 
   ### Main Script ###
   # override for testing
