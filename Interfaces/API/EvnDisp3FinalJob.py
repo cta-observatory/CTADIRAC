@@ -103,10 +103,10 @@ class EvnDisp3FinalJob(Job):
         eivStep['Value']['descr_short'] = 'Verify EvnDisp Inputs'
         iStep += 1
 
-        evStep = self.setExecutable('./dirac_prod3_evndisp',
+        evStep = self.setExecutable('./dirac_prod3_evndisp_final',
                                     arguments = "--prefix %s --layout_list '%s' \
                                     --focal_file %s --calibration_file %s \
-                                    --reconstructionparameter %s" % 
+                                    --reconstructionparameter %s" %
                                     (self.prefix, self.layout_list,
                                      self.focal_file, self.calibration_file,
                                      self.reconstructionparameter),
