@@ -80,7 +80,7 @@ class Prod3MCUserJob( Job ) :
 
     iStep=1
     #### execute setup software: needed for next steps
-    swStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-setupsw',
+    swStep = self.setExecutable( 'cta-prod3-setupsw',
                               arguments='%s %s'% (self.package, self.version),\
                               logFile='SetupSoftware_Log.txt')
     swStep['Value']['name'] = 'Step%i_SetupSoftware' % iStep
@@ -117,7 +117,7 @@ class Prod3MCUserJob( Job ) :
     #iStep += 1
 
     # ## put and register files step (to be used in replacement of setOutputData of Job API)
-    #dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-user-managedata.py',
+    #dmStep = self.setExecutable( '../CTADIRAC/Core/scripts/cta-user-managedata.py',
     #                          arguments = "'%s' %s '%s'" % ( self.outputpattern, self.outputpath, self.outputSE ),
     #                          logFile = 'DataManagement_Log.txt' )
     #dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
