@@ -1,3 +1,14 @@
+[v1r48p0]
+* JB : new EvnDisp3FinalJob class 
+
+[v1r47p4]
+*LA
+FIX : add stuff for ProductionSystem 
+
+[v1r47p2]
+*LA
+FIX : update parametric method according due to upgrade of server version
+
 [v1r47p1]
 * JB : image extractor now works
        working version of EvnDisp3Job to process Paranal 60 deg
