@@ -1,9 +1,10 @@
 [v1r48p0]
-* JB : new EvnDisp3FinalJob class 
+* JB : new EvnDisp3FinalJob class and example scriptName
+       upgrade cta-analysis-managedata for that purpose 
 
 [v1r47p4]
 *LA
-FIX : add stuff for ProductionSystem 
+FIX : add stuff for ProductionSystem
 
 [v1r47p2]
 *LA
@@ -347,4 +348,3 @@ CHANGE : introduce FileMask in Transformation instead of just adding files
 [v1r47p2]
 *LA
 FIX : update parametric method according due to upgrade of server version
-
