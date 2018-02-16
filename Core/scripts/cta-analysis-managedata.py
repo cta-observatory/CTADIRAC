@@ -26,10 +26,10 @@ def getRunNumber(filename, package):
     elif package in ['chimp', 'mars', 'corsika_simhessarray']:
         run_number = int(filename.split('run')[1].split('___cta')[0])
     elif package == 'evndisplay':
-        if filename[-8:] == 'DL1.root':
+        if filename[-8:] in ['DL1.root', 'DL2.root']:
             run_number = int(filename.split('run')[1].split('___cta')[0])
-        elif filename[-8:] == 'DL2.root':
-            run_number = int(filename.split('tid')[1].split('___cta')[0])
+        elif filename[-10:] in ['DL1.tar.gz', 'DL2.tar.gz']:
+            run_number = int(filename.split('run')[1].split('___cta')[0])
         else:
             run_number = int(filename.split('-')[0])  # old default
     elif package == 'image_extractor':
