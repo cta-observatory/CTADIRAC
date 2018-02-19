@@ -8,10 +8,12 @@ import json
 from DIRAC.Core.Base import Script
 Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      'Usage:',
-                                     '  %s transName' % Script.scriptName,
+                                     '  %s trans_name input_dataset_name group_size' % Script.scriptName,
                                      'Arguments:',
-                                     '  transName: name of the transformation',
-                                     '\ne.g: %s evndisp-gamma-N' % Script.scriptName,
+                                     '  trans_name: name of the transformation',
+                                     '  input_dataset_name: name of the input dataset',
+                                     '  group_size: n files to process',
+                                     '\ne.g: %s evndisp-gamma-N Paranal_gamma_North_20deg_HB9' % Script.scriptName,
                                      ] ) )
 
 Script.parseCommandLine()
@@ -37,9 +39,9 @@ def get_dataset_MQ(dataset_name):
         DIRAC.exit(-1)
     else:
         DIRAC.gLogger.info("Successfully retrieved dataset: ", dataset_name)
-    return res['Value']['MetaQuery']
+    return result['Value']['MetaQuery']
 
-def submitTS(job, transName, mqJson, groupSize=1):
+def submitTS(job, transName, mqJson, group_size):
     """ Create a transformation executing the job workflow  """
     DIRAC.gLogger.notice('submitTS : %s' % transName)
 
@@ -53,124 +55,70 @@ def submitTS(job, transName, mqJson, groupSize=1):
     trans.setDescription("EvnDisplay MQ example")
     trans.setLongDescription( "EvnDisplay calib_imgreco") # mandatory
     trans.setBody(job.workflow.toXML())
-    trans.setGroupSize(groupSize)
+    trans.setGroupSize(group_size)
     trans.setFileMask(mqJson) # catalog query is defined here
     trans.addTransformation() # transformation is created here
     trans.setStatus("Active")
     trans.setAgentType("Automatic")
-
-    return t
-
-#########################################################
-
-def runEvnDisp3(args=None):
-  """ Simple wrapper to create a EvnDisp3RefJob and setup parameters
-      from positional arguments given on the command line.
-
-      Parameters:
-      args -- infile mode
-  """
-  DIRAC.gLogger.notice( 'runEvnDisp3' )
-  # get arguments
-  transName = args[0]
-  particle  = args[1]
-
-  ################################
-  job = EvnDisp3FinalJob(cpuTime=432000)  # to be adjusted!!
-
-  ### Main Script ###
-  # override for testing
-  job.setName('EvnDisp3')
-  ## add for testing
-  job.setType('EvnDisp3')
-
-  # change here for Paranal or La Palma # prefix
-  #job.prefix("CTA.prod3S")
-  #job.calibration_file = 'prod3b.Paranal-20171214.ped.root'
-
-  ### set meta-data to the product of the transformation
-  # set query to add files to the transformation
-  #  cta-prod3-show-dataset Paranal_gamma_North_20deg_HB9
-  # {'thetaP': 20.0, 'particle': 'gamma', 'array_layout': 'full',
-  # 'site': 'Paranal', 'outputType': 'Data', 'MCCampaign': 'PROD3',
-  # 'phiP': 180.0, 'tel_sim_prog': 'simtel'}
-
-  MDdict = {'MCCampaign':'PROD3', 'particle':particle,
-            'array_layout':'full', 'site':'Paranal',
-            'outputType':'Data', 'thetaP':{"=": 20}, 'phiP':{"=": 180.0},
-            'tel_sim_prog':'simtel', 'tel_sim_prog_version':'2016-06-28',
-            'sct'=False}
-
-  job.setEvnDispMD(MDdict)
-
-  # add the sequence of executables
-  job.ts_task_id='@{JOB_ID}' # dynamic
-  job.setupWorkflow(debug=True)
-
-  # output
-  job.setOutputSandbox( ['*Log.txt'] )
-
-  ### submit the workflow to the TS
-  res = submitTS( job, transName, json.dumps( MDdict ) )
-
-  return res
+    return trans
 
 def runEvnDisp3MQ(args=None):
-  """ Simple wrapper to create a EvnDisp3RefJob and setup parameters
-      from positional arguments given on the command line.
+    """ Simple wrapper to create a EvnDisp3RefJob and setup parameters
+        from positional arguments given on the command line.
 
-      Parameters:
-      args -- infile mode
-  """
-  DIRAC.gLogger.notice( 'runEvnDisp3' )
-  # get arguments
-  transName = args[0]
-  dataset_name = args[1]
+        Parameters:
+        args -- infile mode
+    """
+    DIRAC.gLogger.notice( 'runEvnDisp3' )
+    # get arguments
+    transName = args[0]
+    dataset_name = args[1]
+    group_size = int(args[2])
 
-  ################################
-  job = EvnDisp3FinalJob(cpuTime=432000)  # to be adjusted!!
+    ################################
+    job = EvnDisp3FinalJob(cpuTime=432000)  # to be adjusted!!
 
-  ### Main Script ###
-  # override for testing
-  job.setName('EvnDisp3')
-  ## add for testing
-  job.setType('EvnDisp3')
+    ### Main Script ###
+    # override for testing
+    job.setName('EvnDisp3')
+    ## add for testing
+    job.setType('EvnDisp3')
 
-  # change here for Paranal or La Palma # prefix
-  #job.prefix("CTA.prod3S")
-  #job.calibration_file = 'prod3b.Paranal-20171214.ped.root'
+    # change here for Paranal or La Palma # prefix
+    #job.prefix("CTA.prod3S")
+    #job.calibration_file = 'prod3b.Paranal-20171214.ped.root'
 
-  # get input data set meta query
-  # MDdict = {'MCCampaign':'PROD3', 'particle':particle,
-  #           'array_layout':'full', 'site':'Paranal',
-  #           'outputType':'Data', 'thetaP':{"=": 20}, 'phiP':{"=": 180.0},
-  #           'tel_sim_prog':'simtel', 'tel_sim_prog_version':'2016-06-28',
-  #           'sct'=False}
-  meta_data_dict = get_dataset_MQ(dataset_name)
-  # refining query as version was missing from data set MQ
-  metmeta_data_dict['tel_sim_prog_version']='2016-06-28'
-  # refining query to remove SCT files
-  metmeta_data_dict['sct']=False
+    # get input data set meta query
+    # MDdict = {'MCCampaign':'PROD3', 'particle':particle,
+    #           'array_layout':'full', 'site':'Paranal',
+    #           'outputType':'Data', 'thetaP':{"=": 20}, 'phiP':{"=": 180.0},
+    #           'tel_sim_prog':'simtel', 'tel_sim_prog_version':'2016-06-28',
+    #           'sct'=False}
+    meta_data_dict = get_dataset_MQ(dataset_name)
+    # refining query as version was missing from data set MQ
+    meta_data_dict['tel_sim_prog_version']='2016-06-28'
+    # refining query to remove SCT files
+    meta_data_dict['sct']=False
 
-  job.setEvnDispMD(metmeta_data_dict)
+    job.setEvnDispMD(meta_data_dict)
 
-  # add the sequence of executables
-  job.ts_task_id='@{JOB_ID}' # dynamic
-  job.setupWorkflow(debug=True)
+    # add the sequence of executables
+    job.ts_task_id='@{JOB_ID}' # dynamic
+    job.setupWorkflow(debug=False)
 
-  # output
-  job.setOutputSandbox( ['*Log.txt'] )
+    # output
+    job.setOutputSandbox( ['*Log.txt'] )
 
-  ### submit the workflow to the TS
-  res = submitTS( job, transName, json.dumps( MDdict ) )
+    ### submit the workflow to the TS
+    res = submitTS(job, transName, json.dumps(meta_data_dict), group_size)
 
-  return res
+    return res
 #########################################################
 if __name__ == '__main__':
 
-  args = Script.getPositionalArgs()
-  if ( len( args ) != 2 ):
-    Script.showHelp()
+    args = Script.getPositionalArgs()
+    if ( len( args ) != 3 ):
+        Script.showHelp()
 
-  # runEvnDisp3( args )
-  runEvnDisp3MQ(args)
+    # runEvnDisp3( args )
+    runEvnDisp3MQ(args)
