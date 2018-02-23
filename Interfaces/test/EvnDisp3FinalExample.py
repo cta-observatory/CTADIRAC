@@ -85,7 +85,7 @@ def runEvnDisp3(args=None):
   job.setType('EvnDisp3')
 
   # change here for Paranal or La Palma # prefix
-  #job.prefix("CTA.prod3S")
+  #job.prefix("CTA.prod3Sb")
   #job.calibration_file = 'prod3b.Paranal-20171214.ped.root'
 
   ### set meta-data to the product of the transformation
@@ -137,7 +137,7 @@ def runEvnDisp3MQ(args=None):
   job.setType('EvnDisp3')
 
   # change here for Paranal or La Palma # prefix
-  #job.prefix("CTA.prod3S")
+  #job.prefix("CTA.prod3Sb")
   #job.calibration_file = 'prod3b.Paranal-20171214.ped.root'
 
   # get input data set meta query
