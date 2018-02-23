@@ -34,7 +34,7 @@ class EvnDisp3FinalJob(Job):
         self.version = 'prod3b_d20180201'
         self.configuration_id = -1
         self.output_data_level = 1
-        self.prefix = 'CTA.prod3S'
+        self.prefix = 'CTA.prod3Sb'
         self.layout_list = '3HB9-FD 3HB9-FG 3HB9-FA 3HB9-ND 3HB9-NG 3HB9-NA \
                             3HB9-TS-BB-FD 3HB9-TS-BB-FG 3HB9-TS-BB-FA \
                             3HB9-TS-BB-ND 3HB9-TS-BB-NG 3HB9-TS-BB-NA'
