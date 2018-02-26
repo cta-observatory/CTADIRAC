@@ -44,7 +44,7 @@ def get_dataset_MQ(dataset_name):
 def submit_trans(job, transName, mqJson, group_size):
     """ Create a transformation executing the job workflow
     """
-    DIRAC.gLogger.notice('submitTS : %s' % transName)
+    DIRAC.gLogger.notice('submit_trans : %s' % transName)
 
     # Initialize JOB_ID
     job.workflow.addParameter( Parameter( "JOB_ID", "000000", "string", "", "",
@@ -70,7 +70,7 @@ def runEvnDisp3MQ(args=None):
         Parameters:
         args -- infile mode
     """
-    DIRAC.gLogger.notice( 'runEvnDisp3' )
+    DIRAC.gLogger.notice( 'runEvnDisp3MQ' )
     # get arguments
     transName = args[0]
     dataset_name = args[1]
