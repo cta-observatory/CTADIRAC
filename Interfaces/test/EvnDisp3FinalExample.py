@@ -41,7 +41,7 @@ def get_dataset_MQ(dataset_name):
         DIRAC.gLogger.info("Successfully retrieved dataset: ", dataset_name)
     return result['Value']['MetaQuery']
 
-def submitTS(job, transName, mqJson, group_size):
+def submit_trans(job, transName, mqJson, group_size):
     """ Create a transformation executing the job workflow  """
     DIRAC.gLogger.notice('submitTS : %s' % transName)
 
@@ -98,7 +98,7 @@ def runEvnDisp3MQ(args=None):
     # refining query as version was missing from data set MQ
     meta_data_dict['tel_sim_prog_version']='2016-06-28'
     # refining query to remove SCT files
-    meta_data_dict['sct']=False
+    meta_data_dict['sct']='False'
 
     job.setEvnDispMD(meta_data_dict)
 
@@ -110,7 +110,7 @@ def runEvnDisp3MQ(args=None):
     job.setOutputSandbox( ['*Log.txt'] )
 
     ### submit the workflow to the TS
-    res = submitTS(job, transName, json.dumps(meta_data_dict), group_size)
+    res = submit_trans(job, transName, json.dumps(meta_data_dict), group_size)
 
     return res
 #########################################################
