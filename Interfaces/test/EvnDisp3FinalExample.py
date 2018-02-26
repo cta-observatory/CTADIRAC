@@ -42,7 +42,8 @@ def get_dataset_MQ(dataset_name):
     return result['Value']['MetaQuery']
 
 def submit_trans(job, transName, mqJson, group_size):
-    """ Create a transformation executing the job workflow  """
+    """ Create a transformation executing the job workflow
+    """
     DIRAC.gLogger.notice('submitTS : %s' % transName)
 
     # Initialize JOB_ID
@@ -85,7 +86,7 @@ def runEvnDisp3MQ(args=None):
     job.setType('EvnDisp3')
 
     # change here for Paranal or La Palma # prefix
-    #job.prefix("CTA.prod3S")
+    #job.prefix("CTA.prod3Sb")
     #job.calibration_file = 'prod3b.Paranal-20171214.ped.root'
 
     # get input data set meta query
@@ -113,6 +114,8 @@ def runEvnDisp3MQ(args=None):
     res = submit_trans(job, transName, json.dumps(meta_data_dict), group_size)
 
     return res
+
+
 #########################################################
 if __name__ == '__main__':
 
@@ -120,5 +123,4 @@ if __name__ == '__main__':
     if ( len( args ) != 3 ):
         Script.showHelp()
 
-    # runEvnDisp3( args )
     runEvnDisp3MQ(args)
