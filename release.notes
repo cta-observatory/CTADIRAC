@@ -1,3 +1,6 @@
+[v1r48p1]
+* JB : EvnDisp3FinalJob working version
+
 [v1r48p0]
 * JB : new EvnDisp3FinalJob class and example scriptName
        upgrade cta-analysis-managedata for that purpose 
