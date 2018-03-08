@@ -21,7 +21,8 @@ Script.parseCommandLine()
 import DIRAC
 from DIRAC.TransformationSystem.Client.TransformationClient import TransformationClient
 from DIRAC.TransformationSystem.Client.Transformation import Transformation
-from CTADIRAC.Interfaces.API.EvnDisp3FinalJob import EvnDisp3FinalJob
+# from CTADIRAC.Interfaces.API.EvnDisp3FinalJob import EvnDisp3FinalJob
+from EvnDisp3FinalJob import EvnDisp3FinalJob
 from DIRAC.Interfaces.API.Dirac import Dirac
 from DIRAC.Core.Workflow.Parameter import Parameter
 from DIRAC.Resources.Catalog.FileCatalogClient import FileCatalogClient
@@ -104,7 +105,7 @@ def runEvnDisp3MQ(args=None):
     job.setType('EvnDisp3')
 
     # change here for Paranal or La Palma # prefix
-    #job.prefix("CTA.prod3Sb")
+    job.prefix = "CTA.prod3Sb"
     #job.calibration_file = 'prod3b.Paranal-20171214.ped.root'
 
     # get input data set meta query
@@ -122,7 +123,7 @@ def runEvnDisp3MQ(args=None):
     job.setEvnDispMD(meta_data_dict)
 
     # add the sequence of executables
-    job.ts_task_id='@{JOB_ID}' # dynamic
+    job.ts_task_id = '@{JOB_ID}' # dynamic
     job.setupWorkflow(debug=False)
 
     # output
