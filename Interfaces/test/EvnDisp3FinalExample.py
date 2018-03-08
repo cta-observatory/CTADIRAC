@@ -129,7 +129,7 @@ def runEvnDisp3MQ(args=None):
     job.setOutputSandbox( ['*Log.txt'] )
 
     ### submit the workflow to the TS
-    # res = submit_trans(job, transName, json.dumps(meta_data_dict), group_size)
+    res = submit_trans(job, transName, json.dumps(meta_data_dict), group_size)
 
     return res
 
