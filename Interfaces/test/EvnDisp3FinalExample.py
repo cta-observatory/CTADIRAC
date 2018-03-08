@@ -28,6 +28,24 @@ from DIRAC.Resources.Catalog.FileCatalogClient import FileCatalogClient
 from DIRAC.Core.Utilities.ReturnValues import returnSingleResult
 
 
+def check_dataset_query(dataset_name):
+    """ print dfind command for a given dataset
+    """
+    md_dict = get_dataset_MQ(dataset_name)
+    return debug_query(md_dict)
+
+def debug_query(MDdict):
+    """ just unwrap a meta data dictionnary into a dfind command
+    """
+    msg='dfind /vo.cta.in2p3.fr/MC/'
+    for key,val in MDdict.items():
+        try:
+            val = val.values()[0]
+        except:
+            pass
+        msg+=' %s=%s' % (key, val)
+    return msg
+
 def get_dataset_MQ(dataset_name):
     """ Return the Meta Query associated with a given dataset
     """
@@ -96,10 +114,10 @@ def runEvnDisp3MQ(args=None):
     #           'tel_sim_prog':'simtel', 'tel_sim_prog_version':'2016-06-28',
     #           'sct'=False}
     meta_data_dict = get_dataset_MQ(dataset_name)
-    # refining query as version was missing from data set MQ
-    meta_data_dict['tel_sim_prog_version']='2016-06-28'
+    # if needed, refine query for missing items (20 deg)
+    # meta_data_dict['tel_sim_prog_version']='2016-06-28'
     # refining query to remove SCT files
-    meta_data_dict['sct']='False'
+    # meta_data_dict['sct']='False'
 
     job.setEvnDispMD(meta_data_dict)
 
@@ -111,7 +129,7 @@ def runEvnDisp3MQ(args=None):
     job.setOutputSandbox( ['*Log.txt'] )
 
     ### submit the workflow to the TS
-    res = submit_trans(job, transName, json.dumps(meta_data_dict), group_size)
+    # res = submit_trans(job, transName, json.dumps(meta_data_dict), group_size)
 
     return res
 
