@@ -59,8 +59,8 @@ class EvnDisp3FinalJob(Job):
         self.metadata['array_layout'] = simtelMD['array_layout']
         self.metadata['site'] = simtelMD['site']
         self.metadata['particle'] = simtelMD['particle']
-        self.metadata['phiP'] = simtelMD['phiP']  # ['=']
-        self.metadata['thetaP'] = simtelMD['thetaP']  # ['=']
+        self.metadata['phiP'] = simtelMD['phiP']['=']
+        self.metadata['thetaP'] = simtelMD['thetaP']['=']
         self.metadata[self.program_category+'_prog'] = 'evndisp'
         self.metadata[self.program_category+'_prog_version'] = self.version
         self.metadata['data_level'] = self.output_data_level
