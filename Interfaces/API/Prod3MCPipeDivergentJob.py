@@ -48,6 +48,9 @@ class Prod3MCPipeDivergentJob(Job):
         self.N_output_files = 1
         self.basepath = '/vo.cta.in2p3.fr/MC/PROD3/'
         self.catalogs = json.dumps(['DIRACFileCatalog', 'TSCatalog'])
+        self.metadata = collections.OrderedDict()
+        self.metadata_field = dict()
+        self.filemetadata = dict()
 
     def setArrayLayout(self, layout):
         """ Set the array layout type
@@ -101,6 +104,36 @@ class Prod3MCPipeDivergentJob(Job):
             DIRAC.gLogger.error('Unknown pointing direction: %s' % pointing)
             DIRAC.exit(-1)
 
+    def setMetaData(self):
+        """ define output meta data based on default and current
+        attribute values
+
+        The order of the metadata dictionary is important,
+        since it's used to build the directory structure
+        """
+        # defin the meta data dictionnary
+        self.metadata['array_layout'] = self.array_layout
+        self.metadata['site'] = self.cta_site
+        self.metadata['particle'] = self.particle
+        if self.pointing_dir == 'North':
+            self.metadata['phiP'] = 180
+        if self.pointing_dir == 'South':
+            self.metadata['phiP'] = 0
+        self.metadata['thetaP'] = float(self.zenith_angle)
+        self.metadata['tel_sim_prog'] = 'simtel'
+        self.metadata['tel_sim_prog_version'] = self.version
+        self.metadata['data_level'] = self.output_data_level
+        self.metadata['configuration_id'] = self.configuration_id
+
+        # define also the metadat field
+        self.metadata_field = {'array_layout': 'VARCHAR(128)',
+                               'site': 'VARCHAR(128)',
+                               'particle': 'VARCHAR(128)', 'phiP': 'float',
+                               'thetaP': 'float',
+                               self.program_category+'_prog': 'VARCHAR(128)',
+                               self.program_category+'_prog_version': 'VARCHAR(128)',
+                               'data_level': 'int', 'configuration_id': 'int'}
+
     def setupWorkflow(self, debug=False):
         """ Setup job workflow by defining the sequence of all executables
             All parameters shall have been defined before that method is called
@@ -115,9 +148,10 @@ class Prod3MCPipeDivergentJob(Job):
             iStep += 1
 
         # step 2
-        swStep = self.setExecutable('$DIRACROOT/scripts/cta-prod3-setupsw',
-                                  arguments='%s %s'% (self.package, self.version),
-                                  logFile='SetupSoftware_Log.txt')
+        swStep = self.setExecutable('cta-prod3-setupsw',
+                                    arguments='%s %s' % (self.package,
+                                                         self.version),
+                                    logFile='SetupSoftware_Log.txt')
         swStep['Value']['name'] = 'Step%i_SetupSoftware' % iStep
         swStep['Value']['descr_short'] = 'Setup software'
         iStep += 1
@@ -125,7 +159,7 @@ class Prod3MCPipeDivergentJob(Job):
         # step 3
         if self.cta_site == 'Paranal':
             prod_script = './dirac_prod3_paranal_divergent'
-            DIRAC.gLogger.error('No setup available for Paranal divergent MC yet")
+            DIRAC.gLogger.error('No setup available for Paranal yet')
             DIRAC.exit(-1)
         elif self.cta_site == 'LaPalma':
             prod_script = './dirac_prod3_lapalma_divergent'
@@ -145,7 +179,7 @@ class Prod3MCPipeDivergentJob(Job):
         iStep += 1
 
         # step 4 verify merged data
-        mgvStep = self.setExecutable('$DIRACROOT/scripts/cta-prod3-verifysteps', 
+        mgvStep = self.setExecutable('cta-prod3-verifysteps',
                             arguments="generic %0d 1000 '%s/Data/*.simtel.gz'"%
                                       (self.N_output_files, self.inputpath),
                             logFile='Verify_Simtel_Log.txt')
@@ -158,43 +192,22 @@ class Prod3MCPipeDivergentJob(Job):
             lsStep = self.setExecutable('/bin/ls -alhtr Data/sim_telarray/*/*/*',
                                         logFile='LS_End_Log.txt')
             lsStep['Value']['name'] = 'Step%i_LS_End' % iStep
-            lsStep['Value']['descr_short'] = 'list files in working directory and sub-directory'
+            lsStep['Value']['descr_short'] = 'list files in working directory'
             iStep += 1
 
         # step 6
-        # ## the order of the metadata dictionary is important, since it's used to build the directory structure
-        metadata = collections.OrderedDict()
-        metadata['array_layout'] = self.array_layout
-        metadata['site'] = self.cta_site
-        metadata['particle'] = self.particle
-        if self.pointing_dir == 'North':
-            metadata['phiP'] = 180
-        if self.pointing_dir == 'South':
-            metadata['phiP'] = 0
-        metadata['thetaP'] = float(self.zenith_angle)
-        metadata['tel_sim_prog'] = 'simtel'
-        metadata['tel_sim_prog_version'] = self.version
-        metadata['data_level'] = self.output_data_level
-        metadata['configuration_id'] = self.configuration_id
-        mdjson = json.dumps(metadata)
-
-        metadatafield = {'array_layout': 'VARCHAR(128)',
-                         'site': 'VARCHAR(128)',
-                         'particle': 'VARCHAR(128)', 'phiP': 'float',
-                         'thetaP': 'float',
-                         'tel_sim_prog': 'VARCHAR(128)',
-                         'tel_sim_prog_version': 'VARCHAR(128)',
-                         'data_level': 'int', 'configuration_id': 'int'}
-
-        mdfieldjson = json.dumps(metadatafield)
+        # call setMetaData that defines self.metadata and self.metadata_field
+        self.setMetaData()
+        mdjson = json.dumps(self.metadata)
+        mdfieldjson = json.dumps(self.metadata_field)
 
         filemetadata = {'runNumber': self.run_number}
+        file_md_json = json.dumps(filemetadata)
 
-        fmdjson = json.dumps(filemetadata)
-
-        dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-prod3-managedata.py',
+        scripts = '../CTADIRAC/Core/scripts'
+        dmStep = self.setExecutable(scripts + '/cta-prod3-managedata.py',
                                     arguments="'%s' '%s' '%s' %s %s %s '%s'" %
-                                    (mdjson, mdfieldjson, fmdjson,
+                                    (mdjson, mdfieldjson, file_md_json,
                                      self.inputpath,
                                      self.basepath, self.start_run_number,
                                      self.catalogs),
@@ -203,6 +216,7 @@ class Prod3MCPipeDivergentJob(Job):
         dmStep['Value']['descr_short'] = 'Save files to SE and register them in DFC'
         iStep += 1
 
-        # Number of showers is passed via an environment variable
+        # Number of showers and divergent configuratino id are passed
+        # via an environment variable
         self.setExecutionEnv({'NSHOW': '%s' % self.nShower,
                               'DIV_CFG_ID': '%s' % self.div_cfg_id})
