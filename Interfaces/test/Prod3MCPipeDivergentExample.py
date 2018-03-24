@@ -23,6 +23,7 @@ from DIRAC.TransformationSystem.Client.Transformation import Transformation
 from DIRAC.Core.Workflow.Parameter import Parameter
 # from CTADIRAC.Interfaces.API.Prod3MCPipeDivergentJob import Prod3MCPipeDivergentJob
 from Prod3MCPipeDivergentJob import Prod3MCPipeDivergentJob
+from DIRAC.Interfaces.API.Dirac import Dirac
 
 
 def submitTS(job):
@@ -52,6 +53,16 @@ def submitTS(job):
     t.setStatus("Active")
     t.setAgentType("Automatic")
 
+    return res
+
+
+def submitWMS(job):
+    """ Submit the job to the WMS
+    """
+    job.setDestination('LCG.IN2P3-CC.fr')
+    dirac = Dirac()
+    res = dirac.submit(job)
+    Script.gLogger.notice('Submission Result: ', res)
     return res
 
 
@@ -102,10 +113,16 @@ def runProd3(args=None):
     job.setOutputSandbox(['*Log.txt'])
 
     # add the sequence of executables
-    job.setupWorkflow(debug=True)
+    job.run_number = '123'
+    job.setOutputData(['%s/Data/*.log.gz' % job.inputpath,
+                       '%s/Data/*.simtel.gz' % job.inputpath])
+    job.setupWorkflow(debug=True, register=False)
+
+    # submit to the wms
+    res = submitWMS(job)
 
     # submit to the Transformation System
-    res = submitTS(job)
+#    res = submitTS(job)
 
     # debug
     Script.gLogger.info(job.workflow)

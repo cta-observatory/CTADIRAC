@@ -72,7 +72,7 @@ class Prod3MCPipeDivergentJob(Job):
         site -- a string for the site name (LaPalma)
         """
         self.cta_site = site
-        if self.cta_site is not 'LaPalma':
+        if self.cta_site not in ['LaPalma']:
             DIRAC.gLogger.error('Divergent setup available only for LaPalma')
             DIRAC.exit(-1)
 
@@ -134,7 +134,7 @@ class Prod3MCPipeDivergentJob(Job):
                                self.program_category+'_prog_version': 'VARCHAR(128)',
                                'data_level': 'int', 'configuration_id': 'int'}
 
-    def setupWorkflow(self, debug=False):
+    def setupWorkflow(self, debug=False, register=True):
         """ Setup job workflow by defining the sequence of all executables
             All parameters shall have been defined before that method is called
         """
@@ -189,32 +189,34 @@ class Prod3MCPipeDivergentJob(Job):
 
         # step 5 - debug only
         if debug:
-            lsStep = self.setExecutable('/bin/ls -alhtr Data/sim_telarray/*/*/*',
+            lsStep = self.setExecutable('/usr/bin/find',
+                                        arguments='.',
                                         logFile='LS_End_Log.txt')
             lsStep['Value']['name'] = 'Step%i_LS_End' % iStep
             lsStep['Value']['descr_short'] = 'list files in working directory'
             iStep += 1
 
         # step 6
-        # call setMetaData that defines self.metadata and self.metadata_field
-        self.setMetaData()
-        mdjson = json.dumps(self.metadata)
-        mdfieldjson = json.dumps(self.metadata_field)
-
-        filemetadata = {'runNumber': self.run_number}
-        file_md_json = json.dumps(filemetadata)
-
-        scripts = '../CTADIRAC/Core/scripts'
-        dmStep = self.setExecutable(scripts + '/cta-prod3-managedata.py',
-                                    arguments="'%s' '%s' '%s' %s %s %s '%s'" %
-                                    (mdjson, mdfieldjson, file_md_json,
-                                     self.inputpath,
-                                     self.basepath, self.start_run_number,
-                                     self.catalogs),
-                                    logFile='DataManagement_Log.txt')
-        dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
-        dmStep['Value']['descr_short'] = 'Save files to SE and register them in DFC'
-        iStep += 1
+        if register:
+            # call setMetaData that defines self.metadata and self.metadata_field
+            self.setMetaData()
+            mdjson = json.dumps(self.metadata)
+            mdfieldjson = json.dumps(self.metadata_field)
+    
+            filemetadata = {'runNumber': self.run_number}
+            file_md_json = json.dumps(filemetadata)
+    
+            scripts = '../CTADIRAC/Core/scripts'
+            dmStep = self.setExecutable(scripts + '/cta-prod3-managedata.py',
+                                        arguments="'%s' '%s' '%s' %s %s %s '%s'" %
+                                        (mdjson, mdfieldjson, file_md_json,
+                                         self.inputpath,
+                                         self.basepath, self.start_run_number,
+                                         self.catalogs),
+                                        logFile='DataManagement_Log.txt')
+            dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
+            dmStep['Value']['descr_short'] = 'Save files to SE and register them in DFC'
+            iStep += 1
 
         # Number of showers and divergent configuratino id are passed
         # via an environment variable
