@@ -20,7 +20,7 @@ def submitWMS( job, infileList ):
   """ Submit the job locally or to the WMS  """
   
   job.setParameterSequence( 'InputData', infileList, addToWorkflow = 'ParametricInputData' )
-  job.setOutputData( ['*simtel.gz'] )
+  job.setOutputData( ['*simtel.gz'], outputPath='simtel_data' )
   job.setOutputSandbox( ['*Log.txt'] )
   job.setInputSandbox( ['mycfg'] )
   job.setName( 'simteljob' )
@@ -54,10 +54,10 @@ def runProd3( args = None ):
 
   # set package version: to be set before setupWorkflow
   job.setPackage('corsika_simhessarray')
-  job.setVersion( '2015-10-20-p3' )
+  job.setVersion( '2017-04-19' )
 
   ## set sim_telarray config
-  job.setSimtelCfg( 'mycfg/CTA-ULTRA6-SST-GCT-S.cfg' )
+  job.setSimtelCfg( 'CTA-ULTRA6-LaPalma-baseline.cfg' )  
   #job.setSimtelOpts('TELESCOPE_THETA=20.0 TELESCOPE_PHI=90.0') ## optional
 
   # ## setup workflow: set executable and parameters
