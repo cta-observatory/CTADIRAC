@@ -36,7 +36,7 @@ def runProd3( args = None ):
 
   # set package version and corsika input card. to be set before setupWorkflow
   job.setPackage('corsika_simhessarray')
-  job.setVersion( '2015-10-20-p3' )
+  job.setVersion( '2017-04-19' )
   job.setInputCard( input_card )
 
   # ## setup workflow: set executable and parameters
@@ -50,7 +50,7 @@ def runProd3( args = None ):
 
   # ## set job attributes
   job.setName( 'corsika' )
-  job.setInputSandbox( [input_card] )
+  job.setInputSandbox( [input_card,'dirac_prod3_corsika_only'] )
   job.setOutputSandbox( ['*Log.txt'] )
   job.setOutputData( ['*corsika.gz'] )
 
