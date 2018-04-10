@@ -27,8 +27,8 @@ def submitWMS( job, infileList ):
 
   dirac = Dirac()
   res = dirac.submit( job )
-
-  Script.gLogger.info( 'Submission Result: ', res['Value'] )
+  if res['OK']:
+    Script.gLogger.info( 'Submission Result: ', res['Value'] )
   return res
 
 def runProd3( args = None ):
