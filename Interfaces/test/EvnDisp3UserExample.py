@@ -28,7 +28,9 @@ def submitWMS( job, infileList ):
   job.setName( 'evndispjob' )
   job.setOutputSandbox( ['*Log.txt'] )
   #job.setInputSandbox( ['myconf'] )
-
+  # To allow jobs run at other sites than the site where the InputData are located
+  #job.setType( 'DataReprocessing' )
+  
   res = dirac.submit( job )
 
   if res['OK']:
