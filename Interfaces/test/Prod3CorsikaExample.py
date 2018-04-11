@@ -50,7 +50,7 @@ def runProd3( args = None ):
 
   # ## set job attributes
   job.setName( 'corsika' )
-  job.setInputSandbox( [input_card] )
+  job.setInputSandbox( [input_card,'dirac_prod3_corsika_only'] )
   job.setOutputSandbox( ['*Log.txt'] )
   job.setOutputData( ['*corsika.gz'], outputPath='corsika_data' )
 
