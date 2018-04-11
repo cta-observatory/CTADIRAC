@@ -31,6 +31,7 @@ def main():
     run_number = res['Value']['Parameter.run']
 
   # # run corsika
+  os.system('chmod +x dirac_prod3_corsika_only') 
   cmdTuple = ['./dirac_prod3_corsika_only', '--run', run_number, input_card]
   DIRAC.gLogger.notice( 'Executing command tuple:', cmdTuple )
   res = systemCall( 0, cmdTuple, sendOutput )
