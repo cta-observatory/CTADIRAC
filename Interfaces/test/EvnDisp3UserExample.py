@@ -22,7 +22,7 @@ def submitWMS( job, infileList ):
 
   dirac = Dirac()
   job.setParameterSequence( 'InputData', infileList, addToWorkflow = 'ParametricInputData' )
-  job.setOutputData( ['./*evndisp.tar.gz'] ) # to be used if DataManagement step in EvnDisp3UserJob is commented
+  job.setOutputData( ['./*evndisp.tar.gz'], outputPath='evndisp_data' ) # to be used if DataManagement step in EvnDisp3UserJob is commented
 
   #job.setJobGroup( 'EvnDisp-proton' )
   job.setName( 'evndispjob' )
@@ -31,7 +31,9 @@ def submitWMS( job, infileList ):
 
   res = dirac.submit( job )
 
-  Script.gLogger.info( 'Submission Result: ', res['Value'] )
+  if res['OK']:
+    Script.gLogger.info( 'Submission Result: ', res['Value'] )
+
   return res
 
 #########################################################
@@ -60,12 +62,12 @@ def runEvnDisp3( args = None ):
 
   # package and version
   job.setPackage( 'evndisplay' )
-  job.setVersion( 'prod3_d20160111' )
+  job.setVersion( 'prod3_d20160707' )
 
   # # set layout list
   job.setLayoutList( "CTA.prod3S.3HB1-NA.lis CTA.prod3S.3HB2-NA.lis" )
   #  set calibration file and parameters file
-  job.setCalibrationFile( 'ped.20151106.evndisp.root' )
+  job.setCalibrationFile( 'gamma_20deg_180deg_run5___cta-prod3-demo_desert-2150m-Paranal.ped.root')
   job.setReconstructionParameter( 'EVNDISP.prod3.reconstruction.runparameter.NN' )
   job.setNNcleaninginputcard( 'EVNDISP.NNcleaning.dat' )
   
