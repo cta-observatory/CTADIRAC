@@ -100,7 +100,7 @@ class EvnDisp3UserJob( Job ) :
 
     # step 2: check input file size
     # arguments are nbFiles=0 (not used) and fileSize=100kB
-    eivStep = self.setExecutable( '$cta-prod3-verifysteps', \
+    eivStep = self.setExecutable( 'cta-prod3-verifysteps', \
                               arguments = 'analysisinputs 0 100', \
                               logFile = 'Verify_EvnDispInputs_Log.txt' )
     eivStep['Value']['name'] = 'Step%i_VerifyEvnDispInputs' % iStep
@@ -119,7 +119,7 @@ class EvnDisp3UserJob( Job ) :
     # step 4
     # ## put and register files (to be used in replacement of setOutputData of Job API)
 
-    #dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-user-managedata.py',
+    #dmStep = self.setExecutable( '../CTADIRAC/Core/scripts/cta-user-managedata.py',
     #                          arguments = "'%s' %s '%s'" % ( self.outputpattern, self.outputpath, self.outputSE ),
     #                          logFile = 'DataManagement_Log.txt' )
     #dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
