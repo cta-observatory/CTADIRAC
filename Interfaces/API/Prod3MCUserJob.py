@@ -9,6 +9,7 @@ import json
 
 # DIRAC imports
 import DIRAC
+from DIRAC.Core.Utilities.Os import sourceEnv
 from DIRAC.Interfaces.API.Job import Job
 
 class Prod3MCUserJob( Job ) :
@@ -98,15 +99,15 @@ class Prod3MCUserJob( Job ) :
     iStep+=1
 
     #### execute simtel_array step
-    #simStep = self.setExecutable( './dirac_prod3_simtel_only',
-    #                          arguments='%s %s'% (self.simtelcfg, self.simtelopts),\
-    #                          logFile='Simtel_Log.txt')
-    #simStep['Value']['name'] = 'Step%i_Simtel' % iStep
-    #simStep['Value']['descr_short'] = 'Run sim_telarray'
-    #iStep+=1
+    simStep = self.setExecutable( './dirac_prod3_simtel_only',
+                              arguments='%s %s'% (self.simtelcfg, self.simtelopts),\
+                              logFile='Simtel_Log.txt')
+    simStep['Value']['name'] = 'Step%i_Simtel' % iStep
+    simStep['Value']['descr_short'] = 'Run sim_telarray'
+    iStep+=1
 
     # execute read_cta step
-    #res = DIRAC.sourceEnv(600, ['prod3_types'], {} )
+    #res = sourceEnv(600, ['prod3_types'], {} )
     #read_cta_opts=res['outputEnv']['read_cta_opts']
 
     #rctaStep = self.setExecutable( './dirac_prod3_read_cta', \
