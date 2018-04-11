@@ -27,8 +27,10 @@ def submitWMS( job, infileList ):
 
   dirac = Dirac()
   res = dirac.submit( job )
+
   if res['OK']:
     Script.gLogger.info( 'Submission Result: ', res['Value'] )
+
   return res
 
 def runProd3( args = None ):
@@ -57,8 +59,8 @@ def runProd3( args = None ):
   job.setVersion( '2017-04-19' )
 
   ## set sim_telarray config
-  job.setSimtelCfg( 'CTA-ULTRA6-LaPalma-baseline.cfg' )  
-  #job.setSimtelOpts('TELESCOPE_THETA=20.0 TELESCOPE_PHI=90.0') ## optional
+  job.setSimtelCfg( 'CTA-ULTRA6-SST-ASTRI_PROTO.cfg' ) # This is just an example. This file must be taken from your config. tarball 
+  job.setSimtelOpts('ALTITUDE=1740 ATMOSPHERIC_TRANSMISSION=atm_trans_1740_6_10_0_0_1740.dat MAXIMUM_TELESCOPES=1 TRIGGER_TELESCOPES=1 ONLY_TRIGGERED_TELESCOPES=1 TELESCOPE_PHI=180.0 TELESCOPE_THETA=20.0 OUTPUT_FORMAT=1 SAVE_PHOTONS=2') # This is just an example, if you want to pass extra options in the command line
 
   # ## setup workflow: set executable and parameters
   job.setupWorkflow()
