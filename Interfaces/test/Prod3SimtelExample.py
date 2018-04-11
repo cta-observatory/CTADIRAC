@@ -24,6 +24,8 @@ def submitWMS( job, infileList ):
   job.setOutputSandbox( ['*Log.txt'] )
   job.setInputSandbox( ['mycfg'] )
   job.setName( 'simteljob' )
+  # To allow jobs run at other sites than the site where the InputData are located
+  #job.setType( 'DataReprocessing' )
 
   dirac = Dirac()
   res = dirac.submit( job )
