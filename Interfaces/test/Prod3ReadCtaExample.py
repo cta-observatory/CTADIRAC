@@ -21,12 +21,14 @@ def submitWMS( job, infileList ):
 
   dirac = Dirac()
   job.setParameterSequence( 'InputData', infileList, addToWorkflow = 'ParametricInputData' )
-  job.setOutputData( ['*simtel-dst0.gz'] )
+  job.setOutputData( ['*simtel-dst0.gz'], outputPath='read_cta_data' )
   job.setName( 'readctajob' )
 
   res = dirac.submit( job )
 
-  Script.gLogger.info( 'Submission Result: ', res['Value'] )
+  if res['OK']:
+    Script.gLogger.info( 'Submission Result: ', res['Value'] )
+
   return res
 
 def runProd3( args = None ):
@@ -52,7 +54,7 @@ def runProd3( args = None ):
 
   # set package version: to be set before setupWorkflow
   job.setPackage('corsika_simhessarray')
-  job.setVersion( '2015-10-20-p3' )
+  job.setVersion( '2017-04-19' )
 
    ## set job attributes
   job.setOutputSandbox( ['*Log.txt'] )
