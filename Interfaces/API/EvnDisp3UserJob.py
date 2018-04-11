@@ -91,7 +91,7 @@ class EvnDisp3UserJob( Job ) :
 
     # step 1 : setup software
     iStep = 1
-    swStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-setupsw',
+    swStep = self.setExecutable( 'cta-prod3-setupsw',
                               arguments='%s %s'% (self.package, self.version),\
                               logFile='SetupSoftware_Log.txt')
     swStep['Value']['name'] = 'Step%i_SetupSoftware' % iStep
@@ -100,7 +100,7 @@ class EvnDisp3UserJob( Job ) :
 
     # step 2: check input file size
     # arguments are nbFiles=0 (not used) and fileSize=100kB
-    eivStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-verifysteps', \
+    eivStep = self.setExecutable( '$cta-prod3-verifysteps', \
                               arguments = 'analysisinputs 0 100', \
                               logFile = 'Verify_EvnDispInputs_Log.txt' )
     eivStep['Value']['name'] = 'Step%i_VerifyEvnDispInputs' % iStep
