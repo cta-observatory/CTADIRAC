@@ -56,7 +56,7 @@ def runProd3( args = None ):
 
   # set package version: to be set before setupWorkflow
   job.setPackage('corsika_simhessarray')
-  job.setVersion( '2017-04-19' )
+  job.setVersion( '2017-09-01' )
 
   ## set sim_telarray config
   job.setSimtelCfg( 'CTA-ULTRA6-SST-ASTRI_PROTO.cfg' ) # This is just an example. This file must be taken from your config. tarball 
