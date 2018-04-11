@@ -23,6 +23,8 @@ def submitWMS( job, infileList ):
   job.setParameterSequence( 'InputData', infileList, addToWorkflow = 'ParametricInputData' )
   job.setOutputData( ['*simtel-dst0.gz'], outputPath='read_cta_data' )
   job.setName( 'readctajob' )
+  # To allow jobs run at other sites than the site where the InputData are located
+  #job.setType( 'DataReprocessing' )
 
   res = dirac.submit( job )
 
@@ -54,8 +56,8 @@ def runProd3( args = None ):
 
   # set package version: to be set before setupWorkflow
   job.setPackage('corsika_simhessarray')
-  job.setVersion( '2017-04-19' )
-
+  job.setVersion( '2017-09-01' )
+  
    ## set job attributes
   job.setOutputSandbox( ['*Log.txt'] )
  
