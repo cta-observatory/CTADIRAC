@@ -126,9 +126,9 @@ def run_ctapipe(args):
 
     # create and common job configuration
     job = SimpleCtapipeJob(cpuTime=432000)
-    job.setName('ctapipe')  # EvnDisp3 for testing ?
+    job.setName('ctapipe_exp')
     job.version = 'v0.5.3'
-    job.setType('DataReprocessing')  # EvnDisp3 for testing ?
+    job.setType('DataReprocessing')  # use EvnDisp3 to use all sites
     job.setOutputSandbox(['*Log.txt'])
     job.prefix = 'CTA.prod3Nb'
 
@@ -145,7 +145,7 @@ def run_ctapipe(args):
         # job.setDestination('LCG.DESY-ZEUTHEN.de')
         # job.setDestination('LCG.GRIF.fr')
         res = submit_WMS(job, input_file_list[:group_size])
-        
+
     else if mode is 'TS':
         # get input data set meta query
         # MDdict = {'MCCampaign':'PROD3', 'particle':particle,
