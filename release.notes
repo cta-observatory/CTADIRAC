@@ -1,3 +1,10 @@
+[v1rxx]
+* JB : new Interfaces/API/SimpleCtapipeJob.py
+           Interfaces/test/SimpleCtapipeJobExample.py
+
+[v1r48p3]
+* LA : some fixes
+
 [v1r48p2]
 * JB : new Prod3MCPipeDivergentJob and Example for divergent pointing simulations
 
