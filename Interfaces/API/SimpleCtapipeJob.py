@@ -35,7 +35,7 @@ class SimpleCtapipeJob(Job):
         Job.__init__(self)
         self.setCPUTime(cpuTime)
         # defaults
-        self.setName('ctapipe classify and reconstruct')
+        self.setName('ctapipe')
         self.package = 'ctapipe_exp'
         self.program_category = 'calibimgreco'
         self.version = 'v0.5.3'
@@ -45,9 +45,8 @@ class SimpleCtapipeJob(Job):
         self.layout = 'Baseline'
         self.basepath = '/vo.cta.in2p3.fr/MC/PROD3/'
         self.outputpattern = './*.hdf5'
-        self.fcc = FileCatalogClient()
         self.metadata = collections.OrderedDict()
-        self.filemetadata = {}
+        self.filemetadata = dict()
         self.catalogs = json.dumps(['DIRACFileCatalog', 'TSCatalog'])
 
     def setTSTaskId(self, taskid):
@@ -58,29 +57,22 @@ class SimpleCtapipeJob(Job):
         """
         self.ts_task_id = taskid
 
-    def set_metadata(self, path):
-        """ Set image_extractor meta data starting from path metadata
+    def set_metadata(self, simtelMD):
+        """ Set ctaipe meta data from a dictionnary
 
         Parameters:
-        path -- path from which get meta data
+        simtelMD -- metadata dictionary as for simtel
         """
-        # # Get simtel meta data from path
-        res = self.fcc.getFileUserMetadata(path)
-        simtelMD = res['Value']
-        # print(simtelMD)
         # set directory meta data
         self.metadata['array_layout'] = simtelMD['array_layout']
         self.metadata['site'] = simtelMD['site']
         self.metadata['particle'] = simtelMD['particle']
-        self.metadata['phiP'] = simtelMD['phiP']  # ['=']
-        self.metadata['thetaP'] = simtelMD['thetaP']  # ['=']
+        self.metadata['phiP'] = simtelMD['phiP']['=']
+        self.metadata['thetaP'] = simtelMD['thetaP']['=']
         self.metadata[self.program_category+'_prog'] = self.package
         self.metadata[self.program_category+'_prog_version'] = self.version
         self.metadata['data_level'] = self.output_data_level
         self.metadata['configuration_id'] = self.configuration_id
-        # here hardcode that we have SCTs
-        self.metadata['sct'] = 'True'
-        # print(self.metadata)
 
     def setupWorkflow(self, debug=False):
         """ Setup job workflow by defining the sequence of all executables
