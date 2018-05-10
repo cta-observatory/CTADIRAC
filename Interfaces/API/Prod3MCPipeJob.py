@@ -18,10 +18,10 @@ class Prod3MCPipeJob( Job ) :
       takes care of running corsika piped into simtel
       one output file is created
   """
-        
+
   def __init__( self, cpuTime = 259200 ):
     """ Constructor
-    
+
     Keyword arguments:
     cpuTime -- max cpu time allowed for the job
     """
@@ -42,19 +42,21 @@ class Prod3MCPipeJob( Job ) :
     self.zenith_angle = 20.
     self.inputpath = 'Data/sim_telarray/cta-prod3-%s/0.0deg'%self.array_layout.lower()
     self.basepath = '/vo.cta.in2p3.fr/MC/PROD3/'
-    self.no_sct = False
+    self.no_sct = True
+    self.catalogs = json.dumps(['DIRACFileCatalog','TSCatalog'])
+
 
   def setPackage(self, package):
     """ Set package name : e.g. 'corsika_simhessarray'
-    
+
     Parameters:
     package -- corsika_simhessarray
     """
     self.package=package
 
   def setVersion(self, version):
-    """ Set software version number : e.g. 2016-12-02 
-    
+    """ Set software version number : e.g. 2016-12-02
+
     Parameters:
     version -- corsika+simtel package version number
     """
@@ -64,16 +66,16 @@ class Prod3MCPipeJob( Job ) :
     """ Set the number of corsika showers,
         5 is enough for testing
         20000 in production usually.
-    
+
     Parameters:
     nshow -- number of corsika primary showers to generate
     """
     self.nShower=nshow
-    
+
   def setRunNumber(self, runNb):
     """ Set the corsika run number, passed as a string
         because may be a TS parameter
-    
+
     Parameters:
     runNb -- run number as a string, used as a corsika seed
     """
@@ -90,7 +92,7 @@ class Prod3MCPipeJob( Job ) :
 
   def setArrayLayout(self, layout):
     """ Set the array layout type
-    
+
     Parameters:
     layout -- a string for the array layout, hex or square
     """
@@ -103,7 +105,7 @@ class Prod3MCPipeJob( Job ) :
 
   def setSite(self, site):
     """ Set the site to simulate
-    
+
     Parameters:
     site -- a string for the site name (LaPalma)
     """
@@ -111,7 +113,7 @@ class Prod3MCPipeJob( Job ) :
 
   def setParticle(self, particle):
     """ Set the corsika primary particle
-    
+
     Parameters:
     particle -- a string for the particle type/name
     """
@@ -124,7 +126,7 @@ class Prod3MCPipeJob( Job ) :
 
   def setPointingDir(self, pointing):
     """ Set the pointing direction, North or South
-    
+
     Parameters:
     pointing -- a string for the pointing direction
     """
@@ -155,8 +157,8 @@ class Prod3MCPipeJob( Job ) :
         lsStep['Value']['descr_short']='list files in working directory'
         iStep+=1
 
-    # step 2  
-    swStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-setupsw',
+    # step 2
+    swStep = self.setExecutable( 'cta-prod3-setupsw',
                               arguments='%s %s'% (self.package, self.version),\
                               logFile='SetupSoftware_Log.txt')
     swStep['Value']['name'] = 'Step%i_SetupSoftware' % iStep
@@ -180,7 +182,7 @@ class Prod3MCPipeJob( Job ) :
     iStep+=1
 
     # step 4 verify merged data
-    mgvStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-verifysteps', \
+    mgvStep = self.setExecutable( 'cta-prod3-verifysteps', \
                               arguments = "generic 1 1000 '%s/Data/*.simtel.gz'"%self.inputpath,\
                               logFile='Verify_Simtel_Log.txt')
     mgvStep['Value']['name']='Step%i_VerifySimtel'%iStep
@@ -193,7 +195,7 @@ class Prod3MCPipeJob( Job ) :
         lsStep['Value']['name']='Step%i_LS_End'%iStep
         lsStep['Value']['descr_short']='list files in working directory and sub-directory'
         iStep += 1
-    
+
     # step 6
     # ## the order of the metadata dictionary is important, since it's used to build the directory structure
     metadata = collections.OrderedDict()
@@ -207,25 +209,33 @@ class Prod3MCPipeJob( Job ) :
     metadata['thetaP'] = float( self.zenith_angle )
     metadata['tel_sim_prog'] = 'simtel'
     metadata['tel_sim_prog_version'] = self.version
-
+    # new meta data introduced after Prod3b
+    metadata['data_level'] = 0
+    metadata['configuration_id'] = -1
     mdjson = json.dumps( metadata )
 
-    metadatafield = {'array_layout':'VARCHAR(128)', 'site':'VARCHAR(128)', 'particle':'VARCHAR(128)', \
-                         'phiP':'float', 'thetaP': 'float', 'tel_sim_prog':'VARCHAR(128)', 'tel_sim_prog_version':'VARCHAR(128)'}
+    metadatafield = {'array_layout': 'VARCHAR(128)',
+                     'site': 'VARCHAR(128)',
+                     'particle': 'VARCHAR(128)', 'phiP': 'float',
+                     'thetaP': 'float',
+                     'tel_sim_prog': 'VARCHAR(128)',
+                     'tel_sim_prog_version': 'VARCHAR(128)',
+                     'data_level': 'int', 'configuration_id': 'int'}
 
-    mdfieldjson = json.dumps( metadatafield )
+    mdfieldjson = json.dumps(metadatafield)
 
     filemetadata = {'runNumber': self.run_number }
 
     fmdjson = json.dumps( filemetadata )
-
-    dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-prod3-managedata.py',
-                              arguments = "'%s' '%s' '%s' %s %s %s" % ( mdjson, mdfieldjson, fmdjson, self.inputpath, self.basepath, self.start_run_number ),
-                              logFile = 'DataManagement_Log.txt' )
+    scripts = '../CTADIRAC/Core/scripts/'
+    dmStep = self.setExecutable(scripts+'cta-prod3-managedata.py',
+                                arguments="'%s' '%s' '%s' %s %s %s '%s'" %
+                                (mdjson, mdfieldjson, fmdjson, self.inputpath,
+                                 self.basepath, self.start_run_number, self.catalogs),
+                                logFile='DataManagement_Log.txt')
     dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
     dmStep['Value']['descr_short'] = 'Save files to SE and register them in DFC'
     iStep += 1
 
     # Number of showers is passed via an environment variable
     self.setExecutionEnv( {'NSHOW'        : '%s' % self.nShower} )
-
