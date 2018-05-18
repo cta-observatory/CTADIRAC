@@ -5,6 +5,8 @@
 """
 
 import json
+from copy import copy
+
 from DIRAC.Core.Base import Script
 Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      'Usage:',
@@ -116,16 +118,15 @@ def runEvnDisp3MQ(args=None):
     #           'outputType':'Data', 'thetaP':{"=": 20}, 'phiP':{"=": 180.0},
     #           'tel_sim_prog':'simtel', 'tel_sim_prog_version':'2016-06-28',
     #           'sct'=False}
-    meta_data_dict = get_dataset_MQ(dataset_name)
+    input_meta_query = get_dataset_MQ(dataset_name)
 
-    # if needed, refine query for missing items (20 deg)
-    # meta_data_dict['tel_sim_prog_version']='2016-06-28'
     # refine query for SCT at 20 deg
-    if meta_data_dict['thetaP'] == 20:
-        meta_data_dict['sct']=True
+    output_meta_data = copy(input_meta_query)
+    if output_meta_data['thetaP'] == 20:
+        output_meta_data['sct']=True
     else:
-        meta_data_dict['sct']=False
-    job.setEvnDispMD(meta_data_dict)
+        output_meta_data['sct']=False
+    job.setEvnDispMD(output_meta_data)
 
     # add the sequence of executables
     job.ts_task_id = '@{JOB_ID}' # dynamic
@@ -136,7 +137,7 @@ def runEvnDisp3MQ(args=None):
     job.setOutputSandbox( ['*Log.txt'] )
 
     ### submit the workflow to the TS
-    res = submit_trans(job, transName, json.dumps(meta_data_dict), group_size)
+    res = submit_trans(job, transName, json.dumps(input_meta_query), group_size)
 
     return res
 
