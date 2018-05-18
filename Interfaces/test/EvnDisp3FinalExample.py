@@ -70,7 +70,7 @@ def submit_trans(job, transName, mqJson, group_size):
                                        True, False, "Temporary fix" ) )
 
     trans = Transformation()
-    trans.setTransformationName(transName) # this must be unique
+    trans.setTransformationName(transName)  # this must be unique
     trans.setType("DataReprocessing")
     trans.setDescription("EvnDisplay MQ example")
     trans.setLongDescription( "EvnDisplay calib_imgreco") # mandatory
@@ -104,9 +104,11 @@ def runEvnDisp3MQ(args=None):
     ## add for testing
     job.setType('EvnDisp3')
 
-    # change here for Paranal or La Palma # prefix
-    job.prefix = "CTA.prod3Sb"
-    #job.calibration_file = 'prod3b.Paranal-20171214.ped.root'
+    # change here for Paranal or La Palma
+    job.version = 'prod3b_d20180201-lp'
+    job.prefix = "CTA.prod3Nb"
+    job.calibration_file = 'prod3b.Paranal-20171214.ped.root'
+    job.layout_list = '3AL4-BF15 3AL4-BN15 3AL4-BS15 3AL4-BN15-TI 3AL4-BF15-TI 3AL4-BS15-TI '
 
     # get input data set meta query
     # MDdict = {'MCCampaign':'PROD3', 'particle':particle,
@@ -115,16 +117,20 @@ def runEvnDisp3MQ(args=None):
     #           'tel_sim_prog':'simtel', 'tel_sim_prog_version':'2016-06-28',
     #           'sct'=False}
     meta_data_dict = get_dataset_MQ(dataset_name)
+
     # if needed, refine query for missing items (20 deg)
     # meta_data_dict['tel_sim_prog_version']='2016-06-28'
-    # refining query to remove SCT files
-    # meta_data_dict['sct']='False'
-
+    # refine query for SCT at 20 deg
+    if meta_data_dict['thetaP'] == 20:
+        meta_data_dict['sct']=True
+    else:
+        meta_data_dict['sct']=False
     job.setEvnDispMD(meta_data_dict)
 
     # add the sequence of executables
     job.ts_task_id = '@{JOB_ID}' # dynamic
     job.setupWorkflow(debug=False)
+
 
     # output
     job.setOutputSandbox( ['*Log.txt'] )
@@ -139,7 +145,7 @@ def runEvnDisp3MQ(args=None):
 if __name__ == '__main__':
 
     args = Script.getPositionalArgs()
-    if ( len( args ) != 3 ):
+    if (len(args) != 3):
         Script.showHelp()
 
     runEvnDisp3MQ(args)
