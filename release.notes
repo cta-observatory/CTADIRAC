@@ -1,6 +1,8 @@
-[v1rxx]
+[v1r48p4]
 * JB : new Interfaces/API/SimpleCtapipeJob.py
            Interfaces/test/SimpleCtapipeJobExample.py
+       fine tuning of EvnDisp3FinalJob for LaPalma reprocessing
+       ready for LaPalma 60 deg simulation
 
 [v1r48p3]
 * LA : some fixes
