@@ -120,12 +120,8 @@ def runEvnDisp3MQ(args=None):
     #           'sct'=False}
     input_meta_query = get_dataset_MQ(dataset_name)
 
-    # refine query for SCT at 20 deg
+    # refine output meta data if needed
     output_meta_data = copy(input_meta_query)
-    if output_meta_data['thetaP'] == 20:
-        output_meta_data['sct']=True
-    else:
-        output_meta_data['sct']=False
     job.setEvnDispMD(output_meta_data)
 
     # add the sequence of executables
