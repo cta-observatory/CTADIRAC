@@ -110,7 +110,6 @@ def runEvnDisp3MQ(args=None):
     job.version = 'prod3b_d20180201-lp'
     job.prefix = "CTA.prod3Nb"
     job.calibration_file = 'prod3b.Paranal-20171214.ped.root'
-    job.layout_list = '3AL4-BF15 3AL4-BN15 3AL4-BS15 3AL4-BN15-TI 3AL4-BF15-TI 3AL4-BS15-TI '
 
     # get input data set meta query
     # MDdict = {'MCCampaign':'PROD3', 'particle':particle,
@@ -119,6 +118,11 @@ def runEvnDisp3MQ(args=None):
     #           'tel_sim_prog':'simtel', 'tel_sim_prog_version':'2016-06-28',
     #           'sct'=False}
     input_meta_query = get_dataset_MQ(dataset_name)
+    # process SCT arrays for 20 deg
+    if input_meta_query[thetaP] == 20:
+        job.layout_list = '3AL4-BF15 3AL4-BN15 3AL4-BS15 3AL4-BN15-TI 3AL4-BF15-TI 3AL4-BS15-TI'
+    else:
+        job.layout_list = '3AL4-BF15 3AL4-BN15 3AL4-BN15-TI 3AL4-BF15-TI'
 
     # refine output meta data if needed
     output_meta_data = copy(input_meta_query)
