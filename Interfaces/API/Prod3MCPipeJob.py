@@ -212,7 +212,7 @@ class Prod3MCPipeJob( Job ) :
     # new meta data introduced after Prod3b
     metadata['data_level'] = 0
     metadata['configuration_id'] = -1
-    mdjson = json.dumps( metadata )
+    mdjson = json.dumps(metadata)
 
     metadatafield = {'array_layout': 'VARCHAR(128)',
                      'site': 'VARCHAR(128)',
@@ -224,7 +224,8 @@ class Prod3MCPipeJob( Job ) :
 
     mdfieldjson = json.dumps(metadatafield)
 
-    filemetadata = {'runNumber': self.run_number }
+    filemetadata = {'runNumber': self.run_number}
+                    # 'sct': False}
 
     fmdjson = json.dumps( filemetadata )
     scripts = '../CTADIRAC/Core/scripts/'
