@@ -118,8 +118,9 @@ def runEvnDisp3MQ(args=None):
     #           'tel_sim_prog':'simtel', 'tel_sim_prog_version':'2016-06-28',
     #           'sct'=False}
     input_meta_query = get_dataset_MQ(dataset_name)
+    # input_meta_query['sct']='False'
     # process SCT arrays for 20 deg
-    if input_meta_query[thetaP] == 20:
+    if input_meta_query['thetaP'] == 20:
         job.layout_list = '3AL4-BF15 3AL4-BN15 3AL4-BS15 3AL4-BN15-TI 3AL4-BF15-TI 3AL4-BS15-TI'
     else:
         job.layout_list = '3AL4-BF15 3AL4-BN15 3AL4-BN15-TI 3AL4-BF15-TI'
