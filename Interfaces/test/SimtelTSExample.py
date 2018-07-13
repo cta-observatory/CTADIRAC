@@ -1,7 +1,7 @@
-""" EvnDisp Script to create a Transformation with Input Data
-    version created to run the Final version of EventDisplay
-    https://forge.in2p3.fr/issues/27528
-                        February 16th 2018 - J. Bregeon
+""" Simtel Script to create a Transformation with Corsika Input Data
+
+    https://forge.in2p3.fr/issues/33932
+                        July 13th 2018 - J. Bregeon, C. Bigongiari
 """
 
 import json
@@ -10,12 +10,13 @@ from copy import copy
 from DIRAC.Core.Base import Script
 Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      'Usage:',
-                                     '  %s trans_name input_dataset_name group_size' % Script.scriptName,
+                                     '  %s mode file_path (trans_name) group_size' % Script.scriptName,
                                      'Arguments:',
-                                     '  trans_name: name of the transformation',
-                                     '  input_dataset_name: name of the input dataset',
+                                     '  mode: WMS for testing, TS for production',
+                                     '  file_path: path to the input file with the list of LFNs to process',
+                                     '  trans_name: name of the transformation for TS mode only',
                                      '  group_size: n files to process',
-                                     '\ne.g: %s evndisp-gamma-N Paranal_gamma_North_20deg_HB9' % Script.scriptName,
+                                     '\ne.g: python %s.py WMS p20.txt simtel_astri_p20 10' % Script.scriptName,
                                      ] ) )
 
 Script.parseCommandLine()
@@ -23,46 +24,25 @@ Script.parseCommandLine()
 import DIRAC
 from DIRAC.TransformationSystem.Client.TransformationClient import TransformationClient
 from DIRAC.TransformationSystem.Client.Transformation import Transformation
-# from CTADIRAC.Interfaces.API.EvnDisp3FinalJob import EvnDisp3FinalJob
-from EvnDisp3FinalJob import EvnDisp3FinalJob
+from SimtelTSJob import SimtelTSJob
 from DIRAC.Interfaces.API.Dirac import Dirac
 from DIRAC.Core.Workflow.Parameter import Parameter
 from DIRAC.Resources.Catalog.FileCatalogClient import FileCatalogClient
-from DIRAC.Core.Utilities.ReturnValues import returnSingleResult
 
 
-def check_dataset_query(dataset_name):
-    """ print dfind command for a given dataset
+def read_lfns_from_file(file_path):
+    """ Read a simple list of LFNs from an ASCII files,
+    expects just one LFN per line
     """
-    md_dict = get_dataset_MQ(dataset_name)
-    return debug_query(md_dict)
+    content = open(file_path, 'r').readlines()
+    input_file_list = []
+    for line in content:
+        infile = line.strip()
+        if line != "\n":
+            input_file_list.append(infile)
+    return input_file_list
 
-def debug_query(MDdict):
-    """ just unwrap a meta data dictionnary into a dfind command
-    """
-    msg='dfind /vo.cta.in2p3.fr/MC/'
-    for key,val in MDdict.items():
-        try:
-            val = val.values()[0]
-        except:
-            pass
-        msg+=' %s=%s' % (key, val)
-    return msg
-
-def get_dataset_MQ(dataset_name):
-    """ Return the Meta Query associated with a given dataset
-    """
-    fc = FileCatalogClient()
-    result = returnSingleResult(fc.getDatasetParameters(dataset_name))
-    if not result['OK']:
-        DIRAC.gLogger.error("Failed to retrieved dataset:",
-                            result['Message'])
-        DIRAC.exit(-1)
-    else:
-        DIRAC.gLogger.info("Successfully retrieved dataset: ", dataset_name)
-    return result['Value']['MetaQuery']
-
-def submit_trans(job, transName, mqJson, group_size):
+def submit_trans(job, infileList, trans_name, group_size):
     """ Create a transformation executing the job workflow
     """
     DIRAC.gLogger.notice('submit_trans : %s' % transName)
@@ -72,82 +52,114 @@ def submit_trans(job, transName, mqJson, group_size):
                                        True, False, "Temporary fix" ) )
 
     trans = Transformation()
-    trans.setTransformationName(transName)  # this must be unique
+    trans.setTransformationName(trans_name)  # this must be unique
     trans.setType("DataReprocessing")
-    trans.setDescription("EvnDisplay MQ example")
-    trans.setLongDescription( "EvnDisplay calib_imgreco") # mandatory
+    trans.setDescription("Simtel TS example")
+    trans.setLongDescription( "Simtel tel_sim") # mandatory
     trans.setBody(job.workflow.toXML())
     trans.setGroupSize(group_size)
-    trans.setFileMask(mqJson) # catalog query is defined here
     trans.addTransformation() # transformation is created here
     trans.setStatus("Active")
     trans.setAgentType("Automatic")
+    # add 10*group_size files to transformation (to have the first 10 jobs)
+    trans_id = trans.getTransformationID()
+    trans_client = TransformationClient()
+    trans_client.addFilesToTransformation(trans_id['Value'],
+                                          infileList[:10*group_size])
     return trans
 
-def runEvnDisp3MQ(args=None):
-    """ Simple wrapper to create a EvnDisp3RefJob and setup parameters
+def submit_WMS(job, infileList):
+    """ Submit the job locally or to the WMS
+    """
+    dirac = Dirac()
+    job.setInputData(infileList)
+    job.setJobGroup('SimpleCtapipe-test')
+    res = dirac.submit(job)
+    Script.gLogger.notice('Submission Result: ', res)
+    return res
+
+def run_simtel_ts(args=None):
+    """ Simple wrapper to create a SimtelTSJob and setup parameters
         from positional arguments given on the command line.
 
         Parameters:
-        args -- infile mode
+        args -- mode file_path (trans_name) group_size
     """
-    DIRAC.gLogger.notice( 'runEvnDisp3MQ' )
+    DIRAC.gLogger.notice( 'run_simtel_ts' )
     # get arguments
-    transName = args[0]
-    dataset_name = args[1]
-    group_size = int(args[2])
+    mode = args[0]
+    if mode == 'WMS':
+        file_path = args[1]
+        group_size = int(args[2])
+    elif mode == 'TS':
+        file_path = args[1]
+        trans_name = args[2]
+        group_size = int(args[3])
+    else:
+        DIRAC.gLogger.error('1st argument should be the job mode: WMS or TS,\n\
+                             not %s'%args[0])
+        DIRAC.exit(-1)
+
+    # read list of input file names
+    input_file_list = read_lfns_from_file(file_path)
 
     ################################
-    job = EvnDisp3FinalJob(cpuTime=432000)  # to be adjusted!!
+    job = SimtelTSJob(cpuTime=432000)  # to be adjusted!!
 
     ### Main Script ###
     # override for testing
-    job.setName('EvnDisp3')
+    job.setName('Simtel')
     ## add for testing
     job.setType('EvnDisp3')
 
-    # change here for Paranal or La Palma
-    job.version = 'prod3b_d20180201-lp'
-    job.prefix = "CTA.prod3Nb"
-    job.calibration_file = 'prod3b.Paranal-20171214.ped.root'
-
-    # get input data set meta query
-    # MDdict = {'MCCampaign':'PROD3', 'particle':particle,
-    #           'array_layout':'full', 'site':'Paranal',
-    #           'outputType':'Data', 'thetaP':{"=": 20}, 'phiP':{"=": 180.0},
-    #           'tel_sim_prog':'simtel', 'tel_sim_prog_version':'2016-06-28',
-    #           'sct'=False}
-    input_meta_query = get_dataset_MQ(dataset_name)
-    # input_meta_query['sct']='False'
-    # process SCT arrays for 20 deg
-    if input_meta_query['thetaP'] == 20:
-        job.layout_list = '3AL4-BF15 3AL4-BN15 3AL4-BS15 3AL4-BN15-TI 3AL4-BF15-TI 3AL4-BS15-TI'
-    else:
-        job.layout_list = '3AL4-BF15 3AL4-BN15 3AL4-BN15-TI 3AL4-BF15-TI'
-
-    # refine output meta data if needed
-    output_meta_data = copy(input_meta_query)
-    job.setEvnDispMD(output_meta_data)
+    # Defaults to override
+    # job.version = '2018-06-12'
+    # job.simtel_config_file = 'ASTRI_MiniArray15_Paranal_ACDC_2018_06_12.cfg'
+    # job.thetaP = 20.0
+    # job.phiP = 0.0
 
     # add the sequence of executables
-    job.ts_task_id = '@{JOB_ID}' # dynamic
-    job.setupWorkflow(debug=False)
-
+    job.setupWorkflow(debug=True)
 
     # output
     job.setOutputSandbox( ['*Log.txt'] )
+    # /vo.cta.in2p3.fr/user/c/ciro.bigongiari/Miniarray15/Simtel
+    job.basepath = '/vo.cta.in2p3.fr/user/b/bregeon'
 
-    ### submit the workflow to the TS
-    res = submit_trans(job, transName, json.dumps(input_meta_query), group_size)
+    # specific configuration
+    if mode == 'WMS':
+        # set meta data
+        # job.set_metadata(input_file_list[0])
+        job.ts_task_id = '0'
+        job.setupWorkflow(debug=True)
+        # subtmit to the WMS for debug
+        job.setDestination('LCG.IN2P3-CC.fr')
+        # job.setDestination('LCG.DESY-ZEUTHEN.de')
+        # job.setDestination('LCG.GRIF.fr')
+        res = submit_WMS(job, input_file_list[:group_size])
+    elif mode == 'TS':
+        job.ts_task_id = '@{JOB_ID}' # dynamic
+        job.setupWorkflow(debug=True)
+        res = submit_trans(job, input_file_list, trans_name, group_size)
+    else:
+        DIRAC.gLogger.error('Unknown mode')
+        return None
 
     return res
-
 
 #########################################################
 if __name__ == '__main__':
 
     args = Script.getPositionalArgs()
-    if (len(args) != 3):
+    if len(args) not in [3, 4]:
         Script.showHelp()
-
-    runEvnDisp3MQ(args)
+    try:
+        res = run_simtel_ts(args)
+        if not res['OK']:
+            DIRAC.gLogger.error(res['Message'])
+            DIRAC.exit(-1)
+        else:
+            DIRAC.gLogger.notice('Done')
+    except Exception:
+        DIRAC.gLogger.exception()
+        DIRAC.exit(-1)

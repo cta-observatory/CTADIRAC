@@ -18,7 +18,6 @@ class SimtelTSJob(Job):
     """ Job extension class for Simtel Analysis
 
     """
-
     def __init__(self, cpuTime=432000):
         """ Constructor
 
@@ -31,15 +30,18 @@ class SimtelTSJob(Job):
         self.setName('Simtel')
         self.package='corsika_simtelarray'
         self.program_category = 'tel_sim'
-        self.version = ''
-        self.configuration_id = -1
+        self.version = '2018-06-12'
+        self.configuration_id = 4
         self.output_data_level = 0
-        self.basepath = '/vo.cta.in2p3.fr/user/c/ciro.bigongiari'
+        self.basepath = '/vo.cta.in2p3.fr/user/c/ciro.bigongiari/Miniarray15/Simtel'
         self.fcc = FileCatalogClient()
         self.metadata = collections.OrderedDict()
         self.filemetadata = {}
         self.catalogs = json.dumps(['DIRACFileCatalog', 'TSCatalog'])
         self.ts_task_id = 1000
+        self.simtel_config_file = 'ASTRI_MiniArray15_Paranal_ACDC_2018_06_12.cfg'
+        self.thetaP = 20.0
+        self.phiP = 0.0
 
     def setupWorkflow(self, debug=False):
         """ Setup job workflow by defining the sequence of all executables
@@ -66,62 +68,62 @@ class SimtelTSJob(Job):
         # step 2bis
         # arguments are nbFiles=0 (not used) and fileSize=100kB
         eivStep = self.setExecutable('cta-prod3-verifysteps',
-                                  arguments='analysisinputs 0 100',
+                                  arguments='analysisinputs 2 100000',
                                   logFile='Verify_SimtelInputs_Log.txt')
         eivStep['Value']['name'] = 'Step%i_VerifySimtelInputs' % iStep
         eivStep['Value']['descr_short'] = 'Verify Simtel Inputs'
         iStep += 1
 
+        # ./dirac_simtel_zstd.sh ./ASTRI_MiniArray15_Paranal_ACDC_2018_06_12.cfg
+        #                        TELESCOPE_THETA=20.0 TELESCOPE_PHI=0.0
+        #                        > dirac_simtel_zstd.log 2>&1
         evStep = self.setExecutable('./dirac_simtel_zstd.sh',
-                                    arguments = "--prefix %s --layout_list '%s' \
-                                    --focal_file %s --calibration_file %s \
-                                    --reconstructionparameter %s  --taskid %s" %
-                                    (self.prefix, self.layout_list,
-                                     self.focal_file, self.calibration_file,
-                                     self.reconstructionparameter, self.ts_task_id),
+                                    arguments = "%s  TELESCOPE_THETA=%s \
+                                    TELESCOPE_PHI= %s" %  #  --taskid %s" %
+                                    (self.simtel_config_file, self.thetaP, self.phiP),
                                     logFile='Simtel_Log.txt')
         evStep['Value']['name'] = 'Step%i_Simtel' % iStep
         evStep['Value']['descr_short'] = 'Run Simtel'
         iStep += 1
 
-        # step 4
-        # ## the order of the metadata dictionary is important, since it's used to build the directory structure
-        mdjson = json.dumps(self.metadata)
-
-        metadatafield = {'array_layout':'VARCHAR(128)', 'site':'VARCHAR(128)',
-                         'particle':'VARCHAR(128)',
-                         'phiP':'float', 'thetaP': 'float',
-                         self.program_category+'_prog':'VARCHAR(128)',
-		                 self.program_category+'_prog_version':'VARCHAR(128)',
-                         'data_level': 'int', 'configuration_id': 'int'}
-        mdfieldjson = json.dumps(metadatafield)
-
-        # register Data
-        outputpattern = './*evndisp-DL%01d.tar.gz'%self.output_data_level
-        file_md_json = json.dumps(self.filemetadata)
-        scripts = '../CTADIRAC/Core/scripts'
-        dmStep = self.setExecutable(scripts + '/cta-analysis-managedata.py',
-                            arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s'" %
-                            (mdjson, mdfieldjson, file_md_json, self.basepath,
-                            outputpattern, self.package,
-                            self.program_category, self.catalogs),
-                            logFile='DataManagement_Log.txt')
-        dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
-        dmStep['Value']['descr_short'] = 'Save files to SE and register them in DFC'
-        iStep += 1
-
-        # register Log
-        outputpattern = './*.logs.tgz'
-        filemetadata = {}
-        file_md_json = json.dumps(filemetadata)
-        dmStep = self.setExecutable('../CTADIRAC/Core/scripts/cta-analysis-managedata.py',
-                                  arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s' Log" % \
-                                  (mdjson, mdfieldjson, file_md_json, self.basepath,
-                                   outputpattern, self.package, self.program_category, self.catalogs),
-                                  logFile = 'Log_DataManagement_Log.txt')
-        dmStep['Value']['name'] = 'Step%i_Log_DataManagement' % iStep
-        dmStep['Value']['descr_short'] = 'Save log files to SE and register them in DFC'
-        iStep += 1
+        # # step 4
+        # # ## the order of the metadata dictionary is important, since it's used to build the directory structure
+        # mdjson = json.dumps(self.metadata)
+        #
+        # metadatafield = {'array_layout':'VARCHAR(128)', 'site':'VARCHAR(128)',
+        #                  'particle':'VARCHAR(128)',
+        #                  'phiP':'float', 'thetaP': 'float',
+        #                  self.program_category+'_prog':'VARCHAR(128)',
+		#                  self.program_category+'_prog_version':'VARCHAR(128)',
+        #                  'data_level': 'int', 'configuration_id': 'int'}
+        # mdfieldjson = json.dumps(metadatafield)
+        #
+        # # register Data
+        # outputpattern = './*evndisp-DL%01d.tar.gz'%self.output_data_level
+        # file_md_json = json.dumps(self.filemetadata)
+        # scripts = '../CTADIRAC/Core/scripts'
+        # dmStep = self.setExecutable(scripts + '/cta-analysis-managedata.py',
+        #                     arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s'" %
+        #                     (mdjson, mdfieldjson, file_md_json, self.basepath,
+        #                     outputpattern, self.package,
+        #                     self.program_category, self.catalogs),
+        #                     logFile='DataManagement_Log.txt')
+        # dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
+        # dmStep['Value']['descr_short'] = 'Save files to SE and register them in DFC'
+        # iStep += 1
+        #
+        # # register Log
+        # outputpattern = './*.logs.tgz'
+        # filemetadata = {}
+        # file_md_json = json.dumps(filemetadata)
+        # dmStep = self.setExecutable('../CTADIRAC/Core/scripts/cta-analysis-managedata.py',
+        #                           arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s' Log" % \
+        #                           (mdjson, mdfieldjson, file_md_json, self.basepath,
+        #                            outputpattern, self.package, self.program_category, self.catalogs),
+        #                           logFile = 'Log_DataManagement_Log.txt')
+        # dmStep['Value']['name'] = 'Step%i_Log_DataManagement' % iStep
+        # dmStep['Value']['descr_short'] = 'Save log files to SE and register them in DFC'
+        # iStep += 1
 
         # step 6 -- to be removed -- debug only
         if debug:
