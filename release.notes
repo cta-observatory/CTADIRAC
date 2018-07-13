@@ -1,3 +1,6 @@
+[v1rxx]
+* JB : add SimtelTSJob class and SimtelTSExample script
+
 [v1r48p5]
 * JB : remove SCT md from La Palma 60 deg
        EvnDisp Final process SCT arrays only at 20 deg
