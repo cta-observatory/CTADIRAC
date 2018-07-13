@@ -113,10 +113,10 @@ def run_ctapipe(args):
     """
     # get arguments
     mode = args[0]
-    if mode is 'WMS':
+    if mode == 'WMS':
         file_path = args[1]
         group_size = int(args[2])
-    else if mode is 'TS':
+    elif mode == 'TS':
         trans_name = args[1]
         dataset_name = args[2]
         group_size = int(args[3])
@@ -133,7 +133,7 @@ def run_ctapipe(args):
     job.prefix = 'CTA.prod3Nb'
 
     # specific configuration
-    if mode is 'WMS':
+    if mode == 'WMS':
         # read list of input file names
         input_file_list = read_lfns_from_file(file_path)
         # set meta data
@@ -146,7 +146,7 @@ def run_ctapipe(args):
         # job.setDestination('LCG.GRIF.fr')
         res = submit_WMS(job, input_file_list[:group_size])
 
-    else if mode is 'TS':
+    elif mode == 'TS':
         # get input data set meta query
         # MDdict = {'MCCampaign':'PROD3', 'particle':particle,
         #           'array_layout':'full', 'site':'Paranal',
