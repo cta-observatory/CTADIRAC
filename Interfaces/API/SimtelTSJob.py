@@ -67,19 +67,19 @@ class SimtelTSJob(Job):
 
         # step 2bis
         # arguments are nbFiles=0 (not used) and fileSize=100kB
-        eivStep = self.setExecutable('cta-prod3-verifysteps',
-                                  arguments='analysisinputs 5 100000',
-                                  logFile='Verify_SimtelInputs_Log.txt')
-        eivStep['Value']['name'] = 'Step%i_VerifySimtelInputs' % iStep
-        eivStep['Value']['descr_short'] = 'Verify Simtel Inputs'
-        iStep += 1
+        # eivStep = self.setExecutable('cta-prod3-verifysteps',
+        #                           arguments='analysisinputs 5 100000',
+        #                           logFile='Verify_SimtelInputs_Log.txt')
+        # eivStep['Value']['name'] = 'Step%i_VerifySimtelInputs' % iStep
+        # eivStep['Value']['descr_short'] = 'Verify Simtel Inputs'
+        # iStep += 1
 
         # ./dirac_simtel_zstd.sh ./ASTRI_MiniArray15_Paranal_ACDC_2018_06_12.cfg
         #                        TELESCOPE_THETA=20.0 TELESCOPE_PHI=0.0
         #                        > dirac_simtel_zstd.log 2>&1
         evStep = self.setExecutable('./dirac_simtel_zstd.sh',
                                     arguments = "%s  TELESCOPE_THETA=%s \
-                                    TELESCOPE_PHI= %s" %  #  --taskid %s" %
+                                    TELESCOPE_PHI=%s" %  #  --taskid %s" %
                                     (self.simtel_config_file, self.thetaP, self.phiP),
                                     logFile='Simtel_Log.txt')
         evStep['Value']['name'] = 'Step%i_Simtel' % iStep
@@ -127,8 +127,8 @@ class SimtelTSJob(Job):
 
         # step 6 -- to be removed -- debug only
         if debug:
-            lsStep = self.setExecutable('/bin/ls -alhtr;',
-                                        arguments = "/bin/ls -lahrt ./Data",
+            lsStep = self.setExecutable('/bin/ls -alhtr && /bin/ls -lahrt ./Data',
+                                        arguments = '',
                                         logFile = 'LS_End_Log.txt')
             lsStep['Value']['name']='Step%i_LS_End'%iStep
             lsStep['Value']['descr_short']='list files in working directory and in Data directory'
