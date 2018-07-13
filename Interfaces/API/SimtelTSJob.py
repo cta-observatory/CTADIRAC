@@ -28,7 +28,7 @@ class SimtelTSJob(Job):
         self.setCPUTime(cpuTime)
         # defaults
         self.setName('Simtel')
-        self.package='corsika_simtelarray'
+        self.package='corsika_simhessarray'
         self.program_category = 'tel_sim'
         self.version = '2018-06-12'
         self.configuration_id = 4
@@ -68,7 +68,7 @@ class SimtelTSJob(Job):
         # step 2bis
         # arguments are nbFiles=0 (not used) and fileSize=100kB
         eivStep = self.setExecutable('cta-prod3-verifysteps',
-                                  arguments='analysisinputs 2 100000',
+                                  arguments='analysisinputs 5 100000',
                                   logFile='Verify_SimtelInputs_Log.txt')
         eivStep['Value']['name'] = 'Step%i_VerifySimtelInputs' % iStep
         eivStep['Value']['descr_short'] = 'Verify Simtel Inputs'
@@ -127,8 +127,8 @@ class SimtelTSJob(Job):
 
         # step 6 -- to be removed -- debug only
         if debug:
-            lsStep = self.setExecutable('/bin/ls',
-                                        arguments = " -alhtr; /bin/ls -lahrt ./Data",
+            lsStep = self.setExecutable('/bin/ls -alhtr;',
+                                        arguments = "/bin/ls -lahrt ./Data",
                                         logFile = 'LS_End_Log.txt')
             lsStep['Value']['name']='Step%i_LS_End'%iStep
             lsStep['Value']['descr_short']='list files in working directory and in Data directory'
