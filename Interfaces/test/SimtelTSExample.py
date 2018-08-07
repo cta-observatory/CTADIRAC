@@ -73,7 +73,7 @@ def submit_WMS(job, infileList):
     """
     dirac = Dirac()
     job.setInputData(infileList)
-    job.setJobGroup('SimpleCtapipe-test')
+    job.setJobGroup('SimtelJob')
     res = dirac.submit(job)
     Script.gLogger.notice('Submission Result: ', res)
     return res
@@ -124,7 +124,7 @@ def run_simtel_ts(args=None):
     # output
     job.setOutputSandbox( ['*Log.txt'] )
     # /vo.cta.in2p3.fr/user/c/ciro.bigongiari/Miniarray15/Simtel
-    job.basepath = '/vo.cta.in2p3.fr/user/b/bregeon/Miniarray15'
+    job.base_path = '/vo.cta.in2p3.fr/user/b/bregeon/Miniarray15'
 
     # specific configuration
     if mode == 'WMS':

@@ -33,7 +33,7 @@ class SimtelTSJob(Job):
         self.version = '2018-06-12'
         self.configuration_id = 4
         self.output_data_level = 0
-        self.basepath = '/vo.cta.in2p3.fr/user/c/ciro.bigongiari/Miniarray15/Simtel'
+        self.base_path = '/vo.cta.in2p3.fr/user/c/ciro.bigongiari/Miniarray15/Simtel'
         self.fcc = FileCatalogClient()
         self.metadata = collections.OrderedDict()
         self.filemetadata = {}
@@ -43,12 +43,13 @@ class SimtelTSJob(Job):
         self.thetaP = 20.0
         self.phiP = 0.0
         self.particle = 'Proton'
-        self.output_path = os.path.join(self.basepath, self.particle, self.phiP)
+        self.output_path = os.path.join(self.base_path, self.particle, str(self.phiP))
+        self.se_list = ["FRASCATI-USER", "CNAF-USER"]
 
     def get_output_path(self):
         """ Recompute the output path where to upload data
         """
-        return os.path.join(self.basepath, self.particle, self.phiP)
+        return os.path.join(self.base_path, self.particle, str(self.phiP))
 
     def setupWorkflow(self, debug=False):
         """ Setup job workflow by defining the sequence of all executables
@@ -83,10 +84,15 @@ class SimtelTSJob(Job):
         iStep += 1
 
         # step 4 - running
+        # outputpattern = args[0]
+        # outputpath = args[1]
+        # SEList = json.loads( args[2] )
+        # simtel.log.tar simtel.zst.tar
         output_pattern = "*.simtel.zst.tar"
-        dmStep = self.setExecutable('./dirac_upload_output.py',
-                                    arguments = "%s %s" %
-                                    (self.get_output_path(), output_pattern),
+        dmStep = self.setExecutable('cta-user-managedata',
+                                    arguments = "%s %s \'%s\'" %
+                                    (self.get_output_path(), output_pattern,
+                                     self.se_list),
                                     logFile='Upload_output_Log.txt')
         evStep['Value']['name'] = 'DM_Step%i' % iStep
         evStep['Value']['descr_short'] = 'Upload output data'
