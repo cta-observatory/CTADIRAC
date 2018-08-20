@@ -118,12 +118,9 @@ def run_simtel_ts(args=None):
     # job.thetaP = 20.0
     # job.phiP = 0.0
 
-    # add the sequence of executables
-    job.setupWorkflow(debug=True)
-
     # output
     job.setOutputSandbox( ['*Log.txt'] )
-    # /vo.cta.in2p3.fr/user/c/ciro.bigongiari/Miniarray15/Simtel
+    # Customize this path to point to your user area
     job.base_path = '/vo.cta.in2p3.fr/user/b/bregeon/Miniarray15'
 
     # specific configuration
