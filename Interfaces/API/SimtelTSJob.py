@@ -44,7 +44,7 @@ class SimtelTSJob(Job):
         self.phiP = 0.0
         self.particle = 'Proton'
         self.output_path = os.path.join(self.base_path, self.particle, str(self.phiP))
-        self.se_list = ["FRASCATI-USER", "CNAF-USER"]
+        self.se_list = json.dumps(['FRASCATI-USER','CNAF-USER'])
 
     def get_output_path(self):
         """ Recompute the output path where to upload data
@@ -88,10 +88,10 @@ class SimtelTSJob(Job):
         # outputpath = args[1]
         # SEList = json.loads( args[2] )
         # simtel.log.tar simtel.zst.tar
-        output_pattern = "*.simtel.zst.tar"
-        dmStep = self.setExecutable('cta-user-managedata',
-                                    arguments = "%s %s \'%s\'" %
-                                    (self.get_output_path(), output_pattern,
+        output_pattern = '*.simtel.zst.tar'
+        dmStep = self.setExecutable('../CTADIRAC/Core/scripts/cta-user-managedata.py',
+                                    arguments = "'%s' %s '%s'" %                                    
+                                    (output_pattern, self.get_output_path(),
                                      self.se_list),
                                     logFile='Upload_output_Log.txt')
         evStep['Value']['name'] = 'DM_Step%i' % iStep
