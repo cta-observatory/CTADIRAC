@@ -1,7 +1,7 @@
 """ Simtel Script to create a Transformation with Corsika Input Data
 
     https://forge.in2p3.fr/issues/33932
-                        July 13th 2018 - J. Bregeon, C. Bigongiari
+                        July 13th 2018 - J. Bregeon, C. Bigongiari, L. Arrabito
 """
 
 import json
@@ -45,7 +45,7 @@ def read_lfns_from_file(file_path):
 def submit_trans(job, infileList, trans_name, group_size):
     """ Create a transformation executing the job workflow
     """
-    DIRAC.gLogger.notice('submit_trans : %s' % transName)
+    DIRAC.gLogger.notice('submit_trans : %s' % trans_name)
 
     # Initialize JOB_ID
     job.workflow.addParameter( Parameter( "JOB_ID", "000000", "string", "", "",
@@ -58,15 +58,17 @@ def submit_trans(job, infileList, trans_name, group_size):
     trans.setLongDescription( "Simtel tel_sim") # mandatory
     trans.setBody(job.workflow.toXML())
     trans.setGroupSize(group_size)
-    trans.addTransformation() # transformation is created here
+    res = trans.addTransformation() # transformation is created here
+    if not res['OK']:
+        return res
     trans.setStatus("Active")
     trans.setAgentType("Automatic")
     # add 10*group_size files to transformation (to have the first 10 jobs)
     trans_id = trans.getTransformationID()
     trans_client = TransformationClient()
-    trans_client.addFilesToTransformation(trans_id['Value'],
+    res = trans_client.addFilesToTransformation(trans_id['Value'],
                                           infileList[:10*group_size])
-    return trans
+    return res
 
 def submit_WMS(job, infileList):
     """ Submit the job locally or to the WMS
@@ -75,7 +77,8 @@ def submit_WMS(job, infileList):
     job.setInputData(infileList)
     job.setJobGroup('SimtelJob')
     res = dirac.submit(job)
-    Script.gLogger.notice('Submission Result: ', res)
+    if res['OK']:
+        Script.gLogger.info( 'Submission Result: ', res['Value'] )
     return res
 
 def run_simtel_ts(args=None):
@@ -109,8 +112,8 @@ def run_simtel_ts(args=None):
     ### Main Script ###
     # override for testing
     job.setName('Simtel')
-    ## add for testing
-    job.setType('EvnDisp3')
+    ## Allow job meshing with ByJobType plugin
+    job.setType('SimtelProcessing')
 
     # Defaults to override
     # job.version = '2018-06-12'
@@ -121,7 +124,7 @@ def run_simtel_ts(args=None):
     # output
     job.setOutputSandbox( ['*Log.txt'] )
     # Customize this path to point to your user area
-    job.base_path = '/vo.cta.in2p3.fr/user/b/bregeon/Miniarray15'
+    job.base_path = '/vo.cta.in2p3.fr/user/a/arrabito/Miniarray15'
 
     # specific configuration
     if mode == 'WMS':
@@ -131,8 +134,6 @@ def run_simtel_ts(args=None):
         job.setupWorkflow(debug=True)
         # subtmit to the WMS for debug
         job.setDestination('LCG.IN2P3-CC.fr')
-        # job.setDestination('LCG.DESY-ZEUTHEN.de')
-        # job.setDestination('LCG.GRIF.fr')
         res = submit_WMS(job, input_file_list[:group_size])
     elif mode == 'TS':
         job.ts_task_id = '@{JOB_ID}' # dynamic
