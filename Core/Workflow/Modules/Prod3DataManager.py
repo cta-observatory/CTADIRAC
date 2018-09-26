@@ -19,7 +19,7 @@ from DIRAC.Interfaces.API.Dirac import Dirac
 class Prod3DataManager(object) :
   """ Manage data and meta-data
   """
-        
+
   def __init__(self,catalogs=['DIRACFileCatalog']):
     """ Constructor
 
@@ -35,7 +35,7 @@ class Prod3DataManager(object) :
     """
     self.fc = FileCatalog( catalogs )
     self.fcc = FileCatalogClient()
-    
+
   def printCatalogConfig( self, catalogs ):
     """ Dumps catalog configuration
     """
@@ -157,6 +157,7 @@ class Prod3DataManager(object) :
       jobID = os.environ['JOBID']
       dirac = Dirac()
       res = dirac.getJobJDL( jobID )
+      TransformationID = '0000'
       if res['Value'].has_key( 'TransformationID' ):
         TransformationID = res['Value']['TransformationID']
 
@@ -180,7 +181,7 @@ class Prod3DataManager(object) :
       res = self.fcc.setMetadata( path, {'outputType':subdir} )
       if not res['OK']:
         return res
-    
+
     # MD for the Data directory - data_level and configuration_id
     path = os.path.join(Transformation_path, 'Data')
     res = self.fcc.setMetadata(path, {'data_level': md['data_level'],
@@ -188,7 +189,7 @@ class Prod3DataManager(object) :
                                       })
     if not res['OK']:
       return res
-    
+
     return DIRAC.S_OK( Transformation_path )
 
   def putAndRegister( self, lfn, localfile, filemetadata, DataType = 'SimtelProd' ):
@@ -272,5 +273,3 @@ class Prod3DataManager(object) :
       os.remove( localfile )
 
     return DIRAC.S_OK()
-
-    
