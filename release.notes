@@ -1,5 +1,5 @@
 [v1r49px]
-* JB : new job API Prod4CorsikaSSTJob
+* JB : new job API Prod4CorsikaSSTJob and prod4_corsika_sst_launcher script
 
 [v1r49p0]
 * JB : remove all the olds scripts
@@ -28,7 +28,7 @@
 
 [v1r48p0]
 * JB : new EvnDisp3FinalJob class and example scriptName
-       upgrade cta-analysis-managedata for that purpose 
+       upgrade cta-analysis-managedata for that purpose
 
 [v1r47p4]
 *LA
