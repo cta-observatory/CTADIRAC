@@ -146,7 +146,7 @@ class Prod4CorsikaSSTJob(Job):
         i_step += 1
 
         # Step 4 - verify size of corsika output
-        csv_step = self.setExecutable('cta-prod3-verify_steps',
+        csv_step = self.setExecutable('cta-prod3-verifysteps',
                                       arguments='generic %d %d %s' %
                                       (self.n_output_files, self.output_file_size,
                                        self.output_pattern),
@@ -171,8 +171,9 @@ class Prod4CorsikaSSTJob(Job):
         file_meta_data = {'runNumber': '%08d' % run_number_md}
         file_md_json = json.dumps(file_meta_data)
 
-        scripts = '../CTADIRAC/Core/scripts'
-        dm_step = self.setExecutable(scripts + '/cta-prod-managedata.py',
+        # scripts = '../CTADIRAC/Core/scripts'
+        # dm_step = self.setExecutable(scripts + '/cta-prod-managedata.py',
+        dm_step = self.setExecutable('python cta-prod-managedata.py',
                                      arguments="'%s' '%s' '%s' %s %s %s %s '%s' Data" %
                                      (md_json, md_field_json, file_md_json,
                                       self.base_path, self.output_pattern, self.package,
