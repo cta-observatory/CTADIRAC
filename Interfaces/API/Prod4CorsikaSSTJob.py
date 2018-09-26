@@ -172,7 +172,7 @@ class Prod4CorsikaSSTJob(Job):
         file_md_json = json.dumps(file_meta_data)
 
         scripts = '../CTADIRAC/Core/scripts'
-        dm_step = self.setExecutable(scripts + '/CTADIRAC/Core/scripts/cta-prod-managedata.py',
+        dm_step = self.setExecutable(scripts + '/cta-prod-managedata.py',
                                      arguments="'%s' '%s' '%s' %s %s %s %s '%s' Data" %
                                      (md_json, md_field_json, file_md_json,
                                       self.base_path, self.output_pattern, self.package,
