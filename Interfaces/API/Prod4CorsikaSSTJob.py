@@ -46,6 +46,7 @@ class Prod4CorsikaSSTJob(Job):
         self.output_file_size = 1000  # kb
         self.base_path = '/vo.cta.in2p3.fr/MC/PROD4/'
         self.catalogs = json.dumps(['DIRACFileCatalog', 'TSCatalog'])
+        self.metadata = collections.OrderedDict()
 
     def set_site(self, site):
         """ Set the site to simulate
@@ -91,20 +92,19 @@ class Prod4CorsikaSSTJob(Job):
         """
         # The order of the metadata dictionary is important,
         # since it's used to build the directory structure
-        metadata = collections.OrderedDict()
-        metadata['array_layout'] = 'Baseline-SST-only'
-        metadata['site'] = self.cta_site
-        metadata['particle'] = self.particle
+        self.metadata['array_layout'] = 'Baseline-SST-only'
+        self.metadata['site'] = self.cta_site
+        self.metadata['particle'] = self.particle
         # air shower simulation means North=0 and South=180
         if self.pointing_dir == 'North':
-            metadata['phiP'] = 0
+            self.metadata['phiP'] = 0
         if self.pointing_dir == 'South':
-            metadata['phiP'] = 180
-        metadata['thetaP'] = float(self.zenith_angle)
+            self.metadata['phiP'] = 180
+        self.metadata['thetaP'] = float(self.zenith_angle)
         self.metadata[self.program_category + '_prog'] = self.prog_name
         self.metadata[self.program_category + '_prog_version'] = self.version
-        metadata['data_level'] = self.output_data_level
-        metadata['configuration_id'] = self.configuration_id
+        self.metadata['data_level'] = self.output_data_level
+        self.metadata['configuration_id'] = self.configuration_id
 
     def setupWorkflow(self, debug=False):
         """ Setup job workflow by defining the sequence of all executables
