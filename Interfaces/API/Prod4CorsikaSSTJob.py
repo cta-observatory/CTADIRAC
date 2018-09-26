@@ -26,8 +26,8 @@ class Prod4CorsikaSSTJob(Job):
         cpuTime -- max cpu time allowed for the job
         """
         Job.__init__(self)
-        self.set_cpu_time(cpu_time)
-        self.set_name('Prod4_MC_Generation')
+        self.setCPUTime(cpu_time)
+        self.setName('Prod4_MC_Generation')
         self.package = 'corsika_simhessarray'
         self.program_category = 'airshower_sim'
         self.prog_name = 'corsika'
