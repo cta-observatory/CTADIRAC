@@ -171,11 +171,12 @@ class Prod4CorsikaSSTJob(Job):
         file_meta_data = {'runNumber': '%08d' % run_number_md}
         file_md_json = json.dumps(file_meta_data)
 
-        # scripts = '../CTADIRAC/Core/scripts'
-        dm_step = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-prod4-managedata.py',
-                                     arguments="'%s' '%s' '%s' %s %s %s '%s'" %
+        scripts = '../CTADIRAC/Core/scripts'
+        dmStep = self.setExecutable(scripts + '/CTADIRAC/Core/scripts/cta-prod-managedata.py',
+                                     arguments="'%s' '%s' '%s' %s %s %s %s '%s' Data" %
                                      (md_json, md_field_json, file_md_json,
-                                      self.output_pattern, self.base_path, self.catalogs),
+                                      self.base_path, self.output_pattern, self.package,
+                                      self.program_category, self.catalogs),
                                      logFile='DataManagement_Log.txt')
         dm_step['Value']['name'] = 'Step%s_DataManagement' % i_step
         dm_step['Value']['descr_short'] = 'Save files to SE and register them in DFC'
