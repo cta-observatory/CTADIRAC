@@ -27,7 +27,7 @@ Script.parseCommandLine()
 import DIRAC
 from DIRAC.TransformationSystem.Client.TransformationClient import TransformationClient
 from DIRAC.TransformationSystem.Client.Transformation import Transformation
-from CTADIRAC.Interface.API.Prod4CorsikaSSTJob import Prod4CorsikaSSTJob
+from CTADIRAC.Interfaces.API.Prod4CorsikaSSTJob import Prod4CorsikaSSTJob
 from DIRAC.Interfaces.API.Dirac import Dirac
 from DIRAC.Core.Workflow.Parameter import Parameter
 from DIRAC.Resources.Catalog.FileCatalogClient import FileCatalogClient
