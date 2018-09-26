@@ -112,11 +112,6 @@ class Prod4CorsikaSSTJob(Job):
         """
         # Step 1 - debug only
         i_step = 1
-        if debug:
-            ls_step = self.setExecutable('/bin/ls -alhtr', logFile='LS_Init_Log.txt')
-            ls_step['Value']['name'] = 'Step%i_LS_Init' % i_step
-            ls_step['Value']['descr_short'] = 'list files in working directory'
-            i_step += 1
 
         # Step 2 - setup software
         sw_step = self.setExecutable('cta-prod3-setupsw',
@@ -125,6 +120,12 @@ class Prod4CorsikaSSTJob(Job):
         sw_step['Value']['name'] = 'Step%i_SetupSoftware' % i_step
         sw_step['Value']['descr_short'] = 'Setup software'
         i_step += 1
+
+        if debug:
+            ls_step = self.setExecutable('/bin/ls -alhtr', logFile='LS_Init_Log.txt')
+            ls_step['Value']['name'] = 'Step%i_LS_Init' % i_step
+            ls_step['Value']['descr_short'] = 'list files in working directory'
+            i_step += 1
 
         # Step 3 - run corsika
         if self.cta_site == 'Paranal':
@@ -173,7 +174,7 @@ class Prod4CorsikaSSTJob(Job):
 
         # scripts = '../CTADIRAC/Core/scripts'
         # dm_step = self.setExecutable(scripts + '/cta-prod-managedata.py',
-        dm_step = self.setExecutable('python cta-prod-managedata.py',
+        dm_step = self.setExecutable('./cta-prod-managedata.py',
                                      arguments="'%s' '%s' '%s' %s %s %s %s '%s' Data" %
                                      (md_json, md_field_json, file_md_json,
                                       self.base_path, self.output_pattern, self.package,
