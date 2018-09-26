@@ -1,6 +1,8 @@
 [v1r49px]
 * JB : new job API Prod4CorsikaSSTJob and prod4_corsika_sst_launcher script
        new Core/Utilities/tool_box.py module
+       new Core/scripts/cta-prod-managedata.py more generic than prod3 versions
+       change Prod3DataManager define TransformationID to 0000 by default for testing
 
 [v1r49p0]
 * JB : remove all the olds scripts
