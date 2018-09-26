@@ -119,7 +119,7 @@ class Prod4CorsikaSSTJob(Job):
             i_step += 1
 
         # Step 2 - setup software
-        sw_step = self.setExecutable('$DIRACROOT/scripts/cta-prod3-setupsw',
+        sw_step = self.setExecutable('cta-prod3-setupsw',
                                      arguments='%s %s' % (self.package, self.version),
                                      logFile='SetupSoftware_Log.txt')
         sw_step['Value']['name'] = 'Step%i_SetupSoftware' % i_step
@@ -146,7 +146,7 @@ class Prod4CorsikaSSTJob(Job):
         i_step += 1
 
         # Step 4 - verify size of corsika output
-        csv_step = self.setExecutable('$DIRACROOT/scripts/cta-prod3-verify_steps',
+        csv_step = self.setExecutable('cta-prod3-verify_steps',
                                       arguments='generic %d %d %s' %
                                       (self.n_output_files, self.output_file_size,
                                        self.output_pattern),
