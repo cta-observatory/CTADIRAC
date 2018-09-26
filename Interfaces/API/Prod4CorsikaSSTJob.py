@@ -106,7 +106,7 @@ class Prod4CorsikaSSTJob(Job):
         metadata['data_level'] = self.output_data_level
         metadata['configuration_id'] = self.configuration_id
 
-    def setup_work_flow(self, debug=False):
+    def setupWorkflow(self, debug=False):
         """ Setup job workflow by defining the sequence of all executables
             All parameters shall have been defined before that method is called.
         """
