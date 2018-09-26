@@ -55,9 +55,9 @@ class Prod4CorsikaSSTJob(Job):
         """
         if site in ['Paranal', 'LaPalma']:
             DIRAC.gLogger.info('Set Corsika site to: %s' % site)
-            self.site = site
+            self.cta_site = site
         else:
-            DIRAC.gLogger.error('Site is unknown: %s' % particle)
+            DIRAC.gLogger.error('Site is unknown: %s' % site)
             DIRAC.exit(-1)
 
     def set_particle(self, particle):
@@ -172,7 +172,7 @@ class Prod4CorsikaSSTJob(Job):
         file_md_json = json.dumps(file_meta_data)
 
         scripts = '../CTADIRAC/Core/scripts'
-        dmStep = self.setExecutable(scripts + '/CTADIRAC/Core/scripts/cta-prod-managedata.py',
+        dm_step = self.setExecutable(scripts + '/CTADIRAC/Core/scripts/cta-prod-managedata.py',
                                      arguments="'%s' '%s' '%s' %s %s %s %s '%s' Data" %
                                      (md_json, md_field_json, file_md_json,
                                       self.base_path, self.output_pattern, self.package,
@@ -185,14 +185,14 @@ class Prod4CorsikaSSTJob(Job):
         # Step 6 - debug only
         if debug:
             ls_step = self.setExecutable('/bin/ls -alhtr', logFile='LS_End_Log.txt')
-            ls_step['Value']['name'] = 'Step%s_LSHOME_End' % i _step
+            ls_step['Value']['name'] = 'Step%s_LSHOME_End' % i_step
             ls_step['Value']['descr_short'] = 'list files in Home directory'
             i_step += 1
 
             ls_step2 = self.setExecutable('/bin/ls -alhtr Data/corsika/run*',
                                           logFile='LS_End_Log.txt')
-            ls_step['Value']['name'] = 'Step%s_LSDATA_End' % i_step
-            ls_step['Value']['descr_short'] = 'list files in Corsika directory'
+            ls_step2['Value']['name'] = 'Step%s_LSDATA_End' % i_step
+            ls_step2['Value']['descr_short'] = 'list files in Corsika directory'
             i_step += 1
 
         # Number of showers is passed via an environment variable
