@@ -1,5 +1,6 @@
 [v1r49px]
 * JB : new job API Prod4CorsikaSSTJob and prod4_corsika_sst_launcher script
+       new Core/Utilities/tool_box.py module
 
 [v1r49p0]
 * JB : remove all the olds scripts
