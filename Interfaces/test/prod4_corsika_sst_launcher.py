@@ -79,7 +79,7 @@ def run_corsika_sst(args):
     mode = args[0]
 
     # job setup
-    job = Prod4CorsikaSSTJob(cpuTime=43200)  # to be adjusted!!
+    job = Prod4CorsikaSSTJob(cpu_time=43200)  # to be adjusted!!
     # override for testing
     job.setName('Corsika')
     # Allow job meshing with ByJobType plugin
