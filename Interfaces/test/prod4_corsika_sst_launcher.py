@@ -64,7 +64,7 @@ def submit_wms(job):
     job.setJobGroup('Prod4CorsikaSSTJob')
     result = dirac.submit(job)
     if result['OK']:
-        Script.gLogger.info('Submission Result: ', result['Value'])
+        Script.gLogger.notice('Submitted job: ', result['Value'])
     return result
 
 def run_corsika_sst(args):
