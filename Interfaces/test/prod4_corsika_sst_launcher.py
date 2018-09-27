@@ -98,7 +98,7 @@ def run_corsika_sst(args):
     if mode == 'WMS':
         job.base_path = '/vo.cta.in2p3.fr/user/b/bregeon'
         job.start_run_number = '100'
-        job.run_number = '23'
+        job.run_number = '25'
         job.setupWorkflow(debug=True)
         # subtmit to the WMS for debug
         job.setDestination('LCG.IN2P3-CC.fr')
@@ -106,7 +106,7 @@ def run_corsika_sst(args):
     elif mode == 'TS':
         # job.start_run_number = '0'
         job.run_number = '@{JOB_ID}'  # dynamic
-        job.setupWorkflow(debug=True)
+        job.setupWorkflow(debug=False)
         tag = '_test1'
         trans_name = 'Prod4_CorsikaSST_%s_%s_%s_%s%s' %\
                     (job.cta_site, job.particle, job.pointing_dir, job.zenith_angle, tag)
