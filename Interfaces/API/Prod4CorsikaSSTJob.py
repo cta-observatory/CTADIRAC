@@ -19,7 +19,7 @@ class Prod4CorsikaSSTJob(Job):
       takes care of running corsika for the SST only template
     """
 
-    def __init__(self, cpu_time=432000):
+    def __init__(self, cpu_time=129600):
         """ Constructor
 
         Keyword arguments:
@@ -33,7 +33,7 @@ class Prod4CorsikaSSTJob(Job):
         self.prog_name = 'corsika'
         self.version = '2018-09-19'
         self.configuration_id = 4
-        self.output_data_level = 0
+        self.output_data_level = -1
         self.start_run_number = '0'
         self.run_number = '10'
         self.n_shower = 100
@@ -172,9 +172,8 @@ class Prod4CorsikaSSTJob(Job):
         file_meta_data = {'runNumber': '%08d' % run_number_md}
         file_md_json = json.dumps(file_meta_data)
 
-        # scripts = '../CTADIRAC/Core/scripts'
-        # dm_step = self.setExecutable(scripts + '/cta-prod-managedata.py',
-        dm_step = self.setExecutable('./cta-prod-managedata.py',
+        scripts = '../CTADIRAC/Core/scripts/'
+        dm_step = self.setExecutable(scripts + 'cta-prod-managedata.py',
                                      arguments="'%s' '%s' '%s' %s %s %s %s '%s' Data" %
                                      (md_json, md_field_json, file_md_json,
                                       self.base_path, self.output_pattern, self.package,
@@ -189,12 +188,6 @@ class Prod4CorsikaSSTJob(Job):
             ls_step = self.setExecutable('/bin/ls -alhtr', logFile='LS_End_Log.txt')
             ls_step['Value']['name'] = 'Step%s_LSHOME_End' % i_step
             ls_step['Value']['descr_short'] = 'list files in Home directory'
-            i_step += 1
-
-            ls_step2 = self.setExecutable('/bin/ls -alhtr Data/corsika/run*',
-                                          logFile='LS_End_Log.txt')
-            ls_step2['Value']['name'] = 'Step%s_LSDATA_End' % i_step
-            ls_step2['Value']['descr_short'] = 'list files in Corsika directory'
             i_step += 1
 
         # Number of showers is passed via an environment variable
