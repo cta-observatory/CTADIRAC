@@ -148,7 +148,7 @@ class Prod3SoftwareManager(object) :
     for area in areaList:
       package_dir = os.path.join( area, arch, self.SOFT_CATEGORY_DICT[package], package, version )
       if os.path.isdir( package_dir ):
-        DIRAC.gLogger.notice( 'Found package %s version %s at:\n%s' % ( package, version, area ) )
+        DIRAC.gLogger.notice( 'Found package %s version %s at:\n%s' % ( package, version, package_dir ) )
         return DIRAC.S_OK( package_dir )
 
     return DIRAC.S_ERROR( 'Could not find package %s version %s in any location' % ( package, version ) )
