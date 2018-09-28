@@ -167,15 +167,14 @@ class Prod4CorsikaSSTJob(Job):
                            self.program_category + '_prog_version': 'VARCHAR(128)',
                            'data_level': 'int', 'configuration_id': 'int'}
         md_field_json = json.dumps(meta_data_field)
-        
-        file_meta_data = {'runNumber': '%08d' % self.run_number}
+
+        file_meta_data = {}
         file_md_json = json.dumps(file_meta_data)
 
         scripts = '../CTADIRAC/Core/scripts/'
         dm_step = self.setExecutable(scripts + 'cta-prod-managedata.py',
-                                     arguments="'%s' '%s' '%s' %s %s %s %s %s '%s' Data" %
+                                     arguments="'%s' '%s' '%s' %s %s %s %s '%s' Data" %
                                      (md_json, md_field_json, file_md_json,
-                                      self.start_run_number,
                                       self.base_path, self.output_pattern, self.package,
                                       self.program_category, self.catalogs),
                                      logFile='DataManagement_Log.txt')
