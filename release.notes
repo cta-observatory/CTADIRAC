@@ -1,5 +1,7 @@
 [v1r49p2]
 * JB : working version of Prod4CorsikaSSTJob and prod4_corsika_sst_launcher
+       cta-prod-managedata.py always get run number from filename
+       run_number_from_filename moved in tool_box
 
 [v1r49p1]
 * JB : new job API Prod4CorsikaSSTJob and prod4_corsika_sst_launcher script
