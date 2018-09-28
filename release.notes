@@ -1,3 +1,6 @@
+[v1r49p3]
+* JB : fix import in cta-prod-managedata.py 
+
 [v1r49p2]
 * JB : working version of Prod4CorsikaSSTJob and prod4_corsika_sst_launcher
        cta-prod-managedata.py always get run number from filename
