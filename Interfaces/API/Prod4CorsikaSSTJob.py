@@ -12,13 +12,13 @@ import collections
 # DIRAC imports
 import DIRAC
 from DIRAC.Interfaces.API.Job import Job
+from CTADIRAC.Core.Utilities.tool_box import DATA_LEVEL_METADATA_ID
 
 
 class Prod4CorsikaSSTJob(Job):
     """ Job extension class for Prod4 MC simulations,
       takes care of running corsika for the SST only template
     """
-
     def __init__(self, cpu_time=129600):
         """ Constructor
 
@@ -28,13 +28,13 @@ class Prod4CorsikaSSTJob(Job):
         Job.__init__(self)
         self.setCPUTime(cpu_time)
         self.setName('Prod4_MC_Generation')
-        self.setType('MCSimulation')
+        # self.setType('MCSimulation')
         self.package = 'corsika_simhessarray'
         self.program_category = 'airshower_sim'
         self.prog_name = 'corsika'
         self.version = '2018-09-19'
         self.configuration_id = 4
-        self.output_data_level = -1
+        self.output_data_level = DATA_LEVEL_METADATA_ID['MC0']
         self.start_run_number = '0'
         self.run_number = '10'
         self.n_shower = 100
