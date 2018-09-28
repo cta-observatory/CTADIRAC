@@ -28,6 +28,7 @@ class Prod4CorsikaSSTJob(Job):
         Job.__init__(self)
         self.setCPUTime(cpu_time)
         self.setName('Prod4_MC_Generation')
+        self.setType('MCSimulation')
         self.package = 'corsika_simhessarray'
         self.program_category = 'airshower_sim'
         self.prog_name = 'corsika'
