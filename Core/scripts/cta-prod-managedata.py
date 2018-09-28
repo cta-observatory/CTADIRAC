@@ -19,26 +19,8 @@ from DIRAC.Core.Base import Script
 Script.parseCommandLine()
 
 # Specific DIRAC imports
+from tool_box import run_number_from_filename
 from CTADIRAC.Core.Workflow.Modules.Prod3DataManager import Prod3DataManager
-
-
-def get_run_number(filename, package):
-    """ try to get a run number from the file name
-    """
-    if filename[-9:] == '.logs.tgz':
-        run_number = int(filename.split('/')[-1].split('_')[-1].split('.')[0])
-    elif package in ['chimp', 'mars', 'corsika_simhessarray']:
-        run_number = int(filename.split('run')[1].split('___cta')[0])
-    elif package == 'evndisplay':
-        if filename[-8:] in ['DL1.root', 'DL2.root']:
-            run_number = int(filename.split('run')[1].split('___cta')[0])
-        elif filename[-10:] in ['DL1.tar.gz', 'DL2.tar.gz']:
-            run_number = int(filename.split('run')[1].split('___cta')[0])
-        else:
-            run_number = int(filename.split('-')[0])  # old default
-    elif package == 'image_extractor':
-        run_number = int(filename.split('srun')[1].split('-')[0])
-    return str(run_number)
 
 
 def put_and_register(args):
@@ -50,13 +32,12 @@ def put_and_register(args):
     metadata = args[0]
     metadata_fields = args[1]
     file_metadata = args[2]
-    start_run_number = args[3]
-    base_path = args[4]
-    output_pattern = args[5]
-    package = args[6]
-    program_category = args[7]
-    catalogs = args[8]
-    output_type = args[9]
+    base_path = args[3]
+    output_pattern = args[4]
+    package = args[5]
+    program_category = args[6]
+    catalogs = args[7]
+    output_type = args[8]
 
     # Load catalogs
     catalogs_json = json.loads(catalogs)
@@ -78,15 +59,9 @@ def put_and_register(args):
     for localfile in glob.glob(output_pattern):
         file_name = os.path.basename(localfile)
         # Check run number, assign one as file metadata if needed
-        # or add start_run_number
         fmd_dict = json.loads(file_metadata)
-        if not fmd_dict.has_key('runNumber'):
-            run_number = get_run_number(file_name, package)
-            fmd_dict['runNumber'] = '%08d' % run_number
-        else:
-            run_number = int(fmd_dict['runNumber'])+int(start_run_number)
-            fmd_dict['runNumber'] = '%08d' % run_number
-
+        run_number = run_number_from_filename(file_name, package)
+        fmd_dict['runNumber'] = '%08d' % int(run_number)
         # get the output file path
         run_path = prod3dm._getRunPath(fmd_dict)
         lfn = os.path.join(path, output_type, run_path, file_name)
