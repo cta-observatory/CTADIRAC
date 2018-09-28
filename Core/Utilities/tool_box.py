@@ -5,6 +5,9 @@
 
 import os
 
+# Data level meta data id
+DATA_LEVEL_METADATA_ID = {'MC0': -3,  'R1': -2, 'R0': -1,
+                 'DL0': 0, 'DL1': 1, 'DL2': 2, 'DL3': 3, 'DL4': 4, 'DL5': 5}
 
 def read_lfns_from_file(file_path):
     """ Read a simple list of LFNs from an ASCII files,
