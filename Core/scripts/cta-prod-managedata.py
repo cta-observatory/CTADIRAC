@@ -19,7 +19,7 @@ from DIRAC.Core.Base import Script
 Script.parseCommandLine()
 
 # Specific DIRAC imports
-from tool_box import run_number_from_filename
+from CTADIRAC.Core.Utilities.tool_box import run_number_from_filename
 from CTADIRAC.Core.Workflow.Modules.Prod3DataManager import Prod3DataManager
 
 
