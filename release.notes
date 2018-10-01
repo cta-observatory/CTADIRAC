@@ -1,5 +1,9 @@
-[v1r49px]
+[v1r49p4]
 * JB : set job Type after setupWorkflow in prod4_corsika_sst_launcher
+       Prod4CorsikaSSTJob upload corsika log files
+       tool_box:run_number_from_filename handle corsika log files
+       cta-prod-managedata set default run_number to -9999
+       
 
 [v1r49p3]
 * JB : fix import in cta-prod-managedata.py
