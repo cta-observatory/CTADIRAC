@@ -1,5 +1,5 @@
 [v1r49px]
-* JB : set default job Type in Prod4CorsikaSSTJob
+* JB : set job Type after setupWorkflow in prod4_corsika_sst_launcher
 
 [v1r49p3]
 * JB : fix import in cta-prod-managedata.py
