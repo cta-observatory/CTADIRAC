@@ -60,7 +60,11 @@ def put_and_register(args):
         file_name = os.path.basename(localfile)
         # Check run number, assign one as file metadata if needed
         fmd_dict = json.loads(file_metadata)
-        run_number = run_number_from_filename(file_name, package)
+        try:
+            run_number = run_number_from_filename(file_name, package)
+        except:
+            run_number = -9999
+            DIRAC.gLogger.warning('Could not get a correct run number, assigning -9999')
         fmd_dict['runNumber'] = '%08d' % int(run_number)
         # get the output file path
         run_path = prod3dm._getRunPath(fmd_dict)
