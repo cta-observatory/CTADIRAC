@@ -25,12 +25,10 @@ Script.setUsageMessage('\n'.join([__doc__.split('\n')[1],
 Script.parseCommandLine()
 
 import DIRAC
-from DIRAC.TransformationSystem.Client.TransformationClient import TransformationClient
 from DIRAC.TransformationSystem.Client.Transformation import Transformation
 from CTADIRAC.Interfaces.API.Prod4CorsikaSSTJob import Prod4CorsikaSSTJob
-from DIRAC.Interfaces.API.Dirac import Dirac
 from DIRAC.Core.Workflow.Parameter import Parameter
-from DIRAC.Resources.Catalog.FileCatalogClient import FileCatalogClient
+from DIRAC.Interfaces.API.Dirac import Dirac
 
 
 def submit_trans(job, trans_name):
@@ -79,9 +77,9 @@ def run_corsika_sst(args):
     mode = args[0]
 
     # job setup
-    job = Prod4CorsikaSSTJob(cpu_time=43200)  # to be adjusted!!
+    job = Prod4CorsikaSSTJob()  # to be adjusted!!
     # override for testing
-    job.setName('Corsika')
+    job.setName('Prod4_Corsika')
     # parameters from command line
     job.set_site(args[1])
     job.set_particle(args[2])
@@ -106,7 +104,8 @@ def run_corsika_sst(args):
         job.base_path = '/vo.cta.in2p3.fr/MC/PRODTest/'
         job.run_number = '@{JOB_ID}'  # dynamic
         job.setupWorkflow(debug=False)
-        tag = '_test5'
+        job.setType('MCSimulation')    
+        tag = '_test9_MCSimPostWorkflow_5k'
         trans_name = 'MC_Prod4_CorsikaSST_%s_%s_%s_%s%s' %\
                     (job.cta_site, job.particle, job.pointing_dir, job.zenith_angle, tag)
         result = submit_trans(job, trans_name)
