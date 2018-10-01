@@ -34,6 +34,8 @@ def run_number_from_filename(filename, package):
     elif package in ['corsika_simhessarray']:
         if filename[-12:] in ['.corsika.zst']:
             run_number = int(os.path.basename(filename).split('_')[0].strip('run'))
+        elif os.path.splitext(filename)[1] in ['.log']:
+            run_number = int(os.path.basename(filename).strip('run.log'))
         else:
             run_number = int(filename.split('run')[1].split('___cta')[0])
     elif package == 'evndisplay':

@@ -28,7 +28,7 @@ class Prod4CorsikaSSTJob(Job):
         Job.__init__(self)
         self.setCPUTime(cpu_time)
         self.setName('Prod4_MC_Generation')
-        # self.setType('MCSimulation')
+        self.setType('MCSimulation')
         self.package = 'corsika_simhessarray'
         self.program_category = 'airshower_sim'
         self.prog_name = 'corsika'
@@ -169,6 +169,7 @@ class Prod4CorsikaSSTJob(Job):
                            'data_level': 'int', 'configuration_id': 'int'}
         md_field_json = json.dumps(meta_data_field)
 
+        # Upload and register data
         file_meta_data = {}
         file_md_json = json.dumps(file_meta_data)
 
@@ -180,7 +181,22 @@ class Prod4CorsikaSSTJob(Job):
                                       self.program_category, self.catalogs),
                                      logFile='DataManagement_Log.txt')
         dm_step['Value']['name'] = 'Step%s_DataManagement' % i_step
-        dm_step['Value']['descr_short'] = 'Save files to SE and register them in DFC'
+        dm_step['Value']['descr_short'] = 'Save data files to SE and register them in DFC'
+        i_step += 1
+
+        # Upload and register log file
+        file_meta_data = {}
+        file_md_json = json.dumps(file_meta_data)
+        log_file_pattern = 'Data/corsika/run*/run*.log'
+        scripts = '../CTADIRAC/Core/scripts/'
+        log_step = self.setExecutable(scripts + 'cta-prod-managedata.py',
+                                      arguments="'%s' '%s' '%s' %s %s %s %s '%s' Log" %
+                                      (md_json, md_field_json, file_md_json,
+                                       self.base_path, log_file_pattern, self.package,
+                                       self.program_category, self.catalogs),
+                                      logFile='LogManagement_Log.txt')
+        log_step['Value']['name'] = 'Step%s_LogManagement' % i_step
+        log_step['Value']['descr_short'] = 'Save log to SE and register them in DFC'
         i_step += 1
 
         # Step 6 - debug only
