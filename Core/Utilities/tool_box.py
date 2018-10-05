@@ -33,6 +33,7 @@ def run_number_from_filename(filename, package):
         run_number = int(filename.split('run')[1].split('___cta')[0])
     elif package in ['corsika_simhessarray']:
         if filename[-12:] in ['.corsika.zst']:
+	    # int(re.findall(r'run\d+_', os.path.basename(filename))[0].strip('run_'))
             run_number = int(os.path.basename(filename).split('_')[0].strip('run'))
         elif os.path.splitext(filename)[1] in ['.log']:
             run_number = int(os.path.basename(filename).strip('run.log'))
