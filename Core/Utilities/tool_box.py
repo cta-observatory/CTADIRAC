@@ -5,6 +5,10 @@
 
 import os
 
+import DIRAC
+from DIRAC.Resources.Catalog.FileCatalogClient import FileCatalogClient
+from DIRAC.Core.Utilities.ReturnValues import returnSingleResult
+
 # Data level meta data id
 DATA_LEVEL_METADATA_ID = {'MC0': -3,  'R1': -2, 'R0': -1,
                  'DL0': 0, 'DL1': 1, 'DL2': 2, 'DL3': 3, 'DL4': 4, 'DL5': 5}
@@ -49,3 +53,34 @@ def run_number_from_filename(filename, package):
     elif package == 'image_extractor':
         run_number = int(filename.split('srun')[1].split('-')[0])
     return run_number
+
+def check_dataset_query(dataset_name):
+    """ print dfind command for a given dataset
+    """
+    md_dict = get_dataset_MQ(dataset_name)
+    return debug_query(md_dict)
+
+def debug_query(MDdict):
+    """ just unwrap a meta data dictionnary into a dfind command
+    """
+    msg='dfind /vo.cta.in2p3.fr/MC/'
+    for key,val in MDdict.items():
+        try:
+            val = val.values()[0]
+        except:
+            pass
+        msg+=' %s=%s' % (key, val)
+    return msg
+
+def get_dataset_MQ(dataset_name):
+    """ Return the Meta Query associated with a given dataset
+    """
+    fc = FileCatalogClient()
+    result = returnSingleResult(fc.getDatasetParameters(dataset_name))
+    if not result['OK']:
+        DIRAC.gLogger.error("Failed to retrieved dataset:",
+                            result['Message'])
+        DIRAC.exit(-1)
+    else:
+        DIRAC.gLogger.info("Successfully retrieved dataset: ", dataset_name)
+    return result['Value']['MetaQuery']
