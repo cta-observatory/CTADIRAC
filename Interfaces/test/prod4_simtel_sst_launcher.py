@@ -99,6 +99,12 @@ def run_simtel_sst(args):
     if mode == 'WMS':
         job.base_path = '/vo.cta.in2p3.fr/user/b/bregeon'
         job.ts_task_id = '123'
+        output_meta_data = {'array_layout': 'Baseline-SST-only', 'site': 'Paranal',
+                           'particle': 'proton', 'phiP': 0.0, 'thetaP': 20.0,
+                           job.program_category + '_prog': 'simtel',
+                           job.program_category + '_prog_version': job.version,
+                           'data_level': 0, 'configuration_id': 4}
+        job.set_meta_data(output_meta_data)
         job.setupWorkflow(debug=True)
         # subtmit to the WMS for debug
         job.setDestination('LCG.IN2P3-CC.fr')
