@@ -14,6 +14,8 @@ import os, json, collections
 import DIRAC
 from DIRAC.Interfaces.API.Job import Job
 from DIRAC.Resources.Catalog.FileCatalogClient import FileCatalogClient
+from CTADIRAC.Core.Utilities.tool_box import DATA_LEVEL_METADATA_ID
+
 
 class Prod4SimtelSSTJob(Job):
     """ Job extension class for Simtel Analysis
@@ -33,7 +35,7 @@ class Prod4SimtelSSTJob(Job):
         self.program_category = 'tel_sim'
         self.version = '2018-09-19'
         self.configuration_id = 4
-        self.output_data_level = 0
+        self.output_data_level = DATA_LEVEL_METADATA_ID['DL0']
         self.N_output_files = 4
         self.base_path = '/vo.cta.in2p3.fr/MC/PROD4/'
         self.fcc = FileCatalogClient()
@@ -98,7 +100,7 @@ class Prod4SimtelSSTJob(Job):
         i_step += 1
 
         # step 4 verify merged data
-        mgvStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-verifysteps', \
+        mgvStep = self.setExecutable( 'cta-prod3-verifysteps', \
                                   arguments = "generic %0d 1000 './*_data.tar'"%\
                                               (self.N_output_files),\
                                   logFile='Verify_Simtel_Log.txt')
@@ -149,7 +151,7 @@ class Prod4SimtelSSTJob(Job):
 
         # step 5 - debug only
         if debug:
-            lsStep=self.setExecutable('/bin/ls -alhtr Data/sim_telarray/*/*/*',logFile='LS_End_Log.txt')
+            lsStep=self.setExecutable('/bin/ls -alhtr',logFile='LS_End_Log.txt')
             lsStep['Value']['name']='Step%i_LS_End'%i_step
             lsStep['Value']['descr_short']='list files in working directory and sub-directory'
             i_step += 1
