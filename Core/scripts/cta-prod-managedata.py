@@ -64,7 +64,7 @@ def put_and_register(args):
             run_number = run_number_from_filename(file_name, package)
         except:
             run_number = -9999
-            DIRAC.gLogger.warning('Could not get a correct run number, assigning -9999')
+            DIRAC.gLogger.notice('Could not get a correct run number, assigning -9999')
         fmd_dict['runNumber'] = '%08d' % int(run_number)
         # get the output file path
         run_path = prod3dm._getRunPath(fmd_dict)
