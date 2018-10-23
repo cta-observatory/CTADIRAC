@@ -134,7 +134,7 @@ class Prod4SimtelSSTJob(Job):
                                          logFile='DataManagement_Log_%s.txt' % tel_config)
             i_step += 1
 
-        # Upload and register log file
+        # Upload and register log file (contains histograms)
         file_meta_data = {}
         file_md_json = json.dumps(file_meta_data)
         log_file_pattern = './*_log.tar'
