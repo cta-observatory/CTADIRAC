@@ -1,7 +1,10 @@
-[v1r49px]
+[v1r49p5]
 * JB : add MQ and dataset function to tool_box
        new Job wrapper Prod4SimtelSSTJob
-           and launcher prod4_simtel_sst_launcher.py to run simtel on PROD4 SST showers 
+           and launcher prod4_simtel_sst_launcher.py to run simtel on PROD4 SST showers
+       add simtel tar file to run_number_from_filename in tool_box
+       fix logger in cta-prod-managedata
+       working version of simtel processing
 
 [v1r49p4]
 * JB : set job Type after setupWorkflow in prod4_corsika_sst_launcher
