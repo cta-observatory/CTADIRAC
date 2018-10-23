@@ -1,3 +1,6 @@
+[v1r49p6]
+* JB : bug fix tool_box import re
+
 [v1r49p5]
 * JB : add MQ and dataset function to tool_box
        new Job wrapper Prod4SimtelSSTJob
