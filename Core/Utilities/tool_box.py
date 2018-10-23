@@ -39,6 +39,8 @@ def run_number_from_filename(filename, package):
         if filename[-12:] in ['.corsika.zst']:
 	    # int(re.findall(r'run\d+_', os.path.basename(filename))[0].strip('run_'))
             run_number = int(os.path.basename(filename).split('_')[0].strip('run'))
+        elif filename.find('tid')>0:
+            run_number = int(re.findall(r'tid\d+', os.path.basename(filename))[0].strip('tid'))
         elif os.path.splitext(filename)[1] in ['.log']:
             run_number = int(os.path.basename(filename).strip('run.log'))
         else:
