@@ -60,10 +60,14 @@ def submit_wms(job):
     @todo launch job locally
     """
     dirac = Dirac()
-    base_path = '/vo.cta.in2p3.fr/MC/PROD4/Paranal/proton/corsika/1829/Data/101xxx'
-    input_data = ['%s/run101000_proton_za20deg_azm0deg-paranal-sst.corsika.zst' % base_path,
-                  '%s/run101003_proton_za20deg_azm0deg-paranal-sst.corsika.zst' % base_path,
-                  '%s/run101006_proton_za20deg_azm0deg-paranal-sst.corsika.zst' % base_path]
+    # base_path = '/vo.cta.in2p3.fr/MC/PROD4/Paranal/proton/corsika/1829/Data/101xxx'
+    # input_data = ['%s/run101000_proton_za20deg_azm0deg-paranal-sst.corsika.zst' % base_path,
+    #               '%s/run101003_proton_za20deg_azm0deg-paranal-sst.corsika.zst' % base_path,
+    #               '%s/run101006_proton_za20deg_azm0deg-paranal-sst.corsika.zst' % base_path]
+    base_path = '/vo.cta.in2p3.fr/user/b/bregeon/Paranal/proton/corsika/0000/Data/000xxx'
+    input_data = ['%s/run22_proton_za20deg_azm0deg-paranal-sst.corsika.zst' % base_path,
+                  '%s/run23_proton_za20deg_azm0deg-paranal-sst.corsika.zst' % base_path]
+
     job.setInputData(input_data)
     job.setJobGroup('Prod4SimtelSSTJob')
     result = dirac.submit(job)
@@ -88,9 +92,10 @@ def run_simtel_sst(args):
         group_size = int(args[3])
 
     # job setup
-    job = Prod4SimtelSSTJob()  # to be adjusted!!
+    job = Prod4SimtelSSTJob()
     # override for testing
     job.setName('Prod4_Simtel')
+    job.version='2018-10-22'
 
     # output
     job.setOutputSandbox(['*Log.txt'])
