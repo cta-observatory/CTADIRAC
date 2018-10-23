@@ -33,7 +33,7 @@ class Prod4SimtelSSTJob(Job):
         self.setName('Simtel')
         self.package='corsika_simhessarray'
         self.program_category = 'tel_sim'
-        self.version = '2018-09-19'
+        self.version = '2018-10-22'
         self.configuration_id = 4
         self.output_data_level = DATA_LEVEL_METADATA_ID['DL0']
         self.N_output_files = 4
@@ -119,12 +119,11 @@ class Prod4SimtelSSTJob(Job):
         md_field_json = json.dumps(meta_data_field)
 
         # Upload and register data
-        tel_config_list = 'sst-1m sst-astri sst-astri+chec-s sst-gct'.split()
-        for config in tel_config_list:
-            tel_config = 'cta-prod4-%s' % config
+        tel_config_list = 'sst-1m sst-astri sst-astri+chec-s-7mm sst-gct'.split()
+        for tel_config in tel_config_list:            
             file_meta_data = {'tel_config' : tel_config}
             file_md_json = json.dumps(file_meta_data)
-            output_pattern = './*%s*_data.tar' % tel_config
+            output_pattern = './*%s_data.tar' % tel_config
             scripts = '../CTADIRAC/Core/scripts/'
             dm_step = self.setExecutable(scripts + 'cta-prod-managedata.py',
                                          arguments="'%s' '%s' '%s' %s %s %s %s '%s' Data" %
