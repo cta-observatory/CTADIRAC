@@ -4,6 +4,7 @@
 """
 
 import os
+import re
 
 import DIRAC
 from DIRAC.Resources.Catalog.FileCatalogClient import FileCatalogClient
