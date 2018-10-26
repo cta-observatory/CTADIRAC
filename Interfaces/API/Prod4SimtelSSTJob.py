@@ -36,7 +36,7 @@ class Prod4SimtelSSTJob(Job):
         self.version = '2018-10-22'
         self.configuration_id = 4
         self.output_data_level = DATA_LEVEL_METADATA_ID['DL0']
-        self.N_output_files = 4
+        self.N_output_files = 5
         self.base_path = '/vo.cta.in2p3.fr/MC/PROD4/'
         self.fcc = FileCatalogClient()
         self.metadata = collections.OrderedDict()
@@ -119,8 +119,8 @@ class Prod4SimtelSSTJob(Job):
         md_field_json = json.dumps(meta_data_field)
 
         # Upload and register data
-        tel_config_list = 'sst-1m sst-astri sst-astri+chec-s-7mm sst-gct'.split()
-        for tel_config in tel_config_list:            
+        tel_config_list = 'sst-1m sst-astri sst-astri+chec-s sst-astri+chec-s-7mm sst-gct'.split()
+        for tel_config in tel_config_list:
             file_meta_data = {'tel_config' : tel_config}
             file_md_json = json.dumps(file_meta_data)
             output_pattern = './*%s_data.tar' % tel_config
