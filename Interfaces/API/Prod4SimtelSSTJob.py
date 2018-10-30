@@ -123,7 +123,10 @@ class Prod4SimtelSSTJob(Job):
         for tel_config in tel_config_list:
             file_meta_data = {'tel_config' : tel_config}
             file_md_json = json.dumps(file_meta_data)
-            output_pattern = './*%s_data.tar' % tel_config
+            cone10_tag=''
+            if self.metadata['particle'] == 'gamma-diffuse':
+                cone10_tag='_cone10'
+            output_pattern = './*%s%s_data.tar' % (tel_config, cone10_tag)
             scripts = '../CTADIRAC/Core/scripts/'
             dm_step = self.setExecutable(scripts + 'cta-prod-managedata.py',
                                          arguments="'%s' '%s' '%s' %s %s %s %s '%s' Data" %
