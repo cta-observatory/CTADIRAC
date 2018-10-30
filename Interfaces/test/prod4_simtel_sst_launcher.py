@@ -91,8 +91,8 @@ def run_simtel_sst(args):
         dataset_name = args[2]
         group_size = int(args[3])
 
-    # job setup
-    job = Prod4SimtelSSTJob()
+    # job setup - 72 hours
+    job = Prod4SimtelSSTJob(cpuTime=259200.)
     # override for testing
     job.setName('Prod4_Simtel')
     job.version='2018-10-22'
@@ -115,6 +115,7 @@ def run_simtel_sst(args):
         job.setDestination('LCG.IN2P3-CC.fr')
         result = submit_wms(job)
     elif mode == 'TS':
+        job.N_output_files = 5
         input_meta_query = get_dataset_MQ(dataset_name)
         # refine output meta data if needed
         output_meta_data = copy(input_meta_query)
