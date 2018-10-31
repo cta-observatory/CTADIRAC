@@ -104,15 +104,7 @@ class EvnDisp4SSTJob(Job):
         swStep['Value']['descr_short'] = 'Setup software'
         iStep+=1
 
-        # step 2bis
-        # arguments are nbFiles=0 (not used) and fileSize=1000kB
-        eivStep = self.setExecutable('cta-prod3-verifysteps',
-                                  arguments='analysisinputs 0 1000',
-                                  logFile='Verify_EvnDispInputs_Log.txt')
-        eivStep['Value']['name'] = 'Step%i_VerifyEvnDispInputs' % iStep
-        eivStep['Value']['descr_short'] = 'Verify EvnDisp Inputs'
-        iStep += 1
-
+        # step 3
         evStep = self.setExecutable('./dirac_prod4_sst_evndisp',
                                     arguments = "--prefix %s --layout_list '%s' \
                                     --calibration_file %s \
@@ -165,8 +157,7 @@ class EvnDisp4SSTJob(Job):
 
         # step 6 -- to be removed -- debug only
         if debug:
-            lsStep = self.setExecutable('/bin/ls',
-                                        arguments = " -alhtr; /bin/ls -lahrt ./Data",
+            lsStep = self.setExecutable('/bin/ls -alhtr',                                        
                                         logFile = 'LS_End_Log.txt')
             lsStep['Value']['name']='Step%i_LS_End'%iStep
             lsStep['Value']['descr_short']='list files in working directory and in Data directory'
