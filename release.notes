@@ -1,3 +1,7 @@
+[v1r49px]
+* JB : new job wrapper EvnDisp4SSTJob
+       and launcher prod4_evndisp_sst_launcher.py
+
 [v1r49p7]
 * JB : debug upload and metadata Prod4SimtelSSTJob
 
