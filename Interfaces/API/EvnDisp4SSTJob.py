@@ -113,7 +113,7 @@ class EvnDisp4SSTJob(Job):
         eivStep['Value']['descr_short'] = 'Verify EvnDisp Inputs'
         iStep += 1
 
-        evStep = self.setExecutable('./dirac_prod3_sst_evndisp',
+        evStep = self.setExecutable('./dirac_prod4_sst_evndisp',
                                     arguments = "--prefix %s --layout_list '%s' \
                                     --calibration_file %s \
                                     --reconstructionparameter %s  --taskid %s" %
