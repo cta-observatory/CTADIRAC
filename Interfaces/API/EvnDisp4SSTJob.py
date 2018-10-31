@@ -38,7 +38,7 @@ class EvnDisp4SSTJob(Job):
         self.output_data_level = DATA_LEVEL_METADATA_ID['DL1']
         self.N_output_files = 1
         self.prefix = 'CTA.prod4S'
-        self.layout_list = '3HB9'
+        self.layout_list = '3HB9-SST'
         self.calibration_file = 'prod4-SST-IPR.root'
         self.reconstructionparameter = 'EVNDISP.prod4.reconstruction.runparameter.NN.noLL'
         self.basepath = '/vo.cta.in2p3.fr/MC/PROD4/'
