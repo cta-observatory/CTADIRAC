@@ -24,7 +24,7 @@ Script.parseCommandLine()
 
 import DIRAC
 from DIRAC.TransformationSystem.Client.Transformation import Transformation
-from CTADIRAC.Interfaces.API.Prod4SimtelSSTJob import Prod4SimtelSSTJob
+from CTADIRAC.Interfaces.API.EvnDisp4SSTJob import EvnDisp4SSTJob
 from DIRAC.Core.Workflow.Parameter import Parameter
 from DIRAC.Interfaces.API.Dirac import Dirac
 from CTADIRAC.Core.Utilities.tool_box import get_dataset_MQ
@@ -60,9 +60,8 @@ def submit_wms(job):
     @todo launch job locally
     """
     dirac = Dirac()
-    # base_path = '/vo.cta.in2p3.fr/user/b/bregeon/Paranal/proton/corsika/0000/Data/000xxx'
-    # input_data = ['%s/run22_proton_za20deg_azm0deg-paranal-sst.corsika.zst' % base_path,
-    #               '%s/run23_proton_za20deg_azm0deg-paranal-sst.corsika.zst' % base_path]
+    base_path = '/vo.cta.in2p3.fr/user/b/bregeon/Paranal/proton/simtel/0000/Data/000xxx'
+    input_data = ['%s/proton_20deg_0deg_tid123___cta-prod4-sst-1m_desert-2150m-Paranal-sst-1m_data.tar' % base_path]
 
     job.setInputData(input_data)
     job.setJobGroup('EvnDisp4SSTJob')
@@ -71,14 +70,14 @@ def submit_wms(job):
         Script.gLogger.notice('Submitted job: ', result['Value'])
     return result
 
-def run_simtel_sst(args):
-    """ Simple wrapper to create a Prod4SimtelSSTJob and setup parameters
+def launch_job(args):
+    """ Simple launcher to instanciate a Job and setup parameters
         from positional arguments given on the command line.
 
         Parameters:
         args -- mode (trans_name dataset_name group_size)
     """
-    DIRAC.gLogger.notice('run_simtel_sst')
+    DIRAC.gLogger.notice('run_evndisp_sst')
     # get arguments
     mode = args[0]
 
@@ -113,6 +112,8 @@ def run_simtel_sst(args):
         job.set_meta_data(output_meta_data)
         file_meta_data = {key:output_meta_data[key] for key in ['tel_config']}
         job.set_file_meta_data(file_meta_data)
+        if 'astri' in file_meta_data['tel_config']:
+            job.layout_list = '3HB9-SST-A'
 
         job.ts_task_id = '@{JOB_ID}'  # dynamic
         job.setupWorkflow(debug=False)
@@ -132,7 +133,7 @@ if __name__ == '__main__':
     if len(arguments) not in [1, 4]:
         Script.showHelp()
     try:
-        result = run_simtel_sst(arguments)
+        result = launch_job(arguments)
         if not result['OK']:
             DIRAC.gLogger.error(result['Message'])
             DIRAC.exit(-1)
