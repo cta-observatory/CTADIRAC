@@ -133,7 +133,7 @@ class Prod4SimtelSSTJob(Job):
                                          (md_json, md_field_json, file_md_json,
                                           self.base_path, output_pattern, self.package,
                                           self.program_category, self.catalogs),
-                                         logFile='DataManagement_Log_%s.txt' % tel_config)
+                                         logFile='DataManagement_%s_Log.txt' % tel_config)
             i_step += 1
 
         # Upload and register log file (contains histograms)
