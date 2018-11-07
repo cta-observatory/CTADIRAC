@@ -38,7 +38,7 @@ class EvnDisp4SSTJob(Job):
         self.output_data_level = DATA_LEVEL_METADATA_ID['DL1']
         self.N_output_files = 1
         self.prefix = 'CTA.prod4S'
-        self.layout_list = '3HB9-SST'
+        self.layout = '3HB9-SST'
         self.calibration_file = 'prod4-SST-IPR.root'
         self.reconstructionparameter = 'EVNDISP.prod4.reconstruction.runparameter.NN.noLL'
         self.basepath = '/vo.cta.in2p3.fr/MC/PROD4/'
@@ -106,10 +106,10 @@ class EvnDisp4SSTJob(Job):
 
         # step 3
         evStep = self.setExecutable('./dirac_prod4_sst_evndisp',
-                                    arguments = "--prefix %s --layout_list '%s' \
+                                    arguments = "--prefix %s --layout '%s' \
                                     --calibration_file %s \
                                     --reconstructionparameter %s  --taskid %s" %
-                                    (self.prefix, self.layout_list,
+                                    (self.prefix, self.layout,
                                      self.calibration_file,
                                      self.reconstructionparameter, self.ts_task_id),
                                     logFile='EvnDisp_Log.txt')
@@ -157,7 +157,7 @@ class EvnDisp4SSTJob(Job):
 
         # step 6 -- to be removed -- debug only
         if debug:
-            lsStep = self.setExecutable('/bin/ls -alhtr',                                        
+            lsStep = self.setExecutable('/bin/ls -alhtr',
                                         logFile = 'LS_End_Log.txt')
             lsStep['Value']['name']='Step%i_LS_End'%iStep
             lsStep['Value']['descr_short']='list files in working directory and in Data directory'

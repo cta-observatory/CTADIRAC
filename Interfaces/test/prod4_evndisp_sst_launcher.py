@@ -113,7 +113,7 @@ def launch_job(args):
         file_meta_data = {key:output_meta_data[key] for key in ['tel_config']}
         job.set_file_meta_data(file_meta_data)
         if 'astri' in file_meta_data['tel_config']:
-            job.layout_list = '3HB9-SST-A'
+            job.layout = '3HB9-SST-A'
 
         job.ts_task_id = '@{JOB_ID}'  # dynamic
         job.setupWorkflow(debug=False)
