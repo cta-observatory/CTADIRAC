@@ -129,7 +129,7 @@ class EvnDisp4SSTJob(Job):
         mdfieldjson = json.dumps(metadatafield)
 
         # register Data
-        outputpattern = './*evndisp-DL%01d.tar.gz'%self.output_data_level
+        outputpattern = './*evndisp-*-DL%01d.tar.gz'%self.output_data_level
         file_md_json = json.dumps(self.filemetadata)
         scripts = '../CTADIRAC/Core/scripts'
         dmStep = self.setExecutable(scripts + '/cta-analysis-managedata.py',
