@@ -41,7 +41,7 @@ class EvnDisp4SSTJob(Job):
         self.layout = '3HB9-SST'
         self.calibration_file = 'prod4-SST-IPR.root'
         self.reconstructionparameter = 'EVNDISP.prod4.reconstruction.runparameter.NN.noLL'
-        self.basepath = '/vo.cta.in2p3.fr/MC/PROD4/'
+        self.base_path = '/vo.cta.in2p3.fr/MC/PROD4/'
         self.fcc = FileCatalogClient()
         self.metadata = collections.OrderedDict()
         self.filemetadata = {}
@@ -119,40 +119,42 @@ class EvnDisp4SSTJob(Job):
 
         # step 4
         # ## the order of the metadata dictionary is important, since it's used to build the directory structure
-        mdjson = json.dumps(self.metadata)
-        metadatafield = {'array_layout':'VARCHAR(128)', 'site':'VARCHAR(128)',
-                         'particle':'VARCHAR(128)',
-                         'phiP':'float', 'thetaP': 'float',
-                         self.program_category+'_prog':'VARCHAR(128)',
-		                 self.program_category+'_prog_version':'VARCHAR(128)',
-                         'data_level': 'int', 'configuration_id': 'int'}
-        mdfieldjson = json.dumps(metadatafield)
+        md_json = json.dumps(self.metadata)
+        meta_data_field = {'array_layout':'VARCHAR(128)', 'site':'VARCHAR(128)',
+                           'particle':'VARCHAR(128)',
+                           'phiP':'float', 'thetaP': 'float',
+                           self.program_category+'_prog':'VARCHAR(128)',
+		                   self.program_category+'_prog_version':'VARCHAR(128)',
+                           'data_level': 'int', 'configuration_id': 'int'}
+        md_field_json = json.dumps(meta_data_field)
 
         # register Data
         outputpattern = './*evndisp-*-DL%01d.tar.gz'%self.output_data_level
         file_md_json = json.dumps(self.filemetadata)
-        scripts = '../CTADIRAC/Core/scripts'
-        dmStep = self.setExecutable(scripts + '/cta-analysis-managedata.py',
-                            arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s'" %
-                            (mdjson, mdfieldjson, file_md_json, self.basepath,
-                            outputpattern, self.package,
-                            self.program_category, self.catalogs),
-                            logFile='DataManagement_Log.txt')
+        scripts = '../CTADIRAC/Core/scripts/'
+        dm_step = self.setExecutable(scripts + 'cta-prod-managedata.py',
+                                     arguments="'%s' '%s' '%s' %s %s %s %s '%s' Data" %
+                                     (md_json, md_field_json, file_md_json,
+                                      self.base_path, output_pattern, self.package,
+                                      self.program_category, self.catalogs),
+                                     logFile='DataManagement_%s_Log.txt' % tel_config)
         dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
         dmStep['Value']['descr_short'] = 'Save files to SE and register them in DFC'
         iStep += 1
 
         # register Log
-        outputpattern = './*.logs.tgz'
+        log_file_pattern = './*.logs.tgz'
         filemetadata = {}
         file_md_json = json.dumps(filemetadata)
-        dmStep = self.setExecutable('../CTADIRAC/Core/scripts/cta-analysis-managedata.py',
-                                  arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s' Log" % \
-                                  (mdjson, mdfieldjson, file_md_json, self.basepath,
-                                   outputpattern, self.package, self.program_category, self.catalogs),
-                                  logFile = 'Log_DataManagement_Log.txt')
-        dmStep['Value']['name'] = 'Step%i_Log_DataManagement' % iStep
-        dmStep['Value']['descr_short'] = 'Save log files to SE and register them in DFC'
+        scripts = '../CTADIRAC/Core/scripts/'
+        log_step = self.setExecutable(scripts + 'cta-prod-managedata.py',
+                                      arguments="'%s' '%s' '%s' %s %s %s %s '%s' Log" %
+                                      (md_json, md_field_json, file_md_json,
+                                       self.base_path, log_file_pattern, self.package,
+                                       self.program_category, self.catalogs),
+                                      logFile='LogManagement_Log.txt')
+        log_step['Value']['name'] = 'Step%i_Log_DataManagement' % iStep
+        log_step['Value']['descr_short'] = 'Save log files to SE and register them in DFC'
         iStep += 1
 
         # step 6 -- to be removed -- debug only
