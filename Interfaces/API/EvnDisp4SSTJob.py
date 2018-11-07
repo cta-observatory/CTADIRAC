@@ -129,7 +129,7 @@ class EvnDisp4SSTJob(Job):
         md_field_json = json.dumps(meta_data_field)
 
         # register Data
-        outputpattern = './*evndisp-*-DL%01d.tar.gz'%self.output_data_level
+        output_pattern = './*evndisp-*-DL%01d.tar.gz'%self.output_data_level
         file_md_json = json.dumps(self.filemetadata)
         scripts = '../CTADIRAC/Core/scripts/'
         dm_step = self.setExecutable(scripts + 'cta-prod-managedata.py',
@@ -137,9 +137,9 @@ class EvnDisp4SSTJob(Job):
                                      (md_json, md_field_json, file_md_json,
                                       self.base_path, output_pattern, self.package,
                                       self.program_category, self.catalogs),
-                                     logFile='DataManagement_%s_Log.txt' % tel_config)
-        dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
-        dmStep['Value']['descr_short'] = 'Save files to SE and register them in DFC'
+                                     logFile='DataManagement_Log.txt')
+        dm_step['Value']['name'] = 'Step%i_DataManagement' % iStep
+        dm_step['Value']['descr_short'] = 'Save files to SE and register them in DFC'
         iStep += 1
 
         # register Log
