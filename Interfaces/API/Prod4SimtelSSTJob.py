@@ -42,6 +42,7 @@ class Prod4SimtelSSTJob(Job):
         self.metadata = collections.OrderedDict()
         self.catalogs = json.dumps(['DIRACFileCatalog', 'TSCatalog'])
         self.ts_task_id = 0
+        self.telconfig_list = 'sst-1m sst-astri sst-astri+chec-s sst-astri+chec-s-7mm sst-gct'
 
     def set_meta_data(self, corsika_md):
         """ Set simtel meta data
@@ -93,7 +94,8 @@ class Prod4SimtelSSTJob(Job):
 
         # step 3 - running
         evStep = self.setExecutable('./dirac_prod4_sst_simtel',
-                                    arguments = "--taskid %s" % (self.ts_task_id),
+                                    arguments = "--taskid %s --telconfig_list '%s'" %
+                                    (self.ts_task_id, self.telconfig_list),
                                     logFile='Simtel_Log.txt')
         evStep['Value']['name'] = 'Step%i_Simtel' % i_step
         evStep['Value']['descr_short'] = 'Run Simtel'
@@ -119,8 +121,7 @@ class Prod4SimtelSSTJob(Job):
         md_field_json = json.dumps(meta_data_field)
 
         # Upload and register data
-        tel_config_list = 'sst-1m sst-astri sst-astri+chec-s sst-astri+chec-s-7mm sst-gct'.split()
-        for tel_config in tel_config_list:
+        for tel_config in self.telconfig_list.split():
             file_meta_data = {'tel_config' : tel_config}
             file_md_json = json.dumps(file_meta_data)
             cone10_tag=''

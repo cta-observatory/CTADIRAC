@@ -110,6 +110,7 @@ def run_simtel_sst(args):
                            job.program_category + '_prog_version': job.version,
                            'data_level': 0, 'configuration_id': 4}
         job.set_meta_data(output_meta_data)
+        job.telconfig_list = 'sst-1m sst-gct'
         job.setupWorkflow(debug=True)
         # subtmit to the WMS for debug
         job.setDestination('LCG.IN2P3-CC.fr')
@@ -120,6 +121,7 @@ def run_simtel_sst(args):
         # refine output meta data if needed
         output_meta_data = copy(input_meta_query)
         job.set_meta_data(output_meta_data)
+        job.telconfig_list = 'sst-1m sst-gct'
 
         job.ts_task_id = '@{JOB_ID}'  # dynamic
         job.setupWorkflow(debug=False)
