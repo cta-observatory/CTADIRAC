@@ -33,13 +33,13 @@ class EvnDisp4SSTJob(Job):
         self.setName('Evndisplay_CalibReco')
         self.package='evndisplay'
         self.program_category = 'calibimgreco'
-        self.version = 'prod4_d20181028'
+        self.version = 'prod4_d20181110'
         self.configuration_id = 4
         self.output_data_level = DATA_LEVEL_METADATA_ID['DL1']
         self.N_output_files = 1
         self.prefix = 'CTA.prod4S'
         self.layout = '3HB9-SST'
-        self.calibration_file = 'prod4-SST-IPR.root'
+        self.calibration_file = 'prod4b-SST-IPR.root'
         self.reconstructionparameter = 'EVNDISP.prod4.reconstruction.runparameter.NN.noLL'
         self.base_path = '/vo.cta.in2p3.fr/MC/PROD4/'
         self.fcc = FileCatalogClient()
