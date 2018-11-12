@@ -52,28 +52,30 @@ def get_dataset_info(dataset_name):
     total_size = res['TotalSize']
     return (dataset_name, number_of_files, total_size,meta_query)
 
-# Main
-argss = Script.getPositionalArgs()
 
-if len(argss) == 0:
-    dataset_list = get_list_of_datasets()
-    print_dataset_list(dataset_list)
-    DIRAC.exit()
-elif len(argss) > 0:
-    dataset_name = argss[0]
-    dataset_list = list()
-    if dataset_name.find('*')>0:
-        dataset_list = get_list_of_datasets(dataset_name)
-    else:
-        dataset_list.append(dataset_name)
-    print_dataset_list(dataset_list)
+#########################################################
+if __name__ == '__main__':
+    argss = Script.getPositionalArgs()
 
-# Results
-print('Datasets details')
-print('| Name | N files | Size(TB) |')
-dataset_list.sort()
-for dataset_name in dataset_list:
-    name, n_files, size, mq = get_dataset_info(dataset_name)
-    # # convert total size in TB
-    size_TB = size / 1e12
-    print('|%s|%d|%.1f|' % (name, n_files, size_TB))
+    if len(argss) == 0:
+        dataset_list = get_list_of_datasets()
+        print_dataset_list(dataset_list)
+        DIRAC.exit()
+    elif len(argss) > 0:
+        dataset_name = argss[0]
+        dataset_list = list()
+        if dataset_name.find('*')>0:
+            dataset_list = get_list_of_datasets(dataset_name)
+        else:
+            dataset_list.append(dataset_name)
+        print_dataset_list(dataset_list)
+
+    # Results
+    print('Datasets details')
+    print('| Name | N files | Size(TB) |')
+    dataset_list.sort()
+    for dataset_name in dataset_list:
+        name, n_files, size, mq = get_dataset_info(dataset_name)
+        # # convert total size in TB
+        size_TB = size / 1e12
+        print('|%s|%d|%.1f|' % (name, n_files, size_TB))
