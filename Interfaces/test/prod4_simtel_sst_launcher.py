@@ -95,7 +95,7 @@ def run_simtel_sst(args):
     job = Prod4SimtelSSTJob(cpuTime=259200.)
     # override for testing
     job.setName('Prod4_Simtel')
-    job.version='2018-10-22'
+    job.version='2018-11-07'
 
     # output
     job.setOutputSandbox(['*Log.txt'])
@@ -103,25 +103,27 @@ def run_simtel_sst(args):
     # specific configuration
     if mode == 'WMS':
         job.base_path = '/vo.cta.in2p3.fr/user/b/bregeon'
-        job.ts_task_id = '123'
+        job.ts_task_id = '1'
         output_meta_data = {'array_layout': 'Baseline-SST-only', 'site': 'Paranal',
                            'particle': 'proton', 'phiP': 0.0, 'thetaP': 20.0,
                            job.program_category + '_prog': 'simtel',
                            job.program_category + '_prog_version': job.version,
                            'data_level': 0, 'configuration_id': 4}
         job.set_meta_data(output_meta_data)
-        job.telconfig_list = 'sst-1m sst-gct'
+        job.telconfig_list = 'sst-1m sst-gct sst-astri+chec-s'
+        job.N_output_files = len(job.telconfig_list.split())
         job.setupWorkflow(debug=True)
         # subtmit to the WMS for debug
         job.setDestination('LCG.IN2P3-CC.fr')
         result = submit_wms(job)
     elif mode == 'TS':
-        job.N_output_files = 5
         input_meta_query = get_dataset_MQ(dataset_name)
         # refine output meta data if needed
         output_meta_data = copy(input_meta_query)
         job.set_meta_data(output_meta_data)
-        job.telconfig_list = 'sst-1m sst-gct'
+        #sst-1m sst-astri sst-astri+chec-s sst-astri+chec-s-7mm sst-gct
+        job.telconfig_list = 'sst-1m sst-gct sst-astri+chec-s'
+        job.N_output_files = len(job.telconfig_list.split())
 
         job.ts_task_id = '@{JOB_ID}'  # dynamic
         job.setupWorkflow(debug=False)
