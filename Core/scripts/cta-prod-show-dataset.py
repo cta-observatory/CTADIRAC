@@ -77,19 +77,3 @@ for dataset_name in dataset_list:
     # # convert total size in TB
     size_TB = size / 1e12
     print('|%s|%d|%.1f|' % (name, n_files, size_TB))
-
-# print '\n' + datasetName + ":"
-# print '=' * ( len( datasetName ) + 1 )
-#
-#
-# # Fill the table to display
-# records.append( ['MetaQuery', str( metaQuery )] )
-#
-# # # calculate total numberOfEvents
-# TotalNumberOfEvents = numberOfFiles * int( eventsPerRun ) / float(numberOfFilesperRun) / 1e9
-# TotalNumberOfEvents = '%.2fe9' % TotalNumberOfEvents
-#
-# records.append( ['EventsPerRun', str( eventsPerRun )] )
-# records.append( ['TotalNumberOfEvents', str( TotalNumberOfEvents )] )
-# records.append( ['NumberOfFiles', str( numberOfFiles )] )
-#
