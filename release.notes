@@ -1,6 +1,7 @@
 [v1r49px]
 * JB : EvnDisp4SSTJob one layout
        Prod4SimtelSSTJob telconfig_list
+       new script cta-prod-show-dataset.py to summarize dataset information
 
 [v1r49p9]
 * JB : Prod4SimtelSSTJob bug fix for missing DM data log
