@@ -175,7 +175,7 @@ class Prod4CorsikaSSTJob(Job):
 
         scripts = '../CTADIRAC/Core/scripts/'
         dm_step = self.setExecutable(scripts + 'cta-prod-managedata.py',
-                                     arguments="'%s' '%s' '%s' %s %s %s %s '%s' Data" %
+                                     arguments="'%s' '%s' '%s' %s '%s' %s %s '%s' Data" %
                                      (md_json, md_field_json, file_md_json,
                                       self.base_path, self.output_pattern, self.package,
                                       self.program_category, self.catalogs),
@@ -190,7 +190,7 @@ class Prod4CorsikaSSTJob(Job):
         log_file_pattern = 'Data/corsika/run*/run*.log'
         scripts = '../CTADIRAC/Core/scripts/'
         log_step = self.setExecutable(scripts + 'cta-prod-managedata.py',
-                                      arguments="'%s' '%s' '%s' %s %s %s %s '%s' Log" %
+                                      arguments="'%s' '%s' '%s' %s '%s' %s %s '%s' Log" %
                                       (md_json, md_field_json, file_md_json,
                                        self.base_path, log_file_pattern, self.package,
                                        self.program_category, self.catalogs),
