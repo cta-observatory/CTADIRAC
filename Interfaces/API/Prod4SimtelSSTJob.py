@@ -130,7 +130,7 @@ class Prod4SimtelSSTJob(Job):
             output_pattern = './*%s%s_data.tar' % (tel_config, cone10_tag)
             scripts = '../CTADIRAC/Core/scripts/'
             dm_step = self.setExecutable(scripts + 'cta-prod-managedata.py',
-                                         arguments="'%s' '%s' '%s' %s %s %s %s '%s' Data" %
+                                         arguments="'%s' '%s' '%s' %s '%s' %s %s '%s' Data" %
                                          (md_json, md_field_json, file_md_json,
                                           self.base_path, output_pattern, self.package,
                                           self.program_category, self.catalogs),
@@ -143,7 +143,7 @@ class Prod4SimtelSSTJob(Job):
         log_file_pattern = './*_log.tar'
         scripts = '../CTADIRAC/Core/scripts/'
         log_step = self.setExecutable(scripts + 'cta-prod-managedata.py',
-                                      arguments="'%s' '%s' '%s' %s %s %s %s '%s' Log" %
+                                      arguments="'%s' '%s' '%s' %s '%s' %s %s '%s' Log" %
                                       (md_json, md_field_json, file_md_json,
                                        self.base_path, log_file_pattern, self.package,
                                        self.program_category, self.catalogs),
