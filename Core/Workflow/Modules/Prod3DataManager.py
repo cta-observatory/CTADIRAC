@@ -252,16 +252,20 @@ class Prod3DataManager(object) :
       msg = 'Try to upload local file: %s \nwith LFN: %s \nto %s' % ( localfile, lfn, SE )
       DIRAC.gLogger.notice( msg )
       res = self.dm.putAndRegister( lfn, localfile, SE )
+      DIRAC.gLogger.notice(res)
       # ##  check if failed
       if not res['OK']:
         DIRAC.gLogger.error( 'Failed to putAndRegister %s \nto %s \nwith message: %s' % ( lfn, SE, res['Message'] ) )
+        DIRAC.gLogger.notice('Trying to clean up %s' % lfn)
+        res = self.dm.removeFile(lfn)
+        if res['OK']:
+          DIRAC.gLogger.notice('Successfully removed %s \n that was not supposed to have been uploaded successfully' % lfn)
         continue
       elif res['Value']['Failed'].has_key( lfn ):
         DIRAC.gLogger.error( 'Failed to putAndRegister %s to %s' % ( lfn, SE ) )
         continue
       else:
         return DIRAC.S_OK()
-
     return DIRAC.S_ERROR()
 
   def cleanLocalFiles ( self, datadir, pattern = '*' ):
