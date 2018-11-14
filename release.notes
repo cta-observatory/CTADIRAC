@@ -1,3 +1,6 @@
+[v1r50p1]
+* JB : fix dm_step in Prod4SimtelSSTJob, EvnDisp4SSTJob and Prod4CorsikaSSTJob
+
 [v1r50p0]
 * JB : EvnDisp4SSTJob one layout
        Prod4SimtelSSTJob telconfig_list
