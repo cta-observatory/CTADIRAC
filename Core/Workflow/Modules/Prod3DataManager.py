@@ -263,6 +263,10 @@ class Prod3DataManager(object) :
         continue
       elif res['Value']['Failed'].has_key( lfn ):
         DIRAC.gLogger.error( 'Failed to putAndRegister %s to %s' % ( lfn, SE ) )
+        DIRAC.gLogger.notice('Trying to clean up %s' % lfn)
+        res = self.dm.removeFile(lfn)
+        if res['OK']:
+          DIRAC.gLogger.notice('Successfully removed %s \n that was not supposed to have been uploaded successfully' % lfn)
         continue
       else:
         return DIRAC.S_OK()
