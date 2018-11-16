@@ -51,6 +51,8 @@ def run_number_from_filename(filename, package):
             run_number = int(filename.split('run')[1].split('___cta')[0])
         elif filename[-10:] in ['DL1.tar.gz', 'DL2.tar.gz']:
             run_number = int(filename.split('run')[1].split('___cta')[0])
+        elif filename.find('tid')>0:
+            run_number = int(re.findall(r'tid\d+', os.path.basename(filename))[0].strip('tid'))
         else:
             run_number = int(filename.split('-')[0])  # old default
     elif package == 'image_extractor':

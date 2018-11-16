@@ -1,3 +1,6 @@
+[v1r50p2]
+* JB : fix tool_box get run_number for evndisp tid case
+
 [v1r50p1]
 * JB : fix dm_step in Prod4SimtelSSTJob, EvnDisp4SSTJob and Prod4CorsikaSSTJob
 
