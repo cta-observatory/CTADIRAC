@@ -5,14 +5,23 @@
 
 import os
 import re
+import copy
+import datetime
 
 import DIRAC
 from DIRAC.Resources.Catalog.FileCatalogClient import FileCatalogClient
 from DIRAC.Core.Utilities.ReturnValues import returnSingleResult
 
+
+# Jobs status dictionnary
+BASE_STATUS_DIR = {'Received': 0, 'Matched': 0, 'Waiting': 0, 'Running': 0,
+                   'Failed': 0, 'Stalled': 0, 'Rescheduled': 0, 'Checking': 0,
+                   'Done': 0, 'Completed': 0, 'Killed': 0, 'Total': 0}
+
 # Data level meta data id
 DATA_LEVEL_METADATA_ID = {'MC0': -3,  'R1': -2, 'R0': -1,
                  'DL0': 0, 'DL1': 1, 'DL2': 2, 'DL3': 3, 'DL4': 4, 'DL5': 5}
+
 
 def read_lfns_from_file(file_path):
     """ Read a simple list of LFNs from an ASCII files,
@@ -89,3 +98,58 @@ def get_dataset_MQ(dataset_name):
     else:
         DIRAC.gLogger.info("Successfully retrieved dataset: ", dataset_name)
     return result['Value']['MetaQuery']
+
+def get_job_list(owner, job_group, n_hours):
+    ''' get a list of jobs for a selection
+    '''
+    from DIRAC.Interfaces.API.Dirac import Dirac
+    dirac = Dirac()
+
+    now = datetime.datetime.now()
+    onehour = datetime.timedelta(hours=1)
+    results = dirac.selectJobs(
+        jobGroup=job_group,
+        owner=owner,
+        date=now - n_hours * onehour)
+    if 'Value' not in results:
+        DIRAC.gLogger.error(
+            "No job found for group \"%s\" and owner \"%s\" in the past %s hours" %
+            (job_roup, owner, n_hours))
+        DIRAC.exit(-1)
+
+    # Found some jobs, print information)
+    jobs_list = results['Value']
+    return jobs_list
+
+def parse_jobs_list(jobs_list):
+    ''' parse a jobs list by first getting the status of all jobs
+    '''
+    from DIRAC.Interfaces.API.Dirac import Dirac
+    dirac = Dirac()
+    # status of all jobs
+    status = dirac.status(jobs_list)
+    # parse it
+    sites_dict = {}
+    sites_dict = copy.copy(BASE_STATUS_DIR)
+    for job in jobs_list:
+        site = status['Value'][int(job)]['Site']
+        minstatus = status['Value'][int(job)]['MinorStatus']
+        majstatus = status['Value'][int(job)]['Status']
+        if majstatus not in sites_dict.keys():
+            DIRAC.gLogger.notice('Add %s to BASE_STATUS_DIR' % majstatus)
+            DIRAC.sys.exit(1)
+        sites_dict[majstatus] += 1
+        sites_dict['Total'] += 1
+        if site not in sites_dict.keys():
+            if site.find('.') == -1:
+                site = '    None'  # note that blank spaces are needed
+            sites_dict[site] = copy.copy(BASE_STATUS_DIR)
+            sites_dict[site][majstatus] = 1
+            sites_dict[site]["Total"] = 1
+        else:
+            sites_dict[site]["Total"] += 1
+            if majstatus not in sites_dict[site].keys():
+                sites_dict[site][majstatus] = 1
+            else:
+                sites_dict[site][majstatus] += 1
+    return sites_dict
