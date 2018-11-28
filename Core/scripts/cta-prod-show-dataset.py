@@ -74,8 +74,11 @@ if __name__ == '__main__':
     print('Datasets details')
     print('| Name | N files | Size(TB) |')
     dataset_list.sort()
+    total_size = 0.
     for dataset_name in dataset_list:
         name, n_files, size, mq = get_dataset_info(dataset_name)
         # # convert total size in TB
         size_TB = size / 1e12
         print('|%s|%d|%.1f|' % (name, n_files, size_TB))
+        total_size = total_size + size_TB
+    print('| Total | - | %.1f ' % total_size)
