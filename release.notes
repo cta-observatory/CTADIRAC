@@ -1,3 +1,7 @@
+[v1r50px]
+* JB : new version of cta-prod-monitor
+       add get_job_list and parse_jobs_list in tool_box
+
 [v1r50p3]
 * JB : Prod3DataManager always try to remove lfn if upload failed
                         implies overwriting existing files !
