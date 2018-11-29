@@ -130,16 +130,16 @@ def parse_jobs_list(jobs_list):
     status = dirac.status(jobs_list)
     # parse it
     sites_dict = {}
-    sites_dict = copy.copy(BASE_STATUS_DIR)
+    status_dict = copy.copy(BASE_STATUS_DIR)
     for job in jobs_list:
         site = status['Value'][int(job)]['Site']
         minstatus = status['Value'][int(job)]['MinorStatus']
         majstatus = status['Value'][int(job)]['Status']
-        if majstatus not in sites_dict.keys():
+        if majstatus not in status_dict.keys():
             DIRAC.gLogger.notice('Add %s to BASE_STATUS_DIR' % majstatus)
             DIRAC.sys.exit(1)
-        sites_dict[majstatus] += 1
-        sites_dict['Total'] += 1
+        status_dict[majstatus] += 1
+        status_dict['Total'] += 1
         if site not in sites_dict.keys():
             if site.find('.') == -1:
                 site = '    None'  # note that blank spaces are needed
@@ -152,4 +152,4 @@ def parse_jobs_list(jobs_list):
                 sites_dict[site][majstatus] = 1
             else:
                 sites_dict[site][majstatus] += 1
-    return sites_dict
+    return status_dict, sites_dict
