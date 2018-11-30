@@ -8,7 +8,9 @@ import copy
 import datetime
 from DIRAC.Core.Base import Script
 from DIRAC.Core.Utilities.Time import toString, date, day
-from CTADIRAC.Core.Utilities.tool_box import BASE_STATUS_DIR
+
+from CTADIRAC.Core.Utilities import tool_box
+from CTADIRAC.Core.Utilities.tool_box import BASE_STATUS_DIR, highlight
 
 
 Script.setUsageMessage(
@@ -27,64 +29,6 @@ Script.registerSwitch("", "jobGroup=", "the job group")
 Script.registerSwitch("", "hours=", "Get status for jobs of the last n hours")
 Script.registerSwitch("", "failed=", "1 or 0 : Save or not failed jobs in \"failed.txt\"")
 Script.parseCommandLine(ignoreErrors=True)
-
-
-def highlight(string):
-    ''' highlight a string in a terminal display
-    '''
-    return '\x1b[31;1m%s\x1b[0m' % (string)
-
-def get_job_list(owner, job_group, n_hours):
-    ''' get a list of jobs for a selection
-    '''
-    now = datetime.datetime.now()
-    onehour = datetime.timedelta(hours=1)
-    results = dirac.selectJobs(jobGroup=job_group,
-                               owner=owner,
-                               date=now - n_hours * onehour)
-    if 'Value' not in results:
-        Script.gLogger.notice(
-            "No job found for group \"%s\" and owner \"%s\" in the past %s hours" %
-            (job_group, owner, n_hours))
-        Script.sys.exit(0)
-
-    # Found some jobs, print information)
-    jobs_list = results['Value']
-    Script.gLogger.notice(
-        "%s jobs found for group \"%s\" and owner \"%s\" in the past %s hours\n" %
-        (len(jobs_list), job_group, owner, n_hours))
-    return jobs_list
-
-def parse_jobs_list(jobs_list):
-    ''' parse a jobs list by first getting the status of all jobs
-    '''
-    # status of all jobs
-    status = dirac.status(jobs_list)
-    # parse it
-    sites_dict = {}
-    status_dict = copy.copy(BASE_STATUS_DIR)
-    for job in jobs_list:
-        site = status['Value'][int(job)]['Site']
-        minstatus = status['Value'][int(job)]['MinorStatus']
-        majstatus = status['Value'][int(job)]['Status']
-        if majstatus not in status_dict.keys():
-            Script.gLogger.notice('Add %s to BASE_STATUS_DIR' % majstatus)
-            Script.sys.exit(1)
-        status_dict[majstatus] += 1
-        status_dict['Total'] += 1
-        if site not in sites_dict.keys():
-            if site.find('.') == -1:
-                site = '    None'  # note that blank spaces are needed
-            sites_dict[site] = copy.copy(BASE_STATUS_DIR)
-            sites_dict[site][majstatus] = 1
-            sites_dict[site]["Total"] = 1
-        else:
-            sites_dict[site]["Total"] += 1
-            if majstatus not in sites_dict[site].keys():
-                sites_dict[site][majstatus] = 1
-            else:
-                sites_dict[site][majstatus] += 1
-    return status_dict, sites_dict
 
 
 ###################
@@ -113,10 +57,13 @@ if __name__ == '__main__':
     dirac = Dirac()
 
     # do the jobs via the 2 main methods
-    jobs_list = get_job_list(owner, job_group, n_hours)
+    jobs_list = tool_box.get_job_list(owner, job_group, n_hours)
+    Script.gLogger.notice(
+        "%s jobs found for group \"%s\" and owner \"%s\" in the past %s hours\n" %
+        (len(jobs_list), job_group, owner, n_hours))
 
     # get status dictionary
-    status_dict, sites_dict = parse_jobs_list(jobs_list)
+    status_dict, sites_dict = tool_box.parse_jobs_list(jobs_list)
 
     # print out my favourite tables
     Script.gLogger.notice(
