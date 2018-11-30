@@ -23,6 +23,11 @@ DATA_LEVEL_METADATA_ID = {'MC0': -3,  'R1': -2, 'R0': -1,
                  'DL0': 0, 'DL1': 1, 'DL2': 2, 'DL3': 3, 'DL4': 4, 'DL5': 5}
 
 
+def highlight(string):
+    ''' highlight a string in a terminal display
+    '''
+    return '\x1b[31;1m%s\x1b[0m' % (string)
+
 def read_lfns_from_file(file_path):
     """ Read a simple list of LFNs from an ASCII files,
     expects just one LFN per line
@@ -114,7 +119,7 @@ def get_job_list(owner, job_group, n_hours):
     if 'Value' not in results:
         DIRAC.gLogger.error(
             "No job found for group \"%s\" and owner \"%s\" in the past %s hours" %
-            (job_roup, owner, n_hours))
+            (job_group, owner, n_hours))
         DIRAC.exit(-1)
 
     # Found some jobs, print information)
