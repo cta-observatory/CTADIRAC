@@ -1,6 +1,7 @@
-[v1r50px]
+[v1r50p4]
 * JB : new version of cta-prod-monitor
        add get_job_list and parse_jobs_list in tool_box
+       fix run_number_from_filename for evendisplay tid
 
 [v1r50p3]
 * JB : Prod3DataManager always try to remove lfn if upload failed
