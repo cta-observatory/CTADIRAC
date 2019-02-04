@@ -1,3 +1,7 @@
+[v1r5x]
+* JB : new Prod4CorsikaLSTMagicJob for #35807
+       new prod4_corsika_lst-magic_launcher.py 
+
 [v1r50p4]
 * JB : new version of cta-prod-monitor
        add get_job_list and parse_jobs_list in tool_box
