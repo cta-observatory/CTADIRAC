@@ -79,7 +79,7 @@ def run_corsika_sst(args):
     # job setup
     job = Prod4CorsikaSSTJob()  # to be adjusted!!
     # override for testing
-    job.setName('Prod4_Corsika')
+    job.setName('Prod4_Corsika_SSTOnly')
     # parameters from command line
     job.set_site(args[1])
     job.set_particle(args[2])
@@ -101,11 +101,12 @@ def run_corsika_sst(args):
         # job.setDestination('LCG.CIEMAT.es')
         result = submit_wms(job)
     elif mode == 'TS':
-        job.base_path = '/vo.cta.in2p3.fr/MC/PRODTest/'
+        # job.base_path = '/vo.cta.in2p3.fr/MC/PRODTest/'
+        job.start_run_number = '100000'        
         job.run_number = '@{JOB_ID}'  # dynamic
         job.setupWorkflow(debug=False)
-        job.setType('MCSimulation')    
-        tag = '_test9_MCSimPostWorkflow_5k'
+        job.setType('MCSimulation')
+        tag = '_restart2'  # _test9_MCSimPostWorkflow_5k'
         trans_name = 'MC_Prod4_CorsikaSST_%s_%s_%s_%s%s' %\
                     (job.cta_site, job.particle, job.pointing_dir, job.zenith_angle, tag)
         result = submit_trans(job, trans_name)
