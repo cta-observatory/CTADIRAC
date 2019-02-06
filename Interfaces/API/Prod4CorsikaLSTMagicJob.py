@@ -31,6 +31,8 @@ class Prod4CorsikaLSTMagicJob(Prod4CorsikaSSTJob):
         self.version = '2018-11-07'
         self.configuration_id = 5
         self.cta_site = 'LaPalma'
+        self.output_pattern = 'Data/corsika/run*/*corsika.zst'
+
 
     def set_meta_data(self):
         """ define the common meta data of the application

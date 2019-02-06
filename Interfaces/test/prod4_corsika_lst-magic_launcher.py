@@ -90,7 +90,7 @@ def run_corsika_sst(args):
     # specific configuration
     if mode == 'WMS':
         job.base_path = '/vo.cta.in2p3.fr/user/b/bregeon'
-        job.start_run_number = '100'
+        job.start_run_number = '1000'
         job.run_number = '31'
         job.setupWorkflow(debug=True)
         # subtmit to the WMS for debug
