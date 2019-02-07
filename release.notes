@@ -1,3 +1,6 @@
+[v1r51p1]
+* JB : fix naming, and releases.cfg
+
 [v1r51p0]
 * JB : new Prod4CorsikaLSTMagicJob for #35807
        new prod4_corsika_lst-magic_launcher.py 
