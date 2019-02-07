@@ -98,12 +98,12 @@ def run_corsika_sst(args):
         # job.setDestination('LCG.CIEMAT.es')
         result = submit_wms(job)
     elif mode == 'TS':
-        job.base_path = '/vo.cta.in2p3.fr/MC/PRODTest/'
-        job.start_run_number = '100000'        
+        job.base_path = '/vo.cta.in2p3.fr/MC/PROD4/'
+#        job.start_run_number = '100000'        
         job.run_number = '@{JOB_ID}'  # dynamic
         job.setupWorkflow(debug=False)
         job.setType('MCSimulation')
-        tag = ''
+        tag = 'v2'
         trans_name = 'MC_Prod4_CorsikaLSTMagic_%s_%s_%s_%s%s' %\
                     (job.cta_site, job.particle, job.pointing_dir, job.zenith_angle, tag)
         result = submit_trans(job, trans_name)
