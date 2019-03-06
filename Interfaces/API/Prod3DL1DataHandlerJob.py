@@ -124,7 +124,7 @@ class Prod3DL1DataHandlerJob(Job):
         file_md_json = json.dumps(file_meta_data)
         output_pattern = './Data/*.h5'
         scripts = '../CTADIRAC/Core/scripts'
-        dmStep = self.setExecutable(scripts + '/cta-analysis-managedata.py',
+        dmStep = self.setExecutable(scripts + '/cta-prod-managedata.py',
                             arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s'" %\
                             (md_json, md_field_json, file_md_json, self.base_path,
                             output_pattern, self.package, self.program_category,

@@ -60,7 +60,7 @@ def submit_wms(job):
     @todo launch job locally
     """
     dirac = Dirac()
-    base_path = '/vo.cta.in2p3.fr/MC/PROD3/LaPalma/proton/simtel/1602/Data/000xxx/'
+    base_path = '/vo.cta.in2p3.fr/MC/PROD3/LaPalma/proton/simtel/1602/Data/000xxx'
     input_data = ['%s/proton_20deg_0deg_run100___cta-prod3-demo-2147m-LaPalma-baseline.simtel.gz' % base_path]
 
     job.setInputData(input_data)
@@ -77,7 +77,7 @@ def launch_job(args):
         Parameters:
         args -- mode (trans_name dataset_name group_size)
     """
-    DIRAC.gLogger.notice('run_evndisp_sst')
+    DIRAC.gLogger.notice('launch_job')
     # get arguments
     mode = args[0]
 
@@ -103,7 +103,7 @@ def launch_job(args):
         job.set_meta_data(simtel_meta_data)
         job.setupWorkflow(debug=True)
         # subtmit to the WMS for debug
-        job.setDestination('LCG.IN2P3-CC.fr')
+#        job.setDestination('LCG.IN2P3-CC.fr')
         result = submit_wms(job)
     elif mode == 'TS':
         input_meta_query = get_dataset_MQ(dataset_name)
