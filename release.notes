@@ -1,3 +1,6 @@
+[v1r5xx]
+* JB : new Prod3DL1DataHandlerJob and prod3_dl1_data_handler_launcher script # 35992
+
 [v1r51p1]
 * JB : fix naming, and releases.cfg
 
