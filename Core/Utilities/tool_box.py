@@ -72,6 +72,8 @@ def run_number_from_filename(filename, package):
             run_number = int(filename.split('-')[0])  # old default
     elif package == 'image_extractor':
         run_number = int(filename.split('srun')[1].split('-')[0])
+    elif package == 'dl1_data_handler':
+        run_number = int(filename.split('runs')[1].split('-')[0])
     return run_number
 
 def check_dataset_query(dataset_name):
