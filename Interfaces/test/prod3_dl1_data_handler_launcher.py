@@ -61,7 +61,9 @@ def submit_wms(job):
     """
     dirac = Dirac()
     base_path = '/vo.cta.in2p3.fr/MC/PROD3/LaPalma/proton/simtel/1602/Data/000xxx'
-    input_data = ['%s/proton_20deg_0deg_run100___cta-prod3-demo-2147m-LaPalma-baseline.simtel.gz' % base_path]
+    input_data = ['%s/proton_20deg_0deg_run100___cta-prod3-demo-2147m-LaPalma-baseline.simtel.gz' % base_path,
+                  '%s/proton_20deg_0deg_run101___cta-prod3-demo-2147m-LaPalma-baseline.simtel.gz' % base_path,
+                  '%s/proton_20deg_0deg_run102___cta-prod3-demo-2147m-LaPalma-baseline.simtel.gz' % base_path]
 
     job.setInputData(input_data)
     job.setJobGroup('DL1DataHandlerJob')
@@ -102,6 +104,7 @@ def launch_job(args):
                            'nsb': 1}
         job.set_meta_data(simtel_meta_data)
         job.setupWorkflow(debug=True)
+        job.setType('EvnDisp3')  # mandatory *here*
         # subtmit to the WMS for debug
 #        job.setDestination('LCG.IN2P3-CC.fr')
         result = submit_wms(job)

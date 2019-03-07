@@ -123,15 +123,15 @@ class Prod3DL1DataHandlerJob(Job):
         file_meta_data = {}
         file_md_json = json.dumps(file_meta_data)
         output_pattern = './Data/*.h5'
-        scripts = '../CTADIRAC/Core/scripts'
-        dmStep = self.setExecutable(scripts + '/cta-prod-managedata.py',
-                            arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s'" %\
-                            (md_json, md_field_json, file_md_json, self.base_path,
-                            output_pattern, self.package, self.program_category,
-                            self.catalogs),
-                            logFile='DataManagement_Log.txt')
-        dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
-        dmStep['Value']['descr_short'] = 'Save data files to SE and register them in DFC'
+        scripts = '../CTADIRAC/Core/scripts/'
+        dm_step = self.setExecutable(scripts + 'cta-prod-managedata.py',
+                                     arguments="'%s' '%s' '%s' %s '%s' %s %s '%s' Data" %
+                                     (md_json, md_field_json, file_md_json,
+                                      self.base_path, output_pattern, self.package,
+                                      self.program_category, self.catalogs),
+                                     logFile='DataManagement_Log.txt')
+        dm_step['Value']['name'] = 'Step%i_DataManagement' % iStep
+        dm_step['Value']['descr_short'] = 'Save files to SE and register them in DFC'
         iStep += 1
 
         # register Log
@@ -149,7 +149,7 @@ class Prod3DL1DataHandlerJob(Job):
 
         # step 6 -- to be removed -- debug only
         if debug:
-            lsStep = self.setExecutable('/bin/ls -alhtr ./ ./Data',
+            lsStep = self.setExecutable('/bin/ls -alhtr',
                                         logFile='LS_End_Log.txt')
             lsStep['Value']['name'] = 'Step%i_LS_End' % iStep
             lsStep['Value']['descr_short'] = 'list files in working and Data directory'
