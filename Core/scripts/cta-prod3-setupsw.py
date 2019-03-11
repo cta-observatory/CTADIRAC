@@ -14,7 +14,7 @@ from DIRAC.Core.Base import Script
 
 Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      'Usage:',
-                                     '  %s package version (arch)' % Script.scriptName,
+                                     '  %s package version [program_category] [arch]' % Script.scriptName,
                                      'Arguments:',
                                      '  package: corsika_simhessarray',
                                      '  version: 2015-06-02',
@@ -33,19 +33,22 @@ def setupSoftware( args ):
     args -- a list of arguments in order [package, version, arch]
   """
   # check number of arguments
-  if len( args ) not in [2, 3]:
-    Script.gLogger.notice()
+  if len( args ) < 2:
     Script.showHelp()
     return DIRAC.S_ERROR( 'Wrong number of arguments' )
 
   # get arguments
   package = args[0]
   version = args[1]
+  program_category = 'simulations' 
+  if len( args ) >= 3:
+    program_category = args[2]
   arch = "sl6-gcc44"
-  if len( args ) == 3:
-    arch = args[2]
+  if len( args ) == 4:
+    arch = args[3]
 
-  prod3swm = Prod3SoftwareManager( soft_category = {package:"simulations"} )
+  soft_category = {package:program_category}
+  prod3swm = Prod3SoftwareManager( soft_category )
   # check if and where Package is installed
   res = prod3swm.checkSoftwarePackage( package, version, arch )
   if not res['OK']:
