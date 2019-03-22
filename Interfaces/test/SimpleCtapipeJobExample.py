@@ -28,6 +28,7 @@ from CTADIRAC.Interfaces.API.SimpleCtapipeJob import SimpleCtapipeJob
 from DIRAC.Interfaces.API.Dirac import Dirac
 from DIRAC.Core.Workflow.Parameter import Parameter
 from DIRAC.Resources.Catalog.FileCatalogClient import FileCatalogClient
+from CTADIRAC.Core.Utilities.tool_box import read_lfns_from_file
 
 # Default values
 backend = 'TS'
@@ -64,18 +65,6 @@ if backend == 'TS' and trans_name is None:
   DIRAC.gLogger.error('Missing --trans_name argument')
   DIRAC.exit(-1)
   
-def read_lfns_from_file(file_path):
-    """ Read a simple list of LFNs from an ASCII files,
-    expects just one LFN per line
-    """
-    content = open(file_path, 'r').readlines()
-    input_file_list = []
-    for line in content:
-        infile = line.strip()
-        if line != "\n":
-            input_file_list.append(infile)
-    return input_file_list
-
 def submit_trans(job, trans_name, infileList, group_size):
     """ Create a transformation executing the job workflow
     """

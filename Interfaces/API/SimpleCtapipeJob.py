@@ -18,6 +18,7 @@ import yaml
 import DIRAC
 from DIRAC.Interfaces.API.Job import Job
 from DIRAC.Resources.Catalog.FileCatalogClient import FileCatalogClient
+from CTADIRAC.Core.Utilities.tool_box import DATA_LEVEL_METADATA_ID
 
 
 class SimpleCtapipeJob(Job):
@@ -41,14 +42,13 @@ class SimpleCtapipeJob(Job):
         self.package = 'ctapipe'
         self.program_category = 'calibimgreco'
         self.version = 'v0.5.3'
-        self.configuration_id = -1
-        self.output_data_level = 1
+        self.configuration_id = 1 # To be set according to the input dataset
         # ctapipe params
         self.max_events = '10000000000'
         self.cam_ids = "LSTCam NectarCam"
         ########################################################################
         # data management params
-        self.basepath = '/vo.cta.in2p3.fr/user/a/arrabito/MC/PROD3/'
+        self.basepath = '/vo.cta.in2p3.fr/MC/PROD3/'
         self.metadata = collections.OrderedDict()
         self.filemetadata = {}
         self.catalogs = json.dumps(['DIRACFileCatalog', 'TSCatalog'])
@@ -131,7 +131,7 @@ class SimpleCtapipeJob(Job):
         self.metadata['thetaP'] = thetaP
         self.metadata[self.program_category+'_prog'] = self.package
         self.metadata[self.program_category+'_prog_version'] = self.version
-        self.metadata['data_level'] = self.output_data_level
+        self.metadata['data_level'] = DATA_LEVEL_METADATA_ID[self.output_type]
         self.metadata['configuration_id'] = self.configuration_id
 
     def setupWorkflow(self, debug=False):
