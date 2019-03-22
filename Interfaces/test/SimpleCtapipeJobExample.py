@@ -58,6 +58,7 @@ if output_type is None:
   DIRAC.exit(-1)
 elif output_type not in ['DL1','DL2']:
   DIRAC.gLogger.error('Wrong --output_type')
+  Script.showHelp()
   DIRAC.exit(-1)
   
 if config_file is None:
