@@ -56,6 +56,9 @@ for switch in Script.getUnprocessedSwitches():
 if output_type is None:
   DIRAC.gLogger.error('Missing --output_type argument')
   DIRAC.exit(-1)
+elif output_type not in ['DL1','DL2']:
+  DIRAC.gLogger.error('Wrong --output_type')
+  DIRAC.exit(-1)
   
 if config_file is None:
   DIRAC.gLogger.error('Missing --config_file argument')

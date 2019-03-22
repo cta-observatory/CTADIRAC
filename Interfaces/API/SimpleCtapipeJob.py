@@ -176,9 +176,10 @@ class SimpleCtapipeJob(Job):
             ctapipe_exe = './dirac_ctapipe_dl2'
             ctapipe_args = "--config_file %s --max_events %s --mode %s --force_tailcut_for_extended_cleaning %s --cam_ids '%s'" % \
                             ( self.ana_cfg, self.max_events, mode, self.force_tailcut_for_extended_cleaning, self.cam_ids )
-            step = self.setExecutable(ctapipe_exe, arguments = ctapipe_args, logFile='Ctapipe_Log.txt')
-            step['Value']['name'] = 'Step%i_Ctapipe' % iStep
-            step['Value']['descr_short'] = 'Run Ctapipe'
+
+          step = self.setExecutable(ctapipe_exe, arguments = ctapipe_args, logFile='Ctapipe_Log.txt')
+          step['Value']['name'] = 'Step%i_Ctapipe' % iStep
+          step['Value']['descr_short'] = 'Run Ctapipe'
             iStep += 1
             
           # step 4: run merge tables (if only 1 file is found the script exits gracefully)
