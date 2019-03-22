@@ -59,12 +59,9 @@ class SimpleCtapipeJob(Job):
         Parameters:
         config_file -- configuration file for ctapipe
         """
-        try:
-          with open(name, 'r') as stream:
-            cfg = yaml.load(stream)
-        except FileNotFoundError as e:
-          print e
-          raise
+        with open(config_file, 'r') as stream:
+          cfg = yaml.load(stream)
+          
         return cfg    
         
     def setConfig(self, config_file):
@@ -94,9 +91,9 @@ class SimpleCtapipeJob(Job):
         self.performance = cfg['Performance']
 
     def getInputfile(self):
-        """ Select the input file with the list of LFNs according to the configuration
+      """ Select the input file with the list of LFNs according to the configuration
             and return the selected input file
-        """
+      """
       input_file = {}
       if self.estimate_energy is False and self.output_type == 'DL1':
         input_file['gamma'] = self.energyRegressor['gamma_list']
@@ -180,7 +177,7 @@ class SimpleCtapipeJob(Job):
           step = self.setExecutable(ctapipe_exe, arguments = ctapipe_args, logFile='Ctapipe_Log.txt')
           step['Value']['name'] = 'Step%i_Ctapipe' % iStep
           step['Value']['descr_short'] = 'Run Ctapipe'
-            iStep += 1
+          iStep += 1
             
           # step 4: run merge tables (if only 1 file is found the script exits gracefully)
           ctapipe_exe = './dirac_ctapipe_merge_tables'
