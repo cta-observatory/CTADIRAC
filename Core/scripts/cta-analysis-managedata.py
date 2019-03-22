@@ -32,8 +32,10 @@ def getRunNumber(filename, package):
             run_number = int(filename.split('run')[1].split('___cta')[0])
         else:
             run_number = int(filename.split('-')[0])  # old default
-    elif package == 'image_extractor':
-        run_number = int(filename.split('srun')[1].split('-')[0])
+    elif package == 'ctapipe':
+        run_number = filename.split('run')[1].split('.h5')[0]
+        if '-' in run_number:
+          run_number = run_number.split('-')[0]  
     return str(run_number)
 
 ####################################################
