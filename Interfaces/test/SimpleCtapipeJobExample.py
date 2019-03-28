@@ -105,12 +105,28 @@ def submit_trans(job, trans_name, infileList, group_size):
 
     return res
 
+def submit_ParamJobs( job, infileList ):
+  """ Submit parametric jobs to the WMS  """
+  
+  job.setParameterSequence( 'InputData', infileList, addToWorkflow = 'ParametricInputData' )
+  job.setOutputData( ['*.h5'], outputPath='ctapipe_data2' )
+  job.setName( 'ctapipejob' )
+  # To allow jobs run at other sites than the site where the InputData are located
+  #job.setType( 'DataReprocessing' )
+
+  dirac = Dirac()
+  res = dirac.submit( job )
+
+  if res['OK']:
+    Script.gLogger.notice( 'Submission Result: ', res['Value'] )
+
+  return res
+
 def submit_WMS(job, infileList):
     """ Submit the job locally or to the WMS
     """
     dirac = Dirac()
     job.setInputData(infileList)
-    job.setJobGroup('SimpleCtapipeTest')
     res = dirac.submit(job)
     if res['OK']:
       Script.gLogger.notice('Submission Result: ', res['Value'])
@@ -150,9 +166,12 @@ def run_ctapipe():
     # add the sequence of the xecutables 
     job.setupWorkflow(debug=True)
 
-    # submit to the WMS for debug
+    # submit parametric jobs to WMS
+    if backend == 'ParamJobs':
+        res = submit_ParamJobs(job, input_file_list)
+    # submit a single job to WMS for debug 
     if backend == 'WMS':
-        res = submit_WMS(job, input_file_list[:group_size])
+        res = submit_ParamJobs(job, input_file_list)
     # submit to the Transformation System
     elif backend == 'TS':
         res = submit_trans(job, trans_name, input_file_list, group_size)
