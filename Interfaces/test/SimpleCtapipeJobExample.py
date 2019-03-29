@@ -11,7 +11,7 @@ Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      '  %s [option|cfgfile] ...' % Script.scriptName ] ) )
 
 # switches for job configuration
-Script.registerSwitch('', 'backend=', 'Backend: TS or WMS, default=WMS')
+Script.registerSwitch('', 'backend=', 'Backend: TS,WMS,paramWMS default=WMS')
 Script.registerSwitch('', 'trans_name=', 'Transformation name, mandatory for backend=TS')
 Script.registerSwitch('', 'group_size=', 'Nb of input files per job, default=1')
 #  switches for ctapipe
@@ -31,7 +31,7 @@ from DIRAC.Resources.Catalog.FileCatalogClient import FileCatalogClient
 from CTADIRAC.Core.Utilities.tool_box import read_lfns_from_file
 
 # Default values
-backend = 'TS'
+backend = 'WMS'
 trans_name = None
 group_size = 1
 config_file = None
@@ -105,14 +105,12 @@ def submit_trans(job, trans_name, infileList, group_size):
 
     return res
 
-def submit_ParamJobs( job, infileList ):
+def submit_paramWMS( job, infileList ):
   """ Submit parametric jobs to the WMS  """
   
   job.setParameterSequence( 'InputData', infileList, addToWorkflow = 'ParametricInputData' )
   job.setOutputData( ['*.h5'], outputPath='ctapipe_data2' )
   job.setName( 'ctapipejob' )
-  # To allow jobs run at other sites than the site where the InputData are located
-  #job.setType( 'DataReprocessing' )
 
   dirac = Dirac()
   res = dirac.submit( job )
@@ -141,7 +139,7 @@ def run_ctapipe():
     
     # create and common job configuration
     job = SimpleCtapipeJob(cpuTime=432000)
-    job.setName('test_prod_full_array_north_zen20_az0_complete')
+    job.setName('ctapipe job')
     job.version = 'v0.6.2'
     job.setType('DataReprocessing')  # Needed for job meshing. Check Operations/CTA/JobTypeMapping on the CS
     job.setOutputSandbox(['*Log.txt'])
@@ -167,11 +165,11 @@ def run_ctapipe():
     job.setupWorkflow(debug=True)
 
     # submit parametric jobs to WMS
-    if backend == 'ParamJobs':
-        res = submit_ParamJobs(job, input_file_list)
+    if backend == 'paramWMS':
+        res = submit_paramWMS(job, input_file_list)
     # submit a single job to WMS for debug 
     if backend == 'WMS':
-        res = submit_ParamJobs(job, input_file_list)
+        res = submit_WMS(job, input_file_list)
     # submit to the Transformation System
     elif backend == 'TS':
         res = submit_trans(job, trans_name, input_file_list, group_size)
