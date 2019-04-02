@@ -33,6 +33,7 @@ class Prod3MCUserJob( Job ) :
     self.outputpattern = './*simtel.gz' 
     self.outputpath = '/vo.cta.in2p3.fr/user/a/arrabito'
     self.outputSE = json.dumps(['CC-IN2P3-USER','DESY-ZN-USER'])
+    self.runType = 'corsika'
 
   def setPackage(self, package):
     """ Set package name : e.g. 'corsika_simhessarray'
@@ -89,33 +90,36 @@ class Prod3MCUserJob( Job ) :
     iStep+=1
 
     ### execute corsika step
-    csStep = self.setExecutable( './cta-prod3-corsika.py',
-                             arguments="%s"% (self.input_card),\
-                             ## optionally one can add a prefix to be used to build the output file name
-                             #arguments="%s %s"% (self.input_card, 'outprefix' ),\
-                             logFile='Corsika_Log.txt')
-    csStep['Value']['name'] = 'Step%i_Corsika' % iStep
-    csStep['Value']['descr_short'] = 'Run corsika'
-    iStep+=1
+    if self.runType == 'corsika':
+        csStep = self.setExecutable( './cta-prod3-corsika.py',
+                                 arguments="%s"% (self.input_card),\
+                                 ## optionally one can add a prefix to be used to build the output file name
+                                 #arguments="%s %s"% (self.input_card, 'outprefix' ),\
+                                 logFile='Corsika_Log.txt')
+        csStep['Value']['name'] = 'Step%i_Corsika' % iStep
+        csStep['Value']['descr_short'] = 'Run corsika'
+        iStep+=1
 
     #### execute simtel_array step
-    #simStep = self.setExecutable( './dirac_prod3_simtel_only',
-    #                          arguments='%s %s'% (self.simtelcfg, self.simtelopts),\
-    #                          logFile='Simtel_Log.txt')
-    #simStep['Value']['name'] = 'Step%i_Simtel' % iStep
-    #simStep['Value']['descr_short'] = 'Run sim_telarray'
-    #iStep+=1
+    if self.runType == 'simtel':
+        simStep = self.setExecutable( './dirac_prod3_simtel_only',
+                                  arguments='%s %s'% (self.simtelcfg, self.simtelopts),\
+                                  logFile='Simtel_Log.txt')
+        simStep['Value']['name'] = 'Step%i_Simtel' % iStep
+        simStep['Value']['descr_short'] = 'Run sim_telarray'
+        iStep+=1
 
     # execute read_cta step
-    #res = sourceEnv(600, ['prod3_types'], {} )
-    #read_cta_opts=res['outputEnv']['read_cta_opts']
+    if self.runType == 'readcta':
+        res = sourceEnv(600, ['prod3_types'], {} )
+        read_cta_opts=res['outputEnv']['read_cta_opts']
 
-    #rctaStep = self.setExecutable( './dirac_prod3_read_cta', \
-    #                               arguments = "-q -r 4 -u --min-trg-tel 2 %s" % (read_cta_opts),
-    #                            logFile = 'ReadCta_Log.txt' )
-    #rctaStep['Value']['name'] = 'Step%i_ReadCta' % iStep
-    #rctaStep['Value']['descr_short'] = 'Run ReadCta'
-    #iStep += 1
+        rctaStep = self.setExecutable( './dirac_prod3_read_cta', \
+                                       arguments = "-q -r 4 -u --min-trg-tel 2 %s" % (read_cta_opts),
+                                    logFile = 'ReadCta_Log.txt' )
+        rctaStep['Value']['name'] = 'Step%i_ReadCta' % iStep
+        rctaStep['Value']['descr_short'] = 'Run ReadCta'
+        iStep += 1
 
     # ## put and register files step (to be used in replacement of setOutputData of Job API)
     #dmStep = self.setExecutable( '../CTADIRAC/Core/scripts/cta-user-managedata.py',
