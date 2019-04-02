@@ -57,6 +57,7 @@ def runProd3( args = None ):
   # set package version: to be set before setupWorkflow
   job.setPackage('corsika_simhessarray')
   job.setVersion( '2017-09-01' )
+  job.runType = 'readcta'
   
    ## set job attributes
   job.setOutputSandbox( ['*Log.txt'] )

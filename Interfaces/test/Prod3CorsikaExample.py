@@ -38,6 +38,7 @@ def runProd3( args = None ):
   job.setPackage('corsika_simhessarray')
   job.setVersion( '2017-04-19' )
   job.setInputCard( input_card )
+  job.runType = 'corsika'
 
   # ## setup workflow: set executable and parameters
   job.setupWorkflow()
