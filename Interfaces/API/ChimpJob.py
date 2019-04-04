@@ -87,7 +87,7 @@ class ChimpJob( Job ) :
         iStep+=1
       
     # step 2  
-    swStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-setupsw',
+    swStep = self.setExecutable( 'cta-prod3-setupsw',
                               arguments='%s %s'% (self.package, self.version),\
                               logFile='SetupSoftware_Log.txt')
     swStep['Value']['name'] = 'Step%i_SetupSoftware' % iStep
@@ -96,7 +96,7 @@ class ChimpJob( Job ) :
 
     # step 2bis
     # arguments are nbFiles=0 (not used) and fileSize=100kB
-    eivStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-verifysteps', \
+    eivStep = self.setExecutable( 'cta-prod3-verifysteps', \
                               arguments = 'analysisinputs 0 100', \
                               logFile = 'Verify_AnalysisInputs_Log.txt' )
     eivStep['Value']['name'] = 'Step%i_VerifyAnalysisInputs' % iStep
@@ -122,7 +122,7 @@ class ChimpJob( Job ) :
 
     fmdjson = json.dumps( self.filemetadata )
 
-    dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
+    dmStep = self.setExecutable( 'cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s" % ( mdjson, mdfieldjson, fmdjson, self.basepath, self.outputpattern, self.package ),
                               logFile = 'DataManagement_Log.txt' )
     dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep

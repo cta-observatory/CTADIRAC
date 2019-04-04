@@ -85,7 +85,7 @@ class ReadCta3Job( Job ) :
         iStep+=1
       
     # step 2  
-    swStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-setupsw',
+    swStep = self.setExecutable( 'cta-prod3-setupsw',
                               arguments='%s %s'% (self.package, self.version),\
                               logFile='SetupSoftware_Log.txt')
     swStep['Value']['name'] = 'Step%i_SetupSoftware' % iStep
@@ -94,7 +94,7 @@ class ReadCta3Job( Job ) :
 
     # step 2bis
     # arguments are nbFiles=0 (not used) and fileSize=100kB
-    inStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-verifysteps', \
+    inStep = self.setExecutable( 'cta-prod3-verifysteps', \
                               arguments = 'analysisinputs 0 100', \
                               logFile = 'Verify_ReadCtaInputs_Log.txt' )
     inStep['Value']['name'] = 'Step%i_VerifyReadCtaInputs' % iStep
@@ -124,7 +124,7 @@ class ReadCta3Job( Job ) :
     fmdjson = json.dumps( self.filemetadata )
 
     ## Upload Data files
-    dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
+    dmStep = self.setExecutable( 'cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s" % ( mdjson, mdfieldjson, fmdjson, self.basepath, self.outputpattern, self.package ),
                               logFile = 'DataManagement_Log.txt' )
     dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
@@ -134,7 +134,7 @@ class ReadCta3Job( Job ) :
     # Upload Histogram files and use 'Log' as outputType
     self.outputpattern = './*hdata-dst0.gz'
 
-    dmStep = self.setExecutable( '$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
+    dmStep = self.setExecutable( 'cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s %s" % ( mdjson, mdfieldjson, fmdjson, self.basepath, self.outputpattern, self.package, 'Log'),
                               logFile = 'DataManagement_Log.txt' )
     dmStep['Value']['name'] = 'Step%i_DataManagement' % iStep
