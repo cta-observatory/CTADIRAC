@@ -93,7 +93,7 @@ class Prod4SimtelLSTMagicJob(Job):
 
         # step 3 - running
         evStep = self.setExecutable('./dirac_prod4_lst-magic_simtel',
-                                    arguments = "--taskid %s" % self.ts_task_id),
+                                    arguments = "--taskid %s" % self.ts_task_id,
                                     logFile='Simtel_Log.txt')
         evStep['Value']['name'] = 'Step%i_Simtel' % i_step
         evStep['Value']['descr_short'] = 'Run Simtel'
