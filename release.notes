@@ -1,3 +1,6 @@
+[v1r52px]
+* JB : handle Divergent configuration id
+
 [v1r52p3]
 * LA : First working version of ctapipe transformation interface
 
