@@ -60,25 +60,25 @@ def submit_wms(job):
     @todo launch job locally
     """
     dirac = Dirac()
-    base_path = '/vo.cta.in2p3.fr/MC/PROD4/LaPalma/gamma/corsika/1897/Data/000xxx/'
+    base_path = '/vo.cta.in2p3.fr/MC/PROD4/LaPalma/gamma/corsika/1897/Data/000xxx'
     input_data = ['%s/run1_gamma_za20deg_South-lapalma-lstmagic.corsika.zst' % base_path,
                   '%s/run3_gamma_za20deg_South-lapalma-lstmagic.corsika.zst' % base_path]
 
     job.setInputData(input_data)
-    job.setJobGroup('Prod4SimtelSSTJob')
+    job.setJobGroup('Prod4SimtelLSTMagicJob')
     result = dirac.submit(job)
     if result['OK']:
         Script.gLogger.notice('Submitted job: ', result['Value'])
     return result
 
-def run_simtel_sst(args):
-    """ Simple wrapper to create a Prod4SimtelSSTJob and setup parameters
+def run_simtel(args):
+    """ Simple wrapper to create a Prod4SimtelLSTMagicJob and setup parameters
         from positional arguments given on the command line.
 
         Parameters:
         args -- mode (trans_name dataset_name group_size)
     """
-    DIRAC.gLogger.notice('run_simtel_sst')
+    DIRAC.gLogger.notice('run_simtel')
     # get arguments
     mode = args[0]
 
@@ -108,7 +108,8 @@ def run_simtel_sst(args):
         job.set_meta_data(output_meta_data)
         job.setupWorkflow(debug=True)
         # subtmit to the WMS for debug
-        job.setDestination('LCG.IN2P3-CC.fr')
+        # job.setDestination('LCG.IN2P3-CC.fr')
+        job.setDestination('LCG.CNAF.it')
         result = submit_wms(job)
     elif mode == 'TS':
         input_meta_query = get_dataset_MQ(dataset_name)
@@ -133,7 +134,7 @@ if __name__ == '__main__':
     if len(arguments) not in [1, 4]:
         Script.showHelp()
     try:
-        result = run_simtel_sst(arguments)
+        result = run_simtel(arguments)
         if not result['OK']:
             DIRAC.gLogger.error(result['Message'])
             DIRAC.exit(-1)
