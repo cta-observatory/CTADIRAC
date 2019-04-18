@@ -5,4 +5,4 @@ From: centos:latest
 yum -y update && yum -y install git
 yum -y install wget
 yum -y install emacs
-yum -y install which
+
