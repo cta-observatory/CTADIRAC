@@ -1,4 +1,4 @@
-[v1r52px]
+[v1r52p8]
 * JB : handle Divergent configuration id
        add Prod4SimtelLSTMagicJob job wrapper and script
 
