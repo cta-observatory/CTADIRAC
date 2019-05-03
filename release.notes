@@ -1,3 +1,6 @@
+[v1r52px]
+* JB : Prod3DL1DataHandlerJob updated to handle test and train configs
+
 [v1r52p8]
 * JB : handle Divergent configuration id
        add Prod4SimtelLSTMagicJob job wrapper and script
