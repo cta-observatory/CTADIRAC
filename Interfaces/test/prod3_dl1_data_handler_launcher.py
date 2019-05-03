@@ -30,7 +30,7 @@ from DIRAC.Interfaces.API.Dirac import Dirac
 from CTADIRAC.Core.Utilities.tool_box import get_dataset_MQ
 
 
-def submit_trans(job, trans_name, mqJson, group_size):
+def submit_trans(job, trans_name, mqJson, group_size, with_file_mask=True):
     """ Create a transformation executing the job workflow
     """
     DIRAC.gLogger.notice('submit_trans : %s' % trans_name)
@@ -46,7 +46,8 @@ def submit_trans(job, trans_name, mqJson, group_size):
     trans.setLongDescription("Prod3 DL1 Data Handler conversion")  # mandatory
     trans.setBody(job.workflow.toXML())
     trans.setGroupSize(group_size)
-    trans.setFileMask(mqJson) # catalog query is defined here
+    if with_file_mask:
+        trans.setFileMask(mqJson) # catalog query is defined here
     result = trans.addTransformation()  # transformation is created here
     if not result['OK']:
         return result
@@ -94,6 +95,11 @@ def launch_job(args):
     job.setName('Prod3_DL1DataHandler')
     # output
     job.setOutputSandbox(['*Log.txt'])
+    # version
+    job.version = 'v0.7.4'
+    # configuration test or train "grid_config_test_02052019.yml"
+    job.split_md = 'train'
+    job.config_file_name = 'grid_config_%s_02052019.yml'%job.split_md
 
     # specific configuration
     if mode == 'WMS':
@@ -101,7 +107,7 @@ def launch_job(args):
         job.ts_task_id = '123'
         simtel_meta_data = {'array_layout': 'Baseline', 'site': 'LaPalma',
                            'particle': 'proton', 'phiP': 180.0, 'thetaP': 20.0,
-                           'nsb': 1}
+                           'nsb': 1, 'split':job.split_md}
         job.set_meta_data(simtel_meta_data)
         job.setupWorkflow(debug=True)
         job.setType('EvnDisp3')  # mandatory *here*
@@ -110,13 +116,13 @@ def launch_job(args):
         result = submit_wms(job)
     elif mode == 'TS':
         input_meta_query = get_dataset_MQ(dataset_name)
-        # refine output meta data if needed
+        # refine output directory meta data if needed
         output_meta_data = copy(input_meta_query)
         job.set_meta_data(output_meta_data)
         job.ts_task_id = '@{JOB_ID}'  # dynamic
         job.setupWorkflow(debug=False)
         job.setType('EvnDisp3')  # mandatory *here*
-        result = submit_trans(job, trans_name, json.dumps(input_meta_query), group_size)
+        result = submit_trans(job, trans_name, json.dumps(input_meta_query), group_size, with_file_mask=True)
     else:
         DIRAC.gLogger.error('1st argument should be the job mode: WMS or TS,\n\
                              not %s' % mode)
