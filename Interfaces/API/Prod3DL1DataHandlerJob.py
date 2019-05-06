@@ -106,8 +106,8 @@ class Prod3DL1DataHandlerJob(Job):
         iStep += 1
 
         # step 4
-        evStep = self.setExecutable('./dirac_process_runs --config %s'%
-                                    self.config_file_name,
+        evStep = self.setExecutable('./dirac_process_runs ',
+                                    arguments="--config %s"%self.config_file_name,
                                     logFile='dl1_handler_Log.txt')
         evStep['Value']['name'] = 'Step%i_dl1_data_handler' % iStep
         evStep['Value']['descr_short'] = 'Run the DL1 Data Handler'
