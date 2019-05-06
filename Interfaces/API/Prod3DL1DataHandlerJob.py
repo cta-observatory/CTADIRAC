@@ -89,8 +89,8 @@ class Prod3DL1DataHandlerJob(Job):
 
         # step 2
         swStep = self.setExecutable('cta-prod3-setupsw',
-                                    arguments='%s %s' %
-                                    (self.package, self.version),
+                                    arguments='%s %s %s' %
+                                    (self.package, self.version, self.program_category),
                                     logFile='SetupSoftware_Log.txt')
         swStep['Value']['name'] = 'Step%i_SetupSoftware' % iStep
         swStep['Value']['descr_short'] = 'Setup software'
