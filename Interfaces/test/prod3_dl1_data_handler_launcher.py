@@ -95,6 +95,11 @@ def launch_job(args):
     job.setName('Prod3_DL1DataHandler')
     # output
     job.setOutputSandbox(['*Log.txt'])
+    # version
+    job.version = 'v0.7.4'
+    # configuration test or train "grid_config_test_02052019.yml"
+    job.split_md = 'train'
+    job.config_file_name = 'grid_config_%s_02052019.yml'%job.split_md
 
     # specific configuration
     if mode == 'WMS':
@@ -102,7 +107,7 @@ def launch_job(args):
         job.ts_task_id = '123'
         simtel_meta_data = {'array_layout': 'Baseline', 'site': 'LaPalma',
                            'particle': 'proton', 'phiP': 180.0, 'thetaP': 20.0,
-                           'nsb': 1}
+                           'nsb': 1, 'split':job.split_md}
         job.set_meta_data(simtel_meta_data)
         job.setupWorkflow(debug=True)
         job.setType('EvnDisp3')  # mandatory *here*
@@ -111,7 +116,7 @@ def launch_job(args):
         result = submit_wms(job)
     elif mode == 'TS':
         input_meta_query = get_dataset_MQ(dataset_name)
-        # refine output meta data if needed
+        # refine output directory meta data if needed
         output_meta_data = copy(input_meta_query)
         job.set_meta_data(output_meta_data)
         job.ts_task_id = '@{JOB_ID}'  # dynamic
