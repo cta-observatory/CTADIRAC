@@ -3,7 +3,7 @@
 
   https://forge.in2p3.fr/issues/35992
                         March 6th 2019 - J. Bregeon
-  
+
 """
 
 __RCSID__ = "$Id$"
@@ -47,11 +47,11 @@ class Prod3DL1DataHandlerJob(Job):
         self.ts_task_id = 0
 
     def set_meta_data(self, simtel_md):
-        """ Set dl1_data_handler meta data 
+        """ Set dl1_data_handler meta data
 
         Parameters:
         simtel_md -- metadata dictionary as for simtel
-        """        
+        """
         self.metadata['array_layout'] = simtel_md['array_layout']
         self.metadata['site'] = simtel_md['site']
         self.metadata['particle'] = simtel_md['particle']
@@ -86,8 +86,8 @@ class Prod3DL1DataHandlerJob(Job):
 
         # step 2
         swStep = self.setExecutable('cta-prod3-setupsw',
-                                    arguments='%s %s' %
-                                    (self.package, self.version),
+                                    arguments='%s %s %s' %
+                                    (self.package, self.version, self.program_category),
                                     logFile='SetupSoftware_Log.txt')
         swStep['Value']['name'] = 'Step%i_SetupSoftware' % iStep
         swStep['Value']['descr_short'] = 'Setup software'
