@@ -98,7 +98,7 @@ def launch_job(args):
     # version
     job.version = 'v0.7.4'
     # configuration test or train "grid_config_test_02052019.yml"
-    job.split_md = 'train'
+    job.split_md = 'test'
     job.config_file_name = 'grid_config_%s_02052019.yml'%job.split_md
 
     # specific configuration
