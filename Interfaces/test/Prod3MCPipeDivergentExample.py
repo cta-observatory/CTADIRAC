@@ -112,17 +112,16 @@ def runProd3(args=None):
     # get dirac log files
     job.setOutputSandbox(['*Log.txt'])
 
-    # add the sequence of executables
-    job.run_number = '123'
-    job.setOutputData(['%s/Data/*.log.gz' % job.inputpath,
-                       '%s/Data/*.simtel.gz' % job.inputpath])
-    job.setupWorkflow(debug=True, register=False)
-
     # submit to the wms
-    res = submitWMS(job)
+#    job.run_number = '123'
+#    job.setOutputData(['%s/Data/*.log.gz' % job.inputpath,
+#                       '%s/Data/*.simtel.gz' % job.inputpath])
+#    job.setupWorkflow(debug=True, register=False)
+#    res = submitWMS(job)
 
     # submit to the Transformation System
-#    res = submitTS(job)
+    job.setupWorkflow(debug=False, register=True)
+    res = submitTS(job)
 
     # debug
     Script.gLogger.info(job.workflow)
