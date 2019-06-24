@@ -82,12 +82,13 @@ def runProd3(args=None):
     pointing = args[3]
     zenith = args[4]
     nShower = args[5]
+    div_cfg_id = args[6]
 
     # Job Wrapper
     job = Prod3MCPipeDivergentJob()
 
     # override for testing
-    job.setName('Div_LaPalma_20deg_%s' % particle)
+    job.setName('Div_LaPalma_20deg_%s_%s' % (particle, div_cfg_id))
 
     # package and version
     # job.setPackage('corsika_simhessarray')
@@ -107,7 +108,7 @@ def runProd3(args=None):
     job.run_number = '@{JOB_ID}'  # dynamicly resolved
 
     # Divergent configuration ID
-    job.div_cfg_id = 0
+    job.div_cfg_id = div_cfg_id
 
     # get dirac log files
     job.setOutputSandbox(['*Log.txt'])
@@ -131,7 +132,7 @@ def runProd3(args=None):
 
 if __name__ == '__main__':
     args = Script.getPositionalArgs()
-    if (len(args) != 6):
+    if (len(args) != 7):
         Script.showHelp()
     try:
         res = runProd3(args)

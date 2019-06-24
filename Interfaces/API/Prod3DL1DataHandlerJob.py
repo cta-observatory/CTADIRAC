@@ -3,7 +3,7 @@
 
   https://forge.in2p3.fr/issues/35992
                         March 6th 2019 - J. Bregeon
-  
+
 """
 
 __RCSID__ = "$Id$"
@@ -34,7 +34,7 @@ class Prod3DL1DataHandlerJob(Job):
         self.setName('dl1 data handler reduction')
         self.package = 'dl1_data_handler'
         self.program_category = 'calibimgreco'
-        self.version = 'v0.7.2'
+        self.version = 'v0.7.4'
         self.configuration_id = 1
         self.output_data_level = DATA_LEVEL_METADATA_ID['DL1']
         self.N_output_files = 1
@@ -45,13 +45,16 @@ class Prod3DL1DataHandlerJob(Job):
         self.metadata = collections.OrderedDict()
         self.catalogs = json.dumps(['DIRACFileCatalog', 'TSCatalog'])
         self.ts_task_id = 0
+        self.split_md = 'test'
+        self.config_file_name = 'grid_config_train_02052019.yml'
+
 
     def set_meta_data(self, simtel_md):
-        """ Set dl1_data_handler meta data 
+        """ Set dl1_data_handler meta data
 
         Parameters:
         simtel_md -- metadata dictionary as for simtel
-        """        
+        """
         self.metadata['array_layout'] = simtel_md['array_layout']
         self.metadata['site'] = simtel_md['site']
         self.metadata['particle'] = simtel_md['particle']
@@ -86,8 +89,8 @@ class Prod3DL1DataHandlerJob(Job):
 
         # step 2
         swStep = self.setExecutable('cta-prod3-setupsw',
-                                    arguments='%s %s' %
-                                    (self.package, self.version),
+                                    arguments='%s %s %s' %
+                                    (self.package, self.version, self.program_category),
                                     logFile='SetupSoftware_Log.txt')
         swStep['Value']['name'] = 'Step%i_SetupSoftware' % iStep
         swStep['Value']['descr_short'] = 'Setup software'
@@ -103,7 +106,8 @@ class Prod3DL1DataHandlerJob(Job):
         iStep += 1
 
         # step 4
-        evStep = self.setExecutable('./dirac_process_runs',
+        evStep = self.setExecutable('./dirac_process_runs ',
+                                    arguments="--config %s"%self.config_file_name,
                                     logFile='dl1_handler_Log.txt')
         evStep['Value']['name'] = 'Step%i_dl1_data_handler' % iStep
         evStep['Value']['descr_short'] = 'Run the DL1 Data Handler'
@@ -120,7 +124,7 @@ class Prod3DL1DataHandlerJob(Job):
         md_field_json = json.dumps(meta_data_field)
 
         # register Data
-        file_meta_data = {}
+        file_meta_data = {'split': self.split_md}
         file_md_json = json.dumps(file_meta_data)
         output_pattern = './Data/*.h5'
         scripts = '../CTADIRAC/Core/scripts/'

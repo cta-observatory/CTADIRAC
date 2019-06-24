@@ -1,8 +1,8 @@
-""" Launcher script script to launch a DL1 Data Handler conversion
+""" Launcher script to launch a Prod4SimtelLSTMagicJob
 on the WMS or create a Transformation.
 
-  https://forge.in2p3.fr/issues/35992
-                        March 6th 2019 - J. Bregeon
+    https://forge.in2p3.fr/issues/35807
+                    JB, April 2018
 """
 
 import json
@@ -17,20 +17,20 @@ Script.setUsageMessage('\n'.join([__doc__.split('\n')[1],
                                   '  trans_name: name of the transformation',
                                   '  input_dataset_name: name of the input dataset',
                                   '  group_size: n files to process',
-                                  '\ne.g: python %s.py WMS MyNewTrans Prod3_LaPalma_Baseline_NSB1x_gamma_North_20deg_DL0 5' % Script.scriptName,
+                                  '\ne.g: python %s.py WMS MyNewTrans Prod4-Paranal-gamma-North-DL-3 5' % Script.scriptName,
                                  ]))
 
 Script.parseCommandLine()
 
 import DIRAC
 from DIRAC.TransformationSystem.Client.Transformation import Transformation
-from CTADIRAC.Interfaces.API.Prod3DL1DataHandlerJob import Prod3DL1DataHandlerJob
+from CTADIRAC.Interfaces.API.Prod4SimtelLSTMagicJob import Prod4SimtelLSTMagicJob
 from DIRAC.Core.Workflow.Parameter import Parameter
 from DIRAC.Interfaces.API.Dirac import Dirac
 from CTADIRAC.Core.Utilities.tool_box import get_dataset_MQ
 
 
-def submit_trans(job, trans_name, mqJson, group_size, with_file_mask=True):
+def submit_trans(job, trans_name, mqJson, group_size):
     """ Create a transformation executing the job workflow
     """
     DIRAC.gLogger.notice('submit_trans : %s' % trans_name)
@@ -42,12 +42,11 @@ def submit_trans(job, trans_name, mqJson, group_size, with_file_mask=True):
     trans = Transformation()
     trans.setTransformationName(trans_name)  # this must be unique
     trans.setType("DataReprocessing")
-    trans.setDescription("Prod3 DL1 Data Handler TS")
-    trans.setLongDescription("Prod3 DL1 Data Handler conversion")  # mandatory
+    trans.setDescription("Prod4 Simtel TS")
+    trans.setLongDescription("Prod4 Simtel LST Magic processing")  # mandatory
     trans.setBody(job.workflow.toXML())
     trans.setGroupSize(group_size)
-    if with_file_mask:
-        trans.setFileMask(mqJson) # catalog query is defined here
+    trans.setFileMask(mqJson) # catalog query is defined here
     result = trans.addTransformation()  # transformation is created here
     if not result['OK']:
         return result
@@ -61,26 +60,25 @@ def submit_wms(job):
     @todo launch job locally
     """
     dirac = Dirac()
-    base_path = '/vo.cta.in2p3.fr/MC/PROD3/LaPalma/proton/simtel/1602/Data/000xxx'
-    input_data = ['%s/proton_20deg_0deg_run100___cta-prod3-demo-2147m-LaPalma-baseline.simtel.gz' % base_path,
-                  '%s/proton_20deg_0deg_run101___cta-prod3-demo-2147m-LaPalma-baseline.simtel.gz' % base_path,
-                  '%s/proton_20deg_0deg_run102___cta-prod3-demo-2147m-LaPalma-baseline.simtel.gz' % base_path]
+    base_path = '/vo.cta.in2p3.fr/MC/PROD4/LaPalma/gamma/corsika/1897/Data/000xxx'
+    input_data = ['%s/run1_gamma_za20deg_South-lapalma-lstmagic.corsika.zst' % base_path,
+                  '%s/run3_gamma_za20deg_South-lapalma-lstmagic.corsika.zst' % base_path]
 
     job.setInputData(input_data)
-    job.setJobGroup('DL1DataHandlerJob')
+    job.setJobGroup('Prod4SimtelLSTMagicJob')
     result = dirac.submit(job)
     if result['OK']:
         Script.gLogger.notice('Submitted job: ', result['Value'])
     return result
 
-def launch_job(args):
-    """ Simple launcher to instanciate a Job and setup parameters
+def run_simtel(args):
+    """ Simple wrapper to create a Prod4SimtelLSTMagicJob and setup parameters
         from positional arguments given on the command line.
 
         Parameters:
         args -- mode (trans_name dataset_name group_size)
     """
-    DIRAC.gLogger.notice('launch_job')
+    DIRAC.gLogger.notice('run_simtel')
     # get arguments
     mode = args[0]
 
@@ -90,39 +88,38 @@ def launch_job(args):
         group_size = int(args[3])
 
     # job setup - 72 hours
-    job = Prod3DL1DataHandlerJob(cpuTime=259200.)
+    job = Prod4SimtelLSTMagicJob(cpuTime=259200.)
     # override for testing
-    job.setName('Prod3_DL1DataHandler')
+    job.setName('Prod4_Simtel')
+    job.version='2018-11-07-lstmagic'
+
     # output
     job.setOutputSandbox(['*Log.txt'])
-    # version
-    job.version = 'v0.7.4'
-    # configuration test or train "grid_config_test_02052019.yml"
-    job.split_md = 'test'
-    job.config_file_name = 'grid_config_%s_02052019.yml'%job.split_md
 
     # specific configuration
     if mode == 'WMS':
         job.base_path = '/vo.cta.in2p3.fr/user/b/bregeon'
-        job.ts_task_id = '123'
-        simtel_meta_data = {'array_layout': 'Baseline', 'site': 'LaPalma',
-                           'particle': 'proton', 'phiP': 180.0, 'thetaP': 20.0,
-                           'nsb': 1, 'split':job.split_md}
-        job.set_meta_data(simtel_meta_data)
+        job.ts_task_id = '1'
+        output_meta_data = {'array_layout': 'Baseline-LSTMagic', 'site': 'LaPalma',
+                           'particle': 'gamma', 'phiP': 0.0, 'thetaP': 20.0,
+                           job.program_category + '_prog': 'simtel',
+                           job.program_category + '_prog_version': job.version,
+                           'data_level': 0, 'configuration_id': job.configuration_id}
+        job.set_meta_data(output_meta_data)
         job.setupWorkflow(debug=True)
-        job.setType('EvnDisp3')  # mandatory *here*
         # subtmit to the WMS for debug
-#        job.setDestination('LCG.IN2P3-CC.fr')
+        # job.setDestination('LCG.IN2P3-CC.fr')
+        job.setDestination('LCG.CNAF.it')
         result = submit_wms(job)
     elif mode == 'TS':
         input_meta_query = get_dataset_MQ(dataset_name)
-        # refine output directory meta data if needed
+        # refine output meta data if needed
         output_meta_data = copy(input_meta_query)
         job.set_meta_data(output_meta_data)
         job.ts_task_id = '@{JOB_ID}'  # dynamic
         job.setupWorkflow(debug=False)
         job.setType('EvnDisp3')  # mandatory *here*
-        result = submit_trans(job, trans_name, json.dumps(input_meta_query), group_size, with_file_mask=True)
+        result = submit_trans(job, trans_name, json.dumps(input_meta_query), group_size)
     else:
         DIRAC.gLogger.error('1st argument should be the job mode: WMS or TS,\n\
                              not %s' % mode)
@@ -137,7 +134,7 @@ if __name__ == '__main__':
     if len(arguments) not in [1, 4]:
         Script.showHelp()
     try:
-        result = launch_job(arguments)
+        result = run_simtel(arguments)
         if not result['OK']:
             DIRAC.gLogger.error(result['Message'])
             DIRAC.exit(-1)

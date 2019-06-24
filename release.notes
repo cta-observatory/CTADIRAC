@@ -1,3 +1,10 @@
+[v1r52p9]
+* JB : Prod3DL1DataHandlerJob updated to handle test and train configs
+
+[v1r52p8]
+* JB : handle Divergent configuration id
+       add Prod4SimtelLSTMagicJob job wrapper and script
+
 [v1r52p3]
 * LA : First working version of ctapipe transformation interface
 
@@ -16,7 +23,7 @@
 
 [v1r51p0]
 * JB : new Prod4CorsikaLSTMagicJob for #35807
-       new prod4_corsika_lst-magic_launcher.py 
+       new prod4_corsika_lst-magic_launcher.py
 
 [v1r50p4]
 * JB : new version of cta-prod-monitor
