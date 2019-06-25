@@ -1,3 +1,6 @@
+[v1r53]
+* LA : Update to DIRAC version v6r20p7
+
 [v1r52p9]
 * JB : Prod3DL1DataHandlerJob updated to handle test and train configs
 
