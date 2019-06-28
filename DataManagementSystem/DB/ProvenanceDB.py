@@ -7,11 +7,12 @@
 
 from sqlalchemy import desc
 from sqlalchemy.orm import sessionmaker, class_mapper, relationship
-from sqlalchemy.orm.query import Query
+from sqlalchemy.orm.exc import NoResultFound
+#from sqlalchemy.orm.query import Query
 from sqlalchemy.engine.reflection import Inspector
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine, func, Table, Column, MetaData, ForeignKey, \
-Integer, String, DateTime, Enum, BLOB, BigInteger, distinct
+Integer, String, DateTime, Enum, BLOB, exc, BigInteger, distinct
 
 from DIRAC import S_OK, S_ERROR, gLogger, gConfig
 from DIRAC.ConfigurationSystem.Client.Utilities import getDBParameters
@@ -336,15 +337,12 @@ class ProvenanceDB( object ):
     self.__getDBConnectionInfo( 'DataManagement/ProvenanceDB' )
 
     runDebug = ( gLogger.getLevel() == 'DEBUG' )
-    self.engine = create_engine( 'mysql://%s:%s@%s:%s/%s' % ( self.dbUser,
+    self.engine = create_engine( 'postgresql://%s:%s@%s:%s/%s' % ( self.dbUser,
                                                               self.dbPass,
                                                               self.dbHost,
                                                               self.dbPort,
                                                               self.dbName ),
                                  echo = runDebug )
-
-    #metadata.bind = self.engine
-    #self.DBSession = sessionmaker( bind = self.engine )
 
     self.sessionMaker_o = sessionmaker(bind=self.engine)
     self.inspector = Inspector.from_engine(self.engine)
@@ -362,3 +360,103 @@ class ProvenanceDB( object ):
     #print tablesInDB
     # sqlalchemy creates the database for me
     Base.metadata.create_all(self.engine)
+
+  def addActivity(self, cta_activity):
+
+    session = self.sessionMaker_o()
+
+    #if not session.query(exists().where(Activity.id==cta_activity['activity_uuid'])): # for the tests
+    current_activity = Activity(id=cta_activity['activity_uuid'])
+    current_activity.name=cta_activity['activity_name']
+    current_activity.startTime=cta_activity['start']['time_utc']
+    current_activity.endTime=cta_activity['stop']['time_utc']
+    current_activity.comment=''
+    current_activity.activityDescription_id=cta_activity['activity_name']+'_'+cta_activity['system']['ctapipe_version']
+
+    try:
+      session.add(current_activity)
+      # Association with the agent
+      wAW = WasAssociatedWith()
+      wAW.activity = cta_activity['activity_uuid']
+      wAW.agent    = "CTAO"
+      #wAW.role = ?
+      session.add(wAW)
+      session.commit()
+      return S_OK()
+    except exc.IntegrityError as err:
+      self.log.warn("insert: trying to insert a duplicate key? %s" % err)
+      session.rollback()
+    except exc.SQLAlchemyError as e:
+      session.rollback()
+      self.log.exception("insert: unexpected exception", lException=e)
+      return S_ERROR("insert: unexpected exception %s" % e)
+    finally:
+      session.close()
+
+
+  def addAgent(self, agentDict):
+    '''
+      Add Agent
+      :param agent:
+      :return:
+    '''
+    session = self.sessionMaker_o()
+
+    agent = Agent(id=agentDict['id'])
+    agent.name = agentDict['name']
+    agent.type = agentDict['type']
+
+    try:
+      session.add(agent)
+      session.commit()
+      return S_OK()
+    except exc.IntegrityError as err:
+      self.log.warn("insert: trying to insert a duplicate key? %s" % err)
+      session.rollback()
+    except exc.SQLAlchemyError as e:
+      session.rollback()
+      self.log.exception("insert: unexpected exception", lException=e)
+      return S_ERROR("insert: unexpected exception %s" % e)
+    finally:
+      session.close()
+
+  def getAgents(self):
+    '''
+      Get Agents
+      :return:
+    '''
+
+    session = self.sessionMaker_o()
+
+    try:
+      agent = session.query(Agent)
+      session.commit()
+      return S_OK(agent)
+    except NoResultFound, e:
+      return S_OK()
+    finally:
+      session.close()
+
+  def insert(self, row):
+    '''
+      Generic insert
+      :param row:
+      :return:
+    '''
+    session = self.sessionMaker_o()
+
+    try:
+      session.add(row)
+      session.commit()
+      return S_OK()
+    except exc.IntegrityError as err:
+      self.log.warn("insert: trying to insert a duplicate key? %s" % err)
+      session.rollback()
+    except exc.SQLAlchemyError as e:
+      session.rollback()
+      self.log.exception("insert: unexpected exception", lException=e)
+      return S_ERROR("insert: unexpected exception %s" % e)
+    finally:
+      session.close()
+
+

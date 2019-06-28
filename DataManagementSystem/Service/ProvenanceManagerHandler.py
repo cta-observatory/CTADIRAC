@@ -22,7 +22,7 @@ class ProvenanceManagerHandler(RequestHandler):
   __provenanceDB = None
 
   @classmethod
-  def initializeHandler(cls, serviceInfoDict):
+  def initializeHandler(cls):
     """ initialize handler """
 
     try:
@@ -32,5 +32,42 @@ class ProvenanceManagerHandler(RequestHandler):
       return S_ERROR(error)
 
     return S_OK()
-     # # create tables for empty db
-    #return cls.__provenanceDB.createTables()
+
+  def _parseRes(self, res):
+    if not res['OK']:
+      gLogger.error('ProvenanceManager failure', res['Message'])
+    return res
+
+  #types_insert = [basestring]
+
+  '''def export_insert(cls, row):
+    result = cls.__provenanceDB.insert(row)
+    if not result["OK"]:
+      return result
+
+    return S_OK()'''
+
+  types_addAgent = [dict]
+
+  def export_addAgent(cls, agentDict):
+    '''
+    Insert Agent
+    :param agentDict
+    :return:
+    '''
+    if isinstance(agentDict, dict):
+      res = cls.__provenanceDB.addAgent(agentDict)
+
+    return cls._parseRes(res)
+
+  types_getAgents = []
+
+  def export_getAgents(cls):
+    '''
+    Insert Agent
+    :param agentDict
+    :return:
+    '''
+
+    res = cls.__provenanceDB.getAgents()
+    return cls._parseRes(res)
