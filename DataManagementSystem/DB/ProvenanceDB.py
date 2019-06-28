@@ -1,31 +1,25 @@
 """ DIRAC Provenance DB
 """
 
-
-
 # imports
-
 from sqlalchemy import desc
 from sqlalchemy.orm import sessionmaker, class_mapper, relationship
 from sqlalchemy.orm.exc import NoResultFound
-#from sqlalchemy.orm.query import Query
 from sqlalchemy.engine.reflection import Inspector
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine, func, Table, Column, MetaData, ForeignKey, \
 Integer, String, DateTime, Enum, BLOB, exc, BigInteger, distinct
 
+# from DIRAC
 from DIRAC import S_OK, S_ERROR, gLogger, gConfig
 from DIRAC.ConfigurationSystem.Client.Utilities import getDBParameters
 
 __RCSID__ = "$Id$"
 
-# Metadata instance that is used to bind the engine, Object and tables
-#metadata = MetaData()
-
-Base = declarative_base()
+provBase = declarative_base()
 
 # Define the Activity class mapped to the activities table
-class Activity(Base):
+class Activity(provBase):
     __tablename__ = 'activities'
     ordered_attribute_list = ['id','name','startTime','endTime','comment','activityDescription_id']
     id        = Column(String, primary_key=True)
@@ -42,7 +36,7 @@ class Activity(Base):
         return response
 
 # Define the Entity class mapped to the entities table
-class Entity(Base):
+class Entity(provBase):
     __tablename__ = 'entities'
     ordered_attribute_list = ['id','classType','name','location','generatedAtTime','invalidatedAtTime','comment','entityDescription_id' ]
     id                  = Column(String, primary_key=True)
@@ -65,7 +59,7 @@ class Entity(Base):
         return response
 
 # Define the Used class mapped to the used table
-class Used(Base):
+class Used(provBase):
     __tablename__ = 'used'
     ordered_attribute_list = ['id','role','time','activity_id','entity_id']
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -82,7 +76,7 @@ class Used(Base):
         return response
 
 # Define the WasGeneratedBy class mapped to the wasGeneratedBy table
-class WasGeneratedBy(Base):
+class WasGeneratedBy(provBase):
     __tablename__ = 'wasGeneratedBy'
     ordered_attribute_list = ['id','role','activity_id','entity_id']
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -141,7 +135,7 @@ class Parameter(ValueEntity):
         return response
 
 # Define the Agent class mapped to the agents table
-class Agent(Base):
+class Agent(provBase):
     __tablename__ = 'agents'
     ordered_attribute_list = ['id','name','type','email','affiliation','phone','address']
     id                  = Column(String, primary_key=True)
@@ -158,7 +152,7 @@ class Agent(Base):
         return response
 
 # Define the WasAssociatedWith class mapped to the wasAssociatedWith table
-class WasAssociatedWith(Base):
+class WasAssociatedWith(provBase):
     __tablename__ = 'wasAssociatedWith'
     ordered_attribute_list = ['id','activity','agent','role']
     id       = Column(Integer, primary_key=True, autoincrement=True)
@@ -172,7 +166,7 @@ class WasAssociatedWith(Base):
         return response
 
 # Define the WasAttributedTo class mapped to the wasAttributedTo table
-class WasAttributedTo(Base):
+class WasAttributedTo(provBase):
     __tablename__ = 'wasAttributedTo'
     ordered_attribute_list = ['id','entity','agent','role']
     id       = Column(Integer, primary_key=True, autoincrement=True)
@@ -186,7 +180,7 @@ class WasAttributedTo(Base):
         return response
 
 # Define the ActivityDescription class mapped to the activityDescriptions table
-class ActivityDescription(Base):
+class ActivityDescription(provBase):
     __tablename__ = 'activityDescriptions'
     ordered_attribute_list = ['id','name','activity_type','activity_subtype','version','doculink']
     id                 = Column(String, primary_key=True)
@@ -202,7 +196,7 @@ class ActivityDescription(Base):
         return response
 
 # Define the EntityDescription class mapped to the entityDescriptions table
-class EntityDescription(Base):
+class EntityDescription(provBase):
     __tablename__ = 'entityDescriptions'
     ordered_attribute_list = ['id','name','type','description','doculink','classType']
     id                 = Column(String, primary_key=True)
@@ -222,7 +216,7 @@ class EntityDescription(Base):
         return response
 
 # Define the UsageDescription class mapped to the usageDescriptions table
-class UsageDescription(Base):
+class UsageDescription(provBase):
     __tablename__ = 'usageDescriptions'
     ordered_attribute_list = ['id','role','description','type','activityDescription_id','entityDescription_id']
     id = Column(String, primary_key=True)
@@ -240,7 +234,7 @@ class UsageDescription(Base):
         return response
 
 # Define the GenerationDescription class mapped to the generationDescriptions table
-class GenerationDescription(Base):
+class GenerationDescription(provBase):
     __tablename__ = 'generationDescriptions'
     ordered_attribute_list = ['id','role','description','type','activityDescription_id','entityDescription_id']
     id          = Column(String, primary_key=True)
@@ -355,11 +349,8 @@ class ProvenanceDB( object ):
     Create the tables, if they are not there yet
     """
 
-    #tablesInDB = self.inspector.get_table_names()
-
-    #print tablesInDB
     # sqlalchemy creates the database for me
-    Base.metadata.create_all(self.engine)
+    provBase.metadata.create_all(self.engine)
 
   def addActivity(self, cta_activity):
 
@@ -427,36 +418,16 @@ class ProvenanceDB( object ):
     '''
 
     session = self.sessionMaker_o()
-
+    agentIDs = []
     try:
-      agent = session.query(Agent)
+      for instance in session.query(Agent):
+        agentIDs.append(instance.id)
       session.commit()
-      return S_OK(agent)
+      return S_OK(agentIDs)
     except NoResultFound, e:
       return S_OK()
     finally:
       session.close()
 
-  def insert(self, row):
-    '''
-      Generic insert
-      :param row:
-      :return:
-    '''
-    session = self.sessionMaker_o()
-
-    try:
-      session.add(row)
-      session.commit()
-      return S_OK()
-    except exc.IntegrityError as err:
-      self.log.warn("insert: trying to insert a duplicate key? %s" % err)
-      session.rollback()
-    except exc.SQLAlchemyError as e:
-      session.rollback()
-      self.log.exception("insert: unexpected exception", lException=e)
-      return S_ERROR("insert: unexpected exception %s" % e)
-    finally:
-      session.close()
 
 

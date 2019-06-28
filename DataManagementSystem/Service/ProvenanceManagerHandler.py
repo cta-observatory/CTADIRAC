@@ -22,7 +22,7 @@ class ProvenanceManagerHandler(RequestHandler):
   __provenanceDB = None
 
   @classmethod
-  def initializeHandler(cls):
+  def initializeHandler(cls, serviceInfoDict):
     """ initialize handler """
 
     try:
@@ -33,7 +33,7 @@ class ProvenanceManagerHandler(RequestHandler):
 
     return S_OK()
 
-  def _parseRes(self, res):
+  def _parseRes(cls, res):
     if not res['OK']:
       gLogger.error('ProvenanceManager failure', res['Message'])
     return res
