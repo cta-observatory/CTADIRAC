@@ -1,20 +1,22 @@
-""" DIRAC Provenance DB
-"""
-
 # imports
-from sqlalchemy import desc
+import json
+from types import StringTypes
+# Import sqlachemy modules to create objects mapped with tables
+from sqlalchemy import Table, Column, ForeignKey
+from sqlalchemy import Integer, String
 from sqlalchemy.orm import sessionmaker, class_mapper, relationship
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.engine.reflection import Inspector
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import create_engine, func, Table, Column, MetaData, ForeignKey, \
+from sqlalchemy import create_engine, func, MetaData, \
 Integer, String, DateTime, Enum, BLOB, exc, BigInteger, distinct
+
+# Declare a declarative_base to map objets and tables
+from sqlalchemy.ext.declarative import declarative_base
 
 # from DIRAC
 from DIRAC import S_OK, S_ERROR, gLogger, gConfig
 from DIRAC.ConfigurationSystem.Client.Utilities import getDBParameters
 
-__RCSID__ = "$Id$"
 
 provBase = declarative_base()
 
@@ -352,26 +354,11 @@ class ProvenanceDB( object ):
     # sqlalchemy creates the database for me
     provBase.metadata.create_all(self.engine)
 
-  def addActivity(self, cta_activity):
+  def _sessionAdd(self, provInstance):
 
     session = self.sessionMaker_o()
-
-    #if not session.query(exists().where(Activity.id==cta_activity['activity_uuid'])): # for the tests
-    current_activity = Activity(id=cta_activity['activity_uuid'])
-    current_activity.name=cta_activity['activity_name']
-    current_activity.startTime=cta_activity['start']['time_utc']
-    current_activity.endTime=cta_activity['stop']['time_utc']
-    current_activity.comment=''
-    current_activity.activityDescription_id=cta_activity['activity_name']+'_'+cta_activity['system']['ctapipe_version']
-
     try:
-      session.add(current_activity)
-      # Association with the agent
-      wAW = WasAssociatedWith()
-      wAW.activity = cta_activity['activity_uuid']
-      wAW.agent    = "CTAO"
-      #wAW.role = ?
-      session.add(wAW)
+      session.add(provInstance)
       session.commit()
       return S_OK()
     except exc.IntegrityError as err:
@@ -384,32 +371,176 @@ class ProvenanceDB( object ):
     finally:
       session.close()
 
-
-  def addAgent(self, agentDict):
+  def _dictToObject(self, table, fromDict):
     '''
       Add Agent
-      :param agent:
+      :param agentDict:
       :return:
     '''
-    session = self.sessionMaker_o()
 
-    agent = Agent(id=agentDict['id'])
-    agent.name = agentDict['name']
-    agent.type = agentDict['type']
 
-    try:
-      session.add(agent)
-      session.commit()
-      return S_OK()
-    except exc.IntegrityError as err:
-      self.log.warn("insert: trying to insert a duplicate key? %s" % err)
-      session.rollback()
-    except exc.SQLAlchemyError as e:
-      session.rollback()
-      self.log.exception("insert: unexpected exception", lException=e)
-      return S_ERROR("insert: unexpected exception %s" % e)
-    finally:
-      session.close()
+    fromDict = fromDict if isinstance( fromDict, dict )\
+             else json.loads( fromDict ) if isinstance( fromDict, StringTypes )\
+              else {}
+
+    for key, value in fromDict.items():
+      # The JSON module forces the use of UTF-8, which is not properly
+      # taken into account in DIRAC.
+      # One would need to replace all the '== str' with 'in StringTypes'
+      if type( value ) in StringTypes:
+        value = value.encode()
+
+      if value:
+        setattr( table, key, value )
+
+    return table
+
+  def addAgent(self, rowDict):
+    '''
+      Add Agent
+      :param rowDict:
+      :return:
+    '''
+
+    agent = Agent()
+    row = self._dictToObject(agent, rowDict)
+
+    return self._sessionAdd(row)
+
+  def addActivity(self, rowDict):
+    '''
+      Add Activity
+      :param rowDict:
+      :return:
+    '''
+
+    activity = Activity()
+    row = self._dictToObject(activity, rowDict)
+
+    return self._sessionAdd(row)
+
+  def addWasAssociatedWith(self, rowDict):
+    '''
+      Add WasAssociatedWith
+      :param rowDict:
+      :return:
+    '''
+
+    wasAssociatedWith = WasAssociatedWith()
+    row = self._dictToObject(wasAssociatedWith, rowDict)
+
+    return self._sessionAdd(row)
+
+  def addActivityDescription(self, rowDict):
+    '''
+      Add ActivityDescription
+      :param rowDict:
+      :return:
+    '''
+
+    activityDesc = ActivityDescription()
+    row = self._dictToObject(activityDesc, rowDict)
+    return self._sessionAdd(row)
+
+  def addDatasetDescription(self, rowDict):
+    '''
+      Add DatasetDescription
+      :param rowDict:
+      :return:
+    '''
+
+    datasetDesc = DatasetDescription()
+    row = self._dictToObject(datasetDesc, rowDict)
+    return self._sessionAdd(row)
+
+  def addUsageDescription(self, rowDict):
+    '''
+      Add UsageDescription
+      :param rowDict:
+      :return:
+    '''
+
+    usageDesc = UsageDescription()
+    row = self._dictToObject(usageDesc, rowDict)
+    return self._sessionAdd(row)
+
+  def addGenerationDescription(self, rowDict):
+    '''
+      Add UsageDescription
+      :param rowDict:
+      :return:
+    '''
+
+    generationDesc = GenerationDescription()
+    row = self._dictToObject(generationDesc, rowDict)
+    return self._sessionAdd(row)
+
+  def addDatasetEntity(self, rowDict):
+    '''
+      Add DatasetEntity
+      :param rowDict:
+      :return:
+    '''
+
+    datasetEntity = DatasetEntity()
+    row = self._dictToObject(datasetEntity, rowDict)
+    return self._sessionAdd(row)
+
+  def addWasAttributedTo(self, rowDict):
+    '''
+      Add WasAttributedTo
+      :param rowDict:
+      :return:
+    '''
+
+    wasAttributedTo = WasAttributedTo()
+    row = self._dictToObject(wasAttributedTo, rowDict)
+    return self._sessionAdd(row)
+
+  def addUsed(self, rowDict):
+    '''
+      Add Used
+      :param rowDict:
+      :return:
+    '''
+
+    used = Used()
+    row = self._dictToObject(used, rowDict)
+    return self._sessionAdd(row)
+
+  def addWasGeneratedBy(self, rowDict):
+    '''
+      Add WasGeneratedBy
+      :param rowDict:
+      :return:
+    '''
+
+    wasGeneratedBy = WasGeneratedBy()
+    row = self._dictToObject(wasGeneratedBy, rowDict)
+    return self._sessionAdd(row)
+
+  def addValueEntity(self, rowDict):
+    '''
+      Add ValueEntity
+      :param rowDict:
+      :return:
+    '''
+
+    valueEntity = ValueEntity()
+    row = self._dictToObject(valueEntity, rowDict)
+    return self._sessionAdd(row)
+
+
+  def addValueDescription(self, rowDict):
+    '''
+      Add ValueDescription
+      :param rowDict:
+      :return:
+    '''
+
+    valueDesc = ValueDescription()
+    row = self._dictToObject(valueDesc, rowDict)
+    return self._sessionAdd(row)
 
   def getAgents(self):
     '''

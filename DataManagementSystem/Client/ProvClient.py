@@ -3,7 +3,6 @@
 __RCSID__ = "$Id$"
 
 # # from DIRAC
-from DIRAC import gLogger, S_OK, S_ERROR
 from DIRAC.Core.Base.Client import Client
 
 class ProvClient(Client):
@@ -18,10 +17,97 @@ class ProvClient(Client):
     Client.__init__(self, **kwargs)
     res = self.serverURL = 'DataManagement/ProvenanceManager' if not url else url
 
-  def addAgent(self, agent):
+  def addAgent(self, row):
 
+    res = row.toJSON()
+    rowJSON = res['Value']
     rpcClient = self._getRPC()
-    return rpcClient.addAgent(agent)
+    return rpcClient.addAgent(rowJSON)
+
+  def addActivity(self, row):
+
+    res = row.toJSON()
+    rowJSON = res['Value']
+    rpcClient = self._getRPC()
+    return rpcClient.addActivity(rowJSON)
+
+  def addWasAssociatedWith(self, row):
+
+    res = row.toJSON()
+    rowJSON = res['Value']
+    rpcClient = self._getRPC()
+    return rpcClient.addWasAssociatedWith(rowJSON)
+
+  def addActivityDescription(self, row):
+
+    res = row.toJSON()
+    rowJSON = res['Value']
+    rpcClient = self._getRPC()
+    return rpcClient.addActivityDescription(rowJSON)
+
+  def addDatasetDescription(self, row):
+
+    res = row.toJSON()
+    rowJSON = res['Value']
+    rpcClient = self._getRPC()
+    return rpcClient.addDatasetDescription(rowJSON)
+
+  def addUsageDescription(self, row):
+
+    res = row.toJSON()
+    rowJSON = res['Value']
+    rpcClient = self._getRPC()
+    print rowJSON
+    return rpcClient.addUsageDescription(rowJSON)
+
+  def addGenerationDescription(self, row):
+
+    res = row.toJSON()
+    rowJSON = res['Value']
+    rpcClient = self._getRPC()
+    return rpcClient.addGenerationDescription(rowJSON)
+
+  def addDatasetEntity(self, row):
+
+    res = row.toJSON()
+    rowJSON = res['Value']
+    rpcClient = self._getRPC()
+    return rpcClient.addDatasetEntity(rowJSON)
+
+  def addWasAttributedTo(self, row):
+
+    res = row.toJSON()
+    rowJSON = res['Value']
+    rpcClient = self._getRPC()
+    return rpcClient.addWasAttributedTo(rowJSON)
+
+  def addUsed(self, row):
+
+    res = row.toJSON()
+    rowJSON = res['Value']
+    rpcClient = self._getRPC()
+    return rpcClient.addUsed(rowJSON)
+
+  def addWasGeneratedBy(self, row):
+
+    res = row.toJSON()
+    rowJSON = res['Value']
+    rpcClient = self._getRPC()
+    return rpcClient.addWasGeneratedBy(rowJSON)
+
+  def addValueEntity(self, row):
+
+    res = row.toJSON()
+    rowJSON = res['Value']
+    rpcClient = self._getRPC()
+    return rpcClient.addValueEntity(rowJSON)
+
+  def addValueDescription(self, row):
+
+    res = row.toJSON()
+    rowJSON = res['Value']
+    rpcClient = self._getRPC()
+    return rpcClient.addValueDescription(rowJSON)
 
   def getAgents(self):
 
