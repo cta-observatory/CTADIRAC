@@ -156,7 +156,7 @@ def run_ctapipe():
     # get the metadata of the inputs
     res = fc.getFileUserMetadata(input_file_list[0])
     if not res['OK']:
-      DIRAC.gLogger.error("Failed to get user metadata:", result['Message'])
+      DIRAC.gLogger.error("Failed to get user metadata:", res['Message'])
       return res
     meta_data_dict = res['Value']
     # set meta data for ctapipe outputs
