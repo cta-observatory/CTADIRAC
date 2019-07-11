@@ -55,6 +55,9 @@ def put_and_register(args):
     if not result['OK']:
         return result
 
+    # Dump the list of output LFNs
+    file = open("output_lfns.txt",'w')
+
     # Loop over each file and upload and register
     for localfile in glob.glob(output_pattern):
         file_name = os.path.basename(localfile)
@@ -73,7 +76,11 @@ def put_and_register(args):
         result = prod3dm.putAndRegister(lfn, localfile, fmd_json, package)
         if not result['OK']:
             return result
+        file.write(lfn)
+        file.write('\n')
 
+    file.close()
+        
     return DIRAC.S_OK()
 
 ####################################################
