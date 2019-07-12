@@ -4,6 +4,7 @@ from types import StringTypes
 # Import sqlachemy modules to create objects mapped with tables
 from sqlalchemy import Table, Column, ForeignKey
 from sqlalchemy import Integer, String
+from sqlalchemy import exists
 from sqlalchemy.orm import sessionmaker, class_mapper, relationship
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.engine.reflection import Inspector
@@ -281,6 +282,7 @@ class DatasetDescription(EntityDescription):
     __mapper_args__ = {'polymorphic_identity':'datasetDescription'}
     def __repr__(self):
         response = ""
+        response = ""
         for attribute in self.ordered_attribute_list:
             response += "DatasetDescription.%s=%s\n" %(attribute,self.__dict__[attribute])
         return response
@@ -364,6 +366,7 @@ class ProvenanceDB( object ):
     except exc.IntegrityError as err:
       self.log.warn("insert: trying to insert a duplicate key? %s" % err)
       session.rollback()
+      return S_ERROR("Key already exists")
     except exc.SQLAlchemyError as e:
       session.rollback()
       self.log.exception("insert: unexpected exception", lException=e)
@@ -559,6 +562,26 @@ class ProvenanceDB( object ):
       return S_OK()
     finally:
       session.close()
+
+  def getDatasetEntity(self, guid):
+    '''
+      Get DatasetEntity
+      :param guid
+      :return:
+    '''
+
+    session = self.sessionMaker_o()
+    try:
+      datasetEntity = session.query( DatasetEntity )\
+                          .filter( DatasetEntity.id == guid ) \
+                          .one()
+      session.commit()
+      return S_OK(datasetEntity.id)
+    except NoResultFound, e:
+      return S_OK(False)
+    finally:
+      session.close()
+
 
 
 

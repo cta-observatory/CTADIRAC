@@ -211,12 +211,23 @@ class ProvenanceManagerHandler(RequestHandler):
 
   def export_getAgents(cls):
     '''
-    Insert Agent
-    :param agentDict
+    Get Agents
     :return:
     '''
 
     res = cls.__provenanceDB.getAgents()
+    return cls._parseRes(res)
+
+  types_getDatasetEntity = [basestring]
+
+  def export_getDatasetEntity(cls, guid):
+    '''
+    Get DatasetEntity
+    :param datasetEntity guid
+    :return:
+    '''
+
+    res = cls.__provenanceDB.getDatasetEntity(guid)
     return cls._parseRes(res)
 
 
