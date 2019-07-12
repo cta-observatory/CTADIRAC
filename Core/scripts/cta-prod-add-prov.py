@@ -13,12 +13,6 @@ from DIRAC.Interfaces.API.Dirac import Dirac
 from DIRAC.Resources.Catalog.FileCatalogClient import FileCatalogClient
 # from CTADIRAC
 from CTADIRAC.DataManagementSystem.Client.ProvClient import ProvClient
-from CTADIRAC.DataManagementSystem.Client.ProvBase import Agent
-from CTADIRAC.DataManagementSystem.Client.ProvBase import ActivityDescription
-from CTADIRAC.DataManagementSystem.Client.ProvBase import DatasetDescription
-from CTADIRAC.DataManagementSystem.Client.ProvBase import UsageDescription
-from CTADIRAC.DataManagementSystem.Client.ProvBase import GenerationDescription
-from CTADIRAC.DataManagementSystem.Client.ProvBase import ValueDescription
 from CTADIRAC.DataManagementSystem.Client.ProvBase import DatasetEntity
 from CTADIRAC.DataManagementSystem.Client.ProvBase import WasAttributedTo
 from CTADIRAC.DataManagementSystem.Client.ProvBase import Used
@@ -30,7 +24,7 @@ from CTADIRAC.DataManagementSystem.Client.ProvBase import WasAssociatedWith
 provClient = ProvClient()
 
 # read provenance dictionary
-f = open("muons_provRFC.txt",'r')
+f = open("provDict.txt",'r')
 for line in f:
   provStr = line.strip()
 
