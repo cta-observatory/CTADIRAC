@@ -35,7 +35,7 @@ class ProvCtapipeJob(Job):
         self.configuration_id = 1 # To be set according to the input dataset
         ########################################################################
         # data management params
-        self.basepath = '/vo.cta.in2p3.fr/user/a/arrabito/test'
+        self.basepath = '/vo.cta.in2p3.fr/user/a/arrabito'
         self.metadata = collections.OrderedDict()
         self.filemetadata = {}
         self.catalogs = json.dumps(['DIRACFileCatalog', 'TSCatalog'])
@@ -120,7 +120,6 @@ class ProvCtapipeJob(Job):
         # register Data
         outputpattern = './*.hdf5'
         file_md_json = json.dumps(self.filemetadata)
-
         
         scripts = '../CTADIRAC/Core/scripts'
         step = self.setExecutable(scripts + '/cta-prod-managedata.py',
@@ -133,13 +132,11 @@ class ProvCtapipeJob(Job):
         step['Value']['descr_short'] = 'Save data files to SE and register them in DFC'
         iStep += 1
 
-
         # step 5: add Prov Data
         self.setExecutable('./AddProvData.py', logFile='AddProvData_Log.txt')
         step['Value']['name'] = 'Step%i_Prov' % iStep
         step['Value']['descr_short'] = 'Run Prov'
         iStep += 1
-
         
         # step 6 -- to be removed -- debug only
         if debug:

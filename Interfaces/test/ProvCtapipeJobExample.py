@@ -14,13 +14,15 @@ Script.registerSwitch('', 'group_size=', 'Nb of input files per job, default=1')
 
 Script.parseCommandLine()
 
+# from DIRAC
 import DIRAC
 from DIRAC.TransformationSystem.Client.Transformation import Transformation
 from DIRAC.TransformationSystem.Client.TransformationClient import TransformationClient
-from ProvCtapipeJob import ProvCtapipeJob
 from DIRAC.Interfaces.API.Dirac import Dirac
 from DIRAC.Core.Workflow.Parameter import Parameter
 from DIRAC.Resources.Catalog.FileCatalogClient import FileCatalogClient
+# from CTADIRAC
+from CTADIRAC.Interfaces.API.ProvCtapipeJob import ProvCtapipeJob
 
 # Default values
 backend = 'WMS'
@@ -111,14 +113,10 @@ def run_ctapipe():
     job = ProvCtapipeJob(cpuTime=432000)
     job.setName('prov_ctapipe job')
     job.version = 'v0.6.2'
-    #job.setDestination('LCG.IN2P3-CC.fr')
     job.setType('DataReprocessing')  # Needed for job meshing. Check Operations/CTA/JobTypeMapping on the CS
     input_file_list = ['/vo.cta.in2p3.fr/user/a/arrabito/ProvTest/proton_20deg_180deg_run22___cta-prod3-demo-2147m-LaPalma-baseline.simtel.gz']
-    #input_file_list = ['/vo.cta.in2p3.fr/MC/PROD3/LaPalma/proton/simtel/1431/Data/083xxx/proton_20deg_180deg_run83337___cta-prod3-demo-2147m-LaPalma-baseline.simtel.gz']
-    #input_file_list = ['/vo.cta.in2p3.fr/user/a/arrabito/ProvTest/proton_20deg_180deg_run22___cta-prod3-demo-2147m-LaPalma-baseline.simtel.gz','/vo.cta.in2p3.fr/MC/PROD3/LaPalma/proton/simtel/1431/Data/083xxx/proton_20deg_180deg_run83337___cta-prod3-demo-2147m-LaPalma-baseline.simtel.gz']
     job.setInputData(input_file_list)
-    job.setInputSandbox(['MuonRecProv.py','MuonDisplayerTool.py','AddProvData.py'])
-    job.setOutputSandbox(['*Log.txt','muons_provRFC.txt'])
+    job.setOutputSandbox(['*Log.txt'])
 
     # configure ctapipe job 
     job.output_type = 'DL2'
