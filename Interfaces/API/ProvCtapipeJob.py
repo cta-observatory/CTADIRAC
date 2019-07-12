@@ -133,7 +133,7 @@ class ProvCtapipeJob(Job):
         iStep += 1
 
         # step 5: add Prov Data
-        self.setExecutable('./AddProvData.py', logFile='AddProvData_Log.txt')
+        self.setExecutable('cta-prod-add-prov', logFile='AddProvData_Log.txt')
         step['Value']['name'] = 'Step%i_Prov' % iStep
         step['Value']['descr_short'] = 'Run Prov'
         iStep += 1
