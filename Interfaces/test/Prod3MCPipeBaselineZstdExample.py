@@ -21,9 +21,9 @@ Script.parseCommandLine()
 import DIRAC
 from DIRAC.TransformationSystem.Client.Transformation import Transformation
 from DIRAC.Core.Workflow.Parameter import Parameter
-from CTADIRAC.Interfaces.API.Prod3MCPipeBaselineZstdJob import Prod3MCPipeBaselineZstdJob
-#from Prod3MCPipeBaselineJob import Prod3MCPipeBaselineJob
-#from DIRAC.Interfaces.API.Dirac import Dirac
+#from CTADIRAC.Interfaces.API.Prod3MCPipeBaselineZstdJob import Prod3MCPipeBaselineZstdJob
+from Prod3MCPipeBaselineZstdJob import Prod3MCPipeBaselineZstdJob
+
 
 def submitTS( job ):
   """ Create a transformation executing the job workflow  """
@@ -36,7 +36,7 @@ def submitTS( job ):
   t = Transformation()
   # t.setTransformationName( "Prod3Exemple" )  # This must be unique. If not set it's asked in the prompt
   t.setType( "MCSimulation" )
-  t.setDescription( "MC Prod3 BaseLine NSB test" )
+  t.setDescription( "MC Prod3 BaseLine Corsika7 test" )
   t.setLongDescription( "corsika-simtel production" )  # mandatory
   t.setBody ( job.workflow.toXML() )
 
@@ -74,12 +74,12 @@ def runProd3( args = None ):
   job = Prod3MCPipeBaselineZstdJob()
 
   # override for testing
-  job.setName('BL_Zstd_Test_Paranal_20deg_%s'%particle)
+  job.setName('BL_Corsika7_Test_Paranal_20deg_%s'%particle)
 
   # package and version
   job.setPackage('corsika_simhessarray')
-  job.setVersion( '2017-09-28_zstd' )  # final with fix for gamma-diffuse
-  job.configuration_id=2 # 0 exists already
+  job.setVersion( '2019-09-03' )  # final with fix for gamma-diffuse
+  job.configuration_id=6
 
   # layout, site, particle, pointing direction, zenith angle
   # demo, LaPalma,  gamma, South,  20

@@ -45,8 +45,8 @@ class Prod3MCPipeBaselineZstdJob(Prod3MCPipeBaselineJob):
         iStep+=1
 
     # step 2
-    swStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-setupsw',
-                              arguments='%s %s'% (self.package, self.version),\
+    swStep = self.setExecutable( 'cta-prod3-setupsw',
+                              arguments='%s %s centos7-gcc48'% (self.package, self.version),\
                               logFile='SetupSoftware_Log.txt')
     swStep['Value']['name'] = 'Step%i_SetupSoftware' % iStep
     swStep['Value']['descr_short'] = 'Setup software'
@@ -73,8 +73,8 @@ class Prod3MCPipeBaselineZstdJob(Prod3MCPipeBaselineJob):
     iStep+=1
 
     # step 4 verify merged data
-    mgvStep = self.setExecutable( '$DIRACROOT/scripts/cta-prod3-verifysteps', \
-                              arguments = "generic %0d 1000 '%s/Data/*.simtel.gz'"%\
+    mgvStep = self.setExecutable( 'cta-prod3-verifysteps', \
+                              arguments = "generic %0d 1000 '%s/Data/*.zst'"%\
                                           (self.N_output_files, self.inputpath),\
                               logFile='Verify_Simtel_Log.txt')
     mgvStep['Value']['name']='Step%i_VerifySimtel'%iStep
@@ -83,7 +83,7 @@ class Prod3MCPipeBaselineZstdJob(Prod3MCPipeBaselineJob):
 
     # step 5 - debug only
     if debug:
-        lsStep=self.setExecutable('/bin/ls -alhtr Data/sim_telarray/*/*/*',logFile='LS_End_Log.txt')
+        lsStep=self.setExecutable('/bin/ls -Ralhtr',logFile='LS_End_Log.txt')
         lsStep['Value']['name']='Step%i_LS_End'%iStep
         lsStep['Value']['descr_short']='list files in working directory and sub-directory'
         iStep += 1
@@ -121,7 +121,7 @@ class Prod3MCPipeBaselineZstdJob(Prod3MCPipeBaselineJob):
     filemetadata = {'runNumber': self.run_number}
     file_md_json = json.dumps(filemetadata)
     outputpattern = './Data/sim_telarray/*/*/Data/*baseline.simtel.zst'
-    dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
+    dmStep = self.setExecutable('../CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s'" %\
                               (mdjson, mdfieldjson, file_md_json, self.basepath,
                                outputpattern, self.package, self.program_category, self.catalogs),
@@ -131,7 +131,7 @@ class Prod3MCPipeBaselineZstdJob(Prod3MCPipeBaselineJob):
     iStep += 1
     ## log file
     outputpattern = './Data/sim_telarray/*/*/Log/*baseline.log.gz'
-    dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
+    dmStep = self.setExecutable('../CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s' Log" % \
                               (mdjson, mdfieldjson, file_md_json, self.basepath,
                                outputpattern, self.package, self.program_category, self.catalogs),
@@ -141,7 +141,7 @@ class Prod3MCPipeBaselineZstdJob(Prod3MCPipeBaselineJob):
     iStep += 1
     ## histogram
     outputpattern = './Data/sim_telarray/*/*/Histograms/*baseline.hdata.gz'
-    dmStep = self.setExecutable('$DIRACROOT/CTADIRAC/Core/scripts/cta-analysis-managedata.py',
+    dmStep = self.setExecutable('../CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                               arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s' Histograms" % \
                               (mdjson, mdfieldjson, file_md_json, self.basepath,
                                outputpattern, self.package, self.program_category, self.catalogs),
