@@ -1,3 +1,9 @@
+[v1r54p0xx]
+* JB : Improve software setup to handle optimized code versions
+
+[v1r53p6]
+* LA : Testing Provenance
+
 [v1r53p1]
 * LA : Update to lcgVer v14r1
 
