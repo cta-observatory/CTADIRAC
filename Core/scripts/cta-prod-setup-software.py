@@ -50,7 +50,7 @@ def setup_software(package, version, category, compiler):
     manager = SoftwareManager(soft_category)
     # check if and where Package is available
     # return cvmfs/tarball and full path
-    res = manager.find_software_package(package, version, compiler)
+    res = manager.find_software(package, version, compiler)
     if not res['OK']:  # could not find package on cvmfs
         return res
     source = res['Value']['Source']
