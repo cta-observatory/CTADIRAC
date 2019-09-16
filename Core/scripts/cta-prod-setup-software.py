@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-""" General script to setup software
+""" General script to setup software through the SoftwareManager module
         J. Bregeon, L. Arrabito 15/09/2019
 """
 
@@ -32,7 +32,7 @@ Script.parseCommandLine(ignoreErrors=False)
 
 
 # Specific DIRAC imports
-from CTADIRAC.Core.Utilities.Prod3SoftwareManager import Prod3SoftwareManager
+from CTADIRAC.Core.Utilities.SoftwareManager import SoftwareManager
 
 def setup_software(package, version, category, compiler):
     """ setup a given software package to be used in the main workflow
@@ -47,7 +47,7 @@ def setup_software(package, version, category, compiler):
                          %(package, version, category, compiler))
     # get arguments
     soft_category = {package:program_category}
-    manager = ProdSoftwareManager(soft_category)
+    manager = SoftwareManager(soft_category)
     # check if and where Package is available
     # return cvmfs/tarball and full path
     res = manager.find_software_package(package, version, compiler)
