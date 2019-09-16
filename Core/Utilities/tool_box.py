@@ -172,3 +172,17 @@ def get_cpu_info():
     for inst in ['avx512', 'avx2', 'avx', 'sse4']:
         if re.search(inst, cpuinfo) is not None:
             return model_name, inst
+
+def get_os_and_cpu_info():
+    ''' get OS and instructions supported by current cpu
+    '''
+    import platform, subprocess, re
+    os = platform.dist()
+    os_name = os[0]+os[1].split('.')[0]
+    cpuinfo = subprocess.check_output('cat /proc/cpuinfo', shell=True).strip()
+    model_name = re.search('model name\s*: (.+)', cpuinfo).group(0).strip('model name\t:')
+    for inst in ['avx512', 'avx2', 'avx', 'sse4']:
+        if re.search(inst, cpuinfo) is not None:
+            break
+    print('Running %s on %s (%s)'%(os_name, model_name, inst))
+    return (os_name, model_name, inst)
