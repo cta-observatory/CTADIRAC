@@ -161,3 +161,14 @@ def parse_jobs_list(jobs_list):
             else:
                 sites_dict[site][majstatus] += 1
     return status_dict, sites_dict
+
+def get_cpu_info():
+    ''' get instructions supported by current cpu
+    '''
+    import subprocess, re
+    cpuinfo = subprocess.check_output('cat /proc/cpuinfo', shell=True).strip()
+    model_name = re.search('model name\s*: (.+)', cpuinfo).group(0).strip('model name\t:')
+    print('%s found.'%model_name)
+    for inst in ['avx512', 'avx2', 'avx', 'sse4']:
+        if re.search(inst, cpuinfo) is not None:
+            return model_name, inst
