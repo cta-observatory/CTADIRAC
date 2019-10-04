@@ -17,7 +17,7 @@ from DIRAC.DataManagementSystem.Client.DataManager import DataManager
 from DIRAC.ConfigurationSystem.Client.Helpers.Operations import Operations
 from CTADIRAC.Core.Utilities.tool_box import get_os_and_cpu_info
 
-class SoftwareManager(object) :
+class SoftwareManager(object):
     """ Manage software setup
     """
 
@@ -81,7 +81,7 @@ class SoftwareManager(object) :
             results = self._search_software(package, version, compiler, use_cvmfs)
             return results
         elif compiler is 'gcc48_avx':
-            if inst is in ['avx', 'avx2', 'avx512']:
+            if inst in ['avx', 'avx2', 'avx512']:
                 results = self._search_software(package, version, compiler, use_cvmfs)
                 return results
             else:
@@ -90,7 +90,7 @@ class SoftwareManager(object) :
                 results = self._search_software(package, version, compiler, use_cvmfs)
                 return results
         elif compiler is 'gcc48_avx2':
-            if inst is in ['avx2', 'avx512']:
+            if inst in ['avx2', 'avx512']:
                 results = self._search_software(package, version, compiler, use_cvmfs)
                 return results
             else:
@@ -120,7 +120,8 @@ class SoftwareManager(object) :
         """ copy DIRAC scripts in the current directory
         """
         cmd = 'cp -f ' + os.path.join(package_dir, 'dirac_*') + ' .'
-        try subprocess.check_output(cmd, shell=True):
+        try:
+            subprocess.check_output(cmd, shell=True)
             return DIRAC.S_OK()
         except subprocess.CalledProcessError as error:
             return DIRAC.S_ERROR('Failed to install DIRAC scripts:\n%s'%error.output)
