@@ -1,5 +1,6 @@
 [v1r54p0xx]
 * JB : Improve software setup to handle optimized code versions
+       New SoftwareManager class
 
 [v1r53p6]
 * LA : Testing Provenance
