@@ -17,6 +17,7 @@ from DIRAC.DataManagementSystem.Client.DataManager import DataManager
 from DIRAC.ConfigurationSystem.Client.Helpers.Operations import Operations
 from CTADIRAC.Core.Utilities.tool_box import get_os_and_cpu_info
 
+
 class SoftwareManager(object):
     """ Manage software setup
     """
@@ -48,7 +49,8 @@ class SoftwareManager(object):
         else:
             package_dir = os.path.join(self.LFN_ROOT, 'centos7',
                                        compiler, category, package, version)
-            res = dm.getActiveReplicas(package_dir)
+            DIRAC.gLogger.notice('Looking for %s'%package_dir)
+            res = self.dm.getActiveReplicas(package_dir)
             if res['OK']:
                 return DIRAC.S_OK({'Source':'tarball', 'Path':package_dir})
         return DIRAC.S_ERROR('Could not find package %s / %s / %s in any location'
@@ -64,6 +66,7 @@ class SoftwareManager(object):
         # first check if cvmfs is available
         ops_helper = Operations()
         use_cvmfs = ops_helper.getValue('SoftwarePolicy/UseCvmfs', bool)
+        use_cvmfs = False
         DIRAC.gLogger.notice('SoftwarePolicy for UseCvmfs is:', use_cvmfs)
 
         # get platform and cpu information
@@ -73,14 +76,14 @@ class SoftwareManager(object):
             inst = 'sse4'
             DIRAC.gLogger.warn('Could not determine platform and cpu information')
 
-        if compiler is 'gcc48_default':
+        if compiler == 'gcc48_default':
             results = self._search_software(package, version, compiler, use_cvmfs)
             return results
-        elif compiler is 'gcc48_sse4':
+        elif compiler == 'gcc48_sse4':
             # assume all processors have at least sse4
             results = self._search_software(package, version, compiler, use_cvmfs)
             return results
-        elif compiler is 'gcc48_avx':
+        elif compiler == 'gcc48_avx':
             if inst in ['avx', 'avx2', 'avx512']:
                 results = self._search_software(package, version, compiler, use_cvmfs)
                 return results
@@ -89,7 +92,7 @@ class SoftwareManager(object):
                 compiler = 'gcc48_sse4'
                 results = self._search_software(package, version, compiler, use_cvmfs)
                 return results
-        elif compiler is 'gcc48_avx2':
+        elif compiler == 'gcc48_avx2':
             if inst in ['avx2', 'avx512']:
                 results = self._search_software(package, version, compiler, use_cvmfs)
                 return results
@@ -98,7 +101,7 @@ class SoftwareManager(object):
                 compiler = 'gcc48_sse4'
                 results = self._search_software(package, version, compiler, use_cvmfs)
                 return results
-        elif compiler is 'gcc48_avx512':
+        elif compiler == 'gcc48_avx512':
             if inst is 'avx512':
                 results = self._search_software(package, version, compiler, use_cvmfs)
                 return results
@@ -107,14 +110,14 @@ class SoftwareManager(object):
                 compiler = 'gcc48_sse4'
                 results = self._search_software(package, version, compiler, use_cvmfs)
                 return results
-        elif compiler is 'gcc48_matchcpu':
+        elif compiler == 'gcc48_matchcpu':
             compiler = 'gcc48_%s'%inst
             results = self._search_software(package, version, compiler, use_cvmfs)
             return results
         else:
             DIRAC.S_ERROR('Unknown compiler specified: %s'%compiler)
-        return DIRAC.S_ERROR('Could not find package %s version %s in any location'
-                             % (package, version))
+        return DIRAC.S_ERROR('Could not find package %s version %s / %s in any location'
+                             % (package, version, compiler))
 
     def install_dirac_scripts(self, package_dir):
         """ copy DIRAC scripts in the current directory

@@ -51,7 +51,7 @@ def setup_software(package, version, category, compiler):
     # check if and where Package is available
     # return cvmfs/tarball and full path
     res = manager.find_software(package, version, compiler)
-    if not res['OK']:  # could not find package on cvmfs
+    if not res['OK']:  # could not find package
         return res
     source = res['Value']['Source']
     package_dir = res['Value']['Path']
@@ -80,7 +80,6 @@ if __name__ == '__main__':
     category = 'simulations'
     compiler = 'gcc48_default'
     for switch in Script.getUnprocessedSwitches():
-        print(switch)
         if switch[0] == "p" or switch[0].lower() == "package":
             package = switch[1]
         if switch[0] == "v" or switch[0].lower() == "version":
