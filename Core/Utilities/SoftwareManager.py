@@ -77,54 +77,40 @@ class SoftwareManager(object) :
             results = self._search_software(package, version, compiler, use_cvmfs)
             return results
         elif compiler is 'gcc48_sse4':
+            # assume all processors have at least sse4
             results = self._search_software(package, version, compiler, use_cvmfs)
             return results
         elif compiler is 'gcc48_avx':
-            if inst is 'sse4':
-                DIRAC.gLogger.warn('CPU has no avx instructions, running sse4 version')
-                compiler = 'gcc48_sse4'
+            if inst is in ['avx', 'avx2', 'avx512']:
                 results = self._search_software(package, version, compiler, use_cvmfs)
                 return results
             else:
+                DIRAC.gLogger.warn('CPU has no avx instructions, running sse4 version')
+                compiler = 'gcc48_sse4'
                 results = self._search_software(package, version, compiler, use_cvmfs)
                 return results
         elif compiler is 'gcc48_avx2':
             if inst is in ['avx2', 'avx512']:
                 results = self._search_software(package, version, compiler, use_cvmfs)
                 return results
-            elif inst is 'avx':
-                compiler = 'gcc48_avx'
-                results = self._search_software(package, version, compiler, use_cvmfs)
-                if not results['OK']:
-                    compiler = 'gcc48_default'
-                    results = self._search_software(package, version, compiler, use_cvmfs)            
-                return results
-            elif inst is 'sse4':
+            else:
+                DIRAC.gLogger.warn('CPU has no avx2 instructions, running sse4 version')
                 compiler = 'gcc48_sse4'
                 results = self._search_software(package, version, compiler, use_cvmfs)
                 return results
         elif compiler is 'gcc48_avx512':
             if inst is 'avx512':
                 results = self._search_software(package, version, compiler, use_cvmfs)
-                if not results['OK']:
-                    compiler = 'gcc48_avx2'
-                    results = self._search_software(package, version, compiler, use_cvmfs)
                 return results
-            elif inst is 'avx2':
-                compiler = 'gcc48_avx2'
-                results = self._search_software(package, version, compiler, use_cvmfs)
-                return results
-            elif inst is 'avx':
-                compiler = 'gcc48_avx'
-                results = self._search_software(package, version, compiler, use_cvmfs)
-                if not results['OK']:
-                    compiler = 'gcc48_default'
-                    results = self._search_software(package, version, compiler, use_cvmfs)
-                return results
-            elif inst is 'sse4':
+            else:
+                DIRAC.gLogger.warn('CPU has no avx512 instructions, running sse4 version')
                 compiler = 'gcc48_sse4'
                 results = self._search_software(package, version, compiler, use_cvmfs)
                 return results
+        elif compiler is 'gcc48_matchcpu':
+            compiler = 'gcc48_%s'%inst
+            results = self._search_software(package, version, compiler, use_cvmfs)
+            return results
         else:
             DIRAC.S_ERROR('Unknown compiler specified: %s'%compiler)
         return DIRAC.S_ERROR('Could not find package %s version %s in any location'
