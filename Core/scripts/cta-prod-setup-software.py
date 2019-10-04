@@ -12,20 +12,20 @@ import os, tarfile
 import DIRAC
 from DIRAC.Core.Base import Script
 
-Script.registerSwitch("p:", "Package=", "Software package name)
+Script.registerSwitch("p:", "Package=", "Software package name")
 Script.registerSwitch("v:", "Version=", "Base version to look for")
-Script.registerSwitch("c", "Category=", "Program category (simulations, analysis...)")
-Script.registerSwitch("g", "Compiler=", "Target a compiler_optimization configuration")
+Script.registerSwitch("a:", "Category=", "Program category (simulations, analysis...)")
+Script.registerSwitch("g:", "Compiler=", "Target a compiler_optimization configuration")
 
 Script.setUsageMessage('\n'.join([ __doc__.split('\n')[1],
                                      'Usage:',
-                                     '  %s -p package -v version -c [program_category] -g [compiler]' % Script.scriptName,
+                                     '  %s -p package -v version -a [program_category] -g [compiler]' % Script.scriptName,
                                      'Arguments:',
                                      '  package: corsika_simhessarray',
                                      '  version: 2019-09-03',
                                      '  program_category: simulations',
                                      '  compiler: gcc48_avx2',
-                                     '\ne.g: %s -p corsika_simhessarray -v 2019-09-03'% Script.scriptName,
+                                     '\ne.g: %s -p corsika_simhessarray -a 2019-09-03'% Script.scriptName,
                                      ]))
 
 Script.parseCommandLine(ignoreErrors=False)
@@ -46,7 +46,7 @@ def setup_software(package, version, category, compiler):
     DIRAC.gLogger.notice('Trying to setup: %s %s %s %s'
                          %(package, version, category, compiler))
     # get arguments
-    soft_category = {package:program_category}
+    soft_category = {package:category}
     manager = SoftwareManager(soft_category)
     # check if and where Package is available
     # return cvmfs/tarball and full path
@@ -70,7 +70,7 @@ def setup_software(package, version, category, compiler):
         res = manager.dump_setup_script_path(package_local_path)
         if not res['OK']:
             return res
-  return DIRAC.S_OK()
+    return DIRAC.S_OK()
 
 
 ####################################################
@@ -80,11 +80,12 @@ if __name__ == '__main__':
     category = 'simulations'
     compiler = 'gcc48_default'
     for switch in Script.getUnprocessedSwitches():
+        print(switch)
         if switch[0] == "p" or switch[0].lower() == "package":
             package = switch[1]
         if switch[0] == "v" or switch[0].lower() == "version":
             version = switch[1]
-        if switch[0] == "c" or switch[0].lower() == "category":
+        if switch[0] == "a" or switch[0].lower() == "category":
             category = switch[1]
         if switch[0] == "g" or switch[0].lower() == "compiler":
             compiler = switch[1]
