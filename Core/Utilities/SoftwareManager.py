@@ -49,10 +49,17 @@ class SoftwareManager(object):
         else:
             package_dir = os.path.join(self.LFN_ROOT, 'centos7',
                                        compiler, category, package, version)
-            DIRAC.gLogger.notice('Looking for %s'%package_dir)
-            res = self.dm.getActiveReplicas(package_dir)
-            if res['OK']:
-                return DIRAC.S_OK({'Source':'tarball', 'Path':package_dir})
+            DIRAC.gLogger.notice('Looking for tarball in %s'%package_dir)
+            results = self.dm.getFilesFromDirectory(package_dir)
+            try:
+                first_file_path = results['Value'][0]
+                if first_file_path[-7:] == '.tar.gz':
+                    results = self.dm.getActiveReplicas(first_file_path)
+                    if results['OK']:
+                        return DIRAC.S_OK({'Source':'tarball', 'Path':package_dir})
+            except:
+                DIRAC.gLogger.warn('No usual tarball found in the directory')
+
         return DIRAC.S_ERROR('Could not find package %s / %s / %s in any location'
                              % (package, version, compiler))
 
@@ -66,7 +73,6 @@ class SoftwareManager(object):
         # first check if cvmfs is available
         ops_helper = Operations()
         use_cvmfs = ops_helper.getValue('SoftwarePolicy/UseCvmfs', bool)
-        use_cvmfs = False
         DIRAC.gLogger.notice('SoftwarePolicy for UseCvmfs is:', use_cvmfs)
 
         # get platform and cpu information
