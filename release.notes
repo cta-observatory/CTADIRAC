@@ -1,4 +1,4 @@
-[v1r54p0xx]
+[v1r54p0]
 * JB : Improve software setup to handle optimized code versions
        New SoftwareManager class
 
