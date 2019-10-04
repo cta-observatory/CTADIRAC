@@ -168,7 +168,7 @@ def get_cpu_info():
     import subprocess, re
     cpuinfo = subprocess.check_output('cat /proc/cpuinfo', shell=True).strip()
     model_name = re.search('model name\s*: (.+)', cpuinfo).group(0).strip('model name\t:')
-    print('%s found.'%model_name)
+    DIRAC.gLogger.notice('%s found.'%model_name)
     for inst in ['avx512', 'avx2', 'avx', 'sse4']:
         if re.search(inst, cpuinfo) is not None:
             return model_name, inst
@@ -184,5 +184,5 @@ def get_os_and_cpu_info():
     for inst in ['avx512', 'avx2', 'avx', 'sse4']:
         if re.search(inst, cpuinfo) is not None:
             break
-    print('Running %s on %s (%s)'%(os_name, model_name, inst))
+    DIRAC.gLogger.notice('Running %s on %s (%s)'%(os_name, model_name, inst))
     return (os_name, model_name, inst)
