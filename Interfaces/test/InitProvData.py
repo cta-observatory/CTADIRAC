@@ -31,15 +31,22 @@ provClient = ProvClient()
 
 # Create an instance of ActivityDescription
 actDesc1 = ActivityDescription(id='ctapipe-display-muons_0.6.2',name='ctapipe_display_muons',\
-                               activity_type='',activity_subtype='',version='0.6.2', doculink='')
+                               type='Reconstruction',subtype='',version='0.6.2', doculink='', \
+                               description='Muon reconstruction')
 # Create the description of input entities
-dataDesc1 = DatasetDescription(id='proton_events', name='protons', description='proton file', classType='datasetDescription')
-usedDesc1 = UsageDescription(id='ctapipe-display-muons_0.6.2_proton_events',activityDescription_id=actDesc1.id, entityDescription_id=dataDesc1.id, role="dl0.sub.evt")
+dataDesc1 = DatasetDescription(id='proton_events', name='protons', description='proton file',\
+                               classType='datasetDescription', type='data', contentType='application/octet-stream')
+usedDesc1 = UsageDescription(id='ctapipe-display-muons_0.6.2_proton_events',activityDescription_id=actDesc1.id, \
+                             entityDescription_id=dataDesc1.id, role="dl0.sub.evt", type='Main')
 # Create the description of output entities
-dataDesc2  = DatasetDescription(id='muons_hdf5', name='muons', description='muon file', classType='datasetDescription')
-wGBDesc1   = GenerationDescription(id='ctapipe-display-muons_0.6.2_muons_hdf5',activityDescription_id=actDesc1.id, entityDescription_id=dataDesc2.id, role="dl0.sub.evt")
-valueDesc1 = ValueDescription(id='status', classType='valueDescription')
-wGBDesc2   = GenerationDescription(id='ctapipe-display-muons_0.6.2_status', activityDescription_id=actDesc1.id, entityDescription_id=valueDesc1.id, role="quality")
+dataDesc2  = DatasetDescription(id='muons_hdf5', name='muons', description='muon file', \
+                                classType='datasetDescription', type='data', contentType='application/octet-stream')
+wGBDesc1   = GenerationDescription(id='ctapipe-display-muons_0.6.2_muons_hdf5',activityDescription_id=actDesc1.id, \
+                                   entityDescription_id=dataDesc2.id, role="dl0.sub.evt", type='Main')
+valueDesc1 = ValueDescription(id='status', name='status', description='activity status', type='status', \
+                              valueType='string', options='(NOK,OK)', default='NOK')
+wGBDesc2   = GenerationDescription(id='ctapipe-display-muons_0.6.2_status', activityDescription_id=actDesc1.id, \
+                                   entityDescription_id=valueDesc1.id, role="quality", type='Quality')
 
 #
 res = provClient.addActivityDescription(actDesc1)

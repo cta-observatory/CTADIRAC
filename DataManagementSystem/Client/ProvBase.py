@@ -82,20 +82,22 @@ class EntityDescription(ProvBase):
 
 class ActivityDescription(ProvBase):
 
-  def __init__( self, id = None, name = None, activity_type = None, activity_subtype = None, version = None, \
-                doculink = None):
+  def __init__( self, id = None, name = None, version = None, description = None, \
+                type = None, subtype = None, doculink = None):
 
     self.id = id
     self.name = name
-    self.activity_type = activity_type
-    self.activity_subtype = activity_subtype
     self.version = version
+    self.description = description
+    self.type = type
+    self.subtype = subtype
     self.doculink = doculink
+
 
   def _getJSONData( self ):
     """ Returns the data that have to be serialized by JSON """
 
-    attrNames = ['id','name','activity_type','activity_subtype','version','doculink']
+    attrNames = ['id','name','type','subtype','version','doculink','description']
     return self._jsonData(attrNames)
 
 class Activity(ProvBase):
@@ -134,61 +136,77 @@ class WasAssociatedWith(ProvBase):
 
 class DatasetDescription(EntityDescription):
 
-  def __init__( self, id = None, name = None, type = None, description = None, doculink = None, classType = None):
+  def __init__( self, id = None, name = None, type = None, description = None, doculink = None, classType = None, \
+                contentType = None):
 
-    self.id = id
-    self.name = name
-    self.type = type
-    self.description = description
-    self.doculink = doculink
-    self.classType = classType
+    EntityDescription.__init__(self, id = id, name = name, type = type, description = description, \
+                               doculink = doculink, classType = classType)
+    self.contentType = contentType
+
+  def _getJSONData(self):
+    """ Returns the data that have to be serialized by JSON """
+
+    attrNames = ['id', 'name', 'type', 'description', 'doculink', 'contentType']
+    return self._jsonData(attrNames)
 
 class ValueDescription(EntityDescription):
 
-  def __init__( self, id = None, name = None, type = None, description = None, doculink = None, classType = None):
+  def __init__( self, id = None, name = None, type = None, description = None, doculink = None, classType = None,\
+                valueType = None, unit = None, ucd = None, utype = None, min = None, max = None, \
+                default = None, options = None):
+    EntityDescription.__init__(self, id = id, name = name, type = type, description = description, \
+                               doculink = doculink, classType = classType)
+    self.valueType = valueType
+    self.unit = unit
+    self.ucd = ucd
+    self.utype = utype
+    self.min = min
+    self.max = max
+    self.default = default
+    self.options = options
 
-    self.id = id
-    self.name = name
-    self.type = type
-    self.description = description
-    self.doculink = doculink
-    self.classType = classType
+  def _getJSONData(self):
+    """ Returns the data that have to be serialized by JSON """
 
+    attrNames = ['id', 'name', 'type', 'description', 'doculink', 'valueType', 'unit', 'ucd', 'utype', 'min', 'max', 'default', 'options']
+    return self._jsonData(attrNames)
 
 class UsageDescription(ProvBase):
 
-  def __init__( self, id = None, role = None, description = None, type = None, activityDescription_id = None, \
-                entityDescription_id = None):
+  def __init__( self, id = None, role = None, description = None, type = None, multiplicity = 1, \
+                activityDescription_id = None, entityDescription_id = None):
 
     self.id = id
     self.role = role
     self.description = description
     self.type = type
+    self.multiplicity = multiplicity
     self.activityDescription_id = activityDescription_id
     self.entityDescription_id = entityDescription_id
 
   def _getJSONData( self ):
     """ Returns the data that have to be serialized by JSON """
 
-    attrNames = ['id','role','description','type','activityDescription_id','entityDescription_id']
+    attrNames = ['id','role','description','type','multiplicity','activityDescription_id','entityDescription_id']
     return self._jsonData(attrNames)
 
 class GenerationDescription(ProvBase):
 
-  def __init__( self, id = None, role = None, description = None, type = None, activityDescription_id = None, \
-                entityDescription_id = None):
+  def __init__( self, id = None, role = None, description = None, type = None, multiplicity = 1, \
+                activityDescription_id = None, entityDescription_id = None):
 
     self.id = id
     self.role = role
     self.description = description
     self.type = type
+    self.multiplicity = multiplicity
     self.activityDescription_id = activityDescription_id
     self.entityDescription_id = entityDescription_id
 
   def _getJSONData( self ):
     """ Returns the data that have to be serialized by JSON """
 
-    attrNames = ['id','role','description','type','activityDescription_id','entityDescription_id']
+    attrNames = ['id','role','description','type','multiplicity','activityDescription_id','entityDescription_id']
     return self._jsonData(attrNames)
 
 class WasAttributedTo(ProvBase):
