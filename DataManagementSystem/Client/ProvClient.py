@@ -22,6 +22,7 @@ class ProvClient(Client):
     res = row.toJSON()
     rowJSON = res['Value']
     rpcClient = self._getRPC()
+    print rowJSON
     return rpcClient.addAgent(rowJSON)
 
   def addActivity(self, row):
@@ -29,6 +30,7 @@ class ProvClient(Client):
     res = row.toJSON()
     rowJSON = res['Value']
     rpcClient = self._getRPC()
+    print rowJSON
     return rpcClient.addActivity(rowJSON)
 
   def addWasAssociatedWith(self, row):
@@ -36,6 +38,7 @@ class ProvClient(Client):
     res = row.toJSON()
     rowJSON = res['Value']
     rpcClient = self._getRPC()
+    print rowJSON
     return rpcClient.addWasAssociatedWith(rowJSON)
 
   def addActivityDescription(self, row):
@@ -43,6 +46,7 @@ class ProvClient(Client):
     res = row.toJSON()
     rowJSON = res['Value']
     rpcClient = self._getRPC()
+    print rowJSON
     return rpcClient.addActivityDescription(rowJSON)
 
   def addDatasetDescription(self, row):
@@ -50,6 +54,7 @@ class ProvClient(Client):
     res = row.toJSON()
     rowJSON = res['Value']
     rpcClient = self._getRPC()
+    print rowJSON
     return rpcClient.addDatasetDescription(rowJSON)
 
   def addUsageDescription(self, row):
@@ -65,6 +70,7 @@ class ProvClient(Client):
     res = row.toJSON()
     rowJSON = res['Value']
     rpcClient = self._getRPC()
+    print rowJSON
     return rpcClient.addGenerationDescription(rowJSON)
 
   def addDatasetEntity(self, row):
@@ -72,6 +78,7 @@ class ProvClient(Client):
     res = row.toJSON()
     rowJSON = res['Value']
     rpcClient = self._getRPC()
+    print rowJSON
     return rpcClient.addDatasetEntity(rowJSON)
 
   def addWasAttributedTo(self, row):
@@ -79,6 +86,7 @@ class ProvClient(Client):
     res = row.toJSON()
     rowJSON = res['Value']
     rpcClient = self._getRPC()
+    print rowJSON
     return rpcClient.addWasAttributedTo(rowJSON)
 
   def addUsed(self, row):
@@ -86,6 +94,7 @@ class ProvClient(Client):
     res = row.toJSON()
     rowJSON = res['Value']
     rpcClient = self._getRPC()
+    print rowJSON
     return rpcClient.addUsed(rowJSON)
 
   def addWasGeneratedBy(self, row):
@@ -93,6 +102,7 @@ class ProvClient(Client):
     res = row.toJSON()
     rowJSON = res['Value']
     rpcClient = self._getRPC()
+    print rowJSON
     return rpcClient.addWasGeneratedBy(rowJSON)
 
   def addValueEntity(self, row):
@@ -100,6 +110,7 @@ class ProvClient(Client):
     res = row.toJSON()
     rowJSON = res['Value']
     rpcClient = self._getRPC()
+    print rowJSON
     return rpcClient.addValueEntity(rowJSON)
 
   def addValueDescription(self, row):
@@ -107,6 +118,7 @@ class ProvClient(Client):
     res = row.toJSON()
     rowJSON = res['Value']
     rpcClient = self._getRPC()
+    print rowJSON
     return rpcClient.addValueDescription(rowJSON)
 
   def getAgents(self):
