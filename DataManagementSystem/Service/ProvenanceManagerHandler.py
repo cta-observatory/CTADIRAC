@@ -236,7 +236,7 @@ class ProvenanceManagerHandler(RequestHandler):
     '''
     Get UsageDescription
     :param activity_id, role
-    :return usageDescription_id
+    :return {'id':usageDescription_id, 'entityDescription_id':entityDescription_id}
     '''
 
     res = cls.__provenanceDB.getUsageDescription(activityDescription_id, role)
@@ -248,11 +248,12 @@ class ProvenanceManagerHandler(RequestHandler):
     '''
     Get GenerationDescription
     :param activity_id, role
-    :return GenerationDescription_id
+    :return {'id':GenerationDescription_id, 'entityDescription_id':entityDescription_id}
     '''
 
     res = cls.__provenanceDB.getGenerationDescription(activityDescription_id, role)
     return cls._parseRes(res)
+
 
 
 

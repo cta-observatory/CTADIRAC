@@ -796,7 +796,7 @@ class ProvenanceDB( object ):
                           .filter(UsageDescription.activityDescription_id == activityDescription_id, UsageDescription.role == role)\
                           .one()
       session.commit()
-      return S_OK(usageDescription.id)
+      return S_OK({'id':usageDescription.id, 'entityDescription_id':usageDescription.entityDescription_id})
     except NoResultFound, e:
       return S_OK()
     finally:
@@ -815,7 +815,7 @@ class ProvenanceDB( object ):
                           .filter(GenerationDescription.activityDescription_id == activityDescription_id, GenerationDescription.role == role)\
                           .one()
       session.commit()
-      return S_OK(generationDescription.id)
+      return S_OK({'id':generationDescription.id, 'entityDescription_id':generationDescription.entityDescription_id})
     except NoResultFound, e:
       return S_OK()
     finally:
