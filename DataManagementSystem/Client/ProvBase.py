@@ -279,7 +279,7 @@ class WasGeneratedBy(ProvBase):
 class ValueEntity(Entity):
 
   def __init__( self, id = None, classType = None, name = None, location = None, generatedAtTime = None, \
-                invalidatedAtTime = None, comment = None, entityDescription_id = None ):
+                invalidatedAtTime = None, comment = None, entityDescription_id = None, value = None ):
 
     self.id = id
     self.classType = classType
@@ -289,5 +289,13 @@ class ValueEntity(Entity):
     self.invalidatedAtTime = invalidatedAtTime
     self.comment = comment
     self.entityDescription_id = entityDescription_id
+    self.value = value
+
+  def _getJSONData( self ):
+    """ Returns the data that have to be serialized by JSON """
+
+    attrNames = ['id','classType','name','location','generatedAtTime','invalidatedAtTime','comment', \
+                 'entityDescription_id', 'value' ]
+    return self._jsonData(attrNames)
 
 
