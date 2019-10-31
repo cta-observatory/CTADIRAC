@@ -245,33 +245,35 @@ class Agent(ProvBase):
 
 class Used(ProvBase):
 
-  def __init__( self, id = None, role = None, time = None, activity_id = None, entity_id = None ):
+  def __init__( self, id = None, role = None, time = None, activity_id = None, entity_id = None , usageDescription_id = None ):
 
     self.id = id
     self.role = role
     self.time = time
     self.activity_id = activity_id
     self.entity_id = entity_id
+    self.usageDescription_id = usageDescription_id
 
   def _getJSONData( self ):
     """ Returns the data that have to be serialized by JSON """
 
-    attrNames = ['id','role','time','activity_id','entity_id']
+    attrNames = ['id','role','time','activity_id','entity_id','usageDescription_id']
     return self._jsonData(attrNames)
 
 class WasGeneratedBy(ProvBase):
 
-  def __init__( self, id = None, role = None, activity_id = None, entity_id = None ):
+  def __init__( self, id = None, role = None, activity_id = None, entity_id = None , generationDescription_id = None ):
 
     self.id = id
     self.role = role
     self.activity_id = activity_id
     self.entity_id = entity_id
+    self.generationDescription_id = generationDescription_id
 
   def _getJSONData( self ):
     """ Returns the data that have to be serialized by JSON """
 
-    attrNames = ['id','role','activity_id','entity_id']
+    attrNames = ['id','role','activity_id','entity_id','generationDescription_id']
     return self._jsonData(attrNames)
 
 class ValueEntity(Entity):

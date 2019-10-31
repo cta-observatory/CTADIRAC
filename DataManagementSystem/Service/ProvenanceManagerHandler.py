@@ -230,4 +230,30 @@ class ProvenanceManagerHandler(RequestHandler):
     res = cls.__provenanceDB.getDatasetEntity(guid)
     return cls._parseRes(res)
 
+  types_getUsageDescription = []
+
+  def export_getUsageDescription(cls, activityDescription_id, role):
+    '''
+    Get UsageDescription
+    :param activity_id, role
+    :return usageDescription_id
+    '''
+
+    res = cls.__provenanceDB.getUsageDescription(activityDescription_id, role)
+    return cls._parseRes(res)
+
+  types_getGenerationDescription = []
+
+  def export_getGenerationDescription(cls, activityDescription_id, role):
+    '''
+    Get GenerationDescription
+    :param activity_id, role
+    :return GenerationDescription_id
+    '''
+
+    res = cls.__provenanceDB.getGenerationDescription(activityDescription_id, role)
+    return cls._parseRes(res)
+
+
+
 
