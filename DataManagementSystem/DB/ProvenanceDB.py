@@ -22,20 +22,34 @@ from DIRAC.ConfigurationSystem.Client.Utilities import getDBParameters
 provBase = declarative_base()
 
 ####################################################################################################
+# wasInformedBy association table (n-n relation)
+wasInformedBy_association_table = Table('wasInformedBy', provBase.metadata,
+    Column('wasInformedBy_Id', Integer, primary_key=True),
+    Column('informant', String, ForeignKey("activities.id")),
+    Column('informed', String, ForeignKey("activities.id")))
+
+####################################################################################################
 # Define the Activity class mapped to the activities table
 class Activity(provBase):
     __tablename__ = 'activities'
     ordered_attribute_list = ['id','name','startTime','endTime','comment','activityDescription_id']
     other_display_attributes = ['name','comment']
+
     # Model attributes included key
     id        = Column(String, primary_key=True)
     name      = Column(String)
     startTime = Column(String)
     endTime   = Column(String)
     comment   = Column(String)
+
     # n-1 relation with ActivityDescription
     activityDescription_id = Column(String, ForeignKey("activityDescriptions.id"))
     activityDescription    = relationship("ActivityDescription")
+
+    # n-n relation
+    wasInformedBy = relationship('Activity',secondary=wasInformedBy_association_table,
+        primaryjoin=id   == wasInformedBy_association_table.c.informed,
+        secondaryjoin=id == wasInformedBy_association_table.c.informant)
 
     # Print method
     def __repr__(self):
@@ -53,6 +67,14 @@ class Activity(provBase):
 
     def get_description_id(self):
         return self.activityDescription_id
+
+####################################################################################################
+# Define the Entity class mapped to the entities table
+# wasDerivedFrom association table (n-n relation)
+wasDerivedFrom_association_table = Table('wasDerivedFrom', provBase.metadata,
+    Column('wasDerivedFrom_Id', Integer, primary_key=True),
+    Column('generatedEntity', String, ForeignKey("entities.id")),
+    Column('usedEntity', String, ForeignKey("entities.id")))
 
 ####################################################################################################
 # Define the Entity class mapped to the entities table
@@ -79,6 +101,11 @@ class Entity(provBase):
     entityDescription_id   = Column(String, ForeignKey("entityDescriptions.id"))
     entityDescription      = relationship("EntityDescription")
 
+    # n-n relation
+    wasDerivedFrom = relationship('Entity',secondary=wasDerivedFrom_association_table,
+        primaryjoin=id   == wasDerivedFrom_association_table.c.usedEntity,
+        secondaryjoin=id == wasDerivedFrom_association_table.c.generatedEntity)
+
     # Print method
     def __repr__(self):
         response = ""
@@ -100,10 +127,12 @@ class Used(provBase):
     ordered_attribute_list = ['id', 'role', 'time', 'activity_id', 'entity_id']
     other_display_attributes = ['role', 'time']
 
+    # Key
     id = Column(Integer, primary_key=True, autoincrement=True)
     # Model attributes
     role = Column(String, nullable=True)
     time = Column(String)
+
     # n-1 relation with Activity
     activity_id = Column(String, ForeignKey('activities.id'))
     activity = relationship("Activity", backref='used')
@@ -134,6 +163,7 @@ class WasGeneratedBy(provBase):
     __tablename__ = 'wasGeneratedBy'
     ordered_attribute_list = ['id', 'role', 'activity_id', 'entity_id']
     other_display_attributes = ['role']
+
     # Key
     id = Column(Integer, primary_key=True, autoincrement=True)
     # Model attributes
@@ -144,7 +174,7 @@ class WasGeneratedBy(provBase):
     # 0..1-1 relation with Entity
     entity_id = Column(String, ForeignKey('entities.id'))
     entity = relationship("Entity")
-    # n-1 relation with UsageDescription
+    # n-1 relation with GenerationDescription
     generationDescription_id = Column(String, ForeignKey('generationDescriptions.id'))
     generationDescription = relationship('GenerationDescription')
 
@@ -169,6 +199,7 @@ class ValueEntity(Entity):
     # ordered_attribute_list = Entity.ordered_attribute_list+['value']
     ordered_attribute_list = Entity.ordered_attribute_list
     other_display_attributes = ['value']
+
     # Key
     id = Column(String, ForeignKey('entities.id'), primary_key=True)
     # Model attributes
@@ -196,6 +227,7 @@ class DatasetEntity(Entity):
     __tablename__ = 'datasetEntities'
     ordered_attribute_list = Entity.ordered_attribute_list
     other_display_attributes = []
+
     # Key
     id = Column(String, ForeignKey('entities.id'), primary_key=True)
     # Model attributes
@@ -216,18 +248,57 @@ class DatasetEntity(Entity):
             response['voprov:' + attribute] = self.__dict__[attribute]
         return response
 
+####################################################################################################
+# Define the Used class mapped to the used table
+class WasConfiguredBy(provBase):
+    __tablename__ = 'wasConfiguredBy'
+    ordered_attribute_list = ['id', 'artefactType']
+    other_display_attributes = ['artefactType']
 
+    # Key
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    # Model attributes
+    artefactType = Column(String, nullable=True)
+
+    # 1-n relation with Activity
+    activity_id = Column(String, ForeignKey('activities.id'))
+    activity = relationship("Activity", backref='WasConfiguredBy', uselist=False)
+    # 1-1 relation with ConfigFile
+    configFile_id = Column(String, ForeignKey('configFiles.id'))
+    configFile = relationship("ConfigFile", backref='WasConfiguredBy', uselist=False)
+    # 1-1 relation with Parameter
+    parameter_id = Column(String, ForeignKey('parameters.id'))
+    parameter = relationship("Parameter", backref='WasConfiguredBy')
+
+    # Print method
+    def __repr__(self):
+        response = ""
+        for attribute in self.ordered_attribute_list:
+            response += "Used.%s=%s\n" % (attribute, self.__dict__[attribute])
+        return response
+
+    # Other methods
+    def get_display_attributes(self):
+        response = {}
+        for attribute in self.other_display_attributes:
+            response['voprov:' + attribute] = self.__dict__[attribute]
+        return response
+
+####################################################################################################
 # Define the Parameter class mapped to the parameters table
 class Parameter(provBase):
     __tablename__ = 'parameters'
-    # ordered_attribute_list = Entity.ordered_attribute_list + ['valueType', 'unit', 'ucd', 'utype']
-    ordered_attribute_list = Entity.ordered_attribute_list
-    other_display_attributes = []
+    ordered_attribute_list = ['id', 'name', 'value']
+    other_display_attributes = ['name', 'value']
+
     # Key
-    id = Column(String, ForeignKey('valueEntities.id'), primary_key=True)
+    id = Column(String, primary_key=True)
     # Model attributes
     name = Column(String)
     value = Column(String)
+    # n-1 relation with ParameterDescription
+    parameterDescription_id = Column(String, ForeignKey("parameterDescriptions.id"))
+    parameterDescription    = relationship("ParameterDescription")
 
     def __repr__(self):
         response = ""
@@ -242,6 +313,99 @@ class Parameter(provBase):
             response['voprov:' + attribute] = self.__dict__[attribute]
         return response
 
+####################################################################################################
+# Define the ConfigFile class mapped to the configFiles table
+class ConfigFile(provBase):
+    __tablename__ = 'configFiles'
+    ordered_attribute_list = ['id', 'name', 'location', 'comment']
+    other_display_attributes = ['name', 'location', 'comment']
+
+    # Key
+    id = Column(String, primary_key=True)
+    # Model attributes
+    name = Column(String)
+    location = Column(String)
+    comment = Column(String)
+    # n-1 relation with ConfigFileDescription
+    configFileDescription_id = Column(String, ForeignKey("configFileDescriptions.id"))
+    configFileDescription    = relationship("ConfigFileDescription")
+
+    def __repr__(self):
+        response = ""
+        for attribute in self.ordered_attribute_list:
+            response += "ConfigFile.%s=%s\n" % (attribute, self.__dict__[attribute])
+        return response
+
+    # Other methods
+    def get_display_attributes(self):
+        response = {}
+        for attribute in self.other_display_attributes:
+            response['voprov:' + attribute] = self.__dict__[attribute]
+        return response
+
+####################################################################################################
+# Define the ParameterDescription class mapped to the parameters table
+class ParameterDescription(provBase):
+    __tablename__ = 'parameterDescriptions'
+    ordered_attribute_list = ['id', 'name', 'valueType', 'description',\
+                              'unit', 'ucd', 'utype', 'min', 'max', 'default', 'options']
+    other_display_attributes = ['name', 'valueType', 'description',\
+                              'unit', 'ucd', 'utype', 'min', 'max', 'default', 'options']
+
+    # Key
+    id = Column(String, primary_key=True)
+    # Model attributes
+    name = Column(String)
+    valueType = Column(String)
+    description = Column(String)
+    unit = Column(String)
+    ucd = Column(String)
+    valueType = Column(String)
+    min = Column(String)
+    max = Column(String)
+    default = Column(String)
+    options = Column(String)
+
+    def __repr__(self):
+        response = ""
+        for attribute in self.ordered_attribute_list:
+            response += "ParameterDescription.%s=%s\n" % (attribute, self.__dict__[attribute])
+        return response
+
+    # Other methods
+    def get_display_attributes(self):
+        response = {}
+        for attribute in self.other_display_attributes:
+            response['voprov:' + attribute] = self.__dict__[attribute]
+        return response
+
+####################################################################################################
+# Define the ConfigFileDescription class mapped to the configFileDescriptions table
+class ConfigFileDescription(provBase):
+    __tablename__ = 'configFileDescriptions'
+    ordered_attribute_list = ['id', 'name', 'contentType', 'description']
+    other_display_attributes = ['name', 'contentType', 'description']
+
+    # Key
+    id = Column(String, primary_key=True)
+    # Model attributes
+    name = Column(String)
+    contentType = Column(String)
+    description = Column(String)
+
+    def __repr__(self):
+        response = ""
+        for attribute in self.ordered_attribute_list:
+            response += "ConfigFileDescription.%s=%s\n" % (attribute, self.__dict__[attribute])
+        return response
+
+    # Other methods
+    def get_display_attributes(self):
+        response = {}
+        for attribute in self.other_display_attributes:
+            response['voprov:' + attribute] = self.__dict__[attribute]
+        return response
+####################################################################################################
 # Define the Agent class mapped to the agents table
 class Agent(provBase):
     __tablename__ = 'agents'
@@ -259,6 +423,7 @@ class Agent(provBase):
             response += "Agent.%s=%s\n" %(attribute,self.__dict__[attribute])
         return response
 
+####################################################################################################
 # Define the WasAssociatedWith class mapped to the wasAssociatedWith table
 class WasAssociatedWith(provBase):
     __tablename__ = 'wasAssociatedWith'
@@ -273,6 +438,7 @@ class WasAssociatedWith(provBase):
             response += "WasAssociatedWith.%s=%s\n" %(attribute,self.__dict__[attribute])
         return response
 
+####################################################################################################
 # Define the WasAttributedTo class mapped to the wasAttributedTo table
 class WasAttributedTo(provBase):
     __tablename__ = 'wasAttributedTo'
@@ -287,6 +453,7 @@ class WasAttributedTo(provBase):
             response += "WasAttributedTo.%s=%s\n" %(attribute,self.__dict__[attribute])
         return response
 
+####################################################################################################
 # Define the ActivityDescription class mapped to the activityDescriptions table
 class ActivityDescription(provBase):
     __tablename__ = 'activityDescriptions'
@@ -316,6 +483,7 @@ class ActivityDescription(provBase):
             response['voprov:' + attribute] = self.__dict__[attribute]
         return response
 
+####################################################################################################
 # Define the EntityDescription class mapped to the entityDescriptions table
 class EntityDescription(provBase):
     __tablename__ = 'entityDescriptions'
@@ -349,6 +517,7 @@ class EntityDescription(provBase):
             response['voprov:' + attribute] = self.__dict__[attribute]
         return response
 
+####################################################################################################
 # Define the UsageDescription class mapped to the usageDescriptions table
 class UsageDescription(provBase):
     __tablename__ = 'usageDescriptions'
@@ -379,6 +548,7 @@ class UsageDescription(provBase):
             response['voprov:' + attribute] = self.__dict__[attribute]
         return response
 
+####################################################################################################
 # Define the GenerationDescription class mapped to the generationDescriptions table
 class GenerationDescription(provBase):
     __tablename__ = 'generationDescriptions'
@@ -411,6 +581,7 @@ class GenerationDescription(provBase):
             response['voprov:' + attribute] = self.__dict__[attribute]
         return response
 
+####################################################################################################
 # Define the ValueDescription class mapped to the valueDescriptions table
 class ValueDescription(EntityDescription):
     __tablename__ = 'valueDescriptions'
@@ -445,6 +616,7 @@ class ValueDescription(EntityDescription):
             response['voprov:' + attribute] = self.__dict__[attribute]
         return response
 
+####################################################################################################
 # Define the DatasetDescription class mapped to the datasetDescriptions table
 class DatasetDescription(EntityDescription):
     __tablename__ = 'datasetDescriptions'
@@ -472,39 +644,7 @@ class DatasetDescription(EntityDescription):
             response['voprov:' + attribute] = self.__dict__[attribute]
         return response
 
-# Define the ParameterDescription class mapped to the parameterDescriptions table
-class ParameterDescription(provBase):
-    __tablename__ = 'parameterDescriptions'
-    # ordered_attribute_list = ValueDescription.ordered_attribute_list + ['min','max','options','default']
-    ordered_attribute_list = EntityDescription.ordered_attribute_list
-    other_display_attributes = []
-    # Key
-    id = Column(String, ForeignKey('valueDescriptions.id'), primary_key=True)
-    # Model attributes
-    name = Column(String)
-    valueType = Column(String)
-    unit = Column(String)
-    ucd = Column(String)
-    utype = Column(String)
-    min = Column(String)
-    max = Column(String)
-    default = Column(String)
-    options = Column(String)
-
-    # Print method
-    def __repr__(self):
-        response = ""
-        for attribute in self.ordered_attribute_list:
-            response += "ParameterDescription.%s=%s\n" % (attribute, self.__dict__[attribute])
-        return response
-
-    # Other methods
-    def get_display_attributes(self):
-        response = {}
-        for attribute in self.other_display_attributes:
-            response['voprov:' + attribute] = self.__dict__[attribute]
-        return response
-
+####################################################################################################
 class ProvenanceDB( object ):
   '''
     Class that defines the interactions with the tables of the ProvenanceDB.
@@ -744,6 +884,61 @@ class ProvenanceDB( object ):
 
     valueDesc = ValueDescription()
     row = self._dictToObject(valueDesc, rowDict)
+    return self._sessionAdd(row)
+
+  def addWasConfiguredBy(self, rowDict):
+    '''
+      Add WasConfiguredBy
+      :param rowDict:
+      :return:
+    '''
+
+    wasConfiguredBy = WasConfiguredBy()
+    row = self._dictToObject(wasConfiguredBy, rowDict)
+    return self._sessionAdd(row)
+
+  def addParameter(self, rowDict):
+    '''
+      Add Parameter
+      :param rowDict:
+      :return:
+    '''
+
+    parameter = Parameter()
+    row = self._dictToObject(parameter, rowDict)
+    return self._sessionAdd(row)
+
+  def addConfigFile(self, rowDict):
+    '''
+      Add ConfigFile
+      :param rowDict:
+      :return:
+    '''
+
+    configFile = ConfigFile()
+    row = self._dictToObject(configFile, rowDict)
+    return self._sessionAdd(row)
+
+  def addParameterDescription(self, rowDict):
+    '''
+      Add ParameterDescription
+      :param rowDict:
+      :return:
+    '''
+
+    parameterDescription = ParameterDescription()
+    row = self._dictToObject(parameterDescription, rowDict)
+    return self._sessionAdd(row)
+
+  def addConfigFileDescription(self, rowDict):
+    '''
+      Add ConfigFileDescription
+      :param rowDict:
+      :return:
+    '''
+
+    configFileDescription = ConfigFileDescription()
+    row = self._dictToObject(configFileDescription, rowDict)
     return self._sessionAdd(row)
 
   def getAgents(self):

@@ -207,7 +207,75 @@ class ProvenanceManagerHandler(RequestHandler):
     res = cls.__provenanceDB.addValueEntity(rowDict)
     return cls._parseRes(res)
 
+  types_addWasConfiguredBy= [basestring]
+
+  def export_addWasConfiguredBy(cls, rowJSON):
+    '''
+    Insert WasConfiguredBy
+    :param rowJSON
+    :return:
+    '''
+
+    rowDict = json.loads(rowJSON)
+    res = cls.__provenanceDB.addWasConfiguredBy(rowDict)
+    return cls._parseRes(res)
+
+  types_addParameter = [basestring]
+
+  def export_addParameter(cls, rowJSON):
+    '''
+    Insert Parameter
+    :param rowJSON
+    :return:
+    '''
+
+    rowDict = json.loads(rowJSON)
+    res = cls.__provenanceDB.addParameter(rowDict)
+    return cls._parseRes(res)
+
+  types_addConfigFile = [basestring]
+
+  def export_addConfigFile(cls, rowJSON):
+    '''
+    Insert ConfigFile
+    :param rowJSON
+    :return:
+    '''
+
+    rowDict = json.loads(rowJSON)
+    res = cls.__provenanceDB.addConfigFile(rowDict)
+    return cls._parseRes(res)
+
   types_getAgents = []
+
+  types_addParameterDescription = [basestring]
+
+  def export_addParameterDescription(cls, rowJSON):
+    '''
+    Insert ParameterDescription
+    :param rowJSON
+    :return:
+    '''
+
+    rowDict = json.loads(rowJSON)
+    res = cls.__provenanceDB.addParameterDescription(rowDict)
+    return cls._parseRes(res)
+
+  types_addConfigFileDescription = [basestring]
+
+  def export_addConfigFileDescription(cls, rowJSON):
+    '''
+    Insert ConfigFileDescription
+    :param rowJSON
+    :return:
+    '''
+
+    rowDict = json.loads(rowJSON)
+    res = cls.__provenanceDB.addConfigFileDescription(rowDict)
+    return cls._parseRes(res)
+
+  types_getAgents = []
+
 
   def export_getAgents(cls):
     '''

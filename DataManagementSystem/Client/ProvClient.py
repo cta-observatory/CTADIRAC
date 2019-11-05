@@ -121,6 +121,46 @@ class ProvClient(Client):
     print rowJSON
     return rpcClient.addValueDescription(rowJSON)
 
+  def addWasConfiguredBy(self, row):
+
+    res = row.toJSON()
+    rowJSON = res['Value']
+    rpcClient = self._getRPC()
+    print rowJSON
+    return rpcClient.addWasConfiguredBy(rowJSON)
+
+  def addParameter(self, row):
+
+    res = row.toJSON()
+    rowJSON = res['Value']
+    rpcClient = self._getRPC()
+    print rowJSON
+    return rpcClient.addParameter(rowJSON)
+
+  def addConfigFile(self, row):
+
+    res = row.toJSON()
+    rowJSON = res['Value']
+    rpcClient = self._getRPC()
+    print rowJSON
+    return rpcClient.addConfigFile(rowJSON)
+
+  def addParameterDescription(self, row):
+
+    res = row.toJSON()
+    rowJSON = res['Value']
+    rpcClient = self._getRPC()
+    print rowJSON
+    return rpcClient.addParameterDescription(rowJSON)
+
+  def addConfigFileDescription(self, row):
+
+    res = row.toJSON()
+    rowJSON = res['Value']
+    rpcClient = self._getRPC()
+    print rowJSON
+    return rpcClient.addConfigFileDescription(rowJSON)
+
   def getAgents(self):
 
     rpcClient = self._getRPC()

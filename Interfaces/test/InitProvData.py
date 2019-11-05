@@ -26,6 +26,11 @@ from CTADIRAC.DataManagementSystem.Client.ProvBase import WasGeneratedBy
 from CTADIRAC.DataManagementSystem.Client.ProvBase import ValueEntity
 from CTADIRAC.DataManagementSystem.Client.ProvBase import Activity
 from CTADIRAC.DataManagementSystem.Client.ProvBase import WasAssociatedWith
+from CTADIRAC.DataManagementSystem.Client.ProvBase import WasConfiguredBy
+from CTADIRAC.DataManagementSystem.Client.ProvBase import Parameter
+from CTADIRAC.DataManagementSystem.Client.ProvBase import ConfigFile
+from CTADIRAC.DataManagementSystem.Client.ProvBase import ParameterDescription
+from CTADIRAC.DataManagementSystem.Client.ProvBase import ConfigFileDescription
 
 provClient = ProvClient()
 
