@@ -53,6 +53,14 @@ valueDesc1 = ValueDescription(id='status', name='status', description='activity 
 wGBDesc2   = GenerationDescription(id='ctapipe-display-muons_0.6.2_status', activityDescription_id=actDesc1.id, \
                                    entityDescription_id=valueDesc1.id, role="status", type='Quality')
 
+# Create description of configFiles and Parameters
+paramDesc1 = ParameterDescription(name='events', valueType='string', description='name of the event file',\
+                                  ucd='meta.id',utype='ProvenanceDM.ParameterDescription', \
+                                  activityDescription_id = actDesc1.id)
+paramDesc2 = ParameterDescription(name='outfile', valueType='string', description='name of the output file',\
+                                  ucd='meta.id',utype='ProvenanceDM.ParameterDescription', \
+                                  activityDescription_id = actDesc1.id)
+
 #
 res = provClient.addActivityDescription(actDesc1)
 if not res['OK']:
@@ -79,6 +87,14 @@ if not res['OK']:
   DIRAC.gLogger.error(res['Message'])
   DIRAC.exit(-1)
 res = provClient.addGenerationDescription(wGBDesc2)
+if not res['OK']:
+  DIRAC.gLogger.error(res['Message'])
+  DIRAC.exit(-1)
+res = provClient.addParameterDescription(paramDesc1)
+if not res['OK']:
+  DIRAC.gLogger.error(res['Message'])
+  DIRAC.exit(-1)
+res = provClient.addParameterDescription(paramDesc2)
 if not res['OK']:
   DIRAC.gLogger.error(res['Message'])
   DIRAC.exit(-1)

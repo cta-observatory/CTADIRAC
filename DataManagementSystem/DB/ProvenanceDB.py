@@ -21,18 +21,19 @@ from DIRAC.ConfigurationSystem.Client.Utilities import getDBParameters
 
 provBase = declarative_base()
 
-####################################################################################################
+################################################################################
 # wasInformedBy association table (n-n relation)
 wasInformedBy_association_table = Table('wasInformedBy', provBase.metadata,
     Column('wasInformedBy_Id', Integer, primary_key=True),
     Column('informant', String, ForeignKey("activities.id")),
     Column('informed', String, ForeignKey("activities.id")))
 
-####################################################################################################
+################################################################################
 # Define the Activity class mapped to the activities table
 class Activity(provBase):
     __tablename__ = 'activities'
-    ordered_attribute_list = ['id','name','startTime','endTime','comment','activityDescription_id']
+    ordered_attribute_list = ['id','name','startTime','endTime','comment',\
+                              'activityDescription_id']
     other_display_attributes = ['name','comment']
 
     # Model attributes included key
@@ -45,9 +46,9 @@ class Activity(provBase):
     # n-1 relation with ActivityDescription
     activityDescription_id = Column(String, ForeignKey("activityDescriptions.id"))
     activityDescription    = relationship("ActivityDescription")
-
     # n-n relation
-    wasInformedBy = relationship('Activity',secondary=wasInformedBy_association_table,
+    wasInformedBy = relationship('Activity',\
+        secondary=wasInformedBy_association_table,
         primaryjoin=id   == wasInformedBy_association_table.c.informed,
         secondaryjoin=id == wasInformedBy_association_table.c.informant)
 
@@ -68,7 +69,7 @@ class Activity(provBase):
     def get_description_id(self):
         return self.activityDescription_id
 
-####################################################################################################
+################################################################################
 # Define the Entity class mapped to the entities table
 # wasDerivedFrom association table (n-n relation)
 wasDerivedFrom_association_table = Table('wasDerivedFrom', provBase.metadata,
@@ -76,12 +77,14 @@ wasDerivedFrom_association_table = Table('wasDerivedFrom', provBase.metadata,
     Column('generatedEntity', String, ForeignKey("entities.id")),
     Column('usedEntity', String, ForeignKey("entities.id")))
 
-####################################################################################################
+################################################################################
 # Define the Entity class mapped to the entities table
 class Entity(provBase):
     __tablename__ = 'entities'
-    ordered_attribute_list = ['id','classType','name','location','generatedAtTime','invalidatedAtTime','comment','entityDescription_id']
-    other_display_attributes = ['name','location','generatedAtTime','invalidatedAtTime','comment']
+    ordered_attribute_list = ['id','classType','name','location','generatedAtTime',\
+                              'invalidatedAtTime','comment','entityDescription_id']
+    other_display_attributes = ['name','location','generatedAtTime',\
+                                'invalidatedAtTime','comment']
     # Model attributes included key
     id                  = Column(String, primary_key=True)
     name                = Column(String)
@@ -100,7 +103,6 @@ class Entity(provBase):
     # n-1 relation with EntityDescription
     entityDescription_id   = Column(String, ForeignKey("entityDescriptions.id"))
     entityDescription      = relationship("EntityDescription")
-
     # n-n relation
     wasDerivedFrom = relationship('Entity',secondary=wasDerivedFrom_association_table,
         primaryjoin=id   == wasDerivedFrom_association_table.c.usedEntity,
@@ -120,79 +122,7 @@ class Entity(provBase):
             response ['voprov:'+attribute]=self.__dict__[attribute]
         return response
 
-####################################################################################################
-# Define the Used class mapped to the used table
-class Used(provBase):
-    __tablename__ = 'used'
-    ordered_attribute_list = ['id', 'role', 'time', 'activity_id', 'entity_id']
-    other_display_attributes = ['role', 'time']
-
-    # Key
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    # Model attributes
-    role = Column(String, nullable=True)
-    time = Column(String)
-
-    # n-1 relation with Activity
-    activity_id = Column(String, ForeignKey('activities.id'))
-    activity = relationship("Activity", backref='used')
-    # n-1 relation with Entity
-    entity_id = Column(String, ForeignKey('entities.id'))
-    entity = relationship("Entity", backref='used')
-    # n-1 relation with UsageDescription
-    usageDescription_id = Column(String, ForeignKey('usageDescriptions.id'))
-    usageDescription = relationship('UsageDescription')
-
-    # Print method
-    def __repr__(self):
-        response = ""
-        for attribute in self.ordered_attribute_list:
-            response += "Used.%s=%s\n" % (attribute, self.__dict__[attribute])
-        return response
-
-    # Other methods
-    def get_display_attributes(self):
-        response = {}
-        for attribute in self.other_display_attributes:
-            response['voprov:' + attribute] = self.__dict__[attribute]
-        return response
-
-####################################################################################################
-# Define the WasGeneratedBy class mapped to the wasGeneratedBy table
-class WasGeneratedBy(provBase):
-    __tablename__ = 'wasGeneratedBy'
-    ordered_attribute_list = ['id', 'role', 'activity_id', 'entity_id']
-    other_display_attributes = ['role']
-
-    # Key
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    # Model attributes
-    role = Column(String, nullable=True)
-    # n-1 relation with Activity
-    activity_id = Column(String, ForeignKey('activities.id'))
-    activity = relationship("Activity")
-    # 0..1-1 relation with Entity
-    entity_id = Column(String, ForeignKey('entities.id'))
-    entity = relationship("Entity")
-    # n-1 relation with GenerationDescription
-    generationDescription_id = Column(String, ForeignKey('generationDescriptions.id'))
-    generationDescription = relationship('GenerationDescription')
-
-    # Print method
-    def __repr__(self):
-        response = ""
-        for attribute in self.ordered_attribute_list:
-            response += "WasGeneratedBy.%s=%s\n" % (attribute, self.__dict__[attribute])
-        return response
-
-    # Other methods
-    def get_display_attributes(self):
-        response = {}
-        for attribute in self.other_display_attributes:
-            response['voprov:' + attribute] = self.__dict__[attribute]
-        return response
-
-####################################################################################################
+################################################################################
 # Define the ValueEntity class mapped to the valueEntities table
 class ValueEntity(Entity):
     __tablename__ = 'valueEntities'
@@ -204,6 +134,7 @@ class ValueEntity(Entity):
     id = Column(String, ForeignKey('entities.id'), primary_key=True)
     # Model attributes
     value = Column(String)
+
     # Heritage
     __mapper_args__ = {'polymorphic_identity': 'value'}
 
@@ -231,6 +162,7 @@ class DatasetEntity(Entity):
     # Key
     id = Column(String, ForeignKey('entities.id'), primary_key=True)
     # Model attributes
+
     # Heritage
     __mapper_args__ = {'polymorphic_identity': 'dataset'}
 
@@ -248,8 +180,342 @@ class DatasetEntity(Entity):
             response['voprov:' + attribute] = self.__dict__[attribute]
         return response
 
-####################################################################################################
+################################################################################
 # Define the Used class mapped to the used table
+class Used(provBase):
+    __tablename__ = 'used'
+    ordered_attribute_list = ['id', 'role', 'time', 'activity_id', 'entity_id', \
+                              'usageDescription_id']
+    other_display_attributes = ['role', 'time']
+
+    # Key
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    # Model attributes
+    role = Column(String, nullable=True)
+    time = Column(String)
+
+    # n-1 relation with Activity
+    activity_id = Column(String, ForeignKey('activities.id'))
+    activity = relationship("Activity", backref='used')
+    # n-1 relation with Entity
+    entity_id = Column(String, ForeignKey('entities.id'))
+    entity = relationship("Entity", backref='used')
+    # n-1 relation with UsageDescription
+    usageDescription_id = Column(String, ForeignKey('usageDescriptions.id'))
+    usageDescription = relationship("UsageDescription")
+
+    # Print method
+    def __repr__(self):
+        response = ""
+        for attribute in self.ordered_attribute_list:
+            response += "Used.%s=%s\n" % (attribute, self.__dict__[attribute])
+        return response
+
+    # Other methods
+    def get_display_attributes(self):
+        response = {}
+        for attribute in self.other_display_attributes:
+            response['voprov:' + attribute] = self.__dict__[attribute]
+        return response
+
+
+################################################################################
+# Define the WasGeneratedBy class mapped to the wasGeneratedBy table
+class WasGeneratedBy(provBase):
+    __tablename__ = 'wasGeneratedBy'
+    ordered_attribute_list = ['id', 'role', 'activity_id', 'entity_id']
+    other_display_attributes = ['role']
+
+    # Key
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    # Model attributes
+    role = Column(String, nullable=True)
+
+    # n-1 relation with Activity
+    activity_id = Column(String, ForeignKey('activities.id'))
+    activity = relationship("Activity")
+    # 0..1-1 relation with Entity
+    entity_id = Column(String, ForeignKey('entities.id'))
+    entity = relationship("Entity")
+    # n-1 relation with GenerationDescription
+    generationDescription_id = Column(String, ForeignKey('generationDescriptions.id'))
+    generationDescription = relationship('GenerationDescription')
+
+    # Print method
+    def __repr__(self):
+        response = ""
+        for attribute in self.ordered_attribute_list:
+            response += "WasGeneratedBy.%s=%s\n" % (attribute, self.__dict__[attribute])
+        return response
+
+    # Other methods
+    def get_display_attributes(self):
+        response = {}
+        for attribute in self.other_display_attributes:
+            response['voprov:' + attribute] = self.__dict__[attribute]
+        return response
+
+################################################################################
+# Define the Agent class mapped to the agents table
+class Agent(provBase):
+    __tablename__ = 'agents'
+    ordered_attribute_list = ['id', 'name', 'type', 'email', 'affiliation', 'phone', 'address']
+    id = Column(String, primary_key=True)
+    name = Column(String)
+    type = Column(String)
+    email = Column(String)
+    affiliation = Column(String)
+    phone = Column(String)
+    address = Column(String)
+
+    def __repr__(self):
+        response = ""
+        for attribute in self.ordered_attribute_list:
+            response += "Agent.%s=%s\n" % (attribute, self.__dict__[attribute])
+        return response
+
+################################################################################
+# Define the WasAssociatedWith class mapped to the wasAssociatedWith table
+class WasAssociatedWith(provBase):
+    __tablename__ = 'wasAssociatedWith'
+    ordered_attribute_list = ['id','activity','agent','role']
+    id       = Column(Integer, primary_key=True, autoincrement=True)
+    activity = Column(String, ForeignKey("activities.id"))
+    agent    = Column(String, ForeignKey("agents.id"))
+    role     = Column(String, nullable=True)
+
+    def __repr__(self):
+        response = ""
+        for attribute in self.ordered_attribute_list:
+            response += "WasAssociatedWith.%s=%s\n" %(attribute,self.__dict__[attribute])
+        return response
+
+################################################################################
+# Define the WasAttributedTo class mapped to the wasAttributedTo table
+class WasAttributedTo(provBase):
+    __tablename__ = 'wasAttributedTo'
+    ordered_attribute_list = ['id','entity','agent','role']
+    id       = Column(Integer, primary_key=True, autoincrement=True)
+    entity   = Column(String, ForeignKey("entities.id"))
+    agent    = Column(String, ForeignKey("agents.id"))
+    role     = Column(String, nullable=True)
+
+    def __repr__(self):
+        response = ""
+        for attribute in self.ordered_attribute_list:
+            response += "WasAttributedTo.%s=%s\n" %(attribute,self.__dict__[attribute])
+        return response
+
+################################################################################
+# Define the ActivityDescription class mapped to the activityDescriptions table
+class ActivityDescription(provBase):
+    __tablename__ = 'activityDescriptions'
+    ordered_attribute_list = ['id', 'name', 'version', 'description', 'type', 'subtype', 'doculink']
+    other_display_attributes = ['name', 'version', 'description', 'type', 'subtype', 'doculink']
+
+    # Key
+    id = Column(String, primary_key=True)
+    # Model attributes
+    name = Column(String)
+    version = Column(String)
+    description = Column(String)
+    type = Column(String)
+    subtype = Column(String)
+    doculink = Column(String)
+
+    # 1-n relation with ConfigFileDescription
+    configFiles = relationship("ConfigFileDescription")
+    # 1-n relation with ParameterDescription
+    parameters = relationship("ParameterDescription")
+
+    # Print method
+    def __repr__(self):
+        response = ""
+        for attribute in self.ordered_attribute_list:
+            response += "ActivityDescription.%s=%s\n" % (attribute, self.__dict__[attribute])
+        return response
+
+    # Other methods
+    def get_display_attributes(self):
+        response = {}
+        for attribute in self.other_display_attributes:
+            response['voprov:' + attribute] = self.__dict__[attribute]
+        return response
+
+################################################################################
+# Define the EntityDescription class mapped to the entityDescriptions table
+class EntityDescription(provBase):
+    __tablename__ = 'entityDescriptions'
+    ordered_attribute_list = ['id', 'name', 'type', 'description', 'doculink', 'classType']
+    other_display_attributes = ['name', 'type', 'description', 'doculink', 'classType']
+
+    # Key
+    id = Column(String, primary_key=True)
+    # Model attributes
+    name = Column(String)
+    type = Column(String)
+    description = Column(String)
+    doculink = Column(String)
+    classType = Column(String)
+
+    # Heritage
+    __mapper_args__ = {
+        'polymorphic_identity': 'entityDescription',
+        'polymorphic_on': classType
+    }
+
+    # Print method
+    def __repr__(self):
+        response = ""
+        for attribute in self.ordered_attribute_list:
+            response += "EntityDescription.%s=%s\n" % (attribute, self.__dict__[attribute])
+        return response
+
+    # Other methods
+    def get_display_attributes(self):
+        response = {}
+        for attribute in self.other_display_attributes:
+            response['voprov:' + attribute] = self.__dict__[attribute]
+        return response
+
+################################################################################
+# Define the ValueDescription class mapped to the valueDescriptions table
+class ValueDescription(EntityDescription):
+    __tablename__ = 'valueDescriptions'
+    # ordered_attribute_list = EntityDescription.ordered_attribute_list + ['valueType','unit','ucd','utype']
+    ordered_attribute_list = EntityDescription.ordered_attribute_list
+    other_display_attributes = []
+
+    # Key
+    id = Column(String, ForeignKey('entityDescriptions.id'), primary_key=True)
+    # Model attributes
+    valueType = Column(String)
+    unit = Column(String)
+    ucd = Column(String)
+    utype = Column(String)
+    min = Column(String)
+    max = Column(String)
+    default = Column(String)
+    options = Column(String)
+
+    # Heritage
+    __mapper_args__ = {'polymorphic_identity': 'valueDescription'}
+
+    # Print method
+    def __repr__(self):
+        response = ""
+        for attribute in self.ordered_attribute_list:
+            response += "ValueDescription.%s=%s\n" % (attribute, self.__dict__[attribute])
+        return response
+
+    # Other methods
+    def get_display_attributes(self):
+        response = {}
+        for attribute in self.other_display_attributes:
+            response['voprov:' + attribute] = self.__dict__[attribute]
+        return response
+
+################################################################################
+# Define the DatasetDescription class mapped to the datasetDescriptions table
+class DatasetDescription(EntityDescription):
+    __tablename__ = 'datasetDescriptions'
+    # ordered_attribute_list = EntityDescription.ordered_attribute_list + ['contentType']
+    ordered_attribute_list = EntityDescription.ordered_attribute_list
+    other_display_attributes = []
+
+    # Key
+    id = Column(String, ForeignKey('entityDescriptions.id'), primary_key=True)
+    # Model attributes
+    contentType = Column(String)
+
+    # Heritage
+    __mapper_args__ = {'polymorphic_identity': 'datasetDescription'}
+
+    # Print method
+    def __repr__(self):
+        response = ""
+        for attribute in self.ordered_attribute_list:
+            response += "DatasetDescription.%s=%s\n" % (attribute, self.__dict__[attribute])
+        return response
+
+    # Other methods
+    def get_display_attributes(self):
+        response = {}
+        for attribute in self.other_display_attributes:
+            response['voprov:' + attribute] = self.__dict__[attribute]
+        return response
+
+################################################################################
+# Define the UsageDescription class mapped to the usageDescriptions table
+class UsageDescription(provBase):
+    __tablename__ = 'usageDescriptions'
+    ordered_attribute_list = ['id', 'role', 'description', 'type', 'multiplicity', \
+                              'activityDescription_id', 'entityDescription_id']
+    # Key
+    id = Column(String, primary_key=True)
+    # Model attributes
+    role = Column(String, nullable=True)
+    description = Column(String)
+    type = Column(String)
+    multiplicity = Column(Integer)
+
+    # Relations
+    activityDescription_id = Column(String, ForeignKey('activityDescriptions.id'))
+    activityDescription = relationship("ActivityDescription")
+    entityDescription_id = Column(String, ForeignKey('entityDescriptions.id'))
+    entityDescription = relationship("EntityDescription")
+
+    def __repr__(self):
+        response = ""
+        for attribute in self.ordered_attribute_list:
+            response += "UsageDescription.%s=%s\n" % (attribute, self.__dict__[attribute])
+        return response
+
+    # Other methods
+    def get_display_attributes(self):
+        response = {}
+        for attribute in self.other_display_attributes:
+            response['voprov:' + attribute] = self.__dict__[attribute]
+        return response
+
+####################################################################################################
+# Define the GenerationDescription class mapped to the generationDescriptions table
+class GenerationDescription(provBase):
+    __tablename__ = 'generationDescriptions'
+    ordered_attribute_list = ['id', 'role', 'description', 'type', \
+                              'activityDescription_id', 'entityDescription_id']
+    other_display_attributes = ['role', 'description', 'type', 'multiplicity']
+
+    # Key
+    id = Column(String, primary_key=True)
+    # Model attributes
+    role = Column(String, nullable=True)
+    description = Column(String)
+    type = Column(String)
+    multiplicity = Column(Integer)
+
+    # Relations
+    activityDescription_id = Column(String, ForeignKey('activityDescriptions.id'))
+    activityDescription = relationship("ActivityDescription")
+    entityDescription_id = Column(String, ForeignKey('entityDescriptions.id'))
+    entityDescription = relationship("EntityDescription")
+
+    # Print method
+    def __repr__(self):
+        response = ""
+        for attribute in self.ordered_attribute_list:
+            response += "GenerationDescription.%s=%s\n" % (attribute, self.__dict__[attribute])
+        return response
+
+    # Other methods
+    def get_display_attributes(self):
+        response = {}
+        for attribute in self.other_display_attributes:
+            response['voprov:' + attribute] = self.__dict__[attribute]
+        return response
+
+################################################################################
+# Define the WasConfiguredBy class mapped to the wasConfiguredBy table
 class WasConfiguredBy(provBase):
     __tablename__ = 'wasConfiguredBy'
     ordered_attribute_list = ['id', 'artefactType']
@@ -274,7 +540,7 @@ class WasConfiguredBy(provBase):
     def __repr__(self):
         response = ""
         for attribute in self.ordered_attribute_list:
-            response += "Used.%s=%s\n" % (attribute, self.__dict__[attribute])
+            response += "WasConfiguredBy.%s=%s\n" % (attribute, self.__dict__[attribute])
         return response
 
     # Other methods
@@ -284,7 +550,8 @@ class WasConfiguredBy(provBase):
             response['voprov:' + attribute] = self.__dict__[attribute]
         return response
 
-####################################################################################################
+
+################################################################################
 # Define the Parameter class mapped to the parameters table
 class Parameter(provBase):
     __tablename__ = 'parameters'
@@ -296,9 +563,10 @@ class Parameter(provBase):
     # Model attributes
     name = Column(String)
     value = Column(String)
+
     # n-1 relation with ParameterDescription
-    parameterDescription_id = Column(String, ForeignKey("parameterDescriptions.id"))
-    parameterDescription    = relationship("ParameterDescription")
+    parameterDescription_id = Column(Integer, ForeignKey("parameterDescriptions.id"))
+    parameterDescription = relationship("ParameterDescription")
 
     def __repr__(self):
         response = ""
@@ -313,7 +581,8 @@ class Parameter(provBase):
             response['voprov:' + attribute] = self.__dict__[attribute]
         return response
 
-####################################################################################################
+
+################################################################################
 # Define the ConfigFile class mapped to the configFiles table
 class ConfigFile(provBase):
     __tablename__ = 'configFiles'
@@ -326,9 +595,10 @@ class ConfigFile(provBase):
     name = Column(String)
     location = Column(String)
     comment = Column(String)
+
     # n-1 relation with ConfigFileDescription
-    configFileDescription_id = Column(String, ForeignKey("configFileDescriptions.id"))
-    configFileDescription    = relationship("ConfigFileDescription")
+    configFileDescription_id = Column(Integer, ForeignKey("configFileDescriptions.id"))
+    configFileDescription = relationship("ConfigFileDescription")
 
     def __repr__(self):
         response = ""
@@ -343,28 +613,32 @@ class ConfigFile(provBase):
             response['voprov:' + attribute] = self.__dict__[attribute]
         return response
 
-####################################################################################################
+
+################################################################################
 # Define the ParameterDescription class mapped to the parameters table
 class ParameterDescription(provBase):
     __tablename__ = 'parameterDescriptions'
-    ordered_attribute_list = ['id', 'name', 'valueType', 'description',\
-                              'unit', 'ucd', 'utype', 'min', 'max', 'default', 'options']
-    other_display_attributes = ['name', 'valueType', 'description',\
-                              'unit', 'ucd', 'utype', 'min', 'max', 'default', 'options']
+    ordered_attribute_list = ['id', 'name', 'valueType', 'description', \
+                              'unit', 'ucd', 'utype', 'min', 'max', 'default', 'options', 'activityDescription_id']
+    other_display_attributes = ['name', 'valueType', 'description', \
+                                'unit', 'ucd', 'utype', 'min', 'max', 'default', 'options']
 
     # Key
-    id = Column(String, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     # Model attributes
     name = Column(String)
     valueType = Column(String)
     description = Column(String)
     unit = Column(String)
     ucd = Column(String)
-    valueType = Column(String)
+    utype = Column(String)
     min = Column(String)
     max = Column(String)
     default = Column(String)
     options = Column(String)
+
+    # 1-n relation with ActivityDescription
+    activityDescription_id = Column(String, ForeignKey("activityDescriptions.id"))
 
     def __repr__(self):
         response = ""
@@ -379,19 +653,23 @@ class ParameterDescription(provBase):
             response['voprov:' + attribute] = self.__dict__[attribute]
         return response
 
-####################################################################################################
+
+################################################################################
 # Define the ConfigFileDescription class mapped to the configFileDescriptions table
 class ConfigFileDescription(provBase):
     __tablename__ = 'configFileDescriptions'
-    ordered_attribute_list = ['id', 'name', 'contentType', 'description']
+    ordered_attribute_list = ['id', 'name', 'contentType', 'description', 'activityDescription_id']
     other_display_attributes = ['name', 'contentType', 'description']
 
     # Key
-    id = Column(String, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     # Model attributes
     name = Column(String)
     contentType = Column(String)
     description = Column(String)
+
+    # 1-n relation with ActivityDescription
+    activityDescription_id = Column(String, ForeignKey("activityDescriptions.id"))
 
     def __repr__(self):
         response = ""
@@ -405,246 +683,9 @@ class ConfigFileDescription(provBase):
         for attribute in self.other_display_attributes:
             response['voprov:' + attribute] = self.__dict__[attribute]
         return response
-####################################################################################################
-# Define the Agent class mapped to the agents table
-class Agent(provBase):
-    __tablename__ = 'agents'
-    ordered_attribute_list = ['id','name','type','email','affiliation','phone','address']
-    id                  = Column(String, primary_key=True)
-    name                = Column(String)
-    type                = Column(String)
-    email               = Column(String)
-    affiliation         = Column(String)
-    phone               = Column(String)
-    address             = Column(String)
-    def __repr__(self):
-        response = ""
-        for attribute in self.ordered_attribute_list:
-            response += "Agent.%s=%s\n" %(attribute,self.__dict__[attribute])
-        return response
 
-####################################################################################################
-# Define the WasAssociatedWith class mapped to the wasAssociatedWith table
-class WasAssociatedWith(provBase):
-    __tablename__ = 'wasAssociatedWith'
-    ordered_attribute_list = ['id','activity','agent','role']
-    id       = Column(Integer, primary_key=True, autoincrement=True)
-    activity = Column(String, ForeignKey("activities.id"))
-    agent    = Column(String, ForeignKey("agents.id"))
-    role     = Column(String, nullable=True)
-    def __repr__(self):
-        response = ""
-        for attribute in self.ordered_attribute_list:
-            response += "WasAssociatedWith.%s=%s\n" %(attribute,self.__dict__[attribute])
-        return response
 
-####################################################################################################
-# Define the WasAttributedTo class mapped to the wasAttributedTo table
-class WasAttributedTo(provBase):
-    __tablename__ = 'wasAttributedTo'
-    ordered_attribute_list = ['id','entity','agent','role']
-    id       = Column(Integer, primary_key=True, autoincrement=True)
-    entity   = Column(String, ForeignKey("entities.id"))
-    agent    = Column(String, ForeignKey("agents.id"))
-    role     = Column(String, nullable=True)
-    def __repr__(self):
-        response = ""
-        for attribute in self.ordered_attribute_list:
-            response += "WasAttributedTo.%s=%s\n" %(attribute,self.__dict__[attribute])
-        return response
-
-####################################################################################################
-# Define the ActivityDescription class mapped to the activityDescriptions table
-class ActivityDescription(provBase):
-    __tablename__ = 'activityDescriptions'
-    ordered_attribute_list = ['id', 'name', 'version', 'description', 'type', 'subtype', 'doculink']
-    other_display_attributes = ['name', 'version', 'description', 'type', 'subtype', 'doculink']
-    # Key
-    id = Column(String, primary_key=True)
-    # Model attributes
-    name = Column(String)
-    version = Column(String)
-    description = Column(String)
-    type = Column(String)
-    subtype = Column(String)
-    doculink = Column(String)
-
-    # Print method
-    def __repr__(self):
-        response = ""
-        for attribute in self.ordered_attribute_list:
-            response += "ActivityDescription.%s=%s\n" % (attribute, self.__dict__[attribute])
-        return response
-
-    # Other methods
-    def get_display_attributes(self):
-        response = {}
-        for attribute in self.other_display_attributes:
-            response['voprov:' + attribute] = self.__dict__[attribute]
-        return response
-
-####################################################################################################
-# Define the EntityDescription class mapped to the entityDescriptions table
-class EntityDescription(provBase):
-    __tablename__ = 'entityDescriptions'
-    ordered_attribute_list = ['id', 'name', 'type', 'description', 'doculink', 'classType']
-    other_display_attributes = ['name', 'type', 'description', 'doculink', 'classType']
-    # Key
-    id = Column(String, primary_key=True)
-    # Model attributes
-    name = Column(String)
-    type = Column(String)
-    description = Column(String)
-    doculink = Column(String)
-    classType = Column(String)
-    # Heritage
-    __mapper_args__ = {
-        'polymorphic_identity': 'entityDescription',
-        'polymorphic_on': classType
-    }
-
-    # Print method
-    def __repr__(self):
-        response = ""
-        for attribute in self.ordered_attribute_list:
-            response += "EntityDescription.%s=%s\n" % (attribute, self.__dict__[attribute])
-        return response
-
-    # Other methods
-    def get_display_attributes(self):
-        response = {}
-        for attribute in self.other_display_attributes:
-            response['voprov:' + attribute] = self.__dict__[attribute]
-        return response
-
-####################################################################################################
-# Define the UsageDescription class mapped to the usageDescriptions table
-class UsageDescription(provBase):
-    __tablename__ = 'usageDescriptions'
-    ordered_attribute_list = ['id','role','description','type', 'multiplicity', \
-                              'activityDescription_id','entityDescription_id']
-    # Key
-    id = Column(String, primary_key=True)
-    # Model attributes
-    role        = Column(String, nullable=True)
-    description = Column(String)
-    type        = Column(String)
-    multiplicity= Column(Integer)
-    activityDescription_id = Column(String, ForeignKey('activityDescriptions.id'))
-    activityDescription = relationship("ActivityDescription")
-    entityDescription_id = Column(String, ForeignKey('entityDescriptions.id'))
-    entityDescription = relationship("EntityDescription")
-
-    def __repr__(self):
-        response = ""
-        for attribute in self.ordered_attribute_list:
-            response += "UsageDescription.%s=%s\n" %(attribute,self.__dict__[attribute])
-        return response
-
-    # Other methods
-    def get_display_attributes(self):
-        response = {}
-        for attribute in self.other_display_attributes:
-            response['voprov:' + attribute] = self.__dict__[attribute]
-        return response
-
-####################################################################################################
-# Define the GenerationDescription class mapped to the generationDescriptions table
-class GenerationDescription(provBase):
-    __tablename__ = 'generationDescriptions'
-    ordered_attribute_list = ['id','role','description','type','activityDescription_id','entityDescription_id']
-    other_display_attributes = ['role', 'description', 'type', 'multiplicity']
-    # Key
-    id          = Column(String, primary_key=True)
-    # Model attributes
-    role        = Column(String, nullable=True)
-    description = Column(String)
-    type        = Column(String)
-    multiplicity = Column(Integer)
-    # Relations
-    activityDescription_id = Column(String, ForeignKey('activityDescriptions.id'))
-    activityDescription = relationship("ActivityDescription")
-    entityDescription_id = Column(String, ForeignKey('entityDescriptions.id'))
-    entityDescription = relationship("EntityDescription")
-
-    # Print method
-    def __repr__(self):
-        response = ""
-        for attribute in self.ordered_attribute_list:
-            response += "GenerationDescription.%s=%s\n" %(attribute,self.__dict__[attribute])
-        return response
-
-    # Other methods
-    def get_display_attributes(self):
-        response = {}
-        for attribute in self.other_display_attributes:
-            response['voprov:' + attribute] = self.__dict__[attribute]
-        return response
-
-####################################################################################################
-# Define the ValueDescription class mapped to the valueDescriptions table
-class ValueDescription(EntityDescription):
-    __tablename__ = 'valueDescriptions'
-    # ordered_attribute_list = EntityDescription.ordered_attribute_list + ['valueType','unit','ucd','utype']
-    ordered_attribute_list = EntityDescription.ordered_attribute_list
-    other_display_attributes = []
-    # Key
-    id = Column(String, ForeignKey('entityDescriptions.id'), primary_key=True)
-    # Model attributes
-    valueType = Column(String)
-    unit = Column(String)
-    ucd = Column(String)
-    utype = Column(String)
-    min = Column(String)
-    max = Column(String)
-    default = Column(String)
-    options = Column(String)
-    # Heritage
-    __mapper_args__ = {'polymorphic_identity': 'valueDescription'}
-
-    # Print method
-    def __repr__(self):
-        response = ""
-        for attribute in self.ordered_attribute_list:
-            response += "ValueDescription.%s=%s\n" % (attribute, self.__dict__[attribute])
-        return response
-
-    # Other methods
-    def get_display_attributes(self):
-        response = {}
-        for attribute in self.other_display_attributes:
-            response['voprov:' + attribute] = self.__dict__[attribute]
-        return response
-
-####################################################################################################
-# Define the DatasetDescription class mapped to the datasetDescriptions table
-class DatasetDescription(EntityDescription):
-    __tablename__ = 'datasetDescriptions'
-    # ordered_attribute_list = EntityDescription.ordered_attribute_list + ['contentType']
-    ordered_attribute_list = EntityDescription.ordered_attribute_list
-    other_display_attributes = []
-    # Key
-    id = Column(String, ForeignKey('entityDescriptions.id'), primary_key=True)
-    # Model attributes
-    contentType = Column(String)
-    # Heritage
-    __mapper_args__ = {'polymorphic_identity': 'datasetDescription'}
-
-    # Print method
-    def __repr__(self):
-        response = ""
-        for attribute in self.ordered_attribute_list:
-            response += "DatasetDescription.%s=%s\n" % (attribute, self.__dict__[attribute])
-        return response
-
-    # Other methods
-    def get_display_attributes(self):
-        response = {}
-        for attribute in self.other_display_attributes:
-            response['voprov:' + attribute] = self.__dict__[attribute]
-        return response
-
-####################################################################################################
+################################################################################
 class ProvenanceDB( object ):
   '''
     Class that defines the interactions with the tables of the ProvenanceDB.
@@ -1016,6 +1057,45 @@ class ProvenanceDB( object ):
     finally:
       session.close()
 
+  def getParameterDescription(self, activityDescription_id, parameter_name):
+    '''
+      Get getParameterDescription
+      :param activity_id, parameter_name
+      :return: parameterDescription.id
+    '''
+
+    session = self.sessionMaker_o()
+    try:
+      parameterDescription = session.query( ParameterDescription )\
+                          .filter(ParameterDescription.activityDescription_id == activityDescription_id, \
+                                  ParameterDescription.name == parameter_name)\
+                          .one()
+      session.commit()
+      return S_OK({'id':parameterDescription.id})
+    except NoResultFound, e:
+      return S_OK()
+    finally:
+      session.close()
+
+  def getConfigFileDescription(self, activityDescription_id, configFile_name):
+    '''
+      Get getConfigFileDescription
+      :param activity_id, configFile_name
+      :return: configFileDescription.id
+    '''
+
+    session = self.sessionMaker_o()
+    try:
+      configFileDescription = session.query( ConfigFileDescription )\
+                          .filter(ConfigFileDescription.activityDescription_id == activityDescription_id, \
+                                  ConfigFileDescription.name == configFile_name)\
+                          .one()
+      session.commit()
+      return S_OK({'id':configFileDescription.id})
+    except NoResultFound, e:
+      return S_OK()
+    finally:
+      session.close()
 
 
 

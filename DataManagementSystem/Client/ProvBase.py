@@ -29,8 +29,8 @@ class ProvBase(object):
 
 class Activity(ProvBase):
 
-  def __init__( self, id = None, name = None, startTime = None, endTime = None, comment = None, \
-                activityDescription_id = None):
+  def __init__( self, id = None, name = None, startTime = None, \
+                endTime = None, comment = None, activityDescription_id = None):
 
     self.id = id
     self.name = name
@@ -47,7 +47,8 @@ class Activity(ProvBase):
 
 class Entity(ProvBase):
 
-  def __init__( self, id = None, classType = None, name = None, location = None, generatedAtTime = None, \
+  def __init__( self, id = None, classType = None, name = None, \
+                location = None, generatedAtTime = None, \
                 invalidatedAtTime = None, comment = None, entityDescription_id = None ):
 
     self.id = id
@@ -65,6 +66,14 @@ class Entity(ProvBase):
     attrNames = ['id','classType','name','location','generatedAtTime','invalidatedAtTime','comment', \
                  'entityDescription_id' ]
     return self._jsonData(attrNames)
+
+class DatasetEntity(Entity):
+
+  def __init__( self, id = None, classType = None, name = None, location = None, generatedAtTime = None, \
+                invalidatedAtTime = None, comment = None, entityDescription_id = None ):
+
+    Entity.__init__(self, id, classType, name, location, generatedAtTime, \
+                 invalidatedAtTime, comment, entityDescription_id)
 
 class ValueEntity(Entity):
 
@@ -85,7 +94,8 @@ class ValueEntity(Entity):
 
 class Used(ProvBase):
 
-  def __init__( self, id = None, role = None, time = None, activity_id = None, entity_id = None , usageDescription_id = None ):
+  def __init__( self, id = None, role = None, time = None, \
+                activity_id = None, entity_id = None , usageDescription_id = None ):
 
     self.id = id
     self.role = role
@@ -102,7 +112,8 @@ class Used(ProvBase):
 
 class WasGeneratedBy(ProvBase):
 
-  def __init__( self, id = None, role = None, activity_id = None, entity_id = None , generationDescription_id = None ):
+  def __init__( self, id = None, role = None, activity_id = None, \
+                entity_id = None, generationDescription_id = None ):
 
     self.id = id
     self.role = role
@@ -116,13 +127,54 @@ class WasGeneratedBy(ProvBase):
     attrNames = ['id','role','activity_id','entity_id','generationDescription_id']
     return self._jsonData(attrNames)
 
-class DatasetEntity(Entity):
+class Agent(ProvBase):
 
-  def __init__( self, id = None, classType = None, name = None, location = None, generatedAtTime = None, \
-                invalidatedAtTime = None, comment = None, entityDescription_id = None ):
+  def __init__( self, id = None, name = None, type = None, email = None, affiliation = None, phone = None, \
+                address = None):
 
-    Entity.__init__(self, id, classType, name, location, generatedAtTime, \
-                 invalidatedAtTime, comment, entityDescription_id)
+    self.id = id
+    self.name = name
+    self.type = type
+    self.email = email
+    self.affiliation = affiliation
+    self.phone = phone
+    self.address = address
+
+  def _getJSONData( self ):
+    """ Returns the data that have to be serialized by JSON """
+
+    attrNames = ["id", "name", "type", "email", "affiliation", "phone", "address"]
+    return self._jsonData(attrNames)
+
+class WasAttributedTo(ProvBase):
+
+  def __init__( self, id = None, entity = None, agent = None, role = None ):
+
+    self.id = id
+    self.entity = entity
+    self.agent = agent
+    self.role = role
+
+  def _getJSONData( self ):
+    """ Returns the data that have to be serialized by JSON """
+
+    attrNames = ['id','entity','agent','role']
+    return self._jsonData(attrNames)
+
+class WasAssociatedWith(ProvBase):
+
+  def __init__( self, id = None, activity = None, agent = None, role = None):
+
+    self.id = id
+    self.activity = activity
+    self.agent = agent
+    self.role = role
+
+  def _getJSONData( self ):
+    """ Returns the data that have to be serialized by JSON """
+
+    attrNames = ['id','activity','agent','role']
+    return self._jsonData(attrNames)
 
 class ActivityDescription(ProvBase):
 
@@ -234,55 +286,6 @@ class GenerationDescription(ProvBase):
     attrNames = ['id','role','description','type','multiplicity','activityDescription_id','entityDescription_id']
     return self._jsonData(attrNames)
 
-class Agent(ProvBase):
-
-  def __init__( self, id = None, name = None, type = None, email = None, affiliation = None, phone = None, \
-                address = None):
-
-    self.id = id
-    self.name = name
-    self.type = type
-    self.email = email
-    self.affiliation = affiliation
-    self.phone = phone
-    self.address = address
-
-  def _getJSONData( self ):
-    """ Returns the data that have to be serialized by JSON """
-
-    attrNames = ["id", "name", "type", "email", "affiliation", "phone", "address"]
-    return self._jsonData(attrNames)
-
-class WasAttributedTo(ProvBase):
-
-  def __init__( self, id = None, entity = None, agent = None, role = None ):
-
-    self.id = id
-    self.entity = entity
-    self.agent = agent
-    self.role = role
-
-  def _getJSONData( self ):
-    """ Returns the data that have to be serialized by JSON """
-
-    attrNames = ['id','entity','agent','role']
-    return self._jsonData(attrNames)
-
-class WasAssociatedWith(ProvBase):
-
-  def __init__( self, id = None, activity = None, agent = None, role = None):
-
-    self.id = id
-    self.activity = activity
-    self.agent = agent
-    self.role = role
-
-  def _getJSONData( self ):
-    """ Returns the data that have to be serialized by JSON """
-
-    attrNames = ['id','activity','agent','role']
-    return self._jsonData(attrNames)
-
 class WasConfiguredBy(ProvBase):
 
   def __init__(self, id=None, artefactType='Parameter', activity_id = None, parameter_id = None, configFile_id = None):
@@ -293,7 +296,6 @@ class WasConfiguredBy(ProvBase):
     self.parameter_id = parameter_id
     self.configFile_id = configFile_id
 
-
   def _getJSONData(self):
     """ Returns the data that have to be serialized by JSON """
 
@@ -302,17 +304,17 @@ class WasConfiguredBy(ProvBase):
 
 class Parameter(ProvBase):
 
-  def __init__(self, id=None, value = None, name = None, parameter_id = None):
+  def __init__(self, id=None, value = None, name = None, parameterDescription_id = None):
 
     self.id = id
     self.value = value
     self.name = name
-    self.parameter_id = parameter_id
+    self.parameterDescription_id = parameterDescription_id
 
   def _getJSONData(self):
     """ Returns the data that have to be serialized by JSON """
 
-    attrNames = ['id', 'value', 'name']
+    attrNames = ['id', 'value', 'name', 'parameterDescription_id']
     return self._jsonData(attrNames)
 
 class ConfigFile(ProvBase):
@@ -328,13 +330,13 @@ class ConfigFile(ProvBase):
   def _getJSONData(self):
     """ Returns the data that have to be serialized by JSON """
 
-    attrNames = ['id', 'name', 'location', 'comment']
+    attrNames = ['id', 'name', 'location', 'comment', 'configFileDescription_id']
     return self._jsonData(attrNames)
 
 class ParameterDescription(ProvBase):
 
   def __init__(self, id = None, name = None, valueType = None, description = None, unit = None, ucd = None, \
-               utype = None, min = None, max = None, default = None, options = None):
+               utype = None, min = None, max = None, default = None, options = None, activityDescription_id = None):
 
     self.id = id
     self.name = name
@@ -347,11 +349,13 @@ class ParameterDescription(ProvBase):
     self.max = max
     self.default = default
     self.options = options
+    self.activityDescription_id = activityDescription_id
 
   def _getJSONData(self):
     """ Returns the data that have to be serialized by JSON """
 
-    attrNames = ['id', 'name', 'valueType', 'description', 'unit', 'ucd', 'utype', 'min', 'max', 'default', 'options']
+    attrNames = ['id', 'name', 'valueType', 'description', 'unit', 'ucd', 'utype', 'min', 'max', 'default', 'options',\
+                 'activityDescription_id']
     return self._jsonData(attrNames)
 
 class ConfigFileDescription(ProvBase):
