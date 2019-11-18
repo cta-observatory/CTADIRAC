@@ -246,8 +246,6 @@ class ProvenanceManagerHandler(RequestHandler):
     res = cls.__provenanceDB.addConfigFile(rowDict)
     return cls._parseRes(res)
 
-  types_getAgents = []
-
   types_addParameterDescription = [basestring]
 
   def export_addParameterDescription(cls, rowJSON):
@@ -322,7 +320,29 @@ class ProvenanceManagerHandler(RequestHandler):
     res = cls.__provenanceDB.getGenerationDescription(activityDescription_id, role)
     return cls._parseRes(res)
 
+  types_getParameterDescription = []
 
+  def export_getParameterDescription(cls, activityDescription_id, parameter_name):
+    '''
+    Get ParameterDescription
+    :param activity_id, parameter_name
+    :return {'id':ParameterDescription_id}
+    '''
+
+    res = cls.__provenanceDB.getParameterDescription(activityDescription_id, parameter_name)
+    return cls._parseRes(res)
+
+  types_getConfigFileDescription = []
+
+  def export_getConfigFileDescription(cls, activityDescription_id, configFile_name):
+    '''
+    Get ConfigFileDescription
+    :param activity_id, configFile
+    :return {'id':ConfigFileDescription_id}
+    '''
+
+    res = cls.__provenanceDB.getConfigFileDescription(activityDescription_id, configFile_name)
+    return cls._parseRes(res)
 
 
 
