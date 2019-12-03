@@ -78,6 +78,8 @@ class SoftwareManager(object):
         # get platform and cpu information
         try:
             os_name, cpu_name, inst = get_os_and_cpu_info()
+            DIRAC.gLogger.notice('Running %s on a %s ' %(os_name, cpu_name))
+
         except:
             inst = 'sse4'
             DIRAC.gLogger.warn('Could not determine platform and cpu information')
@@ -161,14 +163,14 @@ class SoftwareManager(object):
             return DIRAC.S_ERROR(error)
 
         # Extract the tar file to the target directory
-        tarMode = "r|*"
-        tar = tarfile.open(tarFile, tarMode)
+        tar_mode = "r|*"
+        tar = tarfile.open(tar_lfn, tar_mode)
         for tarInfo in tar:
             tar.extract(tarInfo, target_dir)
         tar.close()
-        os.unlink(tarFile)
+        os.unlink(tar_lfn)
         # Done
         DIRAC.gLogger.notice('Package %s installed successfully at:\n%s'
-                             %(package, target_dir))
+                             %(tar_lfn, target_dir))
 
         return DIRAC.S_OK(target_dir)
