@@ -3,38 +3,41 @@
 __RCSID__ = "$Id$"
 
 # generic imports
+import os
 from multiprocessing import Pool
 
 # DIRAC imports
 from DIRAC.Core.Base import Script
 
 Script.setUsageMessage( """
-Bulk retrieval of a list of files from Grid storage to the current directory
+Bulk upload of a list of local files from the current directory to a Storage Element
 Usage:
    %s <ascii file with lfn list>
+   %s SE
 
 """ % Script.scriptName )
 
 Script.parseCommandLine( ignoreErrors = True )
 
+args = Script.getPositionalArgs()
+
+if len( args ) > 1:
+  infile = args[0]
+  SE = args[1]
+else:
+  Script.showHelp()
+
 from DIRAC.Interfaces.API.Dirac import Dirac
 
-def getfile(lfn):
+def addfile(lfn):
 
   dirac = Dirac()
-  res = dirac.getFile( lfn )
+  res = dirac.addFile(lfn,os.path.basename(lfn),SE)
   if not res['OK']:
-    print 'Error downloading lfn: ' + lfn
+    print 'Error uploading lfn: ' + lfn
     return res['Message']
 
 if __name__ == '__main__':
-
-    args = Script.getPositionalArgs()
-
-    if len( args ) > 0:
-      infile = args[0]
-    else:
-      Script.showHelp()
 
     f = open( infile, 'r' )
     infileList = []
@@ -44,4 +47,4 @@ if __name__ == '__main__':
         infileList.append( infile )
 
     p = Pool(10)
-    p.map(getfile, infileList)
+    p.map(addfile, infileList)
