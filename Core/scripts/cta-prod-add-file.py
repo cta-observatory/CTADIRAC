@@ -12,9 +12,7 @@ from DIRAC.Core.Base import Script
 Script.setUsageMessage( """
 Bulk upload of a list of local files from the current directory to a Storage Element
 Usage:
-   %s <ascii file with lfn list>
-   %s SE
-
+   %s <ascii file with lfn list> <SE>
 """ % Script.scriptName )
 
 Script.parseCommandLine( ignoreErrors = True )
