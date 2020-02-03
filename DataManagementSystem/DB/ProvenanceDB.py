@@ -89,7 +89,7 @@ class Entity(provBase):
     id                  = Column(String, primary_key=True)
     name                = Column(String)
     location            = Column(String)
-    generatedAtTime     = Column(String)
+    generatedAtTime     = Column(DateTime)
     invalidatedAtTime   = Column(String)
     comment             = Column(String)
 
