@@ -5,7 +5,6 @@ on the WMS or create a Transformation.
                     JB, October 2018
 """
 
-import json
 from copy import copy
 
 from DIRAC.Core.Base import Script
@@ -17,20 +16,20 @@ Script.setUsageMessage('\n'.join([__doc__.split('\n')[1],
                                   '  trans_name: name of the transformation',
                                   '  input_dataset_name: name of the input dataset',
                                   '  group_size: n files to process',
-                                  '\ne.g: python %s.py WMS MyNewTrans Prod4-Paranal-gamma-North-DL-3 5' % Script.scriptName,
+                                  '\ne.g: python %s.py TS MyNewTrans Prod4_Paranal_gamma_North_20deg_SSTOnly_MC0 5' % Script.scriptName,
                                  ]))
 
 Script.parseCommandLine()
 
 import DIRAC
 from DIRAC.TransformationSystem.Client.Transformation import Transformation
-from CTADIRAC.Interfaces.API.Prod4SimtelSSTJob import Prod4SimtelSSTJob
+from DIRAC.Interfaces.API.Prod4SimtelSSTJob import Prod4SimtelSSTJob
 from DIRAC.Core.Workflow.Parameter import Parameter
 from DIRAC.Interfaces.API.Dirac import Dirac
 from CTADIRAC.Core.Utilities.tool_box import get_dataset_MQ
 
 
-def submit_trans(job, trans_name, mqJson, group_size):
+def submit_trans(job, trans_name, input_meta_query, group_size):
     """ Create a transformation executing the job workflow
     """
     DIRAC.gLogger.notice('submit_trans : %s' % trans_name)
@@ -46,11 +45,11 @@ def submit_trans(job, trans_name, mqJson, group_size):
     trans.setLongDescription("Prod4 Simtel SST only processing")  # mandatory
     trans.setBody(job.workflow.toXML())
     trans.setGroupSize(group_size)
-    trans.setFileMask(mqJson) # catalog query is defined here
+    trans.setInputMetaQuery(input_meta_query)
     result = trans.addTransformation()  # transformation is created here
     if not result['OK']:
         return result
-    trans.setStatus("Active")
+    #trans.setStatus("Active")
     trans.setAgentType("Automatic")
     trans_id = trans.getTransformationID()
     return trans_id
@@ -70,7 +69,7 @@ def submit_wms(job):
 
     job.setInputData(input_data)
     job.setJobGroup('Prod4SimtelSSTJob')
-    result = dirac.submit(job)
+    result = dirac.submitJob(job)
     if result['OK']:
         Script.gLogger.notice('Submitted job: ', result['Value'])
     return result
@@ -128,7 +127,7 @@ def run_simtel_sst(args):
         job.ts_task_id = '@{JOB_ID}'  # dynamic
         job.setupWorkflow(debug=False)
         job.setType('EvnDisp3')  # mandatory *here*
-        result = submit_trans(job, trans_name, json.dumps(input_meta_query), group_size)
+        result = submit_trans(job, trans_name, input_meta_query, group_size)
     else:
         DIRAC.gLogger.error('1st argument should be the job mode: WMS or TS,\n\
                              not %s' % mode)

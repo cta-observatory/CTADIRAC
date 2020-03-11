@@ -16,7 +16,6 @@ Script.parseCommandLine()
 
 from DIRAC.TransformationSystem.Client.Transformation import Transformation
 
-
 def DataRemovalByQueryTSExample( args = None ) :
 
   t = Transformation( )
