@@ -125,7 +125,7 @@ def submit_WMS(job, infileList):
     """
     dirac = Dirac()
     job.setInputData(infileList)
-    res = dirac.submit(job)
+    res = dirac.submitJob(job)
     if res['OK']:
       Script.gLogger.notice('Submission Result: ', res['Value'])
     return res

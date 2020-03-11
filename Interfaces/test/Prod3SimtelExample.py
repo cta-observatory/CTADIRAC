@@ -28,7 +28,7 @@ def submitWMS( job, infileList ):
   #job.setType( 'DataReprocessing' )
 
   dirac = Dirac()
-  res = dirac.submit( job )
+  res = dirac.submitJob( job )
 
   if res['OK']:
     Script.gLogger.info( 'Submission Result: ', res['Value'] )

@@ -98,7 +98,7 @@ def submit_WMS(job, infileList):
     """
     dirac = Dirac()
     job.setInputData(infileList)
-    res = dirac.submit(job)
+    res = dirac.submitJob(job)
     if res['OK']:
       Script.gLogger.notice('Submission Result: ', res['Value'])
     return res
@@ -116,6 +116,7 @@ def run_ctapipe():
     job.setType('DataReprocessing')  # Needed for job meshing. Check Operations/CTA/JobTypeMapping on the CS
     input_file_list = ['/vo.cta.in2p3.fr/user/a/arrabito/ProvTest/proton_20deg_180deg_run22___cta-prod3-demo-2147m-LaPalma-baseline.simtel.gz']
     job.setInputData(input_file_list)
+    job.setIntputSandbox(['./my-dirac..'])
     job.setOutputSandbox(['*Log.txt'])
 
     # configure ctapipe job 
