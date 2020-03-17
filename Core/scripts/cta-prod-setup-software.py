@@ -21,11 +21,11 @@ Script.setUsageMessage('\n'.join([ __doc__.split('\n')[1],
                                      'Usage:',
                                      '  %s -p package -v version -a [program_category] -g [compiler]' % Script.scriptName,
                                      'Arguments:',
-                                     '  package: corsika_simhessarray',
+                                     '  package: corsika_simtelarray',
                                      '  version: 2019-09-03',
                                      '  program_category: simulations',
                                      '  compiler: gcc48_avx2',
-                                     '\ne.g: %s -p corsika_simhessarray -a 2019-09-03'% Script.scriptName,
+                                     '\ne.g: %s -p corsika_simtelarray -v 2019-09-03'% Script.scriptName,
                                      ]))
 
 Script.parseCommandLine(ignoreErrors=False)

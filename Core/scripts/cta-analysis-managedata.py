@@ -23,7 +23,7 @@ from CTADIRAC.Core.Workflow.Modules.Prod3DataManager import Prod3DataManager
 def getRunNumber(filename, package):
     if filename[-9:] == '.logs.tgz':
         run_number = int(filename.split('/')[-1].split('_')[-1].split('.')[0])
-    elif package in ['chimp', 'mars', 'corsika_simhessarray']:
+    elif package in ['chimp', 'mars', 'corsika_simhessarray', 'corsika_simtelarray']:
         run_number = int(filename.split('run')[1].split('___cta')[0])
     elif package == 'evndisplay':
         if filename[-8:] in ['DL1.root', 'DL2.root']:
@@ -35,7 +35,7 @@ def getRunNumber(filename, package):
     elif package == 'ctapipe':
         run_number = filename.split('run')[1].split('.h5')[0]
         if '-' in run_number:
-          run_number = run_number.split('-')[0]  
+          run_number = run_number.split('-')[0]
     return str(run_number)
 
 ####################################################

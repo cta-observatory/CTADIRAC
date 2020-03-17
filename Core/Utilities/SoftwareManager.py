@@ -9,6 +9,7 @@ __RCSID__ = "$Id$"
 import os
 import subprocess
 import glob
+import shutil
 import tarfile
 
 # DIRAC imports
@@ -25,7 +26,7 @@ class SoftwareManager(object):
     def __init__(self, soft_category):
         """ Constructor
         """
-        self.CVMFS_DIR = '/cvmfs/cta.in2p3.fr/software'
+        self.CVMFS_DIR = '/cvmfs/sw.cta-observatory.org/software'
         self.LFN_ROOT = '/vo.cta.in2p3.fr/software'
         self.SOFT_CATEGORY_DICT = soft_category
         self.dm = DataManager()
@@ -130,12 +131,13 @@ class SoftwareManager(object):
     def install_dirac_scripts(self, package_dir):
         """ copy DIRAC scripts in the current directory
         """
-        cmd = 'cp -f ' + os.path.join(package_dir, 'dirac_*') + ' .'
+        dirac_scripts = glob.glob(os.path.join(package_dir, 'dirac_*'))
         try:
-            subprocess.check_output(cmd, shell=True)
+            for one_file in dirac_scripts:
+                shutil.copy2(one_file, '.')
             return DIRAC.S_OK()
-        except subprocess.CalledProcessError as error:
-            return DIRAC.S_ERROR('Failed to install DIRAC scripts:\n%s'%error.output)
+        except shutil.Error as error:
+            return DIRAC.S_ERROR('Failed to install DIRAC scripts:\n%s'%error)
 
     def dump_setup_script_path(self, package_dir, textfilename = 'setup_script_path.txt'):
         """ dump the path to setupPackage.sh in a one line ascii file
