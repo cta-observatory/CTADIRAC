@@ -1,4 +1,4 @@
-[v1r56p0]
+[v1r56p1]
 * JB : Fixes to new SoftwareManager
        New test job for SoftwareManager
        Removed old SoftwareInstallation and associated scripts
