@@ -7,13 +7,14 @@ Script.setUsageMessage( '\n'.join( [ __doc__.split( '\n' )[1],
                                      'Usage:',
                                      '  %s array_layout site particle pointing_dir zenith_angle nShower' % Script.scriptName,
                                      'Arguments:',
+                                     '  mode: WMS or TS',
                                      '  array_layout: demo',
                                      '  site: Paranal or LaPalma',
                                      '  particle: gamma, proton, electron',
                                      '  pointing_dir: North or South',
                                      '  zenith_agle: 20',
                                      '  nShower: from 5 to 25000',
-                                     '\ne.g: %s Baseline Paranal gamma South 20 5'% Script.scriptName,
+                                     '\ne.g: %s TS Baseline Paranal gamma South 20 5'% Script.scriptName,
                                      ] ) )
 
 Script.parseCommandLine()
@@ -21,8 +22,8 @@ Script.parseCommandLine()
 import DIRAC
 from DIRAC.TransformationSystem.Client.Transformation import Transformation
 from DIRAC.Core.Workflow.Parameter import Parameter
-#from CTADIRAC.Interfaces.API.Prod3MCPipeBaselineZstdJob import Prod3MCPipeBaselineZstdJob
-from Prod3MCPipeBaselineZstdJob import Prod3MCPipeBaselineZstdJob
+from CTADIRAC.Interfaces.API.Prod3MCPipeTestJob import Prod3MCPipeTestJob
+from DIRAC.Interfaces.API.Dirac import Dirac
 
 
 def submit_trans(job, trans_name):
@@ -73,7 +74,6 @@ def run_prod3( args = None ):
               demo LaPalma  gamma South 20 1000
     """
     # get arguments
-    # get arguments
     mode = args[0]
     layout = args[1]
     site = args[2]
@@ -83,15 +83,15 @@ def run_prod3( args = None ):
     nShower= args[6]
 
     ### Main Script ###
-    job = Prod3MCPipeBaselineZstdJob()
+    job = Prod3MCPipeTestJob()
 
     # override for testing
     job.setName('BL_Corsika7_Test_Paranal_20deg_%s'%particle)
 
     # package and version
-    job.setPackage('corsika_simhessarray')
+    job.setPackage('corsika_simtelarray')
     job.setVersion( '2019-09-03' )  # final with fix for gamma-diffuse
-    job.configuration_id=6
+    job.configuration_id=-1
 
     # layout, site, particle, pointing direction, zenith angle
     # demo, LaPalma,  gamma, South,  20
