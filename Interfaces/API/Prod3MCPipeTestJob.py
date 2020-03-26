@@ -45,6 +45,11 @@ class Prod3MCPipeTestJob(Prod3MCPipeBaselineJob):
         lsStep['Value']['descr_short']='list files in working directory'
         iStep+=1
 
+        envStep = self.setExecutable( '/bin/env', logFile = 'Env_Log.txt' )
+        envStep['Value']['name']='Step%i_Env'%iStep
+        envStep['Value']['descr_short']='Dump environment'
+        iStep+=1
+
     # step 2
     swStep = self.setExecutable( 'cta-prod-setup-software',
                               arguments='-p %s -v %s'% (self.package, self.version),\
