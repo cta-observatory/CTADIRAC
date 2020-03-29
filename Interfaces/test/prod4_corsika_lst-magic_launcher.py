@@ -57,7 +57,7 @@ def submit_wms(job):
     """
     dirac = Dirac()
     job.setJobGroup('Prod4CorsikaSSTJob')
-    result = dirac.submit(job)
+    result = dirac.submitJob(job)
     if result['OK']:
         Script.gLogger.notice('Submitted job: ', result['Value'])
     return result
