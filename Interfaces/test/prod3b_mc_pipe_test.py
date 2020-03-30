@@ -89,7 +89,7 @@ def run_prod3( args = None ):
     job.setName('BL_Corsika7_Test_Paranal_20deg_%s'%particle)
 
     # package and version
-    job.setPackage('corsika_simtelarray')
+    job.setPackage('corsika_simhessarray')
     job.setVersion( '2019-09-03' )  # final with fix for gamma-diffuse
     job.configuration_id=-1
 
