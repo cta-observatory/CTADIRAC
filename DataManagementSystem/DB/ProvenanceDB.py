@@ -58,6 +58,21 @@ class Activity(provBase):
         for attribute in self.ordered_attribute_list:
             response += "Activity.%s=%s\n" %(attribute,self.__dict__[attribute])
         return response
+    # Other methods
+    def get_display_attributes(self):
+        response = {}
+        for attribute in self.other_display_attributes:
+            response ['voprov:'+attribute]=self.__dict__[attribute]
+        return response
+    def get_description_id(self):
+        return self.activityDescription_id
+
+# Define the Entity class mapped to the entities table
+# wasDerivedFrom association table (n-n relation)
+wasDerivedFrom_association_table = Table('wasDerivedFrom', provBase.metadata,
+    Column('wasDerivedFrom_Id', Integer, primary_key=True),
+    Column('generatedEntity', String, ForeignKey("entities.id")),
+    Column('usedEntity', String, ForeignKey("entities.id")))
 
     # Other methods
     def get_display_attributes(self):
@@ -268,6 +283,7 @@ class Agent(provBase):
     phone = Column(String)
     address = Column(String)
 
+    # Print method
     def __repr__(self):
         response = ""
         for attribute in self.ordered_attribute_list:
@@ -284,10 +300,11 @@ class WasAssociatedWith(provBase):
     agent    = Column(String, ForeignKey("agents.id"))
     role     = Column(String, nullable=True)
 
+    # Print method
     def __repr__(self):
         response = ""
         for attribute in self.ordered_attribute_list:
-            response += "WasAssociatedWith.%s=%s\n" %(attribute,self.__dict__[attribute])
+            response += "WasAssociatedWith.%s=%s\n" % (attribute, self.__dict__[attribute])
         return response
 
 ################################################################################
@@ -300,10 +317,11 @@ class WasAttributedTo(provBase):
     agent    = Column(String, ForeignKey("agents.id"))
     role     = Column(String, nullable=True)
 
+    # Print method
     def __repr__(self):
         response = ""
         for attribute in self.ordered_attribute_list:
-            response += "WasAttributedTo.%s=%s\n" %(attribute,self.__dict__[attribute])
+            response += "WasAttributedTo.%s=%s\n" % (attribute, self.__dict__[attribute])
         return response
 
 ################################################################################
@@ -459,12 +477,14 @@ class UsageDescription(provBase):
     type = Column(String)
     multiplicity = Column(Integer)
 
-    # Relations
+    # n-1 relation with ActivityDescription
     activityDescription_id = Column(String, ForeignKey('activityDescriptions.id'))
     activityDescription = relationship("ActivityDescription")
+    # n-1 relation with EntityDescription
     entityDescription_id = Column(String, ForeignKey('entityDescriptions.id'))
     entityDescription = relationship("EntityDescription")
 
+    # Print method
     def __repr__(self):
         response = ""
         for attribute in self.ordered_attribute_list:
@@ -497,6 +517,7 @@ class GenerationDescription(provBase):
     # Relations
     activityDescription_id = Column(String, ForeignKey('activityDescriptions.id'))
     activityDescription = relationship("ActivityDescription")
+    # n-1 relation with EntityDescription
     entityDescription_id = Column(String, ForeignKey('entityDescriptions.id'))
     entityDescription = relationship("EntityDescription")
 
@@ -568,6 +589,7 @@ class Parameter(provBase):
     parameterDescription_id = Column(Integer, ForeignKey("parameterDescriptions.id"))
     parameterDescription = relationship("ParameterDescription")
 
+    # Print method
     def __repr__(self):
         response = ""
         for attribute in self.ordered_attribute_list:
@@ -600,6 +622,7 @@ class ConfigFile(provBase):
     configFileDescription_id = Column(Integer, ForeignKey("configFileDescriptions.id"))
     configFileDescription = relationship("ConfigFileDescription")
 
+    # Print method
     def __repr__(self):
         response = ""
         for attribute in self.ordered_attribute_list:
@@ -640,6 +663,7 @@ class ParameterDescription(provBase):
     # 1-n relation with ActivityDescription
     activityDescription_id = Column(String, ForeignKey("activityDescriptions.id"))
 
+    # Print method
     def __repr__(self):
         response = ""
         for attribute in self.ordered_attribute_list:
