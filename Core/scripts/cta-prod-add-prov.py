@@ -48,8 +48,8 @@ def add_activity(cta_activity, activityDescription_id=None):
         DIRAC.exit(-1)
     # Association with the agent
     wAW = WasAssociatedWith()
-    wAW.activity = cta_activity['activity_uuid']
-    wAW.agent = "CTAO"
+    wAW.activity_id = cta_activity['activity_uuid']
+    wAW.agent_id = "CTAO"
     # wAW.role = ?
     res = provClient.addWasAssociatedWith(wAW)
     if not res['OK']:
@@ -159,7 +159,7 @@ def addProvenance():
                                 DIRAC.exit(-1)
 
                             # Attribution to the agent - wAT.role = ?
-                            wAT = WasAttributedTo(entity=filename_uuid, agent="CTAO")
+                            wAT = WasAttributedTo(entity_id=filename_uuid, agent_id="CTAO")
                             res = provClient.addWasAttributedTo(wAT)
                             if not res['OK']:
                                 DIRAC.gLogger.error(res['Message'])
@@ -211,7 +211,7 @@ def addProvenance():
                         DIRAC.exit(-1)
 
                     # Attribution to the agent - wAT.role = ?
-                    wAT = WasAttributedTo(entity=filename_uuid, agent="CTAO")
+                    wAT = WasAttributedTo(entity_id=filename_uuid, agent_id="CTAO")
 
                     res = provClient.addWasAttributedTo(wAT)
                     if not res['OK']:

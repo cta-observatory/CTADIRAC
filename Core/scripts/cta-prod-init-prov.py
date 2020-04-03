@@ -49,7 +49,7 @@ dataDesc2  = DatasetDescription(id='muons_hdf5', name='muons', description='muon
 wGBDesc1   = GenerationDescription(id='ctapipe-display-muons_0.6.2_muons_hdf5',activityDescription_id=actDesc1.id, \
                                    entityDescription_id=dataDesc2.id, role="dl0.sub.evt", type='Main')
 valueDesc1 = ValueDescription(id='status', name='status', description='activity status', type='Quality', \
-                              valueType='string', options='(NOK,OK)', default='NOK')
+                              valueType='string')
 wGBDesc2   = GenerationDescription(id='ctapipe-display-muons_0.6.2_status', activityDescription_id=actDesc1.id, \
                                    entityDescription_id=valueDesc1.id, role="status", type='Quality')
 
