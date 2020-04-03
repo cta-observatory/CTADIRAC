@@ -30,8 +30,8 @@ from ProvBase import WasAssociatedWith
 provClient = ProvClient()
 
 # Create an instance of ActivityDescription
-actDesc1 = ActivityDescription(id='ctapipe_display_muons_0.6.1',name='ctapipe_display_muons',\
-                               activity_type='',activity_subtype='',version='0.6.1', doculink='')
+actDesc1 = ActivityDescription(id='ctapipe_display_muons_0.6.1',name='ctapipe_display_muons', \
+   description = '', type='',subtype='',version='0.6.1', doculink='')
 # Create the description of input entities
 dataDesc1 = DatasetDescription(id='proton_events', name='protons', description='proton file', classType='datasetDescription')
 usedDesc1 = UsageDescription(id='ctapipe_display_muons_0.6.1_proton_events',activityDescription_id=actDesc1.id, entityDescription_id=dataDesc1.id, role="dl0.sub.evt")
