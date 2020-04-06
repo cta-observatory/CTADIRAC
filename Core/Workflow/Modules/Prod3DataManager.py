@@ -178,17 +178,28 @@ class Prod3DataManager(object) :
       res = self.fc.createDirectory( path )
       if not res['OK']:
         return res
-      res = self.fcc.setMetadata( path, {'outputType':subdir} )
+
+    # Set metadata if not already defined
+      res = self.fcc.getDirectoryUserMetadata( path )
       if not res['OK']:
         return res
+      if 'outputType' not in res['Value']:
+        res = self.fcc.setMetadata( path, {'outputType':subdir} )
+        if not res['OK']:
+          return res
 
     # MD for the Data directory - data_level and configuration_id
     path = os.path.join(Transformation_path, 'Data')
-    res = self.fcc.setMetadata(path, {'data_level': md['data_level'],
-                                      'configuration_id': md['configuration_id']
-                                      })
+    # Set metadata if not already defined
+    res = self.fcc.getDirectoryUserMetadata( path )
     if not res['OK']:
       return res
+    if 'data_level' and 'configuration_id' not in res['Value']:
+      res = self.fcc.setMetadata(path, {'data_level': md['data_level'],
+                                        'configuration_id': md['configuration_id']
+                                        })
+      if not res['OK']:
+        return res
 
     return DIRAC.S_OK( Transformation_path )
 
