@@ -1,3 +1,9 @@
+[v1r58p2]
+* LA : Add checks in Prod3DataManager
+
+[v1r58p1]
+* MS : Update Provenance Service
+
 [v1r58]
 * LA : Change deependence to DIRAC v7r0p18
 
