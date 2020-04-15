@@ -29,7 +29,7 @@ class Prod3MCPipeTestJob(Prod3MCPipeBaselineJob):
     cpuTime -- max cpu time allowed for the job
     """
     Prod3MCPipeBaselineJob.__init__(self, cpuTime)
-    self.package='corsika_simhessarray'
+    self.package='corsika_simtelarray'
     self.version='2019-09-03'
 
 
@@ -51,10 +51,11 @@ class Prod3MCPipeTestJob(Prod3MCPipeBaselineJob):
         iStep+=1
 
     # step 2
-    # swStep = self.setExecutable( 'cta-prod-setup-software',
-    #                           arguments='-p %s -v %s'% (self.package, self.version),\
-    swStep = self.setExecutable( 'cta-prod3-setupsw',
-                              arguments='%s %s simulations centos7-gcc48'% (self.package, self.version),\
+    swStep = self.setExecutable( 'cta-prod-setup-software',
+                              arguments='-p %s -v %s -a simulations -g gcc48_avx2'% (self.package, self.version),\
+                              # arguments='-p %s -v %s'% (self.package, self.version),\
+    # swStep = self.setExecutable( 'cta-prod3-setupsw',
+    #                           arguments='%s %s simulations centos7-gcc48'% (self.package, self.version),\
                               logFile='SetupSoftware_Log.txt')
     swStep['Value']['name'] = 'Step%i_SetupSoftware' % iStep
     swStep['Value']['descr_short'] = 'Setup software'
