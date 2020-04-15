@@ -5,7 +5,7 @@
 			JB,LA October 2017
 """
 
-__RCSID__ = "$Id$"
+__RCSID__ = "853f8c9 (2019-09-06 16:03:16 +0200) Johan Bregeon <johan.bregeon@gmail.com>"
 # generic imports
 import json
 import collections
@@ -46,7 +46,7 @@ class Prod3MCPipeBaselineZstdJob(Prod3MCPipeBaselineJob):
 
     # step 2
     swStep = self.setExecutable( 'cta-prod3-setupsw',
-                              arguments='%s %s centos7-gcc48'% (self.package, self.version),\
+                              arguments='%s %s simulations centos7-gcc48'% (self.package, self.version),\
                               logFile='SetupSoftware_Log.txt')
     swStep['Value']['name'] = 'Step%i_SetupSoftware' % iStep
     swStep['Value']['descr_short'] = 'Setup software'
