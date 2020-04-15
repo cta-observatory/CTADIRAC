@@ -89,7 +89,7 @@ def run_prod3( args = None ):
     job.setName('BL_Corsika7_Test_Paranal_20deg_%s'%particle)
 
     # package and version
-    job.setPackage('corsika_simhessarray')
+    job.setPackage('corsika_simtelarray')
     job.setVersion( '2019-09-03' )  # final with fix for gamma-diffuse
     job.configuration_id=-1
 
@@ -117,8 +117,8 @@ def run_prod3( args = None ):
     # specific configuration
     if mode == 'WMS':
         job.base_path = '/vo.cta.in2p3.fr/user/b/bregeon'
-        job.start_run_number = '100'
-        job.run_number = '31'
+        job.start_run_number = '0'
+        job.run_number = '1001'
         job.setupWorkflow(debug=True)
         # subtmit to the WMS for debug
         job.setDestination('LCG.IN2P3-CC.fr')
