@@ -1,3 +1,6 @@
+[v1r58p4]
+* JB : Change default repo for SoftwareManager, add switch to cta-prod-setup-software
+
 [v1r58p3]
 * LA : Clean obsolete Resources and ProductionSystem sections
 
