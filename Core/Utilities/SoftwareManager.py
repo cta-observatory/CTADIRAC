@@ -26,7 +26,7 @@ class SoftwareManager(object):
     def __init__(self, soft_category):
         """ Constructor
         """
-        self.CVMFS_DIR = '/cvmfs/sw.cta-observatory.org/software'
+        self.CVMFS_DIR = '/cvmfs/cta.in2p3.fr/software'
         self.LFN_ROOT = '/vo.cta.in2p3.fr/software'
         self.SOFT_CATEGORY_DICT = soft_category
         self.dm = DataManager()
