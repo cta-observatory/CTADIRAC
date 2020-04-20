@@ -16,6 +16,7 @@ Script.registerSwitch("p:", "Package=", "Software package name")
 Script.registerSwitch("v:", "Version=", "Base version to look for")
 Script.registerSwitch("a:", "Category=", "Program category (simulations, analysis...)")
 Script.registerSwitch("g:", "Compiler=", "Target a compiler_optimization configuration")
+Script.registerSwitch("r:", "Repository=", "Target CVMFS repository")
 
 Script.setUsageMessage('\n'.join([ __doc__.split('\n')[1],
                                      'Usage:',
@@ -34,7 +35,7 @@ Script.parseCommandLine(ignoreErrors=False)
 # Specific DIRAC imports
 from CTADIRAC.Core.Utilities.SoftwareManager import SoftwareManager
 
-def setup_software(package, version, category, compiler):
+def setup_software(package, version, category, compiler, repository):
     """ setup a given software package to be used in the main workflow
 
     Keyword arguments:
@@ -48,6 +49,9 @@ def setup_software(package, version, category, compiler):
     # get arguments
     soft_category = {package:category}
     manager = SoftwareManager(soft_category)
+    # for testing only
+    if repository is not None:
+        manager.CVMFS_DIR = repository
     # check if and where Package is available
     # return cvmfs/tarball and full path
     res = manager.find_software(package, version, compiler)
@@ -79,6 +83,7 @@ if __name__ == '__main__':
     version = None
     category = 'simulations'
     compiler = 'gcc48_default'
+    repository = None
     for switch in Script.getUnprocessedSwitches():
         if switch[0] == "p" or switch[0].lower() == "package":
             package = switch[1]
@@ -88,11 +93,13 @@ if __name__ == '__main__':
             category = switch[1]
         if switch[0] == "g" or switch[0].lower() == "compiler":
             compiler = switch[1]
+        if switch[0] == "r" or switch[0].lower() == "repository":
+            repository = switch[1]
     if package is None or version is None:
         DIRAC.gLogger.error('Please give a package name and a version')
         DIRAC.exit(-1)
     try:
-        res = setup_software(package, version, category, compiler)
+        res = setup_software(package, version, category, compiler, repository)
         if not res['OK']:
             DIRAC.gLogger.error(res['Message'])
             DIRAC.exit(-1)
