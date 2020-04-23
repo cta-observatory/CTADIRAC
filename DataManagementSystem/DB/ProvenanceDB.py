@@ -82,10 +82,11 @@ class Entity(provBase):
     __tablename__ = 'entities'
     ordered_attribute_list = ['id','classType','name','location','generatedAtTime',\
                               'invalidatedAtTime','comment','entityDescription_id']
-    other_display_attributes = ['name','location','generatedAtTime',\
+    other_display_attributes = ['id','name','location','generatedAtTime',\
                                 'invalidatedAtTime','comment']
+
     # Model attributes included key
-    id                  = Column(String, primary_key=True)
+    id = Column(String, primary_key=True)
     name                = Column(String)
     location            = Column(String)
     generatedAtTime     = Column(DateTime)
@@ -134,9 +135,8 @@ class ValueEntity(Entity):
     ordered_attribute_list = Entity.ordered_attribute_list
     other_display_attributes = ['value']
 
-    # Key
+    # Model attributes including id
     id = Column(String, ForeignKey('entities.id'), primary_key=True)
-    # Model attributes
     value = Column(String)
 
     # Heritage
@@ -161,11 +161,13 @@ class ValueEntity(Entity):
 class DatasetEntity(Entity):
     __tablename__ = 'datasetEntities'
     ordered_attribute_list = Entity.ordered_attribute_list
-    other_display_attributes = []
+    other_display_attributes = ['ctadirac_guid']
 
     # Key
     id = Column(String, ForeignKey('entities.id'), primary_key=True)
     # Model attributes
+    # CTADIRAC attributes
+    ctadirac_guid = Column(String)
 
     # Heritage
     __mapper_args__ = {'polymorphic_identity': 'dataset'}

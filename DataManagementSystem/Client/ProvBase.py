@@ -69,11 +69,13 @@ class Entity(ProvBase):
 
 class DatasetEntity(Entity):
 
-  def __init__( self, id = None, classType = None, name = None, location = None, generatedAtTime = None, \
-                invalidatedAtTime = None, comment = None, entityDescription_id = None ):
+  def __init__( self, id = None, classType = None, name = None, location = None,\
+                generatedAtTime = None, invalidatedAtTime = None, comment = None, entityDescription_id = None \
+                ctadirac_guid = None):
 
-    Entity.__init__(self, id, classType, name, location, generatedAtTime, \
+    Entity.__init__(self,  id, classType, name, location, generatedAtTime, \
                  invalidatedAtTime, comment, entityDescription_id)
+    self.ctadirac_guid = ctadirac_guid
 
 class ValueEntity(Entity):
 
