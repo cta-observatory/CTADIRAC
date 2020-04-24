@@ -1060,10 +1060,31 @@ class ProvenanceDB( object ):
     try:
       datasetEntity = session.query( DatasetEntity )\
                           .filter( DatasetEntity.id == guid ) \
+                          .filter( DatasetEntity.invalidatedAtTime == None) \
                           .one()
       session.commit()
       return S_OK(datasetEntity.id)
     except NoResultFound, e:
+      return S_OK()
+    finally:
+      session.close()
+
+  def updateDatasetEntity(self, guid, invalidatedAtTime):
+    '''
+      Update DatasetEntity
+      :param guid, invalidatedAtTime
+      :return:
+    '''
+
+    session = self.sessionMaker_o()
+    try:
+      datasetEntity = session.update( DatasetEntity )\
+                          .where ( DatasetEntity.id == guid ) \
+                          .where ( DatasetEntity.invalidatedAtTime == None) \
+                          .values ( DatasetEntity.invalidatedAtTime = invalidatedAtTime )
+      session.commit()
+      return S_OK(datasetEntity.id)
+    except e:
       return S_OK()
     finally:
       session.close()

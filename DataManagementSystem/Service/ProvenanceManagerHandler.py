@@ -274,7 +274,6 @@ class ProvenanceManagerHandler(RequestHandler):
 
   types_getAgents = []
 
-
   def export_getAgents(cls):
     '''
     Get Agents
@@ -294,6 +293,18 @@ class ProvenanceManagerHandler(RequestHandler):
     '''
 
     res = cls.__provenanceDB.getDatasetEntity(guid)
+    return cls._parseRes(res)
+
+  types_updateDatasetEntity = [basestring]
+
+  def export_updateDatasetEntity(cls, guid, invalidatedAtTime):
+    '''
+    Update DatasetEntity
+    :param datasetEntity guid invalidatedAtTime
+    :return:
+    '''
+
+    res = cls.__provenanceDB.updateDatasetEntity(guid, invalidatedAtTime)
     return cls._parseRes(res)
 
   types_getUsageDescription = []
