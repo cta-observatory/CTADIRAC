@@ -88,8 +88,11 @@ class SoftwareManager(object):
         if compiler == 'gcc48_default':
             results = self._search_software(package, version, compiler, use_cvmfs)
             return results
+        elif compiler == 'gcc48_noOpt':
+             results = self._search_software(package, version, compiler, use_cvmfs)
+             return results
         elif compiler == 'gcc48_sse4':
-            if inst in ['sse4','avx', 'avx2', 'avx512']:
+            if inst in ['sse4', 'avx', 'avx2', 'avx512']:
                 results = self._search_software(package, version, compiler, use_cvmfs)
                 return results
             else:
