@@ -1,3 +1,6 @@
+[v1r58p5]
+* LA : Update SoftwareManager: include the case of non advanced instructions available
+
 [v1r58p4]
 * JB : Change default repo for SoftwareManager, add switch to cta-prod-setup-software
 
