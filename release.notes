@@ -1,3 +1,6 @@
+[v1r58p7]
+* LA : BUGFIX in SoftwareManager (gcc48_avx512)
+
 [v1r58p6]
 * LA : BUGFIX on SoftwareManager
 
