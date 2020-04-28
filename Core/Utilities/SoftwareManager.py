@@ -92,7 +92,7 @@ class SoftwareManager(object):
              results = self._search_software(package, version, compiler, use_cvmfs)
              return results
         elif compiler == 'gcc48_sse4':
-            if inst in ['sse4', 'avx', 'avx2', 'avx512']:
+            if inst in ['sse4', 'avx', 'avx2']:
                 results = self._search_software(package, version, compiler, use_cvmfs)
                 return results
             else:
@@ -101,7 +101,7 @@ class SoftwareManager(object):
                 results = self._search_software(package, version, compiler, use_cvmfs)
                 return results
         elif compiler == 'gcc48_avx':
-            if inst in ['avx', 'avx2', 'avx512']:
+            if inst in ['avx', 'avx2']:
                 results = self._search_software(package, version, compiler, use_cvmfs)
                 return results
             else:
@@ -110,7 +110,7 @@ class SoftwareManager(object):
                 results = self._search_software(package, version, compiler, use_cvmfs)
                 return results
         elif compiler == 'gcc48_avx2':
-            if inst in ['avx2', 'avx512']:
+            if inst in ['avx2']:
                 results = self._search_software(package, version, compiler, use_cvmfs)
                 return results
             else:
@@ -118,16 +118,11 @@ class SoftwareManager(object):
                 compiler = 'gcc48_noOpt'
                 results = self._search_software(package, version, compiler, use_cvmfs)
                 return results
-        elif compiler == 'gcc48_avx512':
-            if inst is 'avx512':
-                results = self._search_software(package, version, compiler, use_cvmfs)
-                return results
-            else:
-                DIRAC.gLogger.warn('CPU has no avx512 instructions, running non optimized version')
-                compiler = 'gcc48_noOpt'
-                results = self._search_software(package, version, compiler, use_cvmfs)
-                return results
         elif compiler == 'gcc48_matchcpu':
+            if inst == 'avx512':
+                DIRAC.gLogger.warn('%s not available for gcc48'%inst)
+                DIRAC.gLogger.warn('Using avx2 insteaed')
+                inst = 'avx2'
             compiler = 'gcc48_%s'%inst
             results = self._search_software(package, version, compiler, use_cvmfs)
             return results
