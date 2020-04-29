@@ -126,6 +126,15 @@ class SoftwareManager(object):
             compiler = 'gcc48_%s'%inst
             results = self._search_software(package, version, compiler, use_cvmfs)
             return results
+        elif compiler == 'gcc83_avx2':
+            if inst in ['avx2','avx512']:
+                results = self._search_software(package, version, compiler, use_cvmfs)
+                return results
+            else:
+                DIRAC.gLogger.warn('CPU has no avx2 instructions, running non optimized version')
+                compiler = 'gcc48_noOpt'
+                results = self._search_software(package, version, compiler, use_cvmfs)
+                return results
         else:
             DIRAC.S_ERROR('Unknown compiler specified: %s'%compiler)
         return DIRAC.S_ERROR('Could not find package %s version %s / %s in any location'
