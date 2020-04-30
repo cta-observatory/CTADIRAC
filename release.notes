@@ -1,3 +1,6 @@
+[v1r58p9]
+* LA : CHANGE in SoftwareManager: generalize gcc ver choice
+
 [v1r58p8]
 * LA : CHANGE in SoftwareManager: add gcc83_avx2 case
 
