@@ -85,56 +85,48 @@ class SoftwareManager(object):
             inst = 'noOpt'
             DIRAC.gLogger.warn('Could not determine platform and cpu information')
 
-        if compiler == 'gcc48_default':
+        req_inst = compiler.split('_')[1]
+        if req_inst == 'default':
             results = self._search_software(package, version, compiler, use_cvmfs)
             return results
-        elif compiler == 'gcc48_noOpt':
+        elif req_inst == 'noOpt':
              results = self._search_software(package, version, compiler, use_cvmfs)
              return results
-        elif compiler == 'gcc48_sse4':
+        elif req_inst == 'sse4':
             if inst in ['sse4', 'avx', 'avx2']:
                 results = self._search_software(package, version, compiler, use_cvmfs)
                 return results
             else:
                 DIRAC.gLogger.warn('CPU has no sse4 instructions, running non optimized version')
-                compiler = 'gcc48_noOpt'
-                results = self._search_software(package, version, compiler, use_cvmfs)
+                match_compiler = compiler.replace(req_inst,'noOpt')
+                results = self._search_software(package, version, match_compiler, use_cvmfs)
                 return results
-        elif compiler == 'gcc48_avx':
+        elif req_inst == 'avx':
             if inst in ['avx', 'avx2']:
                 results = self._search_software(package, version, compiler, use_cvmfs)
                 return results
             else:
                 DIRAC.gLogger.warn('CPU has no avx instructions, running non optimized version')
-                compiler = 'gcc48_noOpt'
-                results = self._search_software(package, version, compiler, use_cvmfs)
+                match_compiler = compiler.replace(req_inst,'noOpt')
+                results = self._search_software(package, version, match_compiler, use_cvmfs)
                 return results
-        elif compiler == 'gcc48_avx2':
+        elif req_inst == 'avx2':
             if inst in ['avx2']:
                 results = self._search_software(package, version, compiler, use_cvmfs)
                 return results
             else:
                 DIRAC.gLogger.warn('CPU has no avx2 instructions, running non optimized version')
-                compiler = 'gcc48_noOpt'
-                results = self._search_software(package, version, compiler, use_cvmfs)
+                match_compiler = compiler.replace(req_inst,'noOpt')
+                results = self._search_software(package, version, match_compiler, use_cvmfs)
                 return results
-        elif compiler == 'gcc48_matchcpu':
-            if inst == 'avx512':
+        elif req_inst == 'matchcpu':
+            match_compiler = compiler.replace(req_inst,inst)
+            if match_compiler == 'gcc48_avx512':
                 DIRAC.gLogger.warn('%s not available for gcc48'%inst)
-                DIRAC.gLogger.warn('Using avx2 insteaed')
-                inst = 'avx2'
-            compiler = 'gcc48_%s'%inst
-            results = self._search_software(package, version, compiler, use_cvmfs)
+                DIRAC.gLogger.warn('Using gcc83 avx512 instead')
+                match_compiler = 'gcc83_avx512'
+            results = self._search_software(package, version, match_compiler, use_cvmfs)
             return results
-        elif compiler == 'gcc83_avx2':
-            if inst in ['avx2','avx512']:
-                results = self._search_software(package, version, compiler, use_cvmfs)
-                return results
-            else:
-                DIRAC.gLogger.warn('CPU has no avx2 instructions, running non optimized version')
-                compiler = 'gcc48_noOpt'
-                results = self._search_software(package, version, compiler, use_cvmfs)
-                return results
         else:
             DIRAC.S_ERROR('Unknown compiler specified: %s'%compiler)
         return DIRAC.S_ERROR('Could not find package %s version %s / %s in any location'
