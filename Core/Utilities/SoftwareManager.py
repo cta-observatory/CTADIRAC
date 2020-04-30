@@ -119,6 +119,15 @@ class SoftwareManager(object):
                 match_compiler = compiler.replace(req_inst,'noOpt')
                 results = self._search_software(package, version, match_compiler, use_cvmfs)
                 return results
+        elif compiler == 'gcc83_avx512':
+            if inst in ['avx512']:
+                results = self._search_software(package, version, compiler, use_cvmfs)
+                return results
+            else:
+                DIRAC.gLogger.warn('CPU has no avx512 instructions, running non optimized version')
+                match_compiler = compiler.replace(req_inst,'noOpt')
+                results = self._search_software(package, version, match_compiler, use_cvmfs)
+                return results
         elif req_inst == 'matchcpu':
             match_compiler = compiler.replace(req_inst,inst)
             if match_compiler == 'gcc48_avx512':
