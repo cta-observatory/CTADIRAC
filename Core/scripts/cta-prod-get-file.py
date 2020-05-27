@@ -8,7 +8,6 @@ from multiprocessing import Pool
 import signal
 
 # DIRAC imports
-from DIRAC.Interfaces.API.Dirac import Dirac
 from DIRAC.Core.Base import Script
 
 Script.setUsageMessage("""
@@ -19,6 +18,19 @@ Usage:
 """ % Script.scriptName)
 
 Script.parseCommandLine(ignoreErrors=True)
+
+# It seems that this import must come after the script definition
+# or the import of the other Dirac packages.
+# The script was not working when this import came before.
+from DIRAC.Interfaces.API.Dirac import Dirac  # noqa
+
+
+def sigint_handler(signum, frame):
+    '''
+    Raise KeyboardInterrupt on SIGINT (CTRL + C)
+    This should be the default, but apparently Dirac changes it.
+    '''
+    raise KeyboardInterrupt()
 
 
 def getfile(lfn):
@@ -48,10 +60,10 @@ if __name__ == '__main__':
     # ignore sigint before creating the pool,
     # so child processes inherit the setting, we will terminate them
     # if the master process catches sigint
-    original_handler = signal.signal(signal.SIGINT, signal.SIG_IGN)
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
     p = Pool(10)
     # add the original handler back
-    signal.signal(signal.SIGINT, original_handler)
+    signal.signal(signal.SIGINT, sigint_handler)
 
     try:
         future = p.map_async(getfile, infileList)
@@ -59,9 +71,8 @@ if __name__ == '__main__':
         while not future.ready():
             future.wait(5)
     except (SystemExit, KeyboardInterrupt):
-        print('Received SIGINT, terminating')
-        p.terminate()
-    else:
+        print('Received SIGINT, waiting for subprocesses to terminate')
         p.close()
-
-    p.join()
+        p.terminate()
+    finally:
+        p.join()
