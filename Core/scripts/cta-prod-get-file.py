@@ -6,6 +6,8 @@ __RCSID__ = "$Id$"
 # generic imports
 from multiprocessing import Pool
 import signal
+import os
+import shutil
 
 # DIRAC imports
 from DIRAC.Core.Base import Script
@@ -24,6 +26,8 @@ Script.parseCommandLine(ignoreErrors=True)
 # The script was not working when this import came before.
 from DIRAC.Interfaces.API.Dirac import Dirac  # noqa
 
+TEMPDIR = '.incomplete'
+
 
 def sigint_handler(signum, frame):
     '''
@@ -35,10 +39,16 @@ def sigint_handler(signum, frame):
 
 def getfile(lfn):
     dirac = Dirac()
-    res = dirac.getFile(lfn)
+    print('Start downloading ' + lfn)
+    res = dirac.getFile(lfn, destDir=TEMPDIR)
+
     if not res['OK']:
-        print('Error downloading lfn: ' + lfn)
+        print('Error downloading lfn:' + lfn)
         return res['Message']
+
+    name = os.path.basename(lfn)
+    os.rename(os.path.join('.incomplete', name), name)
+    print('Successfully downloaded file:' + lfn)
 
 
 if __name__ == '__main__':
@@ -48,6 +58,11 @@ if __name__ == '__main__':
         infile = args[0]
     else:
         Script.showHelp()
+
+    # put files currently downloading in a subdirectory
+    # to know which files have already finished
+    if not os.path.exists(TEMPDIR):
+        os.makedirs(TEMPDIR)
 
     infileList = []
     with open(infile, 'r') as f:
@@ -76,3 +91,4 @@ if __name__ == '__main__':
         p.terminate()
     finally:
         p.join()
+        shutil.rmtree(TEMPDIR)
