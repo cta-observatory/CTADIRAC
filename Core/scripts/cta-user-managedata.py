@@ -26,7 +26,10 @@ def putAndRegisterPROD3( args ):
     """
     outputpattern = args[0]
     outputpath = args[1]
-    SEList = json.loads( args[2] )
+    SEListArg = json.loads( args[2] )
+    SEList = []
+    for SE in SEListArg:
+      SEList.append(str(SE))
 
     # # Init DataManager
     catalogs = ['DIRACFileCatalog']
