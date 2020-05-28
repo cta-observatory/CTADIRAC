@@ -37,16 +37,16 @@ def sigint_handler(signum, frame):
 
 def getfile(lfn):
     dirac = Dirac()
-    print('Start downloading ' + lfn)
+    print('Start downloading ' + lfn + '\n', end='')
     res = dirac.getFile(lfn, destDir=TEMPDIR)
 
     if not res['OK']:
-        print('Error downloading lfn:' + lfn)
+        print('Error downloading lfn:' + lfn + '\n', end='')
         return res['Message']
 
     name = os.path.basename(lfn)
     os.rename(os.path.join('.incomplete', name), name)
-    print('Successfully downloaded file:' + lfn)
+    print('Successfully downloaded file:' + lfn + '\n', end='')
 
 
 if __name__ == '__main__':
