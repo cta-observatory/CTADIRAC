@@ -21,9 +21,7 @@ Usage:
 
 Script.parseCommandLine(ignoreErrors=True)
 
-# It seems that this import must come after the script definition
-# or the import of the other Dirac packages.
-# The script was not working when this import came before.
+# the client import must come after parseCommandLine
 from DIRAC.Interfaces.API.Dirac import Dirac  # noqa
 
 TEMPDIR = '.incomplete'
@@ -90,5 +88,6 @@ if __name__ == '__main__':
         p.close()
         p.terminate()
     finally:
+        p.close()
         p.join()
         shutil.rmtree(TEMPDIR)
