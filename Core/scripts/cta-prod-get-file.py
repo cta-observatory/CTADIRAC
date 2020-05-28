@@ -7,7 +7,6 @@ __RCSID__ = "$Id$"
 from multiprocessing import Pool
 import signal
 import os
-import shutil
 
 # DIRAC imports
 from DIRAC.Core.Base import Script
@@ -90,4 +89,5 @@ if __name__ == '__main__':
     finally:
         p.close()
         p.join()
-        shutil.rmtree(TEMPDIR)
+        if len(os.listdir(TEMPDIR)) == 0:
+            os.rmdir(TEMPDIR)
