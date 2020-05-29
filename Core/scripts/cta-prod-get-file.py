@@ -6,9 +6,9 @@ __RCSID__ = "$Id$"
 # generic imports
 from multiprocessing import Pool
 import signal
+import os
 
 # DIRAC imports
-from DIRAC.Interfaces.API.Dirac import Dirac
 from DIRAC.Core.Base import Script
 
 Script.setUsageMessage("""
@@ -20,13 +20,32 @@ Usage:
 
 Script.parseCommandLine(ignoreErrors=True)
 
+# the client import must come after parseCommandLine
+from DIRAC.Interfaces.API.Dirac import Dirac  # noqa
+
+TEMPDIR = '.incomplete'
+
+
+def sigint_handler(signum, frame):
+    '''
+    Raise KeyboardInterrupt on SIGINT (CTRL + C)
+    This should be the default, but apparently Dirac changes it.
+    '''
+    raise KeyboardInterrupt()
+
 
 def getfile(lfn):
     dirac = Dirac()
-    res = dirac.getFile(lfn)
+    print('Start downloading ' + lfn + '\n', end='')
+    res = dirac.getFile(lfn, destDir=TEMPDIR)
+
     if not res['OK']:
-        print('Error downloading lfn: ' + lfn)
+        print('Error downloading lfn:' + lfn + '\n', end='')
         return res['Message']
+
+    name = os.path.basename(lfn)
+    os.rename(os.path.join('.incomplete', name), name)
+    print('Successfully downloaded file:' + lfn + '\n', end='')
 
 
 if __name__ == '__main__':
@@ -36,6 +55,11 @@ if __name__ == '__main__':
         infile = args[0]
     else:
         Script.showHelp()
+
+    # put files currently downloading in a subdirectory
+    # to know which files have already finished
+    if not os.path.exists(TEMPDIR):
+        os.makedirs(TEMPDIR)
 
     infileList = []
     with open(infile, 'r') as f:
@@ -48,10 +72,10 @@ if __name__ == '__main__':
     # ignore sigint before creating the pool,
     # so child processes inherit the setting, we will terminate them
     # if the master process catches sigint
-    original_handler = signal.signal(signal.SIGINT, signal.SIG_IGN)
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
     p = Pool(10)
     # add the original handler back
-    signal.signal(signal.SIGINT, original_handler)
+    signal.signal(signal.SIGINT, sigint_handler)
 
     try:
         future = p.map_async(getfile, infileList)
@@ -59,9 +83,11 @@ if __name__ == '__main__':
         while not future.ready():
             future.wait(5)
     except (SystemExit, KeyboardInterrupt):
-        print('Received SIGINT, terminating')
-        p.terminate()
-    else:
+        print('Received SIGINT, waiting for subprocesses to terminate')
         p.close()
-
-    p.join()
+        p.terminate()
+    finally:
+        p.close()
+        p.join()
+        if len(os.listdir(TEMPDIR)) == 0:
+            os.rmdir(TEMPDIR)
