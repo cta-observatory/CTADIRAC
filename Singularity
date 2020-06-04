@@ -118,3 +118,7 @@ if ! [ -d "/tmp/etc/grid-security/certificates" ]
   cp -R /etc/grid-security/certificates /tmp/etc/grid-security
 fi
 EOF
+
+# Install python modules for protopipe inside DIRAC environment
+source $DIRAC_ROOT/bashrc
+pip install h5py tables pyyaml
