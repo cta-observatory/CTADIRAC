@@ -1,3 +1,6 @@
+[v1r58p13]
+* LA : BUGFIX in SoftwareManager to handle tarballs
+
 [v1r58p12]
 * LA : NEW interfaces to run MC chain with corsika 7
 
