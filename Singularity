@@ -4,6 +4,8 @@ From: centos:7
 %environment
 source /opt/dirac/bashrc
 source /opt/dirac/dirac_env.sh
+export GRID=$HOME/grid
+export PROTOPIPE=$HOME/protopipe
 
 %post
 # CTADIRAC client location
@@ -116,4 +118,3 @@ if ! [ -d "/tmp/etc/grid-security/certificates" ]
   cp -R /etc/grid-security/certificates /tmp/etc/grid-security
 fi
 EOF
-
