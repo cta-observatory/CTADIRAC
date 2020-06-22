@@ -1,3 +1,7 @@
+[v1r59p0]
+* JB : New interface and launcher for Prod5
+       Prod5MCPipeNSBJob.py and prod5_mcpipe_nsb_launcher.py
+
 [v1r58p13]
 * LA : BUGFIX in SoftwareManager to handle tarballs
 
