@@ -93,12 +93,12 @@ def run_simulation(args):
     # specific configuration
     if mode == 'WMS':
         job.base_path = '/vo.cta.in2p3.fr/user/b/bregeon/prod5/'
-        job.start_run_number = '100'
-        job.run_number = '31'
+        job.start_run_number = '1'
+        job.run_number = '1'
         job.setupWorkflow(debug=True)
         # subtmit to the WMS for debug
-        job.setDestination('LCG.IN2P3-CC.fr')
-        # job.setDestination('LCG.CIEMAT.es')
+        # job.setDestination('LCG.IN2P3-CC.fr')
+        job.setDestination('LCG.DESY-ZEUTHEN.de')
         result = submit_wms(job)
     elif mode == 'TS':
         # job.base_path = '/vo.cta.in2p3.fr/MC/PRODTest/'
