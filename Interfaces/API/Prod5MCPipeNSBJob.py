@@ -125,25 +125,25 @@ class Prod5MCPipeNSBJob(Job):
             All parameters shall have been defined before that method is called.
         """
         # step 1 - debug only
-        iStep = 1
+        i_step = 1
         if debug:
             lsStep = self.setExecutable( '/bin/ls -alhtr', logFile = 'LS_Init_Log.txt' )
-            lsStep['Value']['name']='Step%i_LS_Init'%iStep
+            lsStep['Value']['name']='Step%i_LS_Init'%i_step
             lsStep['Value']['descr_short']='list files in working directory'
-            iStep+=1
+            i_step+=1
 
             envStep = self.setExecutable( '/bin/env', logFile = 'Env_Log.txt' )
-            envStep['Value']['name']='Step%i_Env'%iStep
+            envStep['Value']['name']='Step%i_Env'%i_step
             envStep['Value']['descr_short']='Dump environment'
-            iStep+=1
+            i_step+=1
 
         # step 2
         swStep = self.setExecutable( 'cta-prod-setup-software',
                                   arguments='-p %s -v %s -a simulations -g %s'% (self.package, self.version, self.compiler),\
                                   logFile='SetupSoftware_Log.txt')
-        swStep['Value']['name'] = 'Step%i_SetupSoftware' % iStep
+        swStep['Value']['name'] = 'Step%i_SetupSoftware' % i_step
         swStep['Value']['descr_short'] = 'Setup software'
-        iStep+=1
+        i_step+=1
 
         # step 3 runnin
         prod_script='./dirac_prod5_baseline_run'
@@ -157,26 +157,26 @@ class Prod5MCPipeNSBJob(Job):
                                                self.cta_site, self.particle, self.pointing_dir, self.zenith_angle )
 
         csStep = self.setExecutable( prod_exe, arguments = prod_args, logFile='CorsikaSimtel_Log.txt')
-        csStep['Value']['name']='Step%i_CorsikaSimtel'%iStep
+        csStep['Value']['name']='Step%i_CorsikaSimtel'%i_step
         csStep['Value']['descr_short']='Run Corsika piped into simtel'
-        iStep+=1
+        i_step+=1
 
         # step 4 verify output data
         mgvStep = self.setExecutable( 'cta-prod3-verifysteps', \
                   arguments = "generic %0d %0d '%s'"%\
                   (self.n_output_files, self.output_file_size,\
-                   self.self.output_pattern),\
+                   self.output_pattern),\
                   logFile='Verify_Simtel_Log.txt')
-        mgvStep['Value']['name']='Step%i_VerifySimtel'%iStep
+        mgvStep['Value']['name']='Step%i_VerifySimtel'%i_step
         mgvStep['Value']['descr_short'] = 'Verify simtel files'
-        iStep += 1
+        i_step += 1
 
         # step 5 - debug only
         if debug:
             lsStep=self.setExecutable('/bin/ls -Ralhtr',logFile='LS_End_Log.txt')
-            lsStep['Value']['name']='Step%i_LS_End'%iStep
+            lsStep['Value']['name']='Step%i_LS_End'%i_step
             lsStep['Value']['descr_short']='list files in working directory and sub-directory'
-            iStep += 1
+            i_step += 1
 
         # step 6 - define meta data, upload file on SE and register in catalogs
         self.set_meta_data()
@@ -193,7 +193,7 @@ class Prod5MCPipeNSBJob(Job):
         # Upload and register data - NSB=1 dark
         file_meta_data = {'runNumber': self.run_number, 'nsb':1}
         file_md_json = json.dumps(file_meta_data)
-        data_output_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Data/*dark.simtel.zst' %
+        data_output_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Data/*dark.simtel.zst' %\
                                self.cta_site
 
         scripts = '../CTADIRAC/Core/scripts/'
@@ -210,7 +210,7 @@ class Prod5MCPipeNSBJob(Job):
         # Upload and register log file - NSB=1
         file_meta_data = {}
         file_md_json = json.dumps(file_meta_data)
-        log_file_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Log/*dark.log.gz' %
+        log_file_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Log/*dark.log.gz' %\
                             self.cta_site
         scripts = '../CTADIRAC/Core/scripts/'
         log_step = self.setExecutable(scripts + 'cta-prod-managedata.py',
@@ -224,22 +224,22 @@ class Prod5MCPipeNSBJob(Job):
         i_step += 1
 
         ## Upload and register histogram file - NSB=1
-        histo_file_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Histograms/*dark.hdata.zst' %
+        histo_file_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Histograms/*dark.hdata.zst' %\
                             self.cta_site
         dmStep = self.setExecutable('../CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                                   arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s' Histograms" % \
                                   (mdjson, mdfieldjson, file_md_json, self.basepath,
                                    histo_file_pattern, self.package, self.program_category, self.catalogs),
                                   logFile = 'Histo_DataManagement_dark_Log.txt')
-        dmStep['Value']['name'] = 'Step%i_Histo_DataManagement' % iStep
+        dmStep['Value']['name'] = 'Step%i_Histo_DataManagement' % i_step
         dmStep['Value']['descr_short'] = 'Save hitograms files to SE and register them in DFC'
-        iStep += 1
+        i_step += 1
 
         # Now switching to moonlight NSB
         # Upload and register data - NSB=1 dark
         file_meta_data = {'runNumber': self.run_number, 'nsb':5}
         file_md_json = json.dumps(file_meta_data)
-        data_output_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Data/*moon.simtel..zst' %
+        data_output_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Data/*moon.simtel.zst' %\
                                self.cta_site
 
         scripts = '../CTADIRAC/Core/scripts/'
@@ -256,7 +256,7 @@ class Prod5MCPipeNSBJob(Job):
         # Upload and register log file - NSB=5
         file_meta_data = {}
         file_md_json = json.dumps(file_meta_data)
-        log_file_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Log/*moon.log.gz' %
+        log_file_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Log/*moon.log.gz' %\
                             self.cta_site
         scripts = '../CTADIRAC/Core/scripts/'
         log_step = self.setExecutable(scripts + 'cta-prod-managedata.py',
@@ -270,16 +270,16 @@ class Prod5MCPipeNSBJob(Job):
         i_step += 1
 
         ## Upload and register histogram file - NSB=5
-        histo_file_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Histograms/*moon.hdata.zst' %
+        histo_file_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Histograms/*moon.hdata.zst' %\
                             self.cta_site
         dmStep = self.setExecutable('../CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                                   arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s' Histograms" % \
                                   (mdjson, mdfieldjson, file_md_json, self.basepath,
                                    histo_file_pattern, self.package, self.program_category, self.catalogs),
                                   logFile = 'Histo_DataManagement_moon_Log.txt')
-        dmStep['Value']['name'] = 'Step%i_Histo_DataManagement' % iStep
+        dmStep['Value']['name'] = 'Step%i_Histo_DataManagement' % i_step
         dmStep['Value']['descr_short'] = 'Save hitograms files to SE and register them in DFC'
-        iStep += 1
+        i_step += 1
 
         # Step 6 - debug only
         if debug:
@@ -288,5 +288,5 @@ class Prod5MCPipeNSBJob(Job):
             ls_step['Value']['descr_short'] = 'list files in Home directory'
             i_step += 1
 
-    # Number of showers is passed via an environment variable
-    self.setExecutionEnv({'NSHOW':'%s'%self.n_shower})
+        # Number of showers is passed via an environment variable
+        self.setExecutionEnv({'NSHOW':'%s'%self.n_shower})
