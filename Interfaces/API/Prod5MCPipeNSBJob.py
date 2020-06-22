@@ -45,7 +45,7 @@ class Prod5MCPipeNSBJob(Job):
         self.pointing_dir = 'South'
         self.zenith_angle = 20.
         self.no_sct=True
-        self.output_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/*.zst'\
+        self.output_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Data/*.zst'\
                               % self.cta_site.lower()
         self.base_path = '/vo.cta.in2p3.fr/MC/PROD5/'
         self.catalogs = json.dumps(['DIRACFileCatalog', 'TSCatalog'])
