@@ -45,7 +45,7 @@ class Prod5MCPipeNSBJob(Job):
         self.pointing_dir = 'South'
         self.zenith_angle = 20.
         self.no_sct=True
-        self.output_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Data/*.zst'\
+        self.output_pattern = './Data/sim_telarray/cta-prod5-%s/0.0deg/Data/*.zst'\
                               % self.cta_site.lower()
         self.base_path = '/vo.cta.in2p3.fr/MC/PROD5/'
         self.catalogs = json.dumps(['DIRACFileCatalog', 'TSCatalog'])
@@ -62,7 +62,7 @@ class Prod5MCPipeNSBJob(Job):
         if site in ['Paranal', 'LaPalma']:
             DIRAC.gLogger.info('Set Corsika site to: %s' % site)
             self.cta_site = site
-            self.output_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/*.zst'\
+            self.output_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Data/*.zst'\
                                   % self.cta_site.lower()
         else:
             DIRAC.gLogger.error('Site is unknown: %s' % site)
@@ -194,7 +194,7 @@ class Prod5MCPipeNSBJob(Job):
         file_meta_data = {'runNumber': self.run_number, 'nsb':1}
         file_md_json = json.dumps(file_meta_data)
         data_output_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Data/*dark.simtel.zst' %\
-                               self.cta_site
+                               self.cta_site.lower()
 
         scripts = '../CTADIRAC/Core/scripts/'
         dm_step = self.setExecutable(scripts + 'cta-prod-managedata.py',
@@ -211,7 +211,7 @@ class Prod5MCPipeNSBJob(Job):
         file_meta_data = {}
         file_md_json = json.dumps(file_meta_data)
         log_file_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Log/*dark.log.gz' %\
-                            self.cta_site
+                            self.cta_site.lower()
         scripts = '../CTADIRAC/Core/scripts/'
         log_step = self.setExecutable(scripts + 'cta-prod-managedata.py',
                                       arguments="'%s' '%s' '%s' %s '%s' %s %s '%s' Log" %
@@ -225,7 +225,7 @@ class Prod5MCPipeNSBJob(Job):
 
         ## Upload and register histogram file - NSB=1
         histo_file_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Histograms/*dark.hdata.zst' %\
-                            self.cta_site
+                            self.cta_site.lower()
         dmStep = self.setExecutable('../CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                                   arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s' Histograms" % \
                                   (md_json, md_field_json, file_md_json,
@@ -241,7 +241,7 @@ class Prod5MCPipeNSBJob(Job):
         file_meta_data = {'runNumber': self.run_number, 'nsb':5}
         file_md_json = json.dumps(file_meta_data)
         data_output_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Data/*moon.simtel.zst' %\
-                               self.cta_site
+                               self.cta_site.lower()
 
         scripts = '../CTADIRAC/Core/scripts/'
         dm_step = self.setExecutable(scripts + 'cta-prod-managedata.py',
@@ -258,7 +258,7 @@ class Prod5MCPipeNSBJob(Job):
         file_meta_data = {}
         file_md_json = json.dumps(file_meta_data)
         log_file_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Log/*moon.log.gz' %\
-                            self.cta_site
+                            self.cta_site.lower()
         scripts = '../CTADIRAC/Core/scripts/'
         log_step = self.setExecutable(scripts + 'cta-prod-managedata.py',
                                       arguments="'%s' '%s' '%s' %s '%s' %s %s '%s' Log" %
@@ -272,7 +272,7 @@ class Prod5MCPipeNSBJob(Job):
 
         ## Upload and register histogram file - NSB=5
         histo_file_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Histograms/*moon.hdata.zst' %\
-                            self.cta_site
+                            self.cta_site.lower()
         dmStep = self.setExecutable('../CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                                   arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s' Histograms" % \
                                   (md_json, md_field_json, file_md_json,
