@@ -135,7 +135,7 @@ def parse_jobs_list(jobs_list):
     from DIRAC.Interfaces.API.Dirac import Dirac
     dirac = Dirac()
     # status of all jobs
-    status = dirac.status(jobs_list)
+    status = dirac.getJobStatus(jobs_list)
     # parse it
     sites_dict = {}
     status_dict = copy.copy(BASE_STATUS_DIR)
