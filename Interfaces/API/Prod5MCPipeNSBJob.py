@@ -193,7 +193,7 @@ class Prod5MCPipeNSBJob(Job):
         # Upload and register data - NSB=1 dark
         file_meta_data = {'runNumber': self.run_number, 'nsb':1}
         file_md_json = json.dumps(file_meta_data)
-        data_output_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Data/*dark.simtel.zst' %\
+        data_output_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Data/*dark*.simtel.zst' %\
                                self.cta_site.lower()
 
         scripts = '../CTADIRAC/Core/scripts/'
@@ -210,7 +210,7 @@ class Prod5MCPipeNSBJob(Job):
         # Upload and register log file - NSB=1
         file_meta_data = {}
         file_md_json = json.dumps(file_meta_data)
-        log_file_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Log/*dark.log.gz' %\
+        log_file_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Log/*dark*.log.gz' %\
                             self.cta_site.lower()
         scripts = '../CTADIRAC/Core/scripts/'
         log_step = self.setExecutable(scripts + 'cta-prod-managedata.py',
@@ -224,7 +224,7 @@ class Prod5MCPipeNSBJob(Job):
         i_step += 1
 
         ## Upload and register histogram file - NSB=1
-        histo_file_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Histograms/*dark.hdata.zst' %\
+        histo_file_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Histograms/*dark*.hdata.zst' %\
                             self.cta_site.lower()
         dmStep = self.setExecutable('../CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                                   arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s' Histograms" % \
@@ -240,7 +240,7 @@ class Prod5MCPipeNSBJob(Job):
         # Upload and register data - NSB=1 dark
         file_meta_data = {'runNumber': self.run_number, 'nsb':5}
         file_md_json = json.dumps(file_meta_data)
-        data_output_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Data/*moon.simtel.zst' %\
+        data_output_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Data/*moon*.simtel.zst' %\
                                self.cta_site.lower()
 
         scripts = '../CTADIRAC/Core/scripts/'
@@ -257,7 +257,7 @@ class Prod5MCPipeNSBJob(Job):
         # Upload and register log file - NSB=5
         file_meta_data = {}
         file_md_json = json.dumps(file_meta_data)
-        log_file_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Log/*moon.log.gz' %\
+        log_file_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Log/*moon*.log.gz' %\
                             self.cta_site.lower()
         scripts = '../CTADIRAC/Core/scripts/'
         log_step = self.setExecutable(scripts + 'cta-prod-managedata.py',
@@ -271,7 +271,7 @@ class Prod5MCPipeNSBJob(Job):
         i_step += 1
 
         ## Upload and register histogram file - NSB=5
-        histo_file_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Histograms/*moon.hdata.zst' %\
+        histo_file_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Histograms/*moon*.hdata.zst' %\
                             self.cta_site.lower()
         dmStep = self.setExecutable('../CTADIRAC/Core/scripts/cta-analysis-managedata.py',
                                   arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s' Histograms" % \
