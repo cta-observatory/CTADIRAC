@@ -1,52 +1,40 @@
-#!/usr/bin/env python
-
-__RCSID__ = "$Id$"
-
 import DIRAC
 from DIRAC.Core.Base import Script
 
-Script.setUsageMessage( '\n'.join( [ 'Get storage elements usage of production SEs. It needs grid UI environment',
+Script.setUsageMessage( '\n'.join( [ 'Get storage elements usage of production SEs',
                                     'Usage:',
-                                     '%s <list of SE hosts/All>' % Script.scriptName,
-                                     '\ne.g: %s ccsrm02.in2p3.fr' % Script.scriptName
+                                     '%s <file with output of lcg-infosites --vo vo.cta.in2p3.fr se>' % Script.scriptName,
+                                     '\ne.g: %s ccsrm02.in2p3.fr (default is all SEs)' % Script.scriptName
                                      ] ) )
+
 
 Script.parseCommandLine( ignoreErrors = True )
 
-from DIRAC.Core.Utilities.Subprocess import systemCall
 from DIRAC.Core.Utilities.PrettyPrint import printTable
 from DIRAC.ConfigurationSystem.Client.Helpers.Operations import Operations
 
 args = Script.getPositionalArgs()
 
-if len( args ) == 0:
+if len( args ) > 2:
   Script.showHelp()
 
-# ## Default list
-if args[0] == 'All':
+## Default list
+if len(args) == 1:
   opsHelper = Operations()
   SEList = opsHelper.getValue( 'ProductionSEs/Hosts' , [] )
 else:
-  SEList = args
+  SEList = args[:2]
 
-cmdTuple = ['lcg-infosites', '--vo', 'vo.cta.in2p3.fr' , 'se']
-ret = systemCall( 0, cmdTuple )
-if not ret['OK']:
-  DIRAC.gLogger.error( "Error while executing %s" % cmdTuple )
-  DIRAC.exit( -1 )
-elif not ret['Value'][1] != '':
-  DIRAC.gLogger.error( "Error while executing %s" % cmdTuple )
-  DIRAC.exit( -1 )
-
-# initialize sedict
-sedict = {} 
+sedict = {}
 for SE in SEList:
   sedict[SE] = []
 
 fields = ['SE', 'Available(TB)', 'Used(TB)', 'Total(TB)', 'Used(%)' ]
 records = []
 
-for se in ret['Value'][1].split( '\n' ):
+fp = open(args[0],"r")
+
+for se in fp:
   if len( se.split() ) == 4:
     spacedict = {}
     SE = se.split()[3]
@@ -69,7 +57,4 @@ for SE in SEList:
     records.append( [SE, available, used, total, fraction_used] )
 
 printTable( fields, records )
-
-
-
 
