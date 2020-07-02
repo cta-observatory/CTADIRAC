@@ -78,6 +78,8 @@ def run_simulation(args):
 
     # job setup
     job = Prod5MCPipeNSBJob()  # to be adjusted!!
+    job.version ='2020-06-29'
+    job.compiler='gcc83_matchcpu'
     # override for testing
     job.setName('Prod5_MC_Pipeline_NSB')
     # parameters from command line
@@ -94,18 +96,19 @@ def run_simulation(args):
     if mode == 'WMS':
         job.base_path = '/vo.cta.in2p3.fr/user/b/bregeon/prod5/'
         job.start_run_number = '1'
-        job.run_number = '2'
+        job.run_number = '20'
         job.setupWorkflow(debug=True)
         # subtmit to the WMS for debug
-        job.setDestination('LCG.IN2P3-CC.fr')
+        # job.setDestination('LCG.IN2P3-CC.fr')
         # job.setDestination('LCG.DESY-ZEUTHEN.de')
+        job.setDestination('LCG.OBSPM.fr')
         result = submit_wms(job)
     elif mode == 'TS':
         # job.base_path = '/vo.cta.in2p3.fr/MC/PRODTest/'
         job.start_run_number = '100000'
         job.run_number = '@{JOB_ID}'  # dynamic
         job.setupWorkflow(debug=False)
-        tag = ''
+        tag = '_gcc83'
         trans_name = 'TestMC_Prod5_Pipeline_NSB_%s_%s_%s_%s%s' %\
                     (job.cta_site, job.particle, job.pointing_dir, job.zenith_angle, tag)
         result = submit_trans(job, trans_name)
