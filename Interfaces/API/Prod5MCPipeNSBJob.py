@@ -147,7 +147,7 @@ class Prod5MCPipeNSBJob(Job):
 
         # step 3 runnin
         prod_script='./dirac_prod5_baseline_run'
-        if 'gcc83' in self.compiler:
+        if 'gcc10' in self.compiler:
             prod_exe = './dirac_singularity_run'
             prod_args = '%s --start_run %s --run %s %s %s %s %s' % ( prod_script, self.start_run_number, self.run_number, \
                                                self.cta_site, self.particle, self.pointing_dir, self.zenith_angle )
