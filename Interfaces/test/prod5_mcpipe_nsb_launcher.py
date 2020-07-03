@@ -99,9 +99,9 @@ def run_simulation(args):
         job.run_number = '20'
         job.setupWorkflow(debug=True)
         # subtmit to the WMS for debug
-        # job.setDestination('LCG.IN2P3-CC.fr')
+        job.setDestination('LCG.IN2P3-CC.fr')
         # job.setDestination('LCG.DESY-ZEUTHEN.de')
-        job.setDestination('LCG.OBSPM.fr')
+        # job.setDestination('LCG.OBSPM.fr')
         result = submit_wms(job)
     elif mode == 'TS':
         # job.base_path = '/vo.cta.in2p3.fr/MC/PRODTest/'
