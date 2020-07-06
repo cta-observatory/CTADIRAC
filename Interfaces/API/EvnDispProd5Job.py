@@ -80,6 +80,7 @@ class EvnDispProd5Job(Job):
         """ Setup job workflow by defining the sequence of all executables
             All parameters shall have been defined before that method is called.
         """
+        i_step = 0
         # step 1 -- debug
         if debug:
             ls_step = self.setExecutable( '/bin/ls -alhtr', logFile='LS_Init_Log.txt' )

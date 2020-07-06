@@ -26,7 +26,7 @@ Script.parseCommandLine()
 
 import DIRAC
 from DIRAC.TransformationSystem.Client.Transformation import Transformation
-from CTADIRAC.Interfaces.API.EvnDisp4SSTJob import EvnDisp4SSTJob
+from CTADIRAC.Interfaces.API.EvnDispProd5Job import EvnDispProd5Job
 from DIRAC.Core.Workflow.Parameter import Parameter
 from DIRAC.Interfaces.API.Dirac import Dirac
 from CTADIRAC.Core.Utilities.tool_box import get_dataset_MQ
@@ -62,12 +62,13 @@ def submit_wms(job):
     @todo launch job locally
     """
     dirac = Dirac()
-    base_path = '/vo.cta.in2p3.fr/user/b/bregeon/Paranal/proton/simtel/0000/Data/000xxx'
-    input_data = ['%s/proton_20deg_0deg_tid123___cta-prod4-sst-1m_desert-2150m-Paranal-sst-1m_data.tar' % base_path]
+    base_path = '/vo.cta.in2p3.fr/MC/PROD5/LaPalma/gamma/sim_telarray/2104/Data/100xxx/'
+    input_data = ['%s/gamma_20deg_180deg_run100298___cta-prod5-lapalma_desert-2158m-LaPalma-dark.simtel.zst' % base_path,
+    '%s/gamma_20deg_180deg_run100299___cta-prod5-lapalma_desert-2158m-LaPalma-dark.simtel.zst'%base_path]
 
     job.setInputData(input_data)
-    job.setJobGroup('EvnDispProd5ob')
-    result = dirac.submit(job)
+    job.setJobGroup('EvnDispProd5')
+    result = dirac.submitJob(job)
     if result['OK']:
         Script.gLogger.notice('Submitted job: ', result['Value'])
     return result
@@ -99,8 +100,8 @@ def launch_job(args):
     if mode == 'WMS':
         job.base_path = '/vo.cta.in2p3.fr/user/b/bregeon'
         job.ts_task_id = '123'
-        simtel_meta_data = {'array_layout': 'Baseline-Advanced', 'site': 'Paranal',
-                           'particle': 'proton', 'phiP': 0.0, 'thetaP': 20.0}
+        simtel_meta_data = {'array_layout': 'Baseline-Advanced', 'site': 'LaPalma',
+                           'particle': 'gamma', 'phiP': 0.0, 'thetaP': 20.0}
         job.set_meta_data(simtel_meta_data)
         job.setupWorkflow(debug=True)
         # subtmit to the WMS for debug
