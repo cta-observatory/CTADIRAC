@@ -62,7 +62,7 @@ def submit_wms(job):
     @todo launch job locally
     """
     dirac = Dirac()
-    base_path = '/vo.cta.in2p3.fr/MC/PROD5/LaPalma/gamma/sim_telarray/2104/Data/100xxx/'
+    base_path = '/vo.cta.in2p3.fr/MC/PROD5/LaPalma/gamma/sim_telarray/2104/Data/100xxx'
     input_data = ['%s/gamma_20deg_180deg_run100298___cta-prod5-lapalma_desert-2158m-LaPalma-dark.simtel.zst' % base_path,
     '%s/gamma_20deg_180deg_run100299___cta-prod5-lapalma_desert-2158m-LaPalma-dark.simtel.zst'%base_path]
 
@@ -105,7 +105,7 @@ def launch_job(args):
         job.set_meta_data(simtel_meta_data)
         job.setupWorkflow(debug=True)
         # subtmit to the WMS for debug
-        job.setDestination('LCG.IN2P3-CC.fr')
+        # job.setDestination('LCG.IN2P3-CC.fr')
         result = submit_wms(job)
     elif mode == 'TS':
         input_meta_query = get_dataset_MQ(dataset_name)
