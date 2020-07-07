@@ -45,9 +45,9 @@ class EvnDispProd5Job(Job):
                             BL-4LSTs25MSTs70SSTs-MSTN'
         self.calibration_file = 'prod5/prod5-IPR.root'
         self.reconstructionparameter = 'EVNDISP.prod5.reconstruction.runparameter'
-        self.basepath = '/vo.cta.in2p3.fr/MC/PROD5/'
+        self.base_path = '/vo.cta.in2p3.fr/MC/PROD5/'
         self.metadata = collections.OrderedDict()
-        self.filemetadata = {}
+        self.file_meta_data = {}
         self.catalogs = json.dumps(['DIRACFileCatalog'])
         self.ts_task_id = 0
 
@@ -75,6 +75,15 @@ class EvnDispProd5Job(Job):
         self.metadata[self.program_category+'_prog_version'] = self.version
         self.metadata['data_level'] = self.output_data_level
         self.metadata['configuration_id'] = self.configuration_id
+
+    def set_file_meta_data(self, meta_data_dict):
+        """ Set evndisplay file meta data
+
+        Parameters:
+        meta_data_dict -- metadata dictionary
+        """
+        # Set evndisp file meta data
+        self.file_meta_data['nsb'] = meta_data_dict['nsb']
 
     def setupWorkflow(self, debug=False):
         """ Setup job workflow by defining the sequence of all executables
@@ -126,7 +135,7 @@ class EvnDispProd5Job(Job):
 
         # step 5 set meta data and register Data
         meta_data_json = json.dumps(self.metadata)
-        file_meta_data_json = json.dumps(self.filemetadata)
+        file_meta_data_json = json.dumps(self.file_meta_data)
 
         meta_data_field = {'array_layout':'VARCHAR(128)', 'site':'VARCHAR(128)',
                            'particle':'VARCHAR(128)',
