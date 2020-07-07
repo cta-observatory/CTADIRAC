@@ -99,9 +99,16 @@ def launch_job(args):
     # specific configuration
     if mode == 'WMS':
         job.base_path = '/vo.cta.in2p3.fr/user/b/bregeon'
-        job.ts_task_id = '123'
+        job.ts_task_id = '111'
         simtel_meta_data = {'array_layout': 'Baseline-Advanced', 'site': 'LaPalma',
                            'particle': 'gamma', 'phiP': 0.0, 'thetaP': 20.0}
+        job.prefix = 'CTA.prod5N'
+        job.layout_list = 'BL-0LSTs05MSTs-MSTF BL-0LSTs05MSTs-MSTN \
+                           BL-4LSTs00MSTs-MSTN BL-4LSTs05MSTs-MSTF \
+                           BL-4LSTs05MSTs-MSTN BL-4LSTs09MSTs-MSTF \
+                           BL-4LSTs09MSTs-MSTN BL-4LSTs15MSTs-MSTF \
+                           BL-4LSTs15MSTs-MSTN'
+
         job.set_meta_data(simtel_meta_data)
         job.setupWorkflow(debug=True)
         # subtmit to the WMS for debug
@@ -112,15 +119,20 @@ def launch_job(args):
         # refine output meta data if needed
         output_meta_data = copy(input_meta_query)
         job.set_meta_data(output_meta_data)
-        file_meta_data = {key:output_meta_data[key] for key in ['tel_config']}
+        file_meta_data = {'nsb' : output_meta_data['nsb']}
         job.set_file_meta_data(file_meta_data)
-        if 'astri' in file_meta_data['tel_config']:
-            job.layout = '3HB9-SST-A'
+        if 'LaPalma' in output_meta_data.values():
+            job.layout_list = 'BL-0LSTs05MSTs-MSTF BL-0LSTs05MSTs-MSTN \
+                               BL-4LSTs00MSTs-MSTN BL-4LSTs05MSTs-MSTF \
+                               BL-4LSTs05MSTs-MSTN BL-4LSTs09MSTs-MSTF \
+                               BL-4LSTs09MSTs-MSTN BL-4LSTs15MSTs-MSTF \
+                               BL-4LSTs15MSTs-MSTN'
 
         job.ts_task_id = '@{JOB_ID}'  # dynamic
         job.setupWorkflow(debug=False)
-        job.setType('EvnDisp3')  # mandatory *here*
-        result = submit_trans(job, trans_name, json.dumps(input_meta_query), group_size)
+        job.setType('EvnDispProd5')  # mandatory *here*
+        result = submit_trans(job, trans_name, json.dumps(input_meta_query),
+                              group_size)
     else:
         DIRAC.gLogger.error('1st argument should be the job mode: WMS or TS,\n\
                              not %s' % mode)
