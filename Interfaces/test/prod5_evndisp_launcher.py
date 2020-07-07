@@ -127,6 +127,9 @@ def launch_job(args):
                                BL-4LSTs05MSTs-MSTN BL-4LSTs09MSTs-MSTF \
                                BL-4LSTs09MSTs-MSTN BL-4LSTs15MSTs-MSTF \
                                BL-4LSTs15MSTs-MSTN'
+            DIRAC.gLogger.notice('LaPalma layouts:\n',job.layout_list)
+        elif output_meta_data['site'] == 'Paranal':
+            DIRAC.gLogger.notice('Paranal layouts:\n',job.layout_list)
 
         job.ts_task_id = '@{JOB_ID}'  # dynamic
         job.setupWorkflow(debug=False)
