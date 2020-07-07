@@ -39,10 +39,10 @@ class EvnDispProd5Job(Job):
         self.configuration_id = 7
         self.output_data_level = 1
         self.prefix = 'CTA.prod5S'
-        self.layout_list = 'CTA.prod5S.BL-0LSTs15MSTs50SSTs-MSTF.lis \
-                            CTA.prod5S.BL-0LSTs15MSTs50SSTs-MSTN.lis \
-                            CTA.prod5S.BL-4LSTs25MSTs70SSTs-MSTF.lis \
-                            CTA.prod5S.BL-4LSTs25MSTs70SSTs-MSTN.lis'
+        self.layout_list = 'BL-0LSTs15MSTs50SSTs-MSTF \
+                            BL-0LSTs15MSTs50SSTs-MSTN \
+                            BL-4LSTs25MSTs70SSTs-MSTF \
+                            BL-4LSTs25MSTs70SSTs-MSTN'
         self.calibration_file = 'prod5/prod5-IPR.root'
         self.reconstructionparameter = 'EVNDISP.prod5.reconstruction.runparameter'
         self.basepath = '/vo.cta.in2p3.fr/MC/PROD5/'
