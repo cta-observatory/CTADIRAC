@@ -30,21 +30,21 @@ class Prod5MCPipeNSBJob(Job):
         self.setCPUTime(cpu_time)
         self.setName('Prod5MC_Generation')
         self.setType('MCSimulation')
-        self.package='corsika_simtelarray'
-        self.version='2020-06-17'
-        self.compiler='gcc48_default'
+        self.package = 'corsika_simtelarray'
+        self.version = '2020-06-17'
+        self.compiler = 'gcc48_default'
         self.program_category = 'tel_sim'
         self.prog_name = 'sim_telarray'
         self.configuration_id = 7
         self.output_data_level = DATA_LEVEL_METADATA_ID['DL0']
-        self.n_shower=100
+        self.n_shower = 100
         self.start_run_number = '0'
         self.run_number = '10'
-        self.cta_site='Paranal'
-        self.particle='gamma'
+        self.cta_site = 'Paranal'
+        self.particle = 'gamma'
         self.pointing_dir = 'South'
         self.zenith_angle = 20.
-        self.no_sct=True
+        self.no_sct = True
         self.output_pattern = './Data/sim_telarray/cta-prod5-%s/0.0deg/Data/*.zst'\
                               % self.cta_site.lower()
         self.base_path = '/vo.cta.in2p3.fr/MC/PROD5/'
