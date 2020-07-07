@@ -48,7 +48,7 @@ class EvnDispProd5Job(Job):
         self.base_path = '/vo.cta.in2p3.fr/MC/PROD5/'
         self.metadata = collections.OrderedDict()
         self.file_meta_data = {}
-        self.catalogs = json.dumps(['DIRACFileCatalog'])
+        self.catalogs = json.dumps(['DIRACFileCatalog', 'TSCatalog'])
         self.ts_task_id = 0
 
     def set_meta_data(self, tel_sim_md):
