@@ -22,25 +22,25 @@ from DIRAC.Core.Workflow.Parameter import Parameter
 # get arguments
 args = Script.getPositionalArgs()
 if len(args) != 2:
-  DIRAC.gLogger.error('At least 2 arguments required: prodName DL0_data_set')
+  DIRAC.gLogger.error('At least 2 arguments required: prod_name DL0_data_set')
   DIRAC.exit(-1)
-prodName = args[0]
+prod_name = args[0]
 DL0_data_set = args[1]
 
 ##################################
 # Create the production
-prodClient = ProductionClient()
+prod_sys_client = ProductionClient()
 
 ##################################
 # Define the first ProductionStep
 ##################################
 # Note that there is no InputQuery,
 # since jobs created by this steps don't require any InputData
-prodStep1 = ProductionStep()
-prodStep1.Name = 'Simulation'
-prodStep1.Type = 'MCSimulation' # This corresponds to the Transformation Type
-prodStep1.Outputquery = get_dataset_MQ(DL0_data_set)
-prodStep1.Outputquery['nsb'] = {'in': [1, 5]}
+prod_step_1 = ProductionStep()
+prod_step_1.Name = 'Simulation'
+prod_step_1.Type = 'MCSimulation' # This corresponds to the Transformation Type
+prod_step_1.Outputquery = get_dataset_MQ(DL0_data_set)
+prod_step_1.Outputquery['nsb'] = {'in': [1, 5]}
 
 # Here define the job description (i.e. Name, Executable, etc.) to be associated to the first ProductionStep, as done when using the TS
 job1 =  Prod5MCPipeNSBJob()
@@ -62,19 +62,19 @@ job1.start_run_number = '0'
 job1.run_number = '@{JOB_ID}'  # dynamic
 job1.setupWorkflow(debug=False)
 # Add the job description to the first ProductionStep
-prodStep1.Body = job1.workflow.toXML()
+prod_step_1.Body = job1.workflow.toXML()
 # Add the step to the production
-prodClient.addProductionStep(prodStep1)
+prod_sys_client.addProductionStep(prod_step_1)
 
 ##################################
 # Define the second ProductionStep
 ##################################
-prodStep2 = ProductionStep()
-prodStep2.Name = 'DL1_image_analysis'
-prodStep2.Type = 'DataReprocessing' # This corresponds to the Transformation Type
-prodStep2.ParentStep = prodStep1
-prodStep2.Inputquery = get_dataset_MQ(DL0_data_set)
-prodStep2.Outputquery = get_dataset_MQ(DL0_data_set.replace('DL0', 'DL1'))
+prod_step_2 = ProductionStep()
+prod_step_2.Name = 'DL1_image_analysis'
+prod_step_2.Type = 'DataReprocessing' # This corresponds to the Transformation Type
+prod_step_2.ParentStep = prod_step_1
+prod_step_2.Inputquery = get_dataset_MQ(DL0_data_set)
+prod_step_2.Outputquery = get_dataset_MQ(DL0_data_set.replace('DL0', 'DL1'))
 
 # Here define the job description to be associated to the second ProductionStep
 job2 = EvnDispProd5Job()
@@ -82,7 +82,7 @@ job2.setName('Prod5_EvnDisp')
 # output
 job2.setOutputSandbox(['*Log.txt'])
 # refine output meta data if needed
-output_meta_data = copy(prodStep2.Outputquery)
+output_meta_data = copy(prod_step_2.Outputquery)
 job2.set_meta_data(output_meta_data)
 file_meta_data = {'nsb' : output_meta_data['nsb']}
 job2.set_file_meta_data(file_meta_data)
@@ -102,28 +102,28 @@ elif output_meta_data['site'] == 'Paranal':
 job2.ts_task_id = '@{JOB_ID}'  # dynamic
 job2.setupWorkflow(debug=False)
 job.setType('EvnDisp3')  # mandatory *here*
-prodStep2.Body = job2.workflow.toXML()
-prodStep2.GroupSize = 5
+prod_step_2.Body = job2.workflow.toXML()
+prod_step_2.GroupSize = 5
 
 # Add the step to the production
-prodClient.addProductionStep(prodStep2)
+prod_sys_client.addProductionStep(prod_step_2)
 
 ##################################
 # Get the production description
 ##################################
-prodDesc = prodClient.prodDescription
+prod_description = prod_sys_client.prod_descriptionription
 
 # Create the production
-res = prodClient.addProduction(prodName, json.dumps(prodDesc))
+res = prod_sys_client.addProduction(prod_name, json.dumps(prod_description))
 if not res['OK']:
     DIRAC.gLogger.error(res['Message'])
     DIRAC.exit(-1)
 
 # Start the production, i.e. instatiate the transformation steps
-res = prodClient.startProduction(prodName)
+res = prod_sys_client.startProduction(prod_name)
 
 if not res['OK']:
     DIRAC.gLogger.error(res['Message'])
     DIRAC.exit(-1)
 
-DIRAC.gLogger.notice('Production %s successfully created' % prodName)
+DIRAC.gLogger.notice('Production %s successfully created' % prod_name)
