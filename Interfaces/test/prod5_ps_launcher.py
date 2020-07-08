@@ -111,7 +111,7 @@ prod_sys_client.addProductionStep(prod_step_2)
 ##################################
 # Get the production description
 ##################################
-prod_description = prod_sys_client.prod_descriptionription
+prod_description = prod_sys_client.prodDescription
 
 # Create the production
 res = prod_sys_client.addProduction(prod_name, json.dumps(prod_description))
