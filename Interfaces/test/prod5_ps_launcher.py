@@ -84,8 +84,7 @@ job2.setOutputSandbox(['*Log.txt'])
 # refine output meta data if needed
 output_meta_data = copy(prod_step_2.Outputquery)
 job2.set_meta_data(output_meta_data)
-file_meta_data = {'nsb' : output_meta_data['nsb']}
-job2.set_file_meta_data(file_meta_data)
+job2.set_file_meta_data(nsb=output_meta_data['nsb']['='])
 
 # check if La Palma else use default
 if output_meta_data['site'] == 'LaPalma':
