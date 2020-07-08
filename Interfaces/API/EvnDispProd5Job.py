@@ -114,8 +114,9 @@ class EvnDispProd5Job(Job):
         # step 3 verify input data size
         # arguments are nbFiles=0 (not used) and fileSize=1000kB
         eiv_step = self.setExecutable('cta-prod3-verifysteps',
-                                  arguments='analysisinputs 0 1000',
-                                  logFile='Verify_EvnDispInputs_Log.txt')
+                   arguments="generic 5 1000 '*.simtel.zst'",
+                   logFile='Verify_EvnDispInputs_Log.txt')
+
         eiv_step['Value']['name'] = 'Step%i_VerifyEvnDispInputs' % i_step
         eiv_step['Value']['descr_short'] = 'Verify EvnDisp Inputs'
         i_step += 1
