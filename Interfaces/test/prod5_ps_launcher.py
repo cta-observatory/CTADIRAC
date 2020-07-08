@@ -14,81 +14,101 @@ import DIRAC
 from DIRAC.ProductionSystem.Client.ProductionClient import ProductionClient
 from DIRAC.ProductionSystem.Client.ProductionStep import ProductionStep
 from CTADIRAC.Interfaces.API.Prod5MCPipeNSBJob import Prod5MCPipeNSBJob
-from CTADIRAC.Interfaces.API.EvnDisp3RefJobC7 import EvnDisp3RefJobC7
+from CTADIRAC.Interfaces.API.EvnDispProd5Job import EvnDispProd5Job
+from CTADIRAC.Core.Utilities.tool_box import get_dataset_MQ
 from DIRAC.Core.Workflow.Parameter import Parameter
 
 # get arguments
 args = Script.getPositionalArgs()
-if len(args) != 1:
-  DIRAC.gLogger.error('At least 1 argument required: prodName')
+if len(args) != 2:
+  DIRAC.gLogger.error('At least 2 arguments required: prodName DL0_data_set')
   DIRAC.exit(-1)
 prodName = args[0]
+DL0_data_set = args[1]
 
-# Define the production
+##################################
+# Create the production
 prodClient = ProductionClient()
 
+##################################
 # Define the first ProductionStep
-# Note that there is no InputQuery, since jobs created by this steps don't require any InputData
+##################################
+# Note that there is no InputQuery,
+# since jobs created by this steps don't require any InputData
 prodStep1 = ProductionStep()
-prodStep1.Name = 'Sim_prog'
+prodStep1.Name = 'Simulation'
 prodStep1.Type = 'MCSimulation' # This corresponds to the Transformation Type
-prodStep1.Outputquery = {'thetaP': 20, 'data_level': 0, 'particle': 'gamma', 'tel_sim_prog': 'sim_telarray', 'array_layout': 'Advanced-Baseline', 'configuration_id': 7, 'site': 'LaPalma', 'MCCampaign': 'PROD5', 'phiP': 0.0, 'tel_sim_prog_version': '2020-06-29', 'outputType': {'in': ['Data', 'Log']}}
+prodStep1.Outputquery = get_dataset_MQ(DL0_data_set)
+prodStep1.Outputquery['nsb'] = {'in': [1, 5]}}
 
 # Here define the job description (i.e. Name, Executable, etc.) to be associated to the first ProductionStep, as done when using the TS
 job1 =  Prod5MCPipeNSBJob()
-
 # Initialize JOB_ID
 job1.workflow.addParameter(Parameter("JOB_ID", "000000", "string", "", "",
                                         True, False, "Temporary fix"))
-
+# configuration
 job1.version ='2020-06-29'
 job1.compiler='gcc83_matchcpu'
 job1.setName('Prod5_MC_Pipeline_NSB')
-# parameters from command line
-job1.set_site('LaPalma')
+job1.set_site('Paranal')
 job1.set_particle('gamma')
-job1.set_pointing_dir('South')
+job1.set_pointing_dir('North')
 job1.zenith_angle = 20
-job1.n_shower = 100
+job1.n_shower = 25000
 
 job1.setOutputSandbox(['*Log.txt'])
-job1.start_run_number = '100000'
+job1.start_run_number = '0'
 job1.run_number = '@{JOB_ID}'  # dynamic
 job1.setupWorkflow(debug=False)
 # Add the job description to the first ProductionStep
 prodStep1.Body = job1.workflow.toXML()
-
-
 # Add the step to the production
 prodClient.addProductionStep(prodStep1)
 
+##################################
 # Define the second ProductionStep
+##################################
 prodStep2 = ProductionStep()
-prodStep2.Name = 'Reco_prog'
+prodStep2.Name = 'DL1_reconstruction'
 prodStep2.Type = 'DataReprocessing' # This corresponds to the Transformation Type
 prodStep2.ParentStep = prodStep1
-prodStep2.Inputquery = {'thetaP': 20, 'data_level': 0, 'particle': 'gamma', 'tel_sim_prog': 'sim_telarray', 'array_layout': 'Advanced-Baseline', 'configuration_id': 7, 'site': 'LaPalma', 'MCCampaign': 'PROD5', 'phiP': 0.0, 'tel_sim_prog_version': '2020-06-29', 'outputType': 'Data'}
-prodStep2.Outputquery = {'thetaP': 20, 'data_level': 1, 'particle': 'gamma', 'calibimgreco_prog': 'evndisp', 'analysis_prog': 'evndisp', 'array_layout': 'Advanced-Baseline', 'configuration_id': 7, 'site': 'LaPalma', 'MCCampaign': 'PROD5', 'phiP': 0.0, 'calibimgreco_prog_version': 'prod3b_d20200521', 'outputType': {'in': ['Data', 'Log']}}
+prodStep2.Inputquery = get_dataset_MQ(DL0_data_set)
+prodStep2.Outputquery = get_dataset_MQ(DL0_data_set.replace('DL0', 'DL1'))
 
 # Here define the job description to be associated to the second ProductionStep
-job2 = EvnDisp3RefJobC7()
-job2.setName('EvnDisp')
-job2.version = "prod3b_d20200521"
+job2 = EvnDispProd5Job()
+job2.setName('Prod5_EvnDisp')
 # output
 job2.setOutputSandbox(['*Log.txt'])
-# change here for Paranal or La Palma
-job2.prefix = "CTA.prod4N" 
-#  set calibration file and parameters file
-job2.calibration_file ="prod3b.Paranal-20171214.ped.root"
-job2.configuration_id = 7
+# refine output meta data if needed
+output_meta_data = copy(prodStep2.Outputquery)
+job2.set_meta_data(output_meta_data)
+file_meta_data = {'nsb' : output_meta_data['nsb']}
+job2.set_file_meta_data(file_meta_data)
+
+# check if La Palma else use default
+if output_meta_data['site'] == 'LaPalma':
+    job2.prefix = "CTA.prod5N"
+    job2.layout_list = 'BL-0LSTs05MSTs-MSTF BL-0LSTs05MSTs-MSTN \
+                        BL-4LSTs00MSTs-MSTN BL-4LSTs05MSTs-MSTF \
+                        BL-4LSTs05MSTs-MSTN BL-4LSTs09MSTs-MSTF \
+                        BL-4LSTs09MSTs-MSTN BL-4LSTs15MSTs-MSTF \
+                        BL-4LSTs15MSTs-MSTN'
+    DIRAC.gLogger.notice('LaPalma layouts:\n',job2.layout_list.split())
+elif output_meta_data['site'] == 'Paranal':
+    DIRAC.gLogger.notice('Paranal layouts:\n',job2.layout_list.split())
+
+job2.ts_task_id = '@{JOB_ID}'  # dynamic
 job2.setupWorkflow(debug=False)
 prodStep2.Body = job2.workflow.toXML()
-
+prodStep2.GroupSize = 5
 
 # Add the step to the production
 prodClient.addProductionStep(prodStep2)
 
+##################################
 # Get the production description
+##################################
 prodDesc = prodClient.prodDescription
 
 # Create the production
