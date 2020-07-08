@@ -1,3 +1,8 @@
+[v1r59p1]
+* JB : New EvnDisp interface and launcher for Prod5
+       EvnDispProd5Job and prod5_evndisp_launcher.py
+       Bug fixes to Prod5MCPipeNSBJob.py and prod5_mcpipe_nsb_launcher.py
+
 [v1r59p0]
 * JB : New interface and launcher for Prod5
        Prod5MCPipeNSBJob.py and prod5_mcpipe_nsb_launcher.py
