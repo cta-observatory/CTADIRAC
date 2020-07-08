@@ -134,7 +134,7 @@ def launch_job(args):
 
         job.ts_task_id = '@{JOB_ID}'  # dynamic
         job.setupWorkflow(debug=False)
-        job.setType('EvnDispProd5')  # mandatory *here*
+        job.setType('DataReprocessing')  # mandatory *here*
         result = submit_trans(job, trans_name, input_meta_query, group_size)
     else:
         DIRAC.gLogger.error('1st argument should be the job mode: WMS or TS,\n\
