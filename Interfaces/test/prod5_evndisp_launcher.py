@@ -32,7 +32,7 @@ from DIRAC.Interfaces.API.Dirac import Dirac
 from CTADIRAC.Core.Utilities.tool_box import get_dataset_MQ
 
 
-def submit_trans(job, trans_name, mqJson, group_size):
+def submit_trans(job, trans_name, input_meta_query, group_size):
     """ Create a transformation executing the job workflow
     """
     DIRAC.gLogger.notice('submit_trans : %s' % trans_name)
@@ -48,7 +48,8 @@ def submit_trans(job, trans_name, mqJson, group_size):
     trans.setLongDescription("Prod5 EventDisplay processing")  # mandatory
     trans.setBody(job.workflow.toXML())
     trans.setGroupSize(group_size)
-    trans.setFileMask(mqJson) # catalog query is defined here
+    trans.setInputMetaQuery(input_meta_query)
+    # trans.setFileMask(mqJson) # catalog query is defined here
     result = trans.addTransformation()  # transformation is created here
     if not result['OK']:
         return result
@@ -127,15 +128,14 @@ def launch_job(args):
                                BL-4LSTs05MSTs-MSTN BL-4LSTs09MSTs-MSTF \
                                BL-4LSTs09MSTs-MSTN BL-4LSTs15MSTs-MSTF \
                                BL-4LSTs15MSTs-MSTN'
-            DIRAC.gLogger.notice('LaPalma layouts:\n',job.layout_list)
+            DIRAC.gLogger.notice('LaPalma layouts:\n',job.layout_list.split())
         elif output_meta_data['site'] == 'Paranal':
-            DIRAC.gLogger.notice('Paranal layouts:\n',job.layout_list)
+            DIRAC.gLogger.notice('Paranal layouts:\n',job.layout_list.split())
 
         job.ts_task_id = '@{JOB_ID}'  # dynamic
         job.setupWorkflow(debug=False)
         job.setType('EvnDispProd5')  # mandatory *here*
-        result = submit_trans(job, trans_name, json.dumps(input_meta_query),
-                              group_size)
+        result = submit_trans(job, trans_name, input_meta_query, group_size)
     else:
         DIRAC.gLogger.error('1st argument should be the job mode: WMS or TS,\n\
                              not %s' % mode)
