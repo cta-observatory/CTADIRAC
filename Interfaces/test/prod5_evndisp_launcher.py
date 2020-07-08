@@ -49,7 +49,6 @@ def submit_trans(job, trans_name, input_meta_query, group_size):
     trans.setBody(job.workflow.toXML())
     trans.setGroupSize(group_size)
     trans.setInputMetaQuery(input_meta_query)
-    # trans.setFileMask(mqJson) # catalog query is defined here
     result = trans.addTransformation()  # transformation is created here
     if not result['OK']:
         return result
@@ -81,7 +80,7 @@ def launch_job(args):
         Parameters:
         args -- mode (trans_name dataset_name group_size)
     """
-    DIRAC.gLogger.notice('run_evndisp_sst')
+    DIRAC.gLogger.notice('Launching jobs')
     # get arguments
     mode = args[0]
 
@@ -134,7 +133,7 @@ def launch_job(args):
 
         job.ts_task_id = '@{JOB_ID}'  # dynamic
         job.setupWorkflow(debug=False)
-        job.setType('DataReprocessing')  # mandatory *here*
+        job.setType('EvnDisp3')  # mandatory *here*
         result = submit_trans(job, trans_name, input_meta_query, group_size)
     else:
         DIRAC.gLogger.error('1st argument should be the job mode: WMS or TS,\n\
