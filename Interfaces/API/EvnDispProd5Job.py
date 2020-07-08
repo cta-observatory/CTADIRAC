@@ -35,7 +35,7 @@ class EvnDispProd5Job(Job):
         self.version = 'prod5_d20200702'
         self.compiler='gcc48_default'
         self.program_category = 'calibimgreco'
-        self.prog_name = 'EventDisplay'
+        self.prog_name = 'evndisp'
         self.configuration_id = 7
         self.output_data_level = 1
         self.prefix = 'CTA.prod5S'
@@ -47,7 +47,7 @@ class EvnDispProd5Job(Job):
         self.reconstructionparameter = 'EVNDISP.prod5.reconstruction.runparameter'
         self.base_path = '/vo.cta.in2p3.fr/MC/PROD5/'
         self.metadata = collections.OrderedDict()
-        self.file_meta_data = {}
+        self.file_meta_data = dict()
         self.catalogs = json.dumps(['DIRACFileCatalog', 'TSCatalog'])
         self.ts_task_id = 0
 
@@ -71,19 +71,19 @@ class EvnDispProd5Job(Job):
         except:
             thetaP = tel_sim_md['thetaP']
         self.metadata['thetaP'] = thetaP
-        self.metadata[self.program_category+'_prog'] = 'evndisp'
+        self.metadata[self.program_category+'_prog'] = self.prog_name
         self.metadata[self.program_category+'_prog_version'] = self.version
         self.metadata['data_level'] = self.output_data_level
         self.metadata['configuration_id'] = self.configuration_id
 
-    def set_file_meta_data(self, meta_data_dict):
+    def set_file_meta_data(self, nsb=1):
         """ Set evndisplay file meta data
 
         Parameters:
         meta_data_dict -- metadata dictionary
         """
         # Set evndisp file meta data
-        self.file_meta_data['nsb'] = meta_data_dict['nsb']
+        self.file_meta_data['nsb'] = nsb
 
     def setupWorkflow(self, debug=False):
         """ Setup job workflow by defining the sequence of all executables

@@ -110,6 +110,7 @@ def launch_job(args):
                            BL-4LSTs15MSTs-MSTN'
 
         job.set_meta_data(simtel_meta_data)
+        job.set_file_meta_data({'nsb':1})
         job.setupWorkflow(debug=True)
         # subtmit to the WMS for debug
         # job.setDestination('LCG.IN2P3-CC.fr')
@@ -119,8 +120,7 @@ def launch_job(args):
         # refine output meta data if needed
         output_meta_data = copy(input_meta_query)
         job.set_meta_data(output_meta_data)
-        file_meta_data = {'nsb' : output_meta_data['nsb']}
-        job.set_file_meta_data(file_meta_data)
+        job.set_file_meta_data(nsb=output_meta_data['nsb']['='])
         if output_meta_data['site'] == 'LaPalma':
             job.layout_list = 'BL-0LSTs05MSTs-MSTF BL-0LSTs05MSTs-MSTN \
                                BL-4LSTs00MSTs-MSTN BL-4LSTs05MSTs-MSTF \
