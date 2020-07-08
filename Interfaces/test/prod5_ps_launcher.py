@@ -21,11 +21,11 @@ from DIRAC.Core.Workflow.Parameter import Parameter
 
 # get arguments
 args = Script.getPositionalArgs()
-if len(args) != 2:
-  DIRAC.gLogger.error('At least 2 arguments required: prod_name DL0_data_set')
+if len(args) != 1:
+  DIRAC.gLogger.error('At least 1 argument required: DL0_data_set')
   DIRAC.exit(-1)
-prod_name = args[0]
-DL0_data_set = args[1]
+DL0_data_set = args[0]
+prod_name = DL0_data_set.replace('AdvancedBaseline_NSB1x_','')+'_DL1'
 
 ##################################
 # Create the production
@@ -51,7 +51,7 @@ job1.workflow.addParameter(Parameter("JOB_ID", "000000", "string", "", "",
 job1.version ='2020-06-29'
 job1.compiler='gcc83_matchcpu'
 job1.setName('Prod5_MC_Pipeline_NSB')
-job1.set_site('Paranal')
+job1.set_site('LaPalma')
 job1.set_particle('gamma')
 job1.set_pointing_dir('North')
 job1.zenith_angle = 20
@@ -100,7 +100,7 @@ elif output_meta_data['site'] == 'Paranal':
 
 job2.ts_task_id = '@{JOB_ID}'  # dynamic
 job2.setupWorkflow(debug=False)
-job.setType('EvnDisp3')  # mandatory *here*
+job2.setType('EvnDisp3')  # mandatory *here*
 prod_step_2.Body = job2.workflow.toXML()
 prod_step_2.GroupSize = 5
 
