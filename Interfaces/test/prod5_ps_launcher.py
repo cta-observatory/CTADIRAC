@@ -40,7 +40,7 @@ prodStep1 = ProductionStep()
 prodStep1.Name = 'Simulation'
 prodStep1.Type = 'MCSimulation' # This corresponds to the Transformation Type
 prodStep1.Outputquery = get_dataset_MQ(DL0_data_set)
-prodStep1.Outputquery['nsb'] = {'in': [1, 5]}}
+prodStep1.Outputquery['nsb'] = {'in': [1, 5]}
 
 # Here define the job description (i.e. Name, Executable, etc.) to be associated to the first ProductionStep, as done when using the TS
 job1 =  Prod5MCPipeNSBJob()
@@ -70,7 +70,7 @@ prodClient.addProductionStep(prodStep1)
 # Define the second ProductionStep
 ##################################
 prodStep2 = ProductionStep()
-prodStep2.Name = 'DL1_reconstruction'
+prodStep2.Name = 'DL1_image_analysis'
 prodStep2.Type = 'DataReprocessing' # This corresponds to the Transformation Type
 prodStep2.ParentStep = prodStep1
 prodStep2.Inputquery = get_dataset_MQ(DL0_data_set)
@@ -101,6 +101,7 @@ elif output_meta_data['site'] == 'Paranal':
 
 job2.ts_task_id = '@{JOB_ID}'  # dynamic
 job2.setupWorkflow(debug=False)
+job.setType('EvnDisp3')  # mandatory *here*
 prodStep2.Body = job2.workflow.toXML()
 prodStep2.GroupSize = 5
 
