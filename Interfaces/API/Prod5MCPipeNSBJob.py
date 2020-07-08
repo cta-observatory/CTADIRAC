@@ -31,7 +31,7 @@ class Prod5MCPipeNSBJob(Job):
         self.setName('Prod5MC_Generation')
         self.setType('MCSimulation')
         self.package = 'corsika_simtelarray'
-        self.version = '2020-06-17'
+        self.version = '2020-06-29'
         self.compiler = 'gcc48_default'
         self.program_category = 'tel_sim'
         self.prog_name = 'sim_telarray'
