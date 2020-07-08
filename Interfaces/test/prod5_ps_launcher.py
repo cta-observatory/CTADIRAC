@@ -6,6 +6,7 @@
 __RCSID__ = "$Id$"
 
 import json
+from copy import copy
 
 from DIRAC.Core.Base import Script
 Script.parseCommandLine()
@@ -113,16 +114,15 @@ prodDesc = prodClient.prodDescription
 
 # Create the production
 res = prodClient.addProduction(prodName, json.dumps(prodDesc))
-
 if not res['OK']:
-  DIRAC.gLogger.error(res['Message'])
-  DIRAC.exit(-1)
+    DIRAC.gLogger.error(res['Message'])
+    DIRAC.exit(-1)
 
 # Start the production, i.e. instatiate the transformation steps
 res = prodClient.startProduction(prodName)
 
 if not res['OK']:
-  DIRAC.gLogger.error(res['Message'])
-  DIRAC.exit(-1)
+    DIRAC.gLogger.error(res['Message'])
+    DIRAC.exit(-1)
 
 DIRAC.gLogger.notice('Production %s successfully created' % prodName)
