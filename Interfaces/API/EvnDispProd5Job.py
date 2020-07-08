@@ -175,7 +175,14 @@ class EvnDispProd5Job(Job):
         log_step['Value']['descr_short'] = 'Save log to SE and register them in DFC'
         i_step += 1
 
-        # Step 7 - debug only
+        # step 7 failover step
+        failover_step = self.setExecutable('/bin/ls -l',
+                                           modulesList=['Script', 'FailoverRequest'])
+        failover_step['Value']['name'] = 'Step%s_Failover' % i_step
+        failover_step['Value']['descr_short'] = 'Tag files as unused if job failed'
+        i_step += 1
+
+        # Step 8 - debug only
         if debug:
             ls_step = self.setExecutable('/bin/ls -Ralhtr', logFile='LS_End_Log.txt')
             ls_step['Value']['name'] = 'Step%s_LSHOME_End' % i_step
