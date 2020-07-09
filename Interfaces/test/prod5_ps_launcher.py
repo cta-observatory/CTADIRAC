@@ -1,6 +1,11 @@
-""" Launcher script to launch a production with 2 steps
+"""
+    Launcher script to launch a production with 2 steps
     simulation Step: Prod5MCPipeNSBJob
-    calibimgreco Step: EvnDisp3RefJobC7
+    calibimgreco Step: EvnDispProd5Job
+
+        L. Arrabito
+        J. Bregeon
+                        July 2020
 """
 
 __RCSID__ = "$Id$"
@@ -42,7 +47,18 @@ prod_step_1.Type = 'MCSimulation' # This corresponds to the Transformation Type
 prod_step_1.Outputquery = get_dataset_MQ(DL0_data_set)
 prod_step_1.Outputquery['nsb'] = {'in': [1, 5]}
 
-# Here define the job description (i.e. Name, Executable, etc.) to be associated to the first ProductionStep, as done when using the TS
+# get meta data to be passed to simulation job
+site = prod_step_1.Outputquery['site']
+particle = prod_step_1.Outputquery['particle']
+if prod_step_1.Outputquery['phiP']['='] == 180:
+    pointing_dir = 'North'
+elif prod_step_1.Outputquery['phiP']['='] == 0:
+    pointing_dir = 'South'
+zenith_angle = prod_step_1.Outputquery['thetaP']['=']
+
+
+# Here define the job description (i.e. Name, Executable, etc.)
+# to be associated to the first ProductionStep, as done when using the TS
 job1 =  Prod5MCPipeNSBJob()
 # Initialize JOB_ID
 job1.workflow.addParameter(Parameter("JOB_ID", "000000", "string", "", "",
@@ -51,11 +67,13 @@ job1.workflow.addParameter(Parameter("JOB_ID", "000000", "string", "", "",
 job1.version ='2020-06-29'
 job1.compiler='gcc83_matchcpu'
 job1.setName('Prod5_MC_Pipeline_NSB')
-job1.set_site('LaPalma')
-job1.set_particle('gamma')
-job1.set_pointing_dir('North')
-job1.zenith_angle = 20
-job1.n_shower = 25000
+job1.set_site(site)
+job1.set_particle(particle)
+job1.set_pointing_dir(pointing_dir)
+job1.zenith_angle = zenith_angle
+job1.n_shower = 50000
+if particle is 'gamma':
+    job1.n_shower = 25000
 
 job1.setOutputSandbox(['*Log.txt'])
 job1.start_run_number = '0'
@@ -86,7 +104,7 @@ output_meta_data = copy(prod_step_2.Outputquery)
 job2.set_meta_data(output_meta_data)
 job2.set_file_meta_data(nsb=output_meta_data['nsb']['='])
 
-# check if La Palma else use default
+# check if La Palma else use default that is Paranal
 if output_meta_data['site'] == 'LaPalma':
     job2.prefix = "CTA.prod5N"
     job2.layout_list = 'BL-0LSTs05MSTs-MSTF BL-0LSTs05MSTs-MSTN \
