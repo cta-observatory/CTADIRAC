@@ -226,7 +226,7 @@ class Prod5MCPipeNSBJob(Job):
         ## Upload and register histogram file - NSB=1
         histo_file_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Histograms/*dark*.hdata.zst' %\
                             self.cta_site.lower()
-        dmStep = self.setExecutable('../CTADIRAC/Core/scripts/cta-analysis-managedata.py',
+        dmStep = self.setExecutable(scripts + 'cta-prod-managedata.py',
                                   arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s' Histograms" % \
                                   (md_json, md_field_json, file_md_json,
                                   self.base_path, histo_file_pattern, self.package,
@@ -273,7 +273,7 @@ class Prod5MCPipeNSBJob(Job):
         ## Upload and register histogram file - NSB=5
         histo_file_pattern = 'Data/sim_telarray/cta-prod5-%s/0.0deg/Histograms/*moon*.hdata.zst' %\
                             self.cta_site.lower()
-        dmStep = self.setExecutable('../CTADIRAC/Core/scripts/cta-analysis-managedata.py',
+        dmStep = self.setExecutable(scripts + 'cta-prod-managedata.py',
                                   arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s' Histograms" % \
                                   (md_json, md_field_json, file_md_json,
                                   self.base_path, histo_file_pattern, self.package,
