@@ -130,7 +130,9 @@ def launch_job(args):
             DIRAC.gLogger.notice('LaPalma layouts:\n',job.layout_list.split())
         elif output_meta_data['site'] == 'Paranal':
             DIRAC.gLogger.notice('Paranal layouts:\n',job.layout_list.split())
-
+        # adjust calibration file
+        if output_meta_data['nsb']['='] == 5:
+            job.calibration_file = 'prod5/prod5-halfmoon-IPR.root'
         job.ts_task_id = '@{JOB_ID}'  # dynamic
         job.setupWorkflow(debug=False)
         job.setType('EvnDisp3')  # mandatory *here*
