@@ -25,15 +25,68 @@ from CTADIRAC.Core.Utilities.tool_box import get_dataset_MQ
 from DIRAC.Core.Workflow.Parameter import Parameter
 
 
+def build_simulation_step(DL0_data_set):
+    ''' Setup Corsika + sim_telarray step
+
+    Note that there is no InputQuery,
+    since jobs created by this steps don't require any InputData
+
+    @return ProductionStep object
+    '''
+    # Note that there is no InputQuery,
+    # since jobs created by this steps don't require any InputData
+    prod_step_1 = ProductionStep()
+    prod_step_1.Name = 'Simulation_%s'%DL0_data_set.replace('AdvancedBaseline_NSB1x_','')
+    prod_step_1.Type = 'MCSimulation' # This corresponds to the Transformation Type
+    prod_step_1.Outputquery = get_dataset_MQ(DL0_data_set)
+    prod_step_1.Outputquery['nsb'] = {'in': [1, 5]}
+
+    # get meta data to be passed to simulation job
+    site = prod_step_1.Outputquery['site']
+    particle = prod_step_1.Outputquery['particle']
+    if prod_step_1.Outputquery['phiP']['='] == 180:
+        pointing_dir = 'North'
+    elif prod_step_1.Outputquery['phiP']['='] == 0:
+        pointing_dir = 'South'
+    zenith_angle = prod_step_1.Outputquery['thetaP']['=']
+
+    # Here define the job description (i.e. Name, Executable, etc.)
+    # to be associated to the first ProductionStep, as done when using the TS
+    job1 =  Prod5MCPipeNSBJob()
+    # Initialize JOB_ID
+    job1.workflow.addParameter(Parameter("JOB_ID", "000000", "string", "", "",
+                                            True, False, "Temporary fix"))
+    # configuration
+    job1.version ='2020-06-29'
+    job1.compiler='gcc83_matchcpu'
+    job1.setName('Prod5_MC_Pipeline_NSB')
+    job1.set_site(site)
+    job1.set_particle(particle)
+    job1.set_pointing_dir(pointing_dir)
+    job1.zenith_angle = zenith_angle
+    job1.n_shower = 50000
+    if particle is 'gamma':
+        job1.n_shower = 25000
+
+    job1.setOutputSandbox(['*Log.txt'])
+    job1.start_run_number = '0'
+    job1.run_number = '@{JOB_ID}'  # dynamic
+    job1.setupWorkflow(debug=False)
+    # Add the job description to the first ProductionStep
+    prod_step_1.Body = job1.workflow.toXML()
+    # return ProductionStep object
+    return prod_step_1
+
 def build_evndisp_step(DL0_data_set, nsb=1):
-    ##################################
-    # Define a new analysis production step
-    ##################################
+    ''' Define a new EventDisplay analysis production step
+
+    @return ProductionStep object
+    '''
     if nsb == 1:
-        print('NSB1x Analysis')
+        DIRAC.gLogger.notice('NSB1x Analysis')
         DL0_data_set_NSB = DL0_data_set
     elif nsb == 5:
-        print('NSB5x Analtsis')
+        DIRAC.gLogger.notice('NSB5x Analysis')
         DL0_data_set_NSB = DL0_data_set.replace('NSB1x', 'NSB5x')
 
     prod_step_2 = ProductionStep()
@@ -87,57 +140,13 @@ if __name__ == '__main__':
     prod_sys_client = ProductionClient()
 
     ##################################
-    # Define the first ProductionStep
-    ##################################
-    # Note that there is no InputQuery,
-    # since jobs created by this steps don't require any InputData
-    prod_step_1 = ProductionStep()
-    prod_step_1.Name = 'Simulation_%s'%DL0_data_set.replace('AdvancedBaseline_NSB1x_','')
-    prod_step_1.Type = 'MCSimulation' # This corresponds to the Transformation Type
-    prod_step_1.Outputquery = get_dataset_MQ(DL0_data_set)
-    prod_step_1.Outputquery['nsb'] = {'in': [1, 5]}
-
-    # get meta data to be passed to simulation job
-    site = prod_step_1.Outputquery['site']
-    particle = prod_step_1.Outputquery['particle']
-    if prod_step_1.Outputquery['phiP']['='] == 180:
-        pointing_dir = 'North'
-    elif prod_step_1.Outputquery['phiP']['='] == 0:
-        pointing_dir = 'South'
-    zenith_angle = prod_step_1.Outputquery['thetaP']['=']
-
-
-    # Here define the job description (i.e. Name, Executable, etc.)
-    # to be associated to the first ProductionStep, as done when using the TS
-    job1 =  Prod5MCPipeNSBJob()
-    # Initialize JOB_ID
-    job1.workflow.addParameter(Parameter("JOB_ID", "000000", "string", "", "",
-                                            True, False, "Temporary fix"))
-    # configuration
-    job1.version ='2020-06-29'
-    job1.compiler='gcc83_matchcpu'
-    job1.setName('Prod5_MC_Pipeline_NSB')
-    job1.set_site(site)
-    job1.set_particle(particle)
-    job1.set_pointing_dir(pointing_dir)
-    job1.zenith_angle = zenith_angle
-    job1.n_shower = 50000
-    if particle is 'gamma':
-        job1.n_shower = 25000
-
-    job1.setOutputSandbox(['*Log.txt'])
-    job1.start_run_number = '0'
-    job1.run_number = '@{JOB_ID}'  # dynamic
-    job1.setupWorkflow(debug=False)
-    # Add the job description to the first ProductionStep
-    prod_step_1.Body = job1.workflow.toXML()
+    # Define the first ProductionStep (Corsika+sim_telarray)
+    prod_step_1 = build_simulation_step(DL0_data_set)
     # Add the step to the production
     prod_sys_client.addProductionStep(prod_step_1)
 
-
     ##################################
-    # Now build analysis steps and add them to the production
-    ##################################
+    # Define EventDisplay analysis steps and add them to the production
     # dark nsb = 1
     prod_step_2 = build_evndisp_step(DL0_data_set, nsb=1)
     prod_step_2.ParentStep = prod_step_1
@@ -149,7 +158,6 @@ if __name__ == '__main__':
 
     ##################################
     # Get the production description
-    ##################################
     prod_description = prod_sys_client.prodDescription
 
     # Create the production
@@ -158,7 +166,7 @@ if __name__ == '__main__':
         DIRAC.gLogger.error(res['Message'])
         DIRAC.exit(-1)
 
-    # Start the production, i.e. instatiate the transformation steps
+    # Start the production, i.e. instantiate the transformation steps
     res = prod_sys_client.startProduction(prod_name)
 
     if not res['OK']:
