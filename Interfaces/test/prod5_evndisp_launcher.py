@@ -122,6 +122,7 @@ def launch_job(args):
         job.set_meta_data(output_meta_data)
         job.set_file_meta_data(nsb=output_meta_data['nsb']['='])
         if output_meta_data['site'] == 'LaPalma':
+            job.prefix = 'CTA.prod5N'
             job.layout_list = 'BL-0LSTs05MSTs-MSTF BL-0LSTs05MSTs-MSTN \
                                BL-4LSTs00MSTs-MSTN BL-4LSTs05MSTs-MSTF \
                                BL-4LSTs05MSTs-MSTN BL-4LSTs09MSTs-MSTF \
