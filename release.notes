@@ -1,3 +1,7 @@
+[v1r59p2]
+* JB/LA : New ProductionSystem launcher script for Prod5
+          many mino small fixes for Prod5
+
 [v1r59p1]
 * JB : New EvnDisp interface and launcher for Prod5
        EvnDispProd5Job and prod5_evndisp_launcher.py
