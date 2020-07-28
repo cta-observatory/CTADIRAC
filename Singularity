@@ -4,6 +4,8 @@ From: centos:7
 %environment
 source /opt/dirac/bashrc
 source /opt/dirac/dirac_env.sh
+export GRID=$HOME/grid
+export PROTOPIPE=$HOME/protopipe
 
 %post
 # CTADIRAC client location
@@ -117,3 +119,6 @@ if ! [ -d "/tmp/etc/grid-security/certificates" ]
 fi
 EOF
 
+# Install python modules for protopipe inside DIRAC environment
+source $DIRAC_ROOT/bashrc
+pip install h5py tables pyyaml

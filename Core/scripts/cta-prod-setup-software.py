@@ -67,7 +67,7 @@ def setup_software(package, version, category, compiler, repository):
         if not res['OK']:
             return res
     elif source is 'tarball':
-        res = manager.install_software(package_dir)
+        res = manager.install_software(os.path.join(package_dir,package+'.tar.gz'))
         if not res['OK']:
             return res
         package_local_path = res['Value']

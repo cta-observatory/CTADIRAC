@@ -7,7 +7,6 @@ __RCSID__ = "$Id$"
 
 # generic imports
 import os
-import subprocess
 import glob
 import shutil
 import tarfile
@@ -15,7 +14,7 @@ import tarfile
 # DIRAC imports
 import DIRAC
 from DIRAC.DataManagementSystem.Client.DataManager import DataManager
-from DIRAC.ConfigurationSystem.Client.Helpers.Operations import Operations
+#from DIRAC.ConfigurationSystem.Client.Helpers.Operations import Operations
 from CTADIRAC.Core.Utilities.tool_box import get_os_and_cpu_info
 
 
@@ -31,23 +30,21 @@ class SoftwareManager(object):
         self.SOFT_CATEGORY_DICT = soft_category
         self.dm = DataManager()
 
-    def _search_software(self, package, version, compiler, use_cvmfs):
+    def _search_software(self, package, version, compiler):
         ''' Look for sotfware package
         '''
         # software package category
         category = self.SOFT_CATEGORY_DICT[package]
         # look for software on cvmfs
-        if use_cvmfs:
-            package_dir = os.path.join(self.CVMFS_DIR, 'centos7',
-                                       compiler, category, package, version)
-            if os.path.isdir(package_dir):
-                DIRAC.gLogger.notice('Found package %s version %s at:\n%s' %
-                                     (package, version, package_dir))
-                return DIRAC.S_OK({'Source':'cvmfs', 'Path':package_dir})
-            else:
-                DIRAC.gLogger.warn('%s\n not found on cvmfs'%package_dir)
-        # look for tarball in the Dirac file catalog
+        package_dir = os.path.join(self.CVMFS_DIR, 'centos7',
+                                   compiler, category, package, version)
+        if os.path.isdir(package_dir):
+            DIRAC.gLogger.notice('Found package %s version %s at:\n%s' %
+                                 (package, version, package_dir))
+            return DIRAC.S_OK({'Source':'cvmfs', 'Path':package_dir})
         else:
+            DIRAC.gLogger.notice('%s\n not found on cvmfs'%package_dir)
+            # look for tarball in the Dirac file catalog
             package_dir = os.path.join(self.LFN_ROOT, 'centos7',
                                        compiler, category, package, version)
             DIRAC.gLogger.notice('Looking for tarball in %s'%package_dir)
@@ -72,9 +69,10 @@ class SoftwareManager(object):
           compiler -- compiler version and configuration
         """
         # first check if cvmfs is available
-        ops_helper = Operations()
-        use_cvmfs = ops_helper.getValue('SoftwarePolicy/UseCvmfs', bool)
-        DIRAC.gLogger.notice('SoftwarePolicy for UseCvmfs is:', use_cvmfs)
+        # Not used anymore -> First try cvmfs and then try tarball
+        #ops_helper = Operations()
+        #use_cvmfs = ops_helper.getValue('SoftwarePolicy/UseCvmfs', bool)
+        #DIRAC.gLogger.notice('SoftwarePolicy for UseCvmfs is:', use_cvmfs)
 
         # get platform and cpu information
         try:
@@ -87,46 +85,46 @@ class SoftwareManager(object):
 
         req_inst = compiler.split('_')[1]
         if req_inst == 'default':
-            results = self._search_software(package, version, compiler, use_cvmfs)
+            results = self._search_software(package, version, compiler)
             return results
         elif req_inst == 'noOpt':
-             results = self._search_software(package, version, compiler, use_cvmfs)
+             results = self._search_software(package, version, compiler)
              return results
         elif req_inst == 'sse4':
             if inst in ['sse4', 'avx', 'avx2']:
-                results = self._search_software(package, version, compiler, use_cvmfs)
+                results = self._search_software(package, version, compiler)
                 return results
             else:
                 DIRAC.gLogger.warn('CPU has no sse4 instructions, running non optimized version')
                 match_compiler = compiler.replace(req_inst,'noOpt')
-                results = self._search_software(package, version, match_compiler, use_cvmfs)
+                results = self._search_software(package, version, match_compiler)
                 return results
         elif req_inst == 'avx':
             if inst in ['avx', 'avx2']:
-                results = self._search_software(package, version, compiler, use_cvmfs)
+                results = self._search_software(package, version, compiler)
                 return results
             else:
                 DIRAC.gLogger.warn('CPU has no avx instructions, running non optimized version')
                 match_compiler = compiler.replace(req_inst,'noOpt')
-                results = self._search_software(package, version, match_compiler, use_cvmfs)
+                results = self._search_software(package, version, match_compiler)
                 return results
         elif req_inst == 'avx2':
             if inst in ['avx2']:
-                results = self._search_software(package, version, compiler, use_cvmfs)
+                results = self._search_software(package, version, compiler)
                 return results
             else:
                 DIRAC.gLogger.warn('CPU has no avx2 instructions, running non optimized version')
                 match_compiler = compiler.replace(req_inst,'noOpt')
-                results = self._search_software(package, version, match_compiler, use_cvmfs)
+                results = self._search_software(package, version, match_compiler)
                 return results
         elif compiler == 'gcc83_avx512':
             if inst in ['avx512']:
-                results = self._search_software(package, version, compiler, use_cvmfs)
+                results = self._search_software(package, version, compiler)
                 return results
             else:
                 DIRAC.gLogger.warn('CPU has no avx512 instructions, running non optimized version')
                 match_compiler = compiler.replace(req_inst,'noOpt')
-                results = self._search_software(package, version, match_compiler, use_cvmfs)
+                results = self._search_software(package, version, match_compiler)
                 return results
         elif req_inst == 'matchcpu':
             match_compiler = compiler.replace(req_inst,inst)
@@ -134,7 +132,7 @@ class SoftwareManager(object):
                 DIRAC.gLogger.warn('%s not available for gcc48'%inst)
                 DIRAC.gLogger.warn('Using gcc83 avx512 instead')
                 match_compiler = 'gcc83_avx512'
-            results = self._search_software(package, version, match_compiler, use_cvmfs)
+            results = self._search_software(package, version, match_compiler)
             return results
         else:
             DIRAC.S_ERROR('Unknown compiler specified: %s'%compiler)
@@ -179,11 +177,11 @@ class SoftwareManager(object):
 
         # Extract the tar file to the target directory
         tar_mode = "r|*"
-        tar = tarfile.open(tar_lfn, tar_mode)
+        tar = tarfile.open(os.path.basename(tar_lfn), tar_mode)
         for tarInfo in tar:
             tar.extract(tarInfo, target_dir)
         tar.close()
-        os.unlink(tar_lfn)
+        os.unlink(os.path.basename(tar_lfn))
         # Done
         DIRAC.gLogger.notice('Package %s installed successfully at:\n%s'
                              %(tar_lfn, target_dir))
