@@ -58,8 +58,8 @@ LocalInstallation
 {
   ConfigurationServer = dips://ccdcta-server04.in2p3.fr:9135/Configuration/Server
   ConfigurationServer += dips://ccdcta-server05.in2p3.fr:9135/Configuration/Server
-  ConfigurationServer += dips://dcta-agents01.pic.es:9135/Configuration/Server
-  ConfigurationServer += dips://dcta-servers01.pic.es:9135/Configuration/Server
+  ConfigurationServer += dips://dcta-agents.pic.es:9135/Configuration/Server
+  ConfigurationServer += dips://dcta-servers.pic.es:9135/Configuration/Server
   VirtualOrganization = vo.cta.in2p3.fr
   Setup = CTA
   PythonVersion = ${PYTHONVERSION}
@@ -77,8 +77,8 @@ DIRAC
   {
     Servers = dips://ccdcta-server04.in2p3.fr:9135/Configuration/Server
     Servers += dips://ccdcta-server05.in2p3.fr:9135/Configuration/Server
-    Servers += dips://dcta-agents01.pic.es:9135/Configuration/Server
-    Servers += dips://dcta-servers01.pic.es:9135/Configuration/Server
+    Servers += dips://dcta-agents.pic.es:9135/Configuration/Server
+    Servers += dips://dcta-servers.pic.es:9135/Configuration/Server
   }
   Setup = CTA
   VirtualOrganization = vo.cta.in2p3.fr
