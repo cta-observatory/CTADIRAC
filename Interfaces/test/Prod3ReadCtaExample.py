@@ -26,7 +26,7 @@ def submitWMS( job, infileList ):
   # To allow jobs run at other sites than the site where the InputData are located
   #job.setType( 'DataReprocessing' )
 
-  res = dirac.submit( job )
+  res = dirac.submitJob( job )
 
   if res['OK']:
     Script.gLogger.info( 'Submission Result: ', res['Value'] )

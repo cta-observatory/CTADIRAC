@@ -207,6 +207,71 @@ class ProvenanceManagerHandler(RequestHandler):
     res = cls.__provenanceDB.addValueEntity(rowDict)
     return cls._parseRes(res)
 
+  types_addWasConfiguredBy= [basestring]
+
+  def export_addWasConfiguredBy(cls, rowJSON):
+    '''
+    Insert WasConfiguredBy
+    :param rowJSON
+    :return:
+    '''
+
+    rowDict = json.loads(rowJSON)
+    res = cls.__provenanceDB.addWasConfiguredBy(rowDict)
+    return cls._parseRes(res)
+
+  types_addParameter = [basestring]
+
+  def export_addParameter(cls, rowJSON):
+    '''
+    Insert Parameter
+    :param rowJSON
+    :return:
+    '''
+
+    rowDict = json.loads(rowJSON)
+    res = cls.__provenanceDB.addParameter(rowDict)
+    return cls._parseRes(res)
+
+  types_addConfigFile = [basestring]
+
+  def export_addConfigFile(cls, rowJSON):
+    '''
+    Insert ConfigFile
+    :param rowJSON
+    :return:
+    '''
+
+    rowDict = json.loads(rowJSON)
+    res = cls.__provenanceDB.addConfigFile(rowDict)
+    return cls._parseRes(res)
+
+  types_addParameterDescription = [basestring]
+
+  def export_addParameterDescription(cls, rowJSON):
+    '''
+    Insert ParameterDescription
+    :param rowJSON
+    :return:
+    '''
+
+    rowDict = json.loads(rowJSON)
+    res = cls.__provenanceDB.addParameterDescription(rowDict)
+    return cls._parseRes(res)
+
+  types_addConfigFileDescription = [basestring]
+
+  def export_addConfigFileDescription(cls, rowJSON):
+    '''
+    Insert ConfigFileDescription
+    :param rowJSON
+    :return:
+    '''
+
+    rowDict = json.loads(rowJSON)
+    res = cls.__provenanceDB.addConfigFileDescription(rowDict)
+    return cls._parseRes(res)
+
   types_getAgents = []
 
   def export_getAgents(cls):
@@ -229,5 +294,66 @@ class ProvenanceManagerHandler(RequestHandler):
 
     res = cls.__provenanceDB.getDatasetEntity(guid)
     return cls._parseRes(res)
+
+  types_updateDatasetEntity = [basestring]
+
+  def export_updateDatasetEntity(cls, guid, invalidatedAtTime):
+    '''
+    Update DatasetEntity
+    :param datasetEntity guid invalidatedAtTime
+    :return:
+    '''
+
+    res = cls.__provenanceDB.updateDatasetEntity(guid, invalidatedAtTime)
+    return cls._parseRes(res)
+
+  types_getUsageDescription = []
+
+  def export_getUsageDescription(cls, activityDescription_id, role):
+    '''
+    Get UsageDescription
+    :param activity_id, role
+    :return {'id':usageDescription_id, 'entityDescription_id':entityDescription_id}
+    '''
+
+    res = cls.__provenanceDB.getUsageDescription(activityDescription_id, role)
+    return cls._parseRes(res)
+
+  types_getGenerationDescription = []
+
+  def export_getGenerationDescription(cls, activityDescription_id, role):
+    '''
+    Get GenerationDescription
+    :param activity_id, role
+    :return {'id':GenerationDescription_id, 'entityDescription_id':entityDescription_id}
+    '''
+
+    res = cls.__provenanceDB.getGenerationDescription(activityDescription_id, role)
+    return cls._parseRes(res)
+
+  types_getParameterDescription = []
+
+  def export_getParameterDescription(cls, activityDescription_id, parameter_name):
+    '''
+    Get ParameterDescription
+    :param activity_id, parameter_name
+    :return {'id':ParameterDescription_id}
+    '''
+
+    res = cls.__provenanceDB.getParameterDescription(activityDescription_id, parameter_name)
+    return cls._parseRes(res)
+
+  types_getConfigFileDescription = []
+
+  def export_getConfigFileDescription(cls, activityDescription_id, configFile_name):
+    '''
+    Get ConfigFileDescription
+    :param activity_id, configFile
+    :return {'id':ConfigFileDescription_id}
+    '''
+
+    res = cls.__provenanceDB.getConfigFileDescription(activityDescription_id, configFile_name)
+    return cls._parseRes(res)
+
 
 

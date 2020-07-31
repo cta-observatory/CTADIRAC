@@ -26,6 +26,11 @@ from CTADIRAC.DataManagementSystem.Client.ProvBase import WasGeneratedBy
 from CTADIRAC.DataManagementSystem.Client.ProvBase import ValueEntity
 from CTADIRAC.DataManagementSystem.Client.ProvBase import Activity
 from CTADIRAC.DataManagementSystem.Client.ProvBase import WasAssociatedWith
+from CTADIRAC.DataManagementSystem.Client.ProvBase import WasConfiguredBy
+from CTADIRAC.DataManagementSystem.Client.ProvBase import Parameter
+from CTADIRAC.DataManagementSystem.Client.ProvBase import ConfigFile
+from CTADIRAC.DataManagementSystem.Client.ProvBase import ParameterDescription
+from CTADIRAC.DataManagementSystem.Client.ProvBase import ConfigFileDescription
 
 provClient = ProvClient()
 
@@ -43,10 +48,18 @@ dataDesc2  = DatasetDescription(id='muons_hdf5', name='muons', description='muon
                                 classType='datasetDescription', type='data', contentType='application/octet-stream')
 wGBDesc1   = GenerationDescription(id='ctapipe-display-muons_0.6.2_muons_hdf5',activityDescription_id=actDesc1.id, \
                                    entityDescription_id=dataDesc2.id, role="dl0.sub.evt", type='Main')
-valueDesc1 = ValueDescription(id='status', name='status', description='activity status', type='status', \
-                              valueType='string', options='(NOK,OK)', default='NOK')
+valueDesc1 = ValueDescription(id='status', name='status', description='activity status', type='Quality', \
+                              valueType='string')
 wGBDesc2   = GenerationDescription(id='ctapipe-display-muons_0.6.2_status', activityDescription_id=actDesc1.id, \
-                                   entityDescription_id=valueDesc1.id, role="quality", type='Quality')
+                                   entityDescription_id=valueDesc1.id, role="status", type='Quality')
+
+# Create description of configFiles and Parameters
+paramDesc1 = ParameterDescription(name='events', valueType='string', description='name of the event file',\
+                                  ucd='meta.id',utype='ProvenanceDM.ParameterDescription', \
+                                  activityDescription_id = actDesc1.id)
+paramDesc2 = ParameterDescription(name='outfile', valueType='string', description='name of the output file',\
+                                  ucd='meta.id',utype='ProvenanceDM.ParameterDescription', \
+                                  activityDescription_id = actDesc1.id)
 
 #
 res = provClient.addActivityDescription(actDesc1)
@@ -74,6 +87,14 @@ if not res['OK']:
   DIRAC.gLogger.error(res['Message'])
   DIRAC.exit(-1)
 res = provClient.addGenerationDescription(wGBDesc2)
+if not res['OK']:
+  DIRAC.gLogger.error(res['Message'])
+  DIRAC.exit(-1)
+res = provClient.addParameterDescription(paramDesc1)
+if not res['OK']:
+  DIRAC.gLogger.error(res['Message'])
+  DIRAC.exit(-1)
+res = provClient.addParameterDescription(paramDesc2)
 if not res['OK']:
   DIRAC.gLogger.error(res['Message'])
   DIRAC.exit(-1)

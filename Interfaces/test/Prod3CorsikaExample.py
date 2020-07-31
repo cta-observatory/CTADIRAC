@@ -57,7 +57,7 @@ def runProd3( args = None ):
 
   # # submit job
   dirac = Dirac()
-  res = dirac.submit( job )
+  res = dirac.submitJob( job )
   # debug
   Script.gLogger.info( 'Submission Result: ', res )
   Script.gLogger.info( job.workflow )

@@ -16,7 +16,6 @@ import DIRAC
 from DIRAC.TransformationSystem.Client.Transformation import Transformation
 from DIRAC.TransformationSystem.Client.TransformationClient import TransformationClient
 from CTADIRAC.Interfaces.API.ReadCta3Job import ReadCta3Job
-from DIRAC.Interfaces.API.Dirac import Dirac
 
 def submitTS( job, infileList ):
   """ Create a transformation executing the job workflow  """

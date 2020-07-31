@@ -1,3 +1,22 @@
+[v1r57]
+* LA : Change deependence to DIRAC v7r0p17
+
+[v1r56p1]
+* JB : Fixes to new SoftwareManager
+       New test job for SoftwareManager
+       Removed old SoftwareInstallation and associated scripts
+       Add references to corsika_simtelarray package (in addition to corsika_simhessarray)
+
+[v1r55p6]
+* LA : Fixes for Dirac v7r0p8
+
+[v1r54p0]
+* JB : Improve software setup to handle optimized code versions
+       New SoftwareManager class
+
+[v1r53p6]
+* LA : Testing Provenance
+
 [v1r53p1]
 * LA : Update to lcgVer v14r1
 

@@ -51,7 +51,7 @@ def run_number_from_filename(filename, package):
         run_number = int(filename.split('/')[-1].split('_')[-1].split('.')[0])
     elif package in ['chimp', 'mars']:
         run_number = int(filename.split('run')[1].split('___cta')[0])
-    elif package in ['corsika_simhessarray']:
+    elif package in ['corsika_simhessarray', 'corsika_simtelarray']:
         if filename[-12:] in ['.corsika.zst']:
 	    # int(re.findall(r'run\d+_', os.path.basename(filename))[0].strip('run_'))
             run_number = int(os.path.basename(filename).split('_')[0].strip('run'))
@@ -161,3 +161,28 @@ def parse_jobs_list(jobs_list):
             else:
                 sites_dict[site][majstatus] += 1
     return status_dict, sites_dict
+
+def get_cpu_info():
+    ''' get instructions supported by current cpu
+    '''
+    import subprocess, re
+    cpuinfo = subprocess.check_output('cat /proc/cpuinfo', shell=True).strip()
+    model_name = re.search('model name\s*: (.+)', cpuinfo).group(0).strip('model name\t:')
+    DIRAC.gLogger.notice('%s found.'%model_name)
+    for inst in ['avx512', 'avx2', 'avx', 'sse4']:
+        if re.search(inst, cpuinfo) is not None:
+            return model_name, inst
+
+def get_os_and_cpu_info():
+    ''' get OS and instructions supported by current cpu
+    '''
+    import platform, subprocess, re
+    os = platform.dist()
+    os_name = os[0]+os[1].split('.')[0]
+    cpuinfo = subprocess.check_output('cat /proc/cpuinfo', shell=True).strip()
+    model_name = re.search('model name\s*: (.+)', cpuinfo).group(0).strip('model name\t:')
+    for inst in ['avx512', 'avx2', 'avx', 'sse4']:
+        if re.search(inst, cpuinfo) is not None:
+            break
+    DIRAC.gLogger.notice('Running %s on %s (%s)'%(os_name, model_name, inst))
+    return (os_name, model_name, inst)

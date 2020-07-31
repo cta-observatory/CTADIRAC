@@ -7,6 +7,6 @@ j = Job()
 j.setCPUTime(500)
 j.setExecutable('ls')
 j.setName('testjob')
-res = dirac.submit(j)
+res = dirac.submitJob(j)
 print 'Submission Result: ',res['Value']
 
