@@ -4,7 +4,7 @@ From: centos:7
 %environment
 source /opt/dirac/bashrc
 source /opt/dirac/dirac_env.sh
-export GRID=$HOME/grid
+export GRID=$HOME/protopipe-grid-interface
 export PROTOPIPE=$HOME/protopipe
 
 %post
