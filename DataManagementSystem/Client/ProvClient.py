@@ -180,3 +180,8 @@ class ProvClient(Client):
 
       rpcClient = self._getRPC()
       return rpcClient.getConfigFileDescription(activityDescription_id, configFile_name)
+
+  def getActvityDescriptionKey(self, activityDescription_name, activityDescription_version):
+
+      rpcClient = self._getRPC()
+      return rpcClient.getActivityDescriptionKey(activityDescription_name, activityDescription_version)

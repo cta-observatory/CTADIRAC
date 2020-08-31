@@ -588,7 +588,7 @@ class WasConfiguredBy(provBase):
     ordered_attribute_list = ['id', 'artefactType']
     other_display_attributes = ['artefactType']
 
-    # Internal key
+    # Internal keya
     internal_key = Column(BigInteger, primary_key=True, autoincrement=True)
 
     # Model attributes
@@ -821,7 +821,9 @@ class ProvenanceDB( object ):
     try:
       session.add(provInstance)
       session.commit()
-      return S_OK()
+      res = session.query(func.max(provInstance.internal_key).label('internal_key')).one()
+      session.commit()
+      return S_OK({'internal_key': res.internal_key})
     except exc.IntegrityError as err:
       self.log.warn("insert: trying to insert a duplicate key? %s" % err)
       session.rollback()
@@ -867,7 +869,11 @@ class ProvenanceDB( object ):
     agent = Agent()
     row = self._dictToObject(agent, rowDict)
 
-    return self._sessionAdd(row)
+    try:
+        res = self.getAgentKey(agent.id)['Value']['internal_key']
+        return S_OK({"internal_key":res})
+    except:
+        return self._sessionAdd(row)
 
   def addActivity(self, rowDict):
     '''
@@ -902,7 +908,11 @@ class ProvenanceDB( object ):
 
     activityDesc = ActivityDescription()
     row = self._dictToObject(activityDesc, rowDict)
-    return self._sessionAdd(row)
+    try:
+        res = self.getActivityDescriptionKey(activityDesc.name, activityDesc.version)['Value']['internal_key']
+        return S_OK({"internal_key":res})
+    except:
+        return self._sessionAdd(row)
 
   def addDatasetDescription(self, rowDict):
     '''
@@ -913,7 +923,11 @@ class ProvenanceDB( object ):
 
     datasetDesc = DatasetDescription()
     row = self._dictToObject(datasetDesc, rowDict)
-    return self._sessionAdd(row)
+    try:
+        res = self.getEntityDescriptionKey(datasetDesc.name)['Value']['internal_key']
+        return S_OK({"internal_key":res})
+    except:
+        return self._sessionAdd(row)
 
   def addUsageDescription(self, rowDict):
     '''
@@ -924,7 +938,13 @@ class ProvenanceDB( object ):
 
     usageDesc = UsageDescription()
     row = self._dictToObject(usageDesc, rowDict)
-    return self._sessionAdd(row)
+    try:
+        res = self.getUsageDescriptionKey(usageDesc.activityDescription_key, \
+                                          usageDesc.entityDescription_key, \
+                                          usageDesc.role)['Value']['internal_key']
+        return S_OK({"internal_key":res})
+    except:
+        return self._sessionAdd(row)
 
   def addGenerationDescription(self, rowDict):
     '''
@@ -935,7 +955,13 @@ class ProvenanceDB( object ):
 
     generationDesc = GenerationDescription()
     row = self._dictToObject(generationDesc, rowDict)
-    return self._sessionAdd(row)
+    try:
+        res = self.getGenerationDescriptionKey(generationDesc.activityDescription_key, \
+                                          generationDesc.entityDescription_key, \
+                                          generationDesc.role)['Value']['internal_key']
+        return S_OK({"internal_key":res})
+    except:
+        return self._sessionAdd(row)
 
   def addDatasetEntity(self, rowDict):
     '''
@@ -1002,7 +1028,12 @@ class ProvenanceDB( object ):
 
     valueDesc = ValueDescription()
     row = self._dictToObject(valueDesc, rowDict)
-    return self._sessionAdd(row)
+    try:
+        res = self.getEntityDescriptionKey(valueDesc.name)['Value']['internal_key']
+        return S_OK({"internal_key":res})
+    except:
+        return self._sessionAdd(row)
+
 
   def addWasConfiguredBy(self, rowDict):
     '''
@@ -1194,5 +1225,104 @@ class ProvenanceDB( object ):
     finally:
       session.close()
 
+  def getActivityDescriptionKey(self, activityDescription_name, activityDescription_version):
+      """
+        Get getActivityDescriptionKey
+        :param activityDescription_name, activityDescription_version
+        :return: ActivityDescription.internal_key
+      """
+      session = self.sessionMaker_o()
+      try:
+          activityDescription_list = session.query(ActivityDescription) \
+              .filter(ActivityDescription.name == activityDescription_name, \
+                      ActivityDescription.version == activityDescription_version) \
+              .all()
+          activityDescription_last = activityDescription_list[-1]
+          return S_OK({'internal_key': activityDescription_last.internal_key})
 
+      except NoResultFound, e:
+          return S_OK()
+      except :
+          return S_OK()
+      finally:
+          session.close()
 
+  def getEntityDescriptionKey(self, entityDescription_name):
+      """
+        Get getEntityDescriptionKey
+        :param entityDescription_name
+        :return: EntityDescription.internal_key
+      """
+      session = self.sessionMaker_o()
+      try:
+          entityDescription_list = session.query(EntityDescription)\
+                              .filter(EntityDescription.name == entityDescription_name)\
+                              .all()
+
+          entityDescription_last = entityDescription_list[-1]
+          return S_OK({'internal_key': entityDescription_last.internal_key})
+      except NoResultFound, e:
+          return S_OK()
+      finally:
+          session.close()
+
+  def getUsageDescriptionKey(self, usageDescription_activity, usageDescription_entity, usageDescription_role):
+      """
+        Get getUsageDescriptionKey
+        :param usageDescription_activity, usageDescription_entity, usageDescription_role
+        :return: UsageDescription.internal_key
+      """
+      session = self.sessionMaker_o()
+      try:
+          usageDescription_list = session.query(UsageDescription) \
+              .filter(UsageDescription.activityDescription_key == usageDescription_activity) \
+              .filter(UsageDescription.entityDescription_key == usageDescription_entity) \
+              .filter(UsageDescription.role == usageDescription_role) \
+              .all()
+
+          usageDescription_last = usageDescription_list[-1]
+          return S_OK({'internal_key': usageDescription_last.internal_key})
+      except NoResultFound, e:
+          return S_OK()
+      finally:
+          session.close()
+
+  def getGenerationDescriptionKey(self, generationDescription_activity, generationDescription_entity, generationDescription_role):
+      """
+        Get getGenerationDescriptionKey
+        :param generationDescription_activity, generationDescription_entity, generationDescription_role
+        :return: GenerationDescription.internal_key
+      """
+      session = self.sessionMaker_o()
+      try:
+          generationDescription_list = session.query(GenerationDescription) \
+              .filter(GenerationDescription.activityDescription_key == generationDescription_activity) \
+              .filter(GenerationDescription.entityDescription_key == generationDescription_entity) \
+              .filter(GenerationDescription.role == generationDescription_role) \
+              .all()
+
+          generationDescription_last = generationDescription_list[-1]
+          return S_OK({'internal_key': generationDescription_last.internal_key})
+      except NoResultFound, e:
+          return S_OK()
+      finally:
+          session.close()
+
+  def getAgentKey(self, agent_id):
+      """
+        Get AgentKey
+        :param agent_id
+        :return: Agent.internal_key
+      """
+      session = self.sessionMaker_o()
+      try:
+          agent_list = session.query(Agent) \
+              .filter(Agent.id == agent_id) \
+              .all()
+
+          agent_last = agent_list[-1]
+          return S_OK({'internal_key': agent_last.internal_key})
+      except NoResultFound, e:
+          return S_OK()
+      finally:
+          session.close()

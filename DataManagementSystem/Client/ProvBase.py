@@ -80,7 +80,7 @@ class ValueEntity(Entity):
 class DatasetEntity(Entity):
 
   def __init__( self, id = None, classType = None, name = None, location = None,\
-                generatedAtTime = None, invalidatedAtTime = None, comment = None, entityDescription_key = None \
+                generatedAtTime = None, invalidatedAtTime = None, comment = None, entityDescription_key = None,\
                 ctadirac_guid = None):
 
     Entity.__init__(self,  id, classType, name, location, generatedAtTime, \
@@ -134,6 +134,7 @@ class Agent(ProvBase):
                 comment = None, affiliation = None, phone = None, \
                 address = None, url = None):
 
+    self.id = id
     self.name = name
     self.type = type
     self.email = email
@@ -196,9 +197,8 @@ class ActivityDescription(ProvBase):
 
 class EntityDescription(ProvBase):
 
-  def __init__( self, id = None, name = None, type = None, description = None, doculink = None, classType = None):
+  def __init__( self, name = None, type = None, description = None, doculink = None, classType = None):
 
-    self.id = id
     self.name = name
     self.type = type
     self.description = description

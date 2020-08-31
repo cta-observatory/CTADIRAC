@@ -355,5 +355,17 @@ class ProvenanceManagerHandler(RequestHandler):
     res = cls.__provenanceDB.getConfigFileDescription(activityDescription_id, configFile_name)
     return cls._parseRes(res)
 
+  types_getActivityDescriptionKey = []
+
+  def export_getActivityDescriptionKey(cls, activityDescription_name, activityDescription_version):
+    '''
+    Get ActivityDescriptionKey
+    :param activityDescription_name, activityDescription_version
+    :return {'internal_key':activityDescription_key}
+    '''
+
+    res = cls.__provenanceDB.getActivityDescriptionKey(activityDescription_name, activityDescription_version)
+    return cls._parseRes(res)
+
 
 
