@@ -300,7 +300,7 @@ def addProvenance(test_VM=None):
 ###############################################################################
 if __name__ == '__main__':
     args = Script.getPositionalArgs()
-
+exit()
     try:
         provClient = ProvClient()
         res = addProvenance( args )
