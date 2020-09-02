@@ -166,6 +166,11 @@ class ProvClient(Client):
     rpcClient = self._getRPC()
     return rpcClient.getAgents()
 
+  def getAgentKey(self, agent_id):
+
+    rpcClient = self._getRPC()
+    return rpcClient.getAgentKey(agent_id)
+
   def getUsageDescription(self, activityDescription_id, role):
 
       rpcClient = self._getRPC()

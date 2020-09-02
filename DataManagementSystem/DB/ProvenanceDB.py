@@ -1121,8 +1121,7 @@ class ProvenanceDB( object ):
                           .filter( DatasetEntity.id == guid ) \
                           .filter( DatasetEntity.invalidatedAtTime == None) \
                           .one()
-      session.commit()
-      return S_OK(datasetEntity.id)
+      return S_OK(datasetEntity.internal_key)
     except NoResultFound, e:
       return S_OK()
     finally:
@@ -1176,7 +1175,8 @@ class ProvenanceDB( object ):
     session = self.sessionMaker_o()
     try:
       generationDescription = session.query( GenerationDescription )\
-                          .filter(GenerationDescription.activityDescription_key == activityDescription_key, GenerationDescription.role == role)\
+                          .filter(GenerationDescription.activityDescription_key == activityDescription_key)\
+                          .filter(GenerationDescription.role == role)\
                           .one()
       session.commit()
       return S_OK({'internal_key':generationDescription.internal_key, 'entityDescription_key':generationDescription.entityDescription_key})
@@ -1234,8 +1234,8 @@ class ProvenanceDB( object ):
       session = self.sessionMaker_o()
       try:
           activityDescription_list = session.query(ActivityDescription) \
-              .filter(ActivityDescription.name == activityDescription_name, \
-                      ActivityDescription.version == activityDescription_version) \
+              .filter(ActivityDescription.name == activityDescription_name) \
+              .filter(ActivityDescription.version == activityDescription_version) \
               .all()
           activityDescription_last = activityDescription_list[-1]
           return S_OK({'internal_key': activityDescription_last.internal_key})
@@ -1319,7 +1319,6 @@ class ProvenanceDB( object ):
           agent_list = session.query(Agent) \
               .filter(Agent.id == agent_id) \
               .all()
-
           agent_last = agent_list[-1]
           return S_OK({'internal_key': agent_last.internal_key})
       except NoResultFound, e:

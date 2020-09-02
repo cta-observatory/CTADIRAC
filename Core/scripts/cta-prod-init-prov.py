@@ -36,7 +36,7 @@ provClient = ProvClient()
 
 # Add an ActivityDescription and get its internal_key
 
-actDesc1 = ActivityDescription(name='ctapipe_display_muons',\
+actDesc1 = ActivityDescription(name='ctapipe-display-muons',\
                                type='Reconstruction',subtype='',version='0.6.2', doculink='', \
                                description='Muon reconstruction')
 #
@@ -75,7 +75,7 @@ else:
   entityDescription_key = res['Value']['internal_key']
   
 wGBDesc1   = GenerationDescription(activityDescription_key=activityDescription_key, \
-                                   entityDescription_key=entityDescription_key, role="dl0.sub.evt", type='Main')
+                                   entityDescription_key=entityDescription_key, role="dl1.tel.evt.muon", type='Main')
 res = provClient.addGenerationDescription(wGBDesc1)
 if not res['OK']:
   DIRAC.gLogger.error(res['Message'])
@@ -96,11 +96,11 @@ res = provClient.addGenerationDescription(wGBDesc2)
 if not res['OK']:
   DIRAC.gLogger.error(res['Message'])
   DIRAC.exit(-1)
-"""
+
 # Create description of configFiles and Parameters
 paramDesc1 = ParameterDescription(name='events', valueType='string', description='name of the event file',\
                                   ucd='meta.id',utype='ProvenanceDM.ParameterDescription', \
-                                  activityDescription_id = actDesc1.id)
+                                  activityDescription_key = activityDescription_key)
 res = provClient.addParameterDescription(paramDesc1)
 if not res['OK']:
   DIRAC.gLogger.error(res['Message'])
@@ -108,12 +108,12 @@ if not res['OK']:
   
 paramDesc2 = ParameterDescription(name='outfile', valueType='string', description='name of the output file',\
                                   ucd='meta.id',utype='ProvenanceDM.ParameterDescription', \
-                                  activityDescription_id = actDesc1.id)
+                                  activityDescription_key = activityDescription_key)
 res = provClient.addParameterDescription(paramDesc2)
 if not res['OK']:
   DIRAC.gLogger.error(res['Message'])
   DIRAC.exit(-1)
-"""
+
 # CTAO Agent
 agent = Agent(id='CTAO')
 agent.name ="CTA Observatory"

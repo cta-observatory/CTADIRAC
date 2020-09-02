@@ -283,6 +283,17 @@ class ProvenanceManagerHandler(RequestHandler):
     res = cls.__provenanceDB.getAgents()
     return cls._parseRes(res)
 
+  types_getAgentKey = []
+
+  def export_getAgentKey(cls, agent_id):
+    '''
+    Get Agent Key
+    :return:
+    '''
+
+    res = cls.__provenanceDB.getAgentKey(agent_id)
+    return cls._parseRes(res)
+
   types_getDatasetEntity = [basestring]
 
   def export_getDatasetEntity(cls, guid):
