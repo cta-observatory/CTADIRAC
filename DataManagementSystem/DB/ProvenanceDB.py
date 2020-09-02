@@ -24,9 +24,9 @@ provBase = declarative_base()
 ################################################################################
 # wasInformedBy association table (n-n relation)
 wasInformedBy_association_table = Table('wasInformedBy', provBase.metadata,
-    Column('wasInformedBy_Id', Integer, primary_key=True),
-    Column('informant', String, ForeignKey("activities.id")),
-    Column('informed', String, ForeignKey("activities.id")))
+    Column('internal_key', BigInteger, primary_key=True, autoincrement=True),
+    Column('informant', BigInteger, ForeignKey("activities.internal_key")),
+    Column('informed', BigInteger, ForeignKey("activities.internal_key")))
 
 ################################################################################
 # Define the Activity class mapped to the activities table
@@ -36,21 +36,24 @@ class Activity(provBase):
                               'activityDescription_id']
     other_display_attributes = ['name','comment']
 
-    # Model attributes included key
-    id        = Column(String, primary_key=True)
+    # Internal key
+    internal_key = Column(BigInteger, primary_key=True, autoincrement=True)
+
+    # Model attributes
+    id        = Column(String)
     name      = Column(String)
     startTime = Column(String)
     endTime   = Column(String)
     comment   = Column(String)
 
     # n-1 relation with ActivityDescription
-    activityDescription_id = Column(String, ForeignKey("activityDescriptions.id"))
+    activityDescription_key = Column(BigInteger, ForeignKey("activityDescriptions.internal_key"))
     activityDescription    = relationship("ActivityDescription")
     # n-n relation
     wasInformedBy = relationship('Activity',\
         secondary=wasInformedBy_association_table,
-        primaryjoin=id   == wasInformedBy_association_table.c.informed,
-        secondaryjoin=id == wasInformedBy_association_table.c.informant)
+        primaryjoin=internal_key   == wasInformedBy_association_table.c.informed,
+        secondaryjoin=internal_key == wasInformedBy_association_table.c.informant)
 
     # Print method
     def __repr__(self):
@@ -66,15 +69,15 @@ class Activity(provBase):
             response['voprov:' + attribute] = self.__dict__[attribute]
         return response
 
-    def get_description_id(self):
-        return self.activityDescription_id
+    def get_description_key(self):
+        return self.activityDescription_Key
 
 ################################################################################
 # wasDerivedFrom association table (n-n relation)
 wasDerivedFrom_association_table = Table('wasDerivedFrom', provBase.metadata,
-    Column('wasDerivedFrom_Id', Integer, primary_key=True),
-    Column('generatedEntity', String, ForeignKey("entities.id")),
-    Column('usedEntity', String, ForeignKey("entities.id")))
+    Column('internal_key', BigInteger, primary_key=True),
+    Column('generatedEntity', BigInteger, ForeignKey("entities.internal_key")),
+    Column('usedEntity', BigInteger, ForeignKey("entities.internal_key")))
 
 ################################################################################
 # Define the Entity class mapped to the entities table
@@ -82,14 +85,18 @@ class Entity(provBase):
     __tablename__ = 'entities'
     ordered_attribute_list = ['id','classType','name','location','generatedAtTime',\
                               'invalidatedAtTime','comment','entityDescription_id']
-    other_display_attributes = ['name','location','generatedAtTime',\
+    other_display_attributes = ['id','name','location','generatedAtTime',\
                                 'invalidatedAtTime','comment']
-    # Model attributes included key
-    id                  = Column(String, primary_key=True)
+
+    # Internal key
+    internal_key = Column(BigInteger, primary_key=True, autoincrement=True)
+
+    # Model attributes
+    id                  = Column(String)
     name                = Column(String)
     location            = Column(String)
     generatedAtTime     = Column(DateTime)
-    invalidatedAtTime   = Column(String)
+    invalidatedAtTime   = Column(DateTime)
     comment             = Column(String)
 
     # Heritage
@@ -100,13 +107,13 @@ class Entity(provBase):
     }
 
     # n-1 relation with EntityDescription
-    entityDescription_id   = Column(String, ForeignKey("entityDescriptions.id"))
+    entityDescription_key   = Column(BigInteger, ForeignKey("entityDescriptions.internal_key"))
     entityDescription      = relationship("EntityDescription")
     # n-n relation
     wasDerivedFrom = relationship('Entity',\
         secondary=wasDerivedFrom_association_table,
-        primaryjoin=id   == wasDerivedFrom_association_table.c.usedEntity,
-        secondaryjoin=id == wasDerivedFrom_association_table.c.generatedEntity)
+        primaryjoin=internal_key   == wasDerivedFrom_association_table.c.usedEntity,
+        secondaryjoin=internal_key == wasDerivedFrom_association_table.c.generatedEntity)
 
     # Print method
     def __repr__(self):
@@ -134,8 +141,9 @@ class ValueEntity(Entity):
     ordered_attribute_list = Entity.ordered_attribute_list
     other_display_attributes = ['value']
 
-    # Key
-    id = Column(String, ForeignKey('entities.id'), primary_key=True)
+    # Internal key
+    internal_key = Column(BigInteger, ForeignKey('entities.internal_key'), primary_key=True)
+
     # Model attributes
     value = Column(String)
 
@@ -161,11 +169,14 @@ class ValueEntity(Entity):
 class DatasetEntity(Entity):
     __tablename__ = 'datasetEntities'
     ordered_attribute_list = Entity.ordered_attribute_list
-    other_display_attributes = []
+    other_display_attributes = ['ctadirac_guid']
 
-    # Key
-    id = Column(String, ForeignKey('entities.id'), primary_key=True)
+    # Internal key
+    internal_key = Column(BigInteger, ForeignKey('entities.internal_key'), primary_key=True)
+
     # Model attributes
+    # CTADIRAC attributes
+    ctadirac_guid = Column(String)
 
     # Heritage
     __mapper_args__ = {'polymorphic_identity': 'dataset'}
@@ -188,24 +199,25 @@ class DatasetEntity(Entity):
 # Define the Used class mapped to the used table
 class Used(provBase):
     __tablename__ = 'used'
-    ordered_attribute_list = ['id', 'role', 'time', 'activity_id', 'entity_id', \
-                              'usageDescription_id']
+    ordered_attribute_list = ['role', 'time', 'activity_key', 'entity_key', \
+                              'usageDescription_key']
     other_display_attributes = ['role', 'time']
 
-    # Key
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    # Internal key
+    internal_key = Column(BigInteger, primary_key=True, autoincrement=True)
+
     # Model attributes
     role = Column(String, nullable=True)
     time = Column(String)
 
     # n-1 relation with Activity
-    activity_id = Column(String, ForeignKey('activities.id'))
+    activity_key = Column(BigInteger, ForeignKey('activities.internal_key'))
     activity = relationship("Activity", backref='used')
     # n-1 relation with Entity
-    entity_id = Column(String, ForeignKey('entities.id'))
+    entity_key = Column(BigInteger, ForeignKey('entities.internal_key'))
     entity = relationship("Entity", backref='used')
     # n-1 relation with UsageDescription
-    usageDescription_id = Column(String, ForeignKey('usageDescriptions.id'))
+    usageDescription_key = Column(BigInteger, ForeignKey('usageDescriptions.internal_key'))
     usageDescription = relationship("UsageDescription")
 
     # Print method
@@ -227,22 +239,23 @@ class Used(provBase):
 # Define the WasGeneratedBy class mapped to the wasGeneratedBy table
 class WasGeneratedBy(provBase):
     __tablename__ = 'wasGeneratedBy'
-    ordered_attribute_list = ['id', 'role', 'activity_id', 'entity_id']
+    ordered_attribute_list = ['role', 'activity_key', 'entity_key']
     other_display_attributes = ['role']
 
-    # Key
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    # Internal Key
+    internal_key = Column(BigInteger, primary_key=True, autoincrement=True)
+
     # Model attributes
     role = Column(String, nullable=True)
 
     # n-1 relation with Activity
-    activity_id = Column(String, ForeignKey('activities.id'))
+    activity_key = Column(BigInteger, ForeignKey('activities.internal_key'))
     activity = relationship("Activity")
     # 0..1-1 relation with Entity
-    entity_id = Column(String, ForeignKey('entities.id'))
+    entity_key = Column(BigInteger, ForeignKey('entities.internal_key'))
     entity = relationship("Entity", uselist=False)
     # n-1 relation with GenerationDescription
-    generationDescription_id = Column(String, ForeignKey('generationDescriptions.id'))
+    generationDescription_key = Column(BigInteger, ForeignKey('generationDescriptions.internal_key'))
     generationDescription = relationship('GenerationDescription')
 
     # Print method
@@ -265,8 +278,12 @@ class Agent(provBase):
     __tablename__ = 'agents'
     ordered_attribute_list = ['id', 'name', 'type', 'email', 'comment',\
                               'affiliation', 'phone', 'address','url']
+
+    # Internal key
+    internal_key = Column(BigInteger, primary_key=True, autoincrement=True)
+
     # Model attributes
-    id = Column(String, primary_key=True)
+    id   = Column(String)
     name = Column(String)
     type = Column(String)
     comment = Column(String)
@@ -287,19 +304,20 @@ class Agent(provBase):
 # Define the WasAssociatedWith class mapped to the wasAssociatedWith table
 class WasAssociatedWith(provBase):
     __tablename__ = 'wasAssociatedWith'
-    ordered_attribute_list = ['id','activity_id','agent_id','role']
+    ordered_attribute_list = ['activity_key','agent_key','role']
     other_display_attributes = ['role']
 
-    # Key
-    id       = Column(Integer, primary_key=True, autoincrement=True)
+    # Internal key
+    internal_key = Column(BigInteger, primary_key=True, autoincrement=True)
+
     # Model attributes
     role     = Column(String, nullable=True)
 
     # n-1 relation with Activity
-    activity_id = Column(String, ForeignKey('activities.id'))
+    activity_key = Column(BigInteger, ForeignKey('activities.internal_key'))
     activity = relationship("Activity", backref='wasAssociatedWith')
     # n-1 relation with Agent
-    agent_id = Column(String, ForeignKey('agents.id'))
+    agent_key = Column(BigInteger, ForeignKey('agents.internal_key'))
     agent    = relationship("Agent", backref='wasAssociatedWith')
 
     # Print method
@@ -320,19 +338,20 @@ class WasAssociatedWith(provBase):
 # Define the WasAttributedTo class mapped to the wasAttributedTo table
 class WasAttributedTo(provBase):
     __tablename__ = 'wasAttributedTo'
-    ordered_attribute_list = ['id','entity_id','agent_id','role']
+    ordered_attribute_list = ['entity_key','agent_key','role']
     other_display_attributes = ['role']
 
-    # Key
-    id       = Column(Integer, primary_key=True, autoincrement=True)
+    # Internal key
+    internal_key = Column(BigInteger, primary_key=True, autoincrement=True)
+
     # Model attributes
     role     = Column(String, nullable=True)
 
     # n-1 relation with Entity
-    entity_id = Column(String, ForeignKey('entities.id'))
+    entity_key = Column(BigInteger, ForeignKey('entities.internal_key'))
     entity    = relationship("Entity", backref='wasAttributedTo')
     # n-1 relation with Agent
-    agent_id = Column(String, ForeignKey('agents.id'))
+    agent_key = Column(BigInteger, ForeignKey('agents.internal_key'))
     agent    = relationship("Agent", backref='wasAttributedTo')
 
     # Print method
@@ -353,11 +372,12 @@ class WasAttributedTo(provBase):
 # Define the ActivityDescription class mapped to the activityDescriptions table
 class ActivityDescription(provBase):
     __tablename__ = 'activityDescriptions'
-    ordered_attribute_list = ['id', 'name', 'version', 'description', 'type', 'subtype', 'doculink']
+    ordered_attribute_list = ['name', 'version', 'description', 'type', 'subtype', 'doculink']
     other_display_attributes = ['name', 'version', 'description', 'type', 'subtype', 'doculink']
 
-    # Key
-    id = Column(String, primary_key=True)
+    # Internal key
+    internal_key = Column(BigInteger, primary_key=True, autoincrement=True)
+
     # Model attributes
     name = Column(String)
     version = Column(String)
@@ -389,11 +409,12 @@ class ActivityDescription(provBase):
 # Define the EntityDescription class mapped to the entityDescriptions table
 class EntityDescription(provBase):
     __tablename__ = 'entityDescriptions'
-    ordered_attribute_list = ['id', 'name', 'type', 'description', 'doculink', 'classType']
+    ordered_attribute_list = ['name', 'type', 'description', 'doculink', 'classType']
     other_display_attributes = ['name', 'type', 'description', 'doculink', 'classType']
 
-    # Key
-    id = Column(String, primary_key=True)
+    # Internal key
+    internal_key = Column(BigInteger, primary_key=True, autoincrement=True)
+
     # Model attributes
     name = Column(String)
     type = Column(String)
@@ -429,8 +450,9 @@ class ValueDescription(EntityDescription):
     ordered_attribute_list = EntityDescription.ordered_attribute_list
     other_display_attributes = []
 
-    # Key
-    id = Column(String, ForeignKey('entityDescriptions.id'), primary_key=True)
+    # Internal key
+    internal_key = Column(BigInteger, ForeignKey('entityDescriptions.internal_key'), primary_key=True)
+
     # Model attributes
     valueType = Column(String)
     unit = Column(String)
@@ -462,8 +484,9 @@ class DatasetDescription(EntityDescription):
     ordered_attribute_list = EntityDescription.ordered_attribute_list
     other_display_attributes = []
 
-    # Key
-    id = Column(String, ForeignKey('entityDescriptions.id'), primary_key=True)
+    # Internal key
+    internal_key = Column(BigInteger, ForeignKey('entityDescriptions.internal_key'), primary_key=True)
+
     # Model attributes
     contentType = Column(String)
 
@@ -488,10 +511,11 @@ class DatasetDescription(EntityDescription):
 # Define the UsageDescription class mapped to the usageDescriptions table
 class UsageDescription(provBase):
     __tablename__ = 'usageDescriptions'
-    ordered_attribute_list = ['id', 'role', 'description', 'type', 'multiplicity', \
-                              'activityDescription_id', 'entityDescription_id']
+    ordered_attribute_list = ['role', 'description', 'type', 'multiplicity', \
+                              'activityDescription_key', 'entityDescription_key']
     # Key
-    id = Column(String, primary_key=True)
+    internal_key = Column(BigInteger, primary_key=True, autoincrement=True)
+
     # Model attributes
     role = Column(String, nullable=True)
     description = Column(String)
@@ -499,10 +523,10 @@ class UsageDescription(provBase):
     multiplicity = Column(Integer)
 
     # n-1 relation with ActivityDescription
-    activityDescription_id = Column(String, ForeignKey('activityDescriptions.id'))
+    activityDescription_key = Column(BigInteger, ForeignKey('activityDescriptions.internal_key'))
     activityDescription = relationship("ActivityDescription")
     # n-1 relation with EntityDescription
-    entityDescription_id = Column(String, ForeignKey('entityDescriptions.id'))
+    entityDescription_key = Column(BigInteger, ForeignKey('entityDescriptions.internal_key'))
     entityDescription = relationship("EntityDescription")
 
     # Print method
@@ -523,12 +547,13 @@ class UsageDescription(provBase):
 # Define the GenerationDescription class mapped to the generationDescriptions table
 class GenerationDescription(provBase):
     __tablename__ = 'generationDescriptions'
-    ordered_attribute_list = ['id', 'role', 'description', 'type', \
-                              'activityDescription_id', 'entityDescription_id']
+    ordered_attribute_list = ['role', 'description', 'type', \
+                              'activityDescription_key', 'entityDescription_key']
     other_display_attributes = ['role', 'description', 'type', 'multiplicity']
 
-    # Key
-    id = Column(String, primary_key=True)
+    # Internal key
+    internal_key = Column(BigInteger, primary_key=True, autoincrement=True)
+
     # Model attributes
     role = Column(String, nullable=True)
     description = Column(String)
@@ -536,10 +561,10 @@ class GenerationDescription(provBase):
     multiplicity = Column(Integer)
 
     # Relations
-    activityDescription_id = Column(String, ForeignKey('activityDescriptions.id'))
+    activityDescription_key = Column(BigInteger, ForeignKey('activityDescriptions.internal_key'))
     activityDescription = relationship("ActivityDescription")
     # n-1 relation with EntityDescription
-    entityDescription_id = Column(String, ForeignKey('entityDescriptions.id'))
+    entityDescription_key = Column(BigInteger, ForeignKey('entityDescriptions.internal_key'))
     entityDescription = relationship("EntityDescription")
 
     # Print method
@@ -563,19 +588,20 @@ class WasConfiguredBy(provBase):
     ordered_attribute_list = ['id', 'artefactType']
     other_display_attributes = ['artefactType']
 
-    # Key
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    # Internal keya
+    internal_key = Column(BigInteger, primary_key=True, autoincrement=True)
+
     # Model attributes
     artefactType = Column(String, nullable=True)
 
     # n-1 relation with Activity
-    activity_id = Column(String, ForeignKey('activities.id'))
+    activity_key = Column(BigInteger, ForeignKey('activities.internal_key'))
     activity = relationship("Activity", backref='WasConfiguredBy', uselist=False)
     # 1-1 relation with ConfigFile
-    configFile_id = Column(String, ForeignKey('configFiles.id'))
+    configFile_key = Column(BigInteger, ForeignKey('configFiles.internal_key'))
     configFile = relationship("ConfigFile", uselist=False)
     # 1-1 relation with Parameter
-    parameter_id = Column(String, ForeignKey('parameters.id'))
+    parameter_key = Column(BigInteger, ForeignKey('parameters.internal_key'))
     parameter = relationship("Parameter", uselist=False)
 
     # Print method
@@ -597,17 +623,18 @@ class WasConfiguredBy(provBase):
 # Define the Parameter class mapped to the parameters table
 class Parameter(provBase):
     __tablename__ = 'parameters'
-    ordered_attribute_list = ['id', 'name', 'value']
+    ordered_attribute_list = ['name', 'value']
     other_display_attributes = ['name', 'value']
 
-    # Key
-    id = Column(String, primary_key=True)
+    # Internal key
+    internal_key = Column(BigInteger, primary_key=True, autoincrement=True)
+
     # Model attributes
     name = Column(String)
     value = Column(String)
 
     # n-1 relation with ParameterDescription
-    parameterDescription_id = Column(Integer, ForeignKey("parameterDescriptions.id"))
+    parameterDescription_key = Column(BigInteger, ForeignKey("parameterDescriptions.internal_key"))
     parameterDescription = relationship("ParameterDescription")
 
     # Print method
@@ -629,18 +656,19 @@ class Parameter(provBase):
 # Define the ConfigFile class mapped to the configFiles table
 class ConfigFile(provBase):
     __tablename__ = 'configFiles'
-    ordered_attribute_list = ['id', 'name', 'location', 'comment']
+    ordered_attribute_list = ['name', 'location', 'comment']
     other_display_attributes = ['name', 'location', 'comment']
 
-    # Key
-    id = Column(String, primary_key=True)
+    # Internal key
+    internal_key = Column(BigInteger, primary_key=True, autoincrement=True)
+
     # Model attributes
     name = Column(String)
     location = Column(String)
     comment = Column(String)
 
     # n-1 relation with ConfigFileDescription
-    configFileDescription_id = Column(Integer, ForeignKey("configFileDescriptions.id"))
+    configFileDescription_key = Column(BigInteger, ForeignKey("configFileDescriptions.internal_key"))
     configFileDescription = relationship("ConfigFileDescription")
 
     # Print method
@@ -662,13 +690,14 @@ class ConfigFile(provBase):
 # Define the ParameterDescription class mapped to the parameters table
 class ParameterDescription(provBase):
     __tablename__ = 'parameterDescriptions'
-    ordered_attribute_list = ['id', 'name', 'valueType', 'description', \
-                              'unit', 'ucd', 'utype', 'min', 'max', 'default', 'options', 'activityDescription_id']
+    ordered_attribute_list = ['name', 'valueType', 'description', \
+                              'unit', 'ucd', 'utype', 'min', 'max', 'default', 'options', 'activityDescription_key']
     other_display_attributes = ['name', 'valueType', 'description', \
                                 'unit', 'ucd', 'utype', 'min', 'max', 'default', 'options']
 
-    # Key
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    # Internal key
+    internal_key = Column(BigInteger, primary_key=True, autoincrement=True)
+
     # Model attributes
     name = Column(String)
     valueType = Column(String)
@@ -682,7 +711,7 @@ class ParameterDescription(provBase):
     options = Column(String)
 
     # n-1 relation with ActivityDescription
-    activityDescription_id = Column(String, ForeignKey("activityDescriptions.id"))
+    activityDescription_key = Column(BigInteger, ForeignKey("activityDescriptions.internal_key"))
     activityDescription = relationship("ActivityDescription")
 
     # Print method
@@ -704,18 +733,19 @@ class ParameterDescription(provBase):
 # Define the ConfigFileDescription class mapped to the configFileDescriptions table
 class ConfigFileDescription(provBase):
     __tablename__ = 'configFileDescriptions'
-    ordered_attribute_list = ['id', 'name', 'contentType', 'description', 'activityDescription_id']
+    ordered_attribute_list = ['name', 'contentType', 'description', 'activityDescription_key']
     other_display_attributes = ['name', 'contentType', 'description']
 
-    # Key
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    # Internal key
+    internal_key = Column(BigInteger, primary_key=True, autoincrement=True)
+
     # Model attributes
     name = Column(String)
     contentType = Column(String)
     description = Column(String)
 
     # n-1 relation with ActivityDescription
-    activityDescription_id = Column(String, ForeignKey("activityDescriptions.id"))
+    activityDescription_key = Column(BigInteger, ForeignKey("activityDescriptions.internal_key"))
     activityDescription = relationship("ActivityDescription")
 
     def __repr__(self):
@@ -791,7 +821,9 @@ class ProvenanceDB( object ):
     try:
       session.add(provInstance)
       session.commit()
-      return S_OK()
+      res = session.query(func.max(provInstance.internal_key).label('internal_key')).one()
+      session.commit()
+      return S_OK({'internal_key': res.internal_key})
     except exc.IntegrityError as err:
       self.log.warn("insert: trying to insert a duplicate key? %s" % err)
       session.rollback()
@@ -837,7 +869,11 @@ class ProvenanceDB( object ):
     agent = Agent()
     row = self._dictToObject(agent, rowDict)
 
-    return self._sessionAdd(row)
+    try:
+        res = self.getAgentKey(agent.id)['Value']['internal_key']
+        return S_OK({"internal_key":res})
+    except:
+        return self._sessionAdd(row)
 
   def addActivity(self, rowDict):
     '''
@@ -872,7 +908,11 @@ class ProvenanceDB( object ):
 
     activityDesc = ActivityDescription()
     row = self._dictToObject(activityDesc, rowDict)
-    return self._sessionAdd(row)
+    try:
+        res = self.getActivityDescriptionKey(activityDesc.name, activityDesc.version)['Value']['internal_key']
+        return S_OK({"internal_key":res})
+    except:
+        return self._sessionAdd(row)
 
   def addDatasetDescription(self, rowDict):
     '''
@@ -883,7 +923,11 @@ class ProvenanceDB( object ):
 
     datasetDesc = DatasetDescription()
     row = self._dictToObject(datasetDesc, rowDict)
-    return self._sessionAdd(row)
+    try:
+        res = self.getEntityDescriptionKey(datasetDesc.name)['Value']['internal_key']
+        return S_OK({"internal_key":res})
+    except:
+        return self._sessionAdd(row)
 
   def addUsageDescription(self, rowDict):
     '''
@@ -894,7 +938,13 @@ class ProvenanceDB( object ):
 
     usageDesc = UsageDescription()
     row = self._dictToObject(usageDesc, rowDict)
-    return self._sessionAdd(row)
+    try:
+        res = self.getUsageDescriptionKey(usageDesc.activityDescription_key, \
+                                          usageDesc.entityDescription_key, \
+                                          usageDesc.role)['Value']['internal_key']
+        return S_OK({"internal_key":res})
+    except:
+        return self._sessionAdd(row)
 
   def addGenerationDescription(self, rowDict):
     '''
@@ -905,7 +955,13 @@ class ProvenanceDB( object ):
 
     generationDesc = GenerationDescription()
     row = self._dictToObject(generationDesc, rowDict)
-    return self._sessionAdd(row)
+    try:
+        res = self.getGenerationDescriptionKey(generationDesc.activityDescription_key, \
+                                          generationDesc.entityDescription_key, \
+                                          generationDesc.role)['Value']['internal_key']
+        return S_OK({"internal_key":res})
+    except:
+        return self._sessionAdd(row)
 
   def addDatasetEntity(self, rowDict):
     '''
@@ -972,7 +1028,12 @@ class ProvenanceDB( object ):
 
     valueDesc = ValueDescription()
     row = self._dictToObject(valueDesc, rowDict)
-    return self._sessionAdd(row)
+    try:
+        res = self.getEntityDescriptionKey(valueDesc.name)['Value']['internal_key']
+        return S_OK({"internal_key":res})
+    except:
+        return self._sessionAdd(row)
+
 
   def addWasConfiguredBy(self, rowDict):
     '''
@@ -1039,7 +1100,7 @@ class ProvenanceDB( object ):
     agentIDs = []
     try:
       for instance in session.query(Agent):
-        agentIDs.append(instance.id)
+        agentIDs.append(instance.internal_key)
       session.commit()
       return S_OK(agentIDs)
     except NoResultFound, e:
@@ -1058,91 +1119,209 @@ class ProvenanceDB( object ):
     try:
       datasetEntity = session.query( DatasetEntity )\
                           .filter( DatasetEntity.id == guid ) \
+                          .filter( DatasetEntity.invalidatedAtTime == None) \
                           .one()
-      session.commit()
-      return S_OK(datasetEntity.id)
+      return S_OK(datasetEntity.internal_key)
     except NoResultFound, e:
       return S_OK()
     finally:
       session.close()
 
-  def getUsageDescription(self, activityDescription_id, role):
+  def updateDatasetEntity(self, internal_key, invalidatedAtTime):
+    '''
+      Update DatasetEntity
+      :param internal_key, invalidatedAtTime
+      :return:
+    '''
+
+    session = self.sessionMaker_o()
+    try:
+      datasetEntity = session.update( DatasetEntity )\
+                          .where ( DatasetEntity.internal_key == internal_key )\
+                          .values ( invalidatedAtTime = invalidatedAtTime )
+      session.commit()
+      return S_OK()
+    except e:
+      return S_OK()
+    finally:
+      session.close()
+
+  def getUsageDescription(self, activityDescription_key, role):
     '''
       Get UsageDescription
-      :param activity_id, role
-      :return: usageDescription.id
+      :param activityDescription_key, role
+      :return: usageDescription.internal_key
     '''
 
     session = self.sessionMaker_o()
     try:
       usageDescription = session.query( UsageDescription )\
-                          .filter(UsageDescription.activityDescription_id == activityDescription_id, UsageDescription.role == role)\
+                          .filter(UsageDescription.activityDescription_key == activityDescription_key, UsageDescription.role == role)\
                           .one()
       session.commit()
-      return S_OK({'id':usageDescription.id, 'entityDescription_id':usageDescription.entityDescription_id})
+      return S_OK({'internal_key':usageDescription.internal_key, 'entityDescription_key':usageDescription.entityDescription_key})
     except NoResultFound, e:
       return S_OK()
     finally:
       session.close()
 
-  def getGenerationDescription(self, activityDescription_id, role):
+  def getGenerationDescription(self, activityDescription_key, role):
     '''
       Get GenerationDescription
-      :param activity_id, role
-      :return: generationDescription.id
+      :param activityDescription_key, role
+      :return: generationDescription.internal_key
     '''
 
     session = self.sessionMaker_o()
     try:
       generationDescription = session.query( GenerationDescription )\
-                          .filter(GenerationDescription.activityDescription_id == activityDescription_id, GenerationDescription.role == role)\
+                          .filter(GenerationDescription.activityDescription_key == activityDescription_key)\
+                          .filter(GenerationDescription.role == role)\
                           .one()
       session.commit()
-      return S_OK({'id':generationDescription.id, 'entityDescription_id':generationDescription.entityDescription_id})
+      return S_OK({'internal_key':generationDescription.internal_key, 'entityDescription_key':generationDescription.entityDescription_key})
     except NoResultFound, e:
       return S_OK()
     finally:
       session.close()
 
-  def getParameterDescription(self, activityDescription_id, parameter_name):
+  def getParameterDescription(self, activityDescription_key, parameter_name):
     '''
       Get getParameterDescription
-      :param activity_id, parameter_name
-      :return: parameterDescription.id
+      :param activityDescription_key, parameter_name
+      :return: parameterDescription.internal_key
     '''
 
     session = self.sessionMaker_o()
     try:
       parameterDescription = session.query( ParameterDescription )\
-                          .filter(ParameterDescription.activityDescription_id == activityDescription_id, \
+                          .filter(ParameterDescription.activityDescription_key == activityDescription_key, \
                                   ParameterDescription.name == parameter_name)\
                           .one()
       session.commit()
-      return S_OK({'id':parameterDescription.id})
+      return S_OK({'internal_key':parameterDescription.internal_key})
     except NoResultFound, e:
       return S_OK()
     finally:
       session.close()
 
-  def getConfigFileDescription(self, activityDescription_id, configFile_name):
+  def getConfigFileDescription(self, activityDescription_key, configFile_name):
     '''
       Get getConfigFileDescription
-      :param activity_id, configFile_name
-      :return: configFileDescription.id
+      :param activityDescription_key, configFile_name
+      :return: configFileDescription.internal_key
     '''
 
     session = self.sessionMaker_o()
     try:
       configFileDescription = session.query( ConfigFileDescription )\
-                          .filter(ConfigFileDescription.activityDescription_id == activityDescription_id, \
+                          .filter(ConfigFileDescription.activityDescription_key == activityDescription_key, \
                                   ConfigFileDescription.name == configFile_name)\
                           .one()
       session.commit()
-      return S_OK({'id':configFileDescription.id})
+      return S_OK({'internal_key':configFileDescription.s})
     except NoResultFound, e:
       return S_OK()
     finally:
       session.close()
 
+  def getActivityDescriptionKey(self, activityDescription_name, activityDescription_version):
+      """
+        Get getActivityDescriptionKey
+        :param activityDescription_name, activityDescription_version
+        :return: ActivityDescription.internal_key
+      """
+      session = self.sessionMaker_o()
+      try:
+          activityDescription_list = session.query(ActivityDescription) \
+              .filter(ActivityDescription.name == activityDescription_name) \
+              .filter(ActivityDescription.version == activityDescription_version) \
+              .all()
+          activityDescription_last = activityDescription_list[-1]
+          return S_OK({'internal_key': activityDescription_last.internal_key})
 
+      except NoResultFound, e:
+          return S_OK()
+      except :
+          return S_OK()
+      finally:
+          session.close()
 
+  def getEntityDescriptionKey(self, entityDescription_name):
+      """
+        Get getEntityDescriptionKey
+        :param entityDescription_name
+        :return: EntityDescription.internal_key
+      """
+      session = self.sessionMaker_o()
+      try:
+          entityDescription_list = session.query(EntityDescription)\
+                              .filter(EntityDescription.name == entityDescription_name)\
+                              .all()
+
+          entityDescription_last = entityDescription_list[-1]
+          return S_OK({'internal_key': entityDescription_last.internal_key})
+      except NoResultFound, e:
+          return S_OK()
+      finally:
+          session.close()
+
+  def getUsageDescriptionKey(self, usageDescription_activity, usageDescription_entity, usageDescription_role):
+      """
+        Get getUsageDescriptionKey
+        :param usageDescription_activity, usageDescription_entity, usageDescription_role
+        :return: UsageDescription.internal_key
+      """
+      session = self.sessionMaker_o()
+      try:
+          usageDescription_list = session.query(UsageDescription) \
+              .filter(UsageDescription.activityDescription_key == usageDescription_activity) \
+              .filter(UsageDescription.entityDescription_key == usageDescription_entity) \
+              .filter(UsageDescription.role == usageDescription_role) \
+              .all()
+
+          usageDescription_last = usageDescription_list[-1]
+          return S_OK({'internal_key': usageDescription_last.internal_key})
+      except NoResultFound, e:
+          return S_OK()
+      finally:
+          session.close()
+
+  def getGenerationDescriptionKey(self, generationDescription_activity, generationDescription_entity, generationDescription_role):
+      """
+        Get getGenerationDescriptionKey
+        :param generationDescription_activity, generationDescription_entity, generationDescription_role
+        :return: GenerationDescription.internal_key
+      """
+      session = self.sessionMaker_o()
+      try:
+          generationDescription_list = session.query(GenerationDescription) \
+              .filter(GenerationDescription.activityDescription_key == generationDescription_activity) \
+              .filter(GenerationDescription.entityDescription_key == generationDescription_entity) \
+              .filter(GenerationDescription.role == generationDescription_role) \
+              .all()
+
+          generationDescription_last = generationDescription_list[-1]
+          return S_OK({'internal_key': generationDescription_last.internal_key})
+      except NoResultFound, e:
+          return S_OK()
+      finally:
+          session.close()
+
+  def getAgentKey(self, agent_id):
+      """
+        Get AgentKey
+        :param agent_id
+        :return: Agent.internal_key
+      """
+      session = self.sessionMaker_o()
+      try:
+          agent_list = session.query(Agent) \
+              .filter(Agent.id == agent_id) \
+              .all()
+          agent_last = agent_list[-1]
+          return S_OK({'internal_key': agent_last.internal_key})
+      except NoResultFound, e:
+          return S_OK()
+      finally:
+          session.close()

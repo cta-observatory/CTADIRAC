@@ -166,6 +166,11 @@ class ProvClient(Client):
     rpcClient = self._getRPC()
     return rpcClient.getAgents()
 
+  def getAgentKey(self, agent_id):
+
+    rpcClient = self._getRPC()
+    return rpcClient.getAgentKey(agent_id)
+
   def getUsageDescription(self, activityDescription_id, role):
 
       rpcClient = self._getRPC()
@@ -180,3 +185,8 @@ class ProvClient(Client):
 
       rpcClient = self._getRPC()
       return rpcClient.getConfigFileDescription(activityDescription_id, configFile_name)
+
+  def getActvityDescriptionKey(self, activityDescription_name, activityDescription_version):
+
+      rpcClient = self._getRPC()
+      return rpcClient.getActivityDescriptionKey(activityDescription_name, activityDescription_version)

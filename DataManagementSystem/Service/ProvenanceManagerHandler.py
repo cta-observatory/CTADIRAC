@@ -274,7 +274,6 @@ class ProvenanceManagerHandler(RequestHandler):
 
   types_getAgents = []
 
-
   def export_getAgents(cls):
     '''
     Get Agents
@@ -282,6 +281,17 @@ class ProvenanceManagerHandler(RequestHandler):
     '''
 
     res = cls.__provenanceDB.getAgents()
+    return cls._parseRes(res)
+
+  types_getAgentKey = []
+
+  def export_getAgentKey(cls, agent_id):
+    '''
+    Get Agent Key
+    :return:
+    '''
+
+    res = cls.__provenanceDB.getAgentKey(agent_id)
     return cls._parseRes(res)
 
   types_getDatasetEntity = [basestring]
@@ -294,6 +304,18 @@ class ProvenanceManagerHandler(RequestHandler):
     '''
 
     res = cls.__provenanceDB.getDatasetEntity(guid)
+    return cls._parseRes(res)
+
+  types_updateDatasetEntity = [basestring]
+
+  def export_updateDatasetEntity(cls, guid, invalidatedAtTime):
+    '''
+    Update DatasetEntity
+    :param datasetEntity guid invalidatedAtTime
+    :return:
+    '''
+
+    res = cls.__provenanceDB.updateDatasetEntity(guid, invalidatedAtTime)
     return cls._parseRes(res)
 
   types_getUsageDescription = []
@@ -342,6 +364,18 @@ class ProvenanceManagerHandler(RequestHandler):
     '''
 
     res = cls.__provenanceDB.getConfigFileDescription(activityDescription_id, configFile_name)
+    return cls._parseRes(res)
+
+  types_getActivityDescriptionKey = []
+
+  def export_getActivityDescriptionKey(cls, activityDescription_name, activityDescription_version):
+    '''
+    Get ActivityDescriptionKey
+    :param activityDescription_name, activityDescription_version
+    :return {'internal_key':activityDescription_key}
+    '''
+
+    res = cls.__provenanceDB.getActivityDescriptionKey(activityDescription_name, activityDescription_version)
     return cls._parseRes(res)
 
 
