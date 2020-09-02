@@ -149,7 +149,7 @@ def add_dataset(cta_data, dirac_data, fc, entityDescription_key, agent_key):
             return entity_key
 
 ###############################################################################
-def addProvenance():
+def addProvenance(test_VM=None):
 
     # read provenance dictionary
     f = open("provDict.txt", 'r')
@@ -158,26 +158,31 @@ def addProvenance():
     f.close()
     provList = json.loads(provStr.replace("'", "\""))
 
-    # instance of DIRAC
-    #dirac = Dirac()
+    if not test_VM:
 
-    # get the jobID of the DIRAC job
-    # jobID = os.environ['JOBID']
+        # instance of DIRAC
+        dirac = Dirac()
 
-    # get inputData of the job
-    # res = dirac.getJobInputData(jobID)
-    # if not res['OK']:
-    #  DIRAC.gLogger.error(res['Message'])
-    #  DIRAC.exit(-1)
-    # inputData = res['Value'][int(jobID)]
-    inputData = ['/bidon/proton_20deg_180deg_run22___cta-prod3-demo-2147m-LaPalma-baseline.simtel.gz']
+        # get the jobID of the DIRAC job
+        jobID = os.environ['JOBID']
 
-    # get outputData of the job
-    # res = dirac.getJobOutputData(jobID)
-    # if not res['OK']:
-    #  DIRAC.gLogger.error(res['Message'])
-    #  DIRAC.exit(-1)
-    # outputData = res['Value'][int(jobID)]
+        # get inputData of the job
+        res = dirac.getJobInputData(jobID)
+        if not res['OK']:
+            DIRAC.gLogger.error(res['Message'])
+            DIRAC.exit(-1)
+        inputData = res['Value'][int(jobID)]
+
+        # get outputData of the job
+        # res = dirac.getJobOutputData(jobID)
+        # if not res['OK']:
+        #  DIRAC.gLogger.error(res['Message'])
+        #  DIRAC.exit(-1)
+        # outputData = res['Value'][int(jobID)]
+
+    else:
+        inputData = ['/bidon/proton_20deg_180deg_run22___cta-prod3-demo-2147m-LaPalma-baseline.simtel.gz']
+
     outputData = []
     # read output lfns from file
     f = open("output_lfns.txt", 'r')
@@ -294,11 +299,12 @@ def addProvenance():
 
 ###############################################################################
 if __name__ == '__main__':
-    # args = Script.getPositionalArgs()
+    args = Script.getPositionalArgs()
+
     try:
         provClient = ProvClient()
-        # res = addProvenance( args )
-        res = addProvenance()
+        res = addProvenance( args )
+        #res = addProvenance()
         if not res['OK']:
             DIRAC.gLogger.error(res['Message'])
             DIRAC.exit(-1)
