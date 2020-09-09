@@ -149,20 +149,20 @@ class Prod3Stage1Job(Job):
         i_step += 1
 
         # step 6 register Log
-        log_file_pattern = './*.logs.tgz'
-        file_meta_data = {}
-        file_meta_data_json = json.dumps(file_meta_data)
-        scripts = '../CTADIRAC/Core/scripts/'
-        log_step = self.setExecutable(scripts + 'cta-prod-managedata.py',
-                                      arguments="'%s' '%s' '%s' %s '%s' %s %s '%s' Log" %
-                                      (meta_data_json, meta_data_field_json,
-                                       file_meta_data_json,
-                                       self.base_path, log_file_pattern, self.package,
-                                       self.program_category, self.catalogs),
-                                      logFile='LogManagement_Log.txt')
-        log_step['Value']['name'] = 'Step%s_LogManagement' % i_step
-        log_step['Value']['descr_short'] = 'Save log to SE and register them in DFC'
-        i_step += 1
+        # log_file_pattern = './*.logs.tgz'
+        # file_meta_data = {}
+        # file_meta_data_json = json.dumps(file_meta_data)
+        # scripts = '../CTADIRAC/Core/scripts/'
+        # log_step = self.setExecutable(scripts + 'cta-prod-managedata.py',
+        #                               arguments="'%s' '%s' '%s' %s '%s' %s %s '%s' Log" %
+        #                               (meta_data_json, meta_data_field_json,
+        #                                file_meta_data_json,
+        #                                self.base_path, log_file_pattern, self.package,
+        #                                self.program_category, self.catalogs),
+        #                               logFile='LogManagement_Log.txt')
+        # log_step['Value']['name'] = 'Step%s_LogManagement' % i_step
+        # log_step['Value']['descr_short'] = 'Save log to SE and register them in DFC'
+        # i_step += 1
 
         # step 7 failover step
         failover_step = self.setExecutable('/bin/ls -l',
