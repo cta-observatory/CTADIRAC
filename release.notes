@@ -1,3 +1,6 @@
+[v1r60p0]
+* JB : New interface to ctapipe-stage1-process
+
 [v1r59p2]
 * JB/LA : New ProductionSystem launcher script for Prod5
           many mino small fixes for Prod5
