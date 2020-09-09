@@ -106,11 +106,11 @@ class Prod3Stage1Job(Job):
         # step 3 verify input data size
         # arguments are nbFiles=0 (not used) and fileSize=1000kB
         eiv_step = self.setExecutable('cta-prod3-verifysteps',
-                   arguments="generic 1 1000 '*.simtel.gz'",
-                   logFile='Verify_EvnDispInputs_Log.txt')
+                   arguments="generic 0 10000 '*.simtel.%s'"%self.simtel_ext,
+                   logFile='Verify_SimtelInputs_Log.txt')
 
-        eiv_step['Value']['name'] = 'Step%i_VerifyEvnDispInputs' % i_step
-        eiv_step['Value']['descr_short'] = 'Verify EvnDisp Inputs'
+        eiv_step['Value']['name'] = 'Step%i Verify simtel input files' % i_step
+        eiv_step['Value']['descr_short'] = 'Verify Simtel Inputs'
         i_step += 1
 
         # step 4 run EventDisplay
