@@ -105,7 +105,7 @@ class Prod3Stage1Job(Job):
         # step 3 verify input data size
         # arguments are nbFiles=0 (not used) and fileSize=1000kB
         eiv_step = self.setExecutable('cta-prod3-verifysteps',
-                   arguments="generic 1 1000 '*.simtel.zst'",
+                   arguments="generic 1 1000 '*.simtel.gz'",
                    logFile='Verify_EvnDispInputs_Log.txt')
 
         eiv_step['Value']['name'] = 'Step%i_VerifyEvnDispInputs' % i_step
@@ -117,8 +117,8 @@ class Prod3Stage1Job(Job):
                                     arguments = "--config stage1_config.json \
                                                  --input_ext gz",
                                     logFile='ctapipe_stage1_Log.txt')
-        ev_step['Value']['name'] = 'Step%i_EvnDisplay' % i_step
-        ev_step['Value']['descr_short'] = 'Run EvnDisplay'
+        ev_step['Value']['name'] = 'Step%i_ctapipe_stage1' % i_step
+        ev_step['Value']['descr_short'] = 'Run ctapipe stage 1'
         i_step += 1
 
         # step 5 set meta data and register Data
