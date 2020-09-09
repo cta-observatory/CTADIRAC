@@ -1,9 +1,8 @@
 """
-  Simple Wrapper on the Job class to handle EvnDisp Analysis
-  for the Prod5 initial analysis
-  https://forge.in2p3.fr/issues/40751
+  Simple Wrapper on the Job class to handle ctapipe stage 1 image analysis
+  for the Prod3b simulations
 
-  July 6th 2020 - J. Bregeon
+  Sep 10th 2020 - J. Bregeon
                   bregeon@in2p3.fr
 """
 
@@ -28,7 +27,7 @@ class Prod3Stage1Job(Job):
         Job.__init__(self)
         self.setCPUTime(cpuTime)
         # defaults
-        self.setName('Evndisplay_CalibReco')
+        self.setName('ctapipe_stage1')
         self.package='ctapipe'
         self.version = 'v0.8.0'
         self.compiler='gcc48_default'
