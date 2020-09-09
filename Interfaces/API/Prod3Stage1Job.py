@@ -35,7 +35,7 @@ class Prod3Stage1Job(Job):
         self.prog_name = 'ctapipe-stage1-process'
         self.stage1_config = 'stage1_config.json'
         self.simtel_ext = "gz"
-        self.configuration_id = -1
+        self.configuration_id = 1
         self.output_data_level = 1
         self.base_path = '/vo.cta.in2p3.fr/MC/PROD3/'
         self.metadata = collections.OrderedDict()
@@ -68,7 +68,7 @@ class Prod3Stage1Job(Job):
         self.metadata['data_level'] = self.output_data_level
         self.metadata['configuration_id'] = self.configuration_id
 
-    def set_file_meta_data(self, nsb=1):
+    def set_file_meta_data(self, nsb=1, split='train'):
         """ Set evndisplay file meta data
 
         Parameters:
@@ -76,6 +76,7 @@ class Prod3Stage1Job(Job):
         """
         # Set evndisp file meta data
         self.file_meta_data['nsb'] = nsb
+        self.file_meta_data['split'] = split
 
     def setupWorkflow(self, debug=False):
         """ Setup job workflow by defining the sequence of all executables

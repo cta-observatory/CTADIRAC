@@ -98,7 +98,7 @@ def launch_job(args):
     # specific configuration
     if mode == 'WMS':
         job.base_path = '/vo.cta.in2p3.fr/user/b/bregeon'
-        job.ts_task_id = '111'
+        job.ts_task_id = '2'
         simtel_meta_data = {'array_layout': 'Baseline', 'site': 'LaPalma',
                            'particle': 'gamma', 'phiP': 180.0, 'thetaP': 20.0}
 
@@ -109,11 +109,14 @@ def launch_job(args):
         job.setDestination('LCG.IN2P3-CC.fr')
         result = submit_wms(job)
     elif mode == 'TS':
+        job.base_path = '/vo.cta.in2p3.fr/MC/PROD3_Test'
         input_meta_query = get_dataset_MQ(dataset_name)
         # refine output meta data if needed
         output_meta_data = copy(input_meta_query)
         job.set_meta_data(output_meta_data)
-        job.set_file_meta_data(nsb=output_meta_data['nsb']['='])
+        job.set_file_meta_data(nsb=output_meta_data['nsb']['='],
+                               split=output_meta_data['split']['='])
+        input_meta_query = {}
         job.ts_task_id = '@{JOB_ID}'  # dynamic
         job.setupWorkflow(debug=False)
         job.setType('EvnDisp3')  # mandatory *here*
