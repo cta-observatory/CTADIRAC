@@ -61,11 +61,11 @@ def submit_wms(job):
     @todo launch job locally
     """
     dirac = Dirac()
-    base_path = '/vo.cta.in2p3.fr/MC/PROD3/LaPalma/gamma/simtel/1387/Data/067xxx'
-    input_data = ['%s/gamma_20deg_180deg_run67146___cta-prod3-demo-2147m-LaPalma-baseline.simtel.gz' % base_path]
+    base_path = '/vo.cta.in2p3.fr/MC/PROD3/LaPalma/gamma-diffuse/simtel/1600/Data/000xxx'
+    input_data = ['%s/gamma_20deg_0deg_run100___cta-prod3-demo-2147m-LaPalma-baseline_cone10.simtel.gz' % base_path]
 
     job.setInputData(input_data)
-    job.setJobGroup('EvnDispProd5')
+    job.setJobGroup('ctapipe_stage1_prod3')
     result = dirac.submitJob(job)
     if result['OK']:
         Script.gLogger.notice('Submitted job: ', result['Value'])
@@ -99,7 +99,7 @@ def launch_job(args):
         job.base_path = '/vo.cta.in2p3.fr/user/b/bregeon'
         job.ts_task_id = '10'
         simtel_meta_data = {'array_layout': 'Baseline', 'site': 'LaPalma',
-                           'particle': 'gamma', 'phiP': 0.0, 'thetaP': 20.0}
+                           'particle': 'gamma', 'phiP': 180.0, 'thetaP': 20.0}
 
         job.set_meta_data(simtel_meta_data)
         job.set_file_meta_data({'nsb':1})
