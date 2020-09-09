@@ -74,6 +74,8 @@ def run_number_from_filename(filename, package):
         run_number = int(filename.split('srun')[1].split('-')[0])
     elif package == 'dl1_data_handler':
         run_number = int(filename.split('runs')[1].split('-')[0])
+    elif package == 'ctapipe':
+        run_number = int(filename.split('run')[1].split('___cta')[0])
     return run_number
 
 def check_dataset_query(dataset_name):
