@@ -115,7 +115,7 @@ def launch_job(args):
         output_meta_data = copy(input_meta_query)
         job.set_meta_data(output_meta_data)
         job.set_file_meta_data(nsb=output_meta_data['nsb']['='],
-                               split=output_meta_data['split']['='])
+                               split=output_meta_data['split'])
         input_meta_query = {}
         job.ts_task_id = '@{JOB_ID}'  # dynamic
         job.setupWorkflow(debug=False)
