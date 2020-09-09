@@ -89,6 +89,7 @@ def launch_job(args):
 
     # job setup - 72 hours
     job = Prod3Stage1Job(cpuTime=259200.)
+    job.stage1_config = 'stage1_config_Prod3_LaPalma_Baseline_NSB1x.json'
     # override for testing
     job.setName('Prod3_ctapipe_stage1')
     # output
@@ -97,7 +98,7 @@ def launch_job(args):
     # specific configuration
     if mode == 'WMS':
         job.base_path = '/vo.cta.in2p3.fr/user/b/bregeon'
-        job.ts_task_id = '10'
+        job.ts_task_id = '111'
         simtel_meta_data = {'array_layout': 'Baseline', 'site': 'LaPalma',
                            'particle': 'gamma', 'phiP': 180.0, 'thetaP': 20.0}
 

@@ -33,6 +33,8 @@ class Prod3Stage1Job(Job):
         self.compiler='gcc48_default'
         self.program_category = 'stage1'
         self.prog_name = 'ctapipe-stage1-process'
+        self.stage1_config = 'stage1_config.json'
+        self.simtel_ext = "gz"
         self.configuration_id = -1
         self.output_data_level = 1
         self.base_path = '/vo.cta.in2p3.fr/MC/PROD3/'
@@ -113,8 +115,8 @@ class Prod3Stage1Job(Job):
 
         # step 4 run EventDisplay
         ev_step = self.setExecutable('./dirac_run_stage1',
-                                    arguments = "--config stage1_config.json \
-                                                 --input_ext gz",
+                                    arguments = "--config %s --input_ext %s"%\
+                                    (self.stage1_config, self.simtel_ext),
                                     logFile='ctapipe_stage1_Log.txt')
         ev_step['Value']['name'] = 'Step%i_ctapipe_stage1' % i_step
         ev_step['Value']['descr_short'] = 'Run ctapipe stage 1'
