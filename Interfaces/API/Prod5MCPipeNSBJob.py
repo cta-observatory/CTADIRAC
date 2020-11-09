@@ -17,8 +17,8 @@ from CTADIRAC.Core.Utilities.tool_box import DATA_LEVEL_METADATA_ID
 
 class Prod5MCPipeNSBJob(Job):
     """ Job extension class for Prod5 MC NSB simulations,
-      takes care of running corsika piped into simtel
-      2 output files are created for Dark and Moon NSB
+    takes care of running corsika piped into simtel
+    2 output files are created for Dark and Moon NSB
     """
     def __init__(self, cpu_time=259200):
         """ Constructor takes almosst everything from base class
@@ -94,7 +94,6 @@ class Prod5MCPipeNSBJob(Job):
             DIRAC.gLogger.error('Unknown pointing direction: %s' % pointing)
             DIRAC.exit(-1)
 
-
     def set_meta_data(self):
         """ define the common meta data of the application
         """
@@ -128,20 +127,20 @@ class Prod5MCPipeNSBJob(Job):
         i_step = 1
         if debug:
             ls_step = self.setExecutable('/bin/ls -alhtr', logFile='LS_Init_Log.txt')
-            ls_step['Value']['name'] = 'Step%i_LS_Init'%i_step
+            ls_step['Value']['name'] = 'Step%i_LS_Init' % i_step
             ls_step['Value']['descr_short'] = 'list files in working directory'
             i_step += 1
 
             env_step = self.setExecutable('/bin/env', logFile='Env_Log.txt')
-            env_step['Value']['name'] = 'Step%i_Env'%i_step
+            env_step['Value']['name'] = 'Step%i_Env' % i_step
             env_step['Value']['descr_short'] = 'Dump environment'
             i_step += 1
 
         # step 2
         sw_step = self.setExecutable('cta-prod-setup-software',
-                 arguments='-p %s -v %s -a simulations -g %s'%
-                             (self.package, self.version, self.compiler),\
-                 logFile='SetupSoftware_Log.txt')
+                           arguments='-p %s -v %s -a simulations -g %s' %
+                                    (self.package, self.version, self.compiler),
+                           logFile='SetupSoftware_Log.txt')
         sw_step['Value']['name'] = 'Step%i_SetupSoftware' % i_step
         sw_step['Value']['descr_short'] = 'Setup software'
         i_step += 1
@@ -168,10 +167,9 @@ class Prod5MCPipeNSBJob(Job):
         i_step+=1
 
         # step 4a verify Corsika log file
-        cl_step = self.setExecutable('cta-prod3-verifysteps',
-                                      arguments = 'corsika'),
+        cl_step = self.setExecutable('cta-prod3-verifysteps', arguments='corsika'),
                                       logFile='Verify_Corsika_Log.txt')
-        cl_step['Value']['name'] = 'Step%i_VerifyCorsikaLog'%i_step
+        cl_step['Value']['name'] = 'Step%i_VerifyCorsikaLog' % i_step
         cl_step['Value']['descr_short'] = 'Verify Corsika log file'
         i_step += 1
 
