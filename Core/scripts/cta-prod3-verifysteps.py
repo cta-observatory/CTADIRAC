@@ -27,7 +27,7 @@ def clean_output_file(output_files):
     """
     DIRAC.gLogger.info('Deleting Local Files')
     for afile in output_files:
-        DIRAC.gLogger.warn('Remove local File %s'%(afile ))
+        DIRAC.gLogger.warn('Remove local File %s' % afile)
         os.remove(afile)
     return DIRAC.S_OK()
 
@@ -38,13 +38,13 @@ def verify_corsika():
 
     # get list of output files
     log_file = glob.glob('Data/corsika/run*/run*.log')
-    if len(log_file)!=1:
+    if len(log_file) != 1:
         DIRAC.gLogger.error('"=== END OF RUN ===" not found!')
         return DIRAC.S_ERROR()
 
     # check EOR tag
     tag = '=== END OF RUN ==='
-    content = open(log_file[0])
+    content = open(log_file[0]).read()
     if content.find(tag)<0:
         DIRAC.gLogger.error('"%s" tag not found!'%tag)
         corsika_files = glob.glob('Data/corsika/run*/*corsika.*z*')
