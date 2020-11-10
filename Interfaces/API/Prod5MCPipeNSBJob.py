@@ -149,13 +149,13 @@ class Prod5MCPipeNSBJob(Job):
         prod_script = './dirac_prod5_baseline_run'
         if 'gcc10' in self.compiler:
             prod_exe = './dirac_singularity_run'
-            prod_args = '%s --start_run %s --run %s %s %s %s %s' %
+            prod_args = '%s --start_run %s --run %s %s %s %s %s' % \
                         (prod_script, self.start_run_number, self.run_number,
                          self.cta_site, self.particle, self.pointing_dir,
                          self.zenith_angle)
         else:
             prod_exe = prod_script
-            prod_args = '--start_run %s --run %s %s %s %s %s' %
+            prod_args = '--start_run %s --run %s %s %s %s %s' % \
                         (self.start_run_number, self.run_number,
                          self.cta_site, self.particle, self.pointing_dir,
                          self.zenith_angle)
@@ -167,7 +167,7 @@ class Prod5MCPipeNSBJob(Job):
         i_step+=1
 
         # step 4a verify Corsika log file
-        cl_step = self.setExecutable('cta-prod3-verifysteps', arguments='corsika'),
+        cl_step = self.setExecutable('cta-prod3-verifysteps', arguments='corsika',
                                       logFile='Verify_Corsika_Log.txt')
         cl_step['Value']['name'] = 'Step%i_VerifyCorsikaLog' % i_step
         cl_step['Value']['descr_short'] = 'Verify Corsika log file'
