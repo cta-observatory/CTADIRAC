@@ -29,8 +29,8 @@ class Prod3MCPipeBaselineZstdJob(Prod3MCPipeBaselineJob):
     """
 #    super(Prod3MCPipeBaselineJob, self).__init__()
     Prod3MCPipeBaselineJob.__init__(self, cpuTime)
-    self.version='2017-09-28_zstd'
-
+    self.version = '2017-09-28_zstd'
+    self.extra_tag = ''  # or --highE
 
   def setupWorkflow(self, debug=False):
     """ Override the base class job workflow to adapt to NSB test simulations
@@ -63,9 +63,9 @@ class Prod3MCPipeBaselineZstdJob(Prod3MCPipeBaselineJob):
         DIRAC.exit(-1)
 
     csStep = self.setExecutable( prod_script, \
-                              arguments = '--start_run %s --run %s %s %s %s %s' % \
+                              arguments = '--start_run %s --run %s %s %s %s %s %s' % \
                                          ( self.start_run_number, self.run_number, \
-                                           self.cta_site,\
+                                           self.extra_tag, self.cta_site,\
                                            self.particle, self.pointing_dir, self.zenith_angle ), \
                               logFile='CorsikaSimtel_Log.txt')
     csStep['Value']['name']='Step%i_CorsikaSimtel'%iStep
