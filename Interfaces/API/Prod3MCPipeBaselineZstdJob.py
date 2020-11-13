@@ -46,7 +46,7 @@ class Prod3MCPipeBaselineZstdJob(Prod3MCPipeBaselineJob):
 
     # step 2
     swStep = self.setExecutable( 'cta-prod3-setupsw',
-                              arguments='%s %s simulations centos7-gcc48'% (self.package, self.version),\
+                              arguments='%s %s simulations sl6-gcc44'% (self.package, self.version),\
                               logFile='SetupSoftware_Log.txt')
     swStep['Value']['name'] = 'Step%i_SetupSoftware' % iStep
     swStep['Value']['descr_short'] = 'Setup software'
