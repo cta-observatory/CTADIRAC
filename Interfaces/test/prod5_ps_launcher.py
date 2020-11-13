@@ -36,8 +36,8 @@ def build_simulation_step(DL0_data_set):
     # Note that there is no InputQuery,
     # since jobs created by this steps don't require any InputData
     prod_step_1 = ProductionStep()
-    prod_step_1.Name = 'Simulation_%s'%DL0_data_set.replace('AdvancedBaseline_NSB1x_','')
-    prod_step_1.Type = 'MCSimulation' # This corresponds to the Transformation Type
+    prod_step_1.Name = 'Simulation_%s' % DL0_data_set.replace('AdvancedBaseline_NSB1x_','')
+    prod_step_1.Type = 'MCSimulation'
     prod_step_1.Outputquery = get_dataset_MQ(DL0_data_set)
     prod_step_1.Outputquery['nsb'] = {'in': [1, 5]}
 
@@ -57,9 +57,7 @@ def build_simulation_step(DL0_data_set):
     job1.workflow.addParameter(Parameter("JOB_ID", "000000", "string", "", "",
                                             True, False, "Temporary fix"))
     # configuration
-    job1.version ='2020-06-29'
-    job1.compiler='gcc83_matchcpu'
-    job1.setName('Prod5_MC_Pipeline_NSB')
+    job1.setName('Prod5b_MC_Pipeline_NSB')
     job1.set_site(site)
     job1.set_particle(particle)
     job1.set_pointing_dir(pointing_dir)
@@ -77,6 +75,7 @@ def build_simulation_step(DL0_data_set):
     # return ProductionStep object
     return prod_step_1
 
+
 def build_evndisp_step(DL0_data_set, nsb=1):
     ''' Define a new EventDisplay analysis production step
 
@@ -91,7 +90,7 @@ def build_evndisp_step(DL0_data_set, nsb=1):
 
     prod_step_2 = ProductionStep()
     prod_step_2.Name = 'Analysis_'+DL0_data_set_NSB.replace('AdvancedBaseline_', '').replace('DL0', 'DL1')
-    prod_step_2.Type = 'DataReprocessing' # This corresponds to the Transformation Type
+    prod_step_2.Type = 'DataReprocessing'  # This corresponds to the Transformation Type
     prod_step_2.Inputquery = get_dataset_MQ(DL0_data_set_NSB)
     prod_step_2.Outputquery = get_dataset_MQ(DL0_data_set_NSB.replace('DL0', 'DL1'))
 
@@ -124,6 +123,7 @@ def build_evndisp_step(DL0_data_set, nsb=1):
     prod_step_2.GroupSize = 5
 
     return prod_step_2
+
 
 #########################################################
 if __name__ == '__main__':

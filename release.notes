@@ -1,3 +1,10 @@
+[v1r60p2]
+* JB : bug fix verify_corsika to verifysteps
+
+[v1r60p1]
+* JB : Update Prod5MCPipeNSBJob for Prod5b
+       add verify_corsika to verifysteps
+
 [v1r60p0]
 * JB : New interface to ctapipe-stage1-process
 

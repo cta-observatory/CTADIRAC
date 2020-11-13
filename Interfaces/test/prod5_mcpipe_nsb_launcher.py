@@ -78,10 +78,10 @@ def run_simulation(args):
 
     # job setup
     job = Prod5MCPipeNSBJob()  # to be adjusted!!
-    job.version ='2020-06-29'
-    job.compiler='gcc83_matchcpu'
+    job.version = '2020-06-29b'
+    job.compiler = 'gcc83_matchcpu'
     # override for testing
-    job.setName('Prod5_MC_Pipeline_NSB')
+    job.setName('Prod5b_MC_Pipeline_NSB')
     # parameters from command line
     job.set_site(args[1])
     job.set_particle(args[2])
@@ -94,7 +94,7 @@ def run_simulation(args):
 
     # specific configuration
     if mode == 'WMS':
-        job.base_path = '/vo.cta.in2p3.fr/user/b/bregeon/prod5/'
+        job.base_path = '/vo.cta.in2p3.fr/user/b/bregeon/prod5b/'
         job.start_run_number = '1'
         job.run_number = '20'
         job.setupWorkflow(debug=True)
@@ -118,6 +118,7 @@ def run_simulation(args):
         return None
 
     return result
+
 
 #########################################################
 if __name__ == '__main__':
