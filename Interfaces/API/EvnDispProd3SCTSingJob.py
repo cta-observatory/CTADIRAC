@@ -18,7 +18,7 @@ from DIRAC.Interfaces.API.Job import Job
 from DIRAC.Resources.Catalog.FileCatalogClient import FileCatalogClient
 
 
-class EvnDispProd5Job(Job):
+class EvnDispProd3SCTSingJob(Job):
     """ Job extension class for EvnDisp Analysis,
       takes care of running converter and evndisp.
     """
