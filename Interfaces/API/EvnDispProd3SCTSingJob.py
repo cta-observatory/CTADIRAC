@@ -13,6 +13,7 @@ __RCSID__ = "$Id$"
 import json
 import collections
 # DIRAC imports
+import DIRAC
 from DIRAC.Interfaces.API.Job import Job
 from DIRAC.Resources.Catalog.FileCatalogClient import FileCatalogClient
 
@@ -39,7 +40,6 @@ class EvnDispProd5Job(Job):
         self.prog_name = 'evndisp'
         self.configuration_id = 9
         self.output_data_level = 1
-        self.prefix = 'CTA.prod3b'
         self.base_path = '/vo.cta.in2p3.fr/MC/PROD3/'
         self.metadata = collections.OrderedDict()
         self.file_meta_data = dict()
