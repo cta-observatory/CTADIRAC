@@ -15,7 +15,6 @@ import collections
 # DIRAC imports
 import DIRAC
 from DIRAC.Interfaces.API.Job import Job
-from DIRAC.Resources.Catalog.FileCatalogClient import FileCatalogClient
 
 
 class EvnDispProd3SCTSingJob(Job):
@@ -56,14 +55,14 @@ class EvnDispProd3SCTSingJob(Job):
         self.metadata['array_layout'] = tel_sim_md['array_layout']
         self.metadata['site'] = tel_sim_md['site']
         self.metadata['particle'] = tel_sim_md['particle']
-        if '=' in tel_sim_md['phiP'].keys():
+        try:
             phiP = tel_sim_md['phiP']['=']
-        else:
+        except TypeError:
             phiP = tel_sim_md['phiP']
         self.metadata['phiP'] = phiP
-        if '=' in tel_sim_md['thetaP'].keys():
+        try:
             thetaP = tel_sim_md['thetaP']['=']
-        else:
+        except TypeError:
             thetaP = tel_sim_md['thetaP']
         self.metadata['thetaP'] = thetaP
         self.metadata[self.program_category+'_prog'] = self.prog_name
@@ -87,18 +86,18 @@ class EvnDispProd3SCTSingJob(Job):
         i_step = 0
         # step 1 -- debug
         if debug:
-            ls_step = self.setExecutable( '/bin/ls -alhtr', logFile='LS_Init_Log.txt')
+            ls_step = self.setExecutable('/bin/ls -alhtr', logFile='LS_Init_Log.txt')
             ls_step['Value']['name'] = 'Step%i_LS_Init' % i_step
             ls_step['Value']['descr_short'] = 'list files in working directory'
             i_step += 1
 
-            env_step = self.setExecutable( '/bin/env', logFile='Env_Log.txt')
+            env_step = self.setExecutable('/bin/env', logFile='Env_Log.txt')
             env_step['Value']['name'] = 'Step%i_Env' % i_step
             env_step['Value']['descr_short'] = 'Dump environment'
             i_step += 1
 
         # # step 2
-        # sw_step = self.setExecutable( 'cta-prod-setup-software',
+        # sw_step = self.setExecutable('cta-prod-setup-software',
         #                           arguments='-p %s -v %s -a simulations -g %s'%
         #                           (self.package, self.version, self.compiler),\
         #                           logFile='SetupSoftware_Log.txt')
