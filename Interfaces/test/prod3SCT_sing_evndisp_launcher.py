@@ -80,7 +80,7 @@ def launch_job(args):
         Parameters:
         args -- mode (trans_name dataset_name group_size)
     """
-    DIRAC.gLogger.notice('Launching jobs')
+    DIRAC.gLogger.notice('Running EventDisplay jobs')
     # get arguments
     mode = args[0]
 
@@ -92,7 +92,7 @@ def launch_job(args):
     # job setup - 72 hours
     job = EvnDispProd3SCTSingJob(cpuTime=259200.)
     # override for testing
-    job.setName('Prod5_EvnDisp')
+    job.setName('Prod3SCT_EvnDisp')
     # output
     job.setOutputSandbox(['*Log.txt'])
 
@@ -100,20 +100,12 @@ def launch_job(args):
     if mode == 'WMS':
         job.base_path = '/vo.cta.in2p3.fr/user/b/bregeon'
         job.ts_task_id = '111'
-        simtel_meta_data = {'array_layout': 'Baseline-Advanced', 'site': 'LaPalma',
+        simtel_meta_data = {'array_layout': 'HB9', 'site': 'Paranal',
                            'particle': 'gamma', 'phiP': 0.0, 'thetaP': 20.0}
-        job.prefix = 'CTA.prod5N'
-        job.layout_list = 'BL-0LSTs05MSTs-MSTF BL-0LSTs05MSTs-MSTN \
-                           BL-4LSTs00MSTs-MSTN BL-4LSTs05MSTs-MSTF \
-                           BL-4LSTs05MSTs-MSTN BL-4LSTs09MSTs-MSTF \
-                           BL-4LSTs09MSTs-MSTN BL-4LSTs15MSTs-MSTF \
-                           BL-4LSTs15MSTs-MSTN'
-
         job.set_meta_data(simtel_meta_data)
-        job.set_file_meta_data({'nsb': 1})
         job.setupWorkflow(debug=True)
         # subtmit to the WMS for debug
-        # job.setDestination('LCG.IN2P3-CC.fr')
+        job.setDestination('LCG.IN2P3-CC.fr')
         result = submit_wms(job)
     elif mode == 'TS':
         input_meta_query = get_dataset_MQ(dataset_name)
