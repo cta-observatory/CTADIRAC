@@ -21,8 +21,8 @@ Script.parseCommandLine()
 import DIRAC
 from DIRAC.TransformationSystem.Client.Transformation import Transformation
 from DIRAC.Core.Workflow.Parameter import Parameter
-# from CTADIRAC.Interfaces.API.Prod3MCPipeDivergentJob import Prod3MCPipeDivergentJob
-from Prod3MCPipeDivergentJob import Prod3MCPipeDivergentJob
+from CTADIRAC.Interfaces.API.Prod3MCPipeDivergentJob import Prod3MCPipeDivergentJob
+# from Prod3MCPipeDivergentJob import Prod3MCPipeDivergentJob
 from DIRAC.Interfaces.API.Dirac import Dirac
 
 
