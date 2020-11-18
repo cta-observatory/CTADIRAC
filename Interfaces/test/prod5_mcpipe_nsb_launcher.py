@@ -95,8 +95,8 @@ def run_simulation(args):
     # specific configuration
     if mode == 'WMS':
         job.base_path = '/vo.cta.in2p3.fr/user/b/bregeon/prod5b/'
-        job.start_run_number = '1'
-        job.run_number = '20'
+        job.start_run_number = '20'
+        job.run_number = '40'
         job.setupWorkflow(debug=True)
         # subtmit to the WMS for debug
         job.setDestination('LCG.IN2P3-CC.fr')
@@ -109,7 +109,7 @@ def run_simulation(args):
         job.run_number = '@{JOB_ID}'  # dynamic
         job.setupWorkflow(debug=False)
         tag = '_gcc83'
-        trans_name = 'TestMC_Prod5_Pipeline_NSB_%s_%s_%s_%s%s' %\
+        trans_name = 'Prod5b_Pipeline_NSB_%s_%s_%s_%s%s' %\
                     (job.cta_site, job.particle, job.pointing_dir, job.zenith_angle, tag)
         result = submit_trans(job, trans_name)
     else:
