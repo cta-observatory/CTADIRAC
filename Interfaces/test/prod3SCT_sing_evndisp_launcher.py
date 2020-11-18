@@ -63,7 +63,8 @@ def submit_wms(job):
     """
     dirac = Dirac()
     base_path = '/vo.cta.in2p3.fr/MC/PROD3/scratch/Paranal/gamma/simtel/954/Data/000xxx'
-    input_data = ['%s/gamma_20deg_0deg_run107___cta-prod3_desert-2150m-Paranal-merged.simtel.gz' % base_path]
+    # input_data = ['%s/gamma_20deg_0deg_run107___cta-prod3_desert-2150m-Paranal-merged.simtel.gz' % base_path]  # CNAF
+    input_data = ['%s/gamma_20deg_0deg_run312___cta-prod3-sct_desert-2150m-Paranal-SCT.simtel.gz' % base_path]  # CC-IN2P3
 
     job.setInputData(input_data)
     job.setJobGroup('EvnDispProd5')
@@ -99,19 +100,21 @@ def launch_job(args):
     # specific configuration
     if mode == 'WMS':
         job.base_path = '/vo.cta.in2p3.fr/user/b/bregeon'
-        job.ts_task_id = '111'
-        simtel_meta_data = {'array_layout': 'HB9', 'site': 'Paranal',
+        job.ts_task_id = '12'
+        simtel_meta_data = {'array_layout': 'full', 'site': 'Paranal',
                            'particle': 'gamma', 'phiP': 0.0, 'thetaP': 20.0}
         job.set_meta_data(simtel_meta_data)
+        job.set_file_meta_data(nsb=1, sct="True")
         job.setupWorkflow(debug=True)
         # subtmit to the WMS for debug
-        job.setDestination('LCG.IN2P3-CC.fr')
+        # job.setDestination('LCG.IN2P3-CC.fr')
         result = submit_wms(job)
     elif mode == 'TS':
         input_meta_query = get_dataset_MQ(dataset_name)
         # refine output meta data if needed
         output_meta_data = copy(input_meta_query)
         job.set_meta_data(output_meta_data)
+        job.set_file_meta_data(nsb=1, sct="True")
         # adjust calibration file
         job.ts_task_id = '@{JOB_ID}'  # dynamic
         job.setupWorkflow(debug=False)
