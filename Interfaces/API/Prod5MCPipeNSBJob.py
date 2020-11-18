@@ -2,7 +2,7 @@
   New job class to run Prod5 including 2 NSB levels
   Paranal and La Palma with extended layouts, using zstd compression
   for simtel output files
-			JB, June 2020
+          JB, June 2020
 """
 
 __RCSID__ = "$Id$"
