@@ -70,7 +70,7 @@ class EvnDispProd3SCTSingJob(Job):
         self.metadata['data_level'] = self.output_data_level
         self.metadata['configuration_id'] = self.configuration_id
 
-    def set_file_meta_data(self, nsb=1):
+    def set_file_meta_data(self, nsb=1, sct="True"):
         """ Set evndisplay file meta data
 
         Parameters:
@@ -78,6 +78,7 @@ class EvnDispProd3SCTSingJob(Job):
         """
         # Set evndisp file meta data
         self.file_meta_data['nsb'] = nsb
+        self.file_meta_data['sct'] = sct
 
     def setupWorkflow(self, debug=False):
         """ Setup job workflow by defining the sequence of all executables
@@ -148,6 +149,19 @@ class EvnDispProd3SCTSingJob(Job):
                                      logFile='DataManagement_Log.txt')
         dm_step['Value']['name'] = 'Step%s_DataManagement' % i_step
         dm_step['Value']['descr_short'] = 'Save data files to SE and register them in DFC'
+        i_step += 1
+
+        # register Data lin
+        data_output_pattern = './Data/*.simtel.gz.lin.root'
+        dm2_step = self.setExecutable(scripts + 'cta-prod-managedata.py',
+                                     arguments="'%s' '%s' '%s' %s '%s' %s %s '%s' Data" %
+                                     (meta_data_json, meta_data_field_json,
+                                      file_meta_data_json,
+                                      self.base_path, data_output_pattern, self.package,
+                                      self.program_category, self.catalogs),
+                                     logFile='DataManagement2_Log.txt')
+        dm2_step['Value']['name'] = 'Step%s_DataManagement' % i_step
+        dm2_step['Value']['descr_short'] = 'Save data files to SE and register them in DFC'
         i_step += 1
 
         # step 7 failover step
