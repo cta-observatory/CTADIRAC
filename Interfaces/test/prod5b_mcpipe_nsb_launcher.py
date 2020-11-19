@@ -105,7 +105,7 @@ def run_simulation(args):
         result = submit_wms(job)
     elif mode == 'TS':
         # job.base_path = '/vo.cta.in2p3.fr/MC/PRODTest/'
-        job.start_run_number = '100000'
+        job.start_run_number = '0'
         job.run_number = '@{JOB_ID}'  # dynamic
         job.setupWorkflow(debug=False)
         tag = '_gcc83'
