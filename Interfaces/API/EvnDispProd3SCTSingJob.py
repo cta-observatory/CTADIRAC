@@ -138,7 +138,7 @@ class EvnDispProd3SCTSingJob(Job):
         meta_data_field_json = json.dumps(meta_data_field)
 
         # register Data
-        data_output_pattern = './Data/*.simtel.gz.root'
+        data_output_pattern = './Data/*.simtel.gz.DL1.root'
         scripts = '../CTADIRAC/Core/scripts/'
         dm_step = self.setExecutable(scripts + 'cta-prod-managedata.py',
                                      arguments="'%s' '%s' '%s' %s '%s' %s %s '%s' Data" %
@@ -152,7 +152,7 @@ class EvnDispProd3SCTSingJob(Job):
         i_step += 1
 
         # register Data lin
-        data_output_pattern = './Data/*.simtel.gz.lin.root'
+        data_output_pattern = './Data/*.simtel.gz.lin.DL1.root'
         dm2_step = self.setExecutable(scripts + 'cta-prod-managedata.py',
                                      arguments="'%s' '%s' '%s' %s '%s' %s %s '%s' Data" %
                                      (meta_data_json, meta_data_field_json,
