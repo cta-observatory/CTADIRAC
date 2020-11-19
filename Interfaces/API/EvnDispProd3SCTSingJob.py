@@ -165,12 +165,12 @@ class EvnDispProd3SCTSingJob(Job):
         i_step += 1
 
         # step 7 failover step
-        if not debug:
-            failover_step = self.setExecutable('/bin/ls -l',
-                                               modulesList=['Script', 'FailoverRequest'])
-            failover_step['Value']['name'] = 'Step%s_Failover' % i_step
-            failover_step['Value']['descr_short'] = 'Tag files as unused if job failed'
-            i_step += 1
+        # if not debug:
+        #     failover_step = self.setExecutable('/bin/ls -l',
+        #                                        modulesList=['Script', 'FailoverRequest'])
+        #     failover_step['Value']['name'] = 'Step%s_Failover' % i_step
+        #     failover_step['Value']['descr_short'] = 'Tag files as unused if job failed'
+        #     i_step += 1
 
         # Step 8 - debug only
         if debug:
