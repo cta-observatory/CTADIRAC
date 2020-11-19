@@ -38,7 +38,7 @@ class Prod5Stage1Job(Job):
         self.prog_name = 'ctapipe-stage1'
         self.stage1_config = 'stage1_config.json'
         self.simtel_ext = "zst"
-        self.configuration_id = 1
+        self.configuration_id = 7
         self.output_data_level = 1
         self.base_path = '/vo.cta.in2p3.fr/MC/PROD5/'
         self.metadata = collections.OrderedDict()
