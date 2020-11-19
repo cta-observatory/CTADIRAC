@@ -102,19 +102,19 @@ def launch_job(args):
                            'particle': 'gamma-diffuse', 'phiP': 180.0, 'thetaP': 20.0}
 
         job.set_meta_data(simtel_meta_data)
-        job.set_file_meta_data({'nsb':1})
+        job.set_file_meta_data({'nsb': 1})
         job.setupWorkflow(debug=True)
         # subtmit to the WMS for debug
         # job.setDestination('LCG.IN2P3-CC.fr')
         result = submit_wms(job)
     elif mode == 'TS':
-        job.base_path = '/vo.cta.in2p3.fr/MC/PROD5_Test'
+        job.base_path = '/vo.cta.in2p3.fr/MC/PROD5'
         input_meta_query = get_dataset_MQ(dataset_name)
         # refine output meta data if needed
         output_meta_data = copy(input_meta_query)
         job.set_meta_data(output_meta_data)
-        job.set_file_meta_data(nsb=output_meta_data['nsb']['='],
-                               split=output_meta_data['split'])
+        job.set_file_meta_data(nsb=output_meta_data['nsb']['='])  # ,
+                               # split=output_meta_data['split'])
         input_meta_query = {}
         job.ts_task_id = '@{JOB_ID}'  # dynamic
         job.setupWorkflow(debug=False)
