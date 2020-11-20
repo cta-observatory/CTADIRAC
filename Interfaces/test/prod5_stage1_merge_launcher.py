@@ -74,6 +74,7 @@ def submit_wms(job):
         Script.gLogger.notice('Submitted job: ', result['Value'])
     return result
 
+
 def launch_job(args):
     """ Simple launcher to instanciate a Job and setup parameters
         from positional arguments given on the command line.
@@ -115,6 +116,7 @@ def launch_job(args):
         # job.setDestination('LCG.IN2P3-CC.fr')
         result = submit_wms(job)
     elif mode == 'TS':
+        job.group_size = group_size        
         job.base_path = '/vo.cta.in2p3.fr/MC/PROD5'
         input_meta_query = get_dataset_MQ(dataset_name)
         print(input_meta_query)
@@ -134,6 +136,7 @@ def launch_job(args):
         return None
 
     return result
+
 
 #########################################################
 if __name__ == '__main__':

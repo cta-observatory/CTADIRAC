@@ -32,6 +32,7 @@ class Prod5Stage1MergeJob(Prod5Stage1Job):
         # defaults
         self.setName('ctapipe_stage1')
         self.prog_name = 'ctapipe-stage1-merge'
+        self.group_size = 5
 
     def set_meta_data(self, dl1_md):
         """ Set DL1 meta data
@@ -87,7 +88,7 @@ class Prod5Stage1MergeJob(Prod5Stage1Job):
         # step 3 verify input data size
         # arguments are nbFiles=0 (not used) and fileSize=1000kB
         eiv_step = self.setExecutable('cta-prod3-verifysteps',
-                   arguments="generic 1 10000 '*.h5'",
+                   arguments="generic %d 10000 '*.h5'" % self.group_size,
                    logFile='Verify_DL1_Inputs_Log.txt')
 
         eiv_step['Value']['name'] = 'Step%i Verify DL1 input files' % i_step
