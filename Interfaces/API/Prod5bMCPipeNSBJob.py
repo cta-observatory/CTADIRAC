@@ -153,7 +153,7 @@ class Prod5bMCPipeNSBJob(Prod5MCPipeNSBJob):
         # Upload and register log and histo file - NSB=1
         file_meta_data = {}
         file_md_json = json.dumps(file_meta_data)
-        log_file_pattern = 'Data/*dark.log_hist.tar'
+        log_file_pattern = 'Data/*dark*.log_hist.tar'
         scripts = '../CTADIRAC/Core/scripts/'
         log_step = self.setExecutable(scripts + 'cta-prod-managedata.py',
                                       arguments="'%s' '%s' '%s' %s '%s' %s %s '%s' Log" %
