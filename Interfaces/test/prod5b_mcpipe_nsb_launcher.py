@@ -54,6 +54,7 @@ def submit_trans(job, trans_name):
     trans_id = trans.getTransformationID()
     return trans_id
 
+
 def submit_wms(job):
     """ Submit the job to the WMS
     @todo launch job locally
@@ -64,6 +65,7 @@ def submit_wms(job):
     if result['OK']:
         Script.gLogger.notice('Submitted job: ', result['Value'])
     return result
+
 
 def run_simulation(args):
     """ Simple wrapper to create a Prod5MCPipeNSBJob and setup parameters
@@ -108,7 +110,7 @@ def run_simulation(args):
         job.start_run_number = '0'
         job.run_number = '@{JOB_ID}'  # dynamic
         job.setupWorkflow(debug=False)
-        tag = '_gcc83'
+        tag = '_gcc83_ok'
         trans_name = 'Prod5b_Pipeline_NSB_%s_%s_%s_%s%s' %\
                     (job.cta_site, job.particle, job.pointing_dir, job.zenith_angle, tag)
         result = submit_trans(job, trans_name)
