@@ -1,5 +1,6 @@
 [v1r61px]
 * JB : new interface to ctapipe merge dl1 tool
+      cone10 bug fix for Prod5b
 
 [v1r61p0]
 * JB : add high energy option to Prod3b La Palma
