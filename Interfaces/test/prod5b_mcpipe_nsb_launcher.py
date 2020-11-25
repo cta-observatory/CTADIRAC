@@ -98,7 +98,7 @@ def run_simulation(args):
     if mode == 'WMS':
         job.base_path = '/vo.cta.in2p3.fr/user/b/bregeon/prod5b/'
         job.start_run_number = '20'
-        job.run_number = '100'
+        job.run_number = '101'
         job.setupWorkflow(debug=True)
         # subtmit to the WMS for debug
         job.setDestination('LCG.IN2P3-CC.fr')
