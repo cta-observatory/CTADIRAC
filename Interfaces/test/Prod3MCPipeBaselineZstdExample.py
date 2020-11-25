@@ -104,7 +104,7 @@ def runProd3(args = None):
   job.setOutputSandbox(['*Log.txt'])
 
   # add the sequence of executables
-  job.setupWorkflow(debug=True)
+  job.setupWorkflow(debug=False)
 
   # submit to the Transformation System
   res = submitTS(job)

@@ -140,15 +140,15 @@ class Prod3MCPipeBaselineZstdJob(Prod3MCPipeBaselineJob):
     dmStep['Value']['descr_short'] = 'Save log files to SE and register them in DFC'
     iStep += 1
     ## histogram
-    outputpattern = './Data/sim_telarray/*/*/Histograms/*baseline.hdata.gz'
-    dmStep = self.setExecutable('../CTADIRAC/Core/scripts/cta-analysis-managedata.py',
-                              arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s' Histograms" % \
-                              (mdjson, mdfieldjson, file_md_json, self.basepath,
-                               outputpattern, self.package, self.program_category, self.catalogs),
-                              logFile = 'Histo_DataManagement_Log.txt')
-    dmStep['Value']['name'] = 'Step%i_Histo_DataManagement' % iStep
-    dmStep['Value']['descr_short'] = 'Save hitograms files to SE and register them in DFC'
-    iStep += 1
+    # outputpattern = './Data/sim_telarray/*/*/Histograms/*baseline.hdata.gz'
+    # dmStep = self.setExecutable('../CTADIRAC/Core/scripts/cta-analysis-managedata.py',
+    #                           arguments = "'%s' '%s' '%s' %s '%s' %s %s '%s' Histograms" % \
+    #                           (mdjson, mdfieldjson, file_md_json, self.basepath,
+    #                            outputpattern, self.package, self.program_category, self.catalogs),
+    #                           logFile = 'Histo_DataManagement_Log.txt')
+    # dmStep['Value']['name'] = 'Step%i_Histo_DataManagement' % iStep
+    # dmStep['Value']['descr_short'] = 'Save hitograms files to SE and register them in DFC'
+    # iStep += 1
 
     # Number of showers is passed via an environment variable
     self.setExecutionEnv( {'NSHOW'        : '%s' % self.nShower} )
