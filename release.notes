@@ -1,3 +1,7 @@
+[v1r62p0]
+* MS PM : Depends = DIRAC:v7r1p20
+      DIRAC support for ElasticSearch 7
+
 [v1r61px]
 * JB : new interface to ctapipe merge dl1 tool
       cone10 bug fix for Prod5b
