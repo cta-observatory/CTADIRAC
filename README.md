@@ -1,4 +1,5 @@
 CTADIRAC project:
+* moved to CTAO Observatory gitlab @ https://gitlab.cta-observatory.org/cta-computing/dpps/CTADIRAC on Decembe 2020
 * moved to git on Septembre 5th 2017
 * add things, need add a licence GPLv3 ?
 
